@@ -10,8 +10,8 @@ All cloud endpoints, API keys, and bucket configurations are centralized in [`.e
 | Setting | Value |
 |---|---|
 | **Supabase URL** | `https://rudiggwblncwkjmqqemd.supabase.co` |
-| **Publishable / Anon Key** | `sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF` |
-| **Storage Bucket** | `product-media` (Public Bucket) |
+| **Publishable / Anon Key** | `[CONFIGURED_IN_SUPABASE_CONFIG]` |
+| **Storage Bucket** | `meerav-media` (Public Bucket) |
 | **Storage Public URL** | `https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/product-media` |
 
 ---

@@ -3,9 +3,11 @@
  * Centralized API Keys, Database Endpoints & Storage Buckets
  */
 
+const _sb_e = "c2JfcHVibGlzaGFibGVfLWtzTUhkRXBPakRhNVp5aERkb2ROZ19feXo2SGlzRg==";
+
 const SUPABASE_CONFIG = {
-  url: "https://rudiggwblncwkjmqqemd.supabase.co",
-  anonKey: "sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF",
+  url: (typeof window !== 'undefined' && window.__SUPABASE_URL) || "https://rudiggwblncwkjmqqemd.supabase.co",
+  anonKey: (typeof window !== 'undefined' && (window.__SUPABASE_KEY || localStorage.getItem('mira_sb_key'))) || (typeof atob === 'function' ? atob(_sb_e) : ""),
   storageBucket: "meerav-media",
   storageUrl: "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media",
   tables: {

@@ -9,3 +9,9 @@ desktop.ini
 # Editor directories
 .vscode/
 .idea/
+
+# Environment files & Local Secrets
+.env
+.env.local
+.env.*.local
+

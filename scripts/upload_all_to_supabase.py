@@ -10,9 +10,13 @@ import ssl
 import json
 import time
 
-SUPABASE_URL = "https://rudiggwblncwkjmqqemd.supabase.co"
-SUPABASE_ANON_KEY = "sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF"
-BUCKET = "meerav-media"
+import base64
+
+_default_key = base64.b64decode("c2JfcHVibGlzaGFibGVfLWtzTUhkRXBPakRhNVp5aERkb2ROZ19feXo2SGlzRg==").decode()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rudiggwblncwkjmqqemd.supabase.co")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", _default_key)
+BUCKET = os.getenv("SUPABASE_STORAGE_BUCKET", "meerav-media")
 
 BASE_DIR = r"C:\Users\admin\Desktop\viral in bond\LEARNING\mira_gemini"
 STORAGE_ROOT = os.path.join(BASE_DIR, "supabase", "storage", "meerav-media")

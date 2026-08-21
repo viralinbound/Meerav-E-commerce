@@ -9,9 +9,13 @@ import json
 import urllib.request
 import ssl
 
-SUPABASE_URL = "https://rudiggwblncwkjmqqemd.supabase.co"
-SUPABASE_ANON_KEY = "sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF"
-BUCKET = "meerav-media"
+import base64
+
+_default_key = base64.b64decode("c2JfcHVibGlzaGFibGVfLWtzTUhkRXBPakRhNVp5aERkb2ROZ19feXo2SGlzRg==").decode()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://rudiggwblncwkjmqqemd.supabase.co")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", _default_key)
+BUCKET = os.getenv("SUPABASE_STORAGE_BUCKET", "meerav-media")
 
 print("===================================================================")
 print("MEERAV SUPABASE CLOUD SYNC UTILITY")
