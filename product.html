@@ -146,6 +146,15 @@
           </div>
         </div>
 
+        <!-- Watch Cinematic Product Video Button -->
+        <button onclick="openProductVideoModal()" 
+          class="w-full py-3 px-4 bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#4A0713] hover:from-[#32040C] hover:to-[#1F0307] text-[#FBBF24] rounded-2xl font-black text-xs shadow-lg flex items-center justify-center gap-2.5 border border-[#E59819] transition transform hover:-translate-y-0.5">
+          <span class="w-6 h-6 rounded-full bg-[#E59819] text-[#32040C] flex items-center justify-center text-[10px] shadow-sm animate-pulse">
+            <i class="fas fa-play ml-0.5"></i>
+          </span>
+          <span>Watch Cinematic Brand Video (24s)</span>
+        </button>
+
         <!-- Trust Mini Cards -->
         <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
           <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200">
@@ -470,6 +479,46 @@
           <button onclick="completeOrderWithPayment('Cash on Delivery (COD)')" class="w-full py-3.5 bg-gray-900 text-white font-black rounded-2xl">Confirm Cash on Delivery</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Cinematic Product Video Reel Modal -->
+  <div id="product-video-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-gradient-to-b from-[#32040C] to-[#1a0206] w-full max-w-4xl rounded-3xl shadow-2xl border-2 border-[#E59819] overflow-hidden animate-fade-in text-white">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 flex items-center justify-between border-b border-[#E59819]/30 bg-black/40">
+        <div class="flex items-center gap-3">
+          <img src="assets/images/meerav_logo.png" alt="Logo" class="h-8 w-auto bg-white rounded-lg p-1 shadow-sm" />
+          <div>
+            <h4 class="font-black text-sm text-[#FBBF24]">MEERAV • Cinematic Brand Video Reel</h4>
+            <p class="text-[11px] text-amber-200/70">From the Heart of Bikaner • Since 1948</p>
+          </div>
+        </div>
+        <button onclick="closeProductVideoModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center transition">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <!-- Video Player -->
+      <div class="relative aspect-video max-h-[65vh] bg-black flex items-center justify-center">
+        <video id="pdp-brand-video" 
+          src="assets/videos/meerav_brand_film.mp4" 
+          controls 
+          class="w-full h-full object-contain">
+        </video>
+      </div>
+
+      <!-- Quick Action Footer -->
+      <div class="p-4 sm:p-5 bg-black/50 border-t border-[#E59819]/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-xs text-amber-100/90 text-center sm:text-left">
+          <span>✨ <strong>100% Pure Oil & Authentic Recipe</strong> — Guaranteed freshness & crunch.</span>
+        </div>
+        <button onclick="closeProductVideoModal()" class="px-6 py-2 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
+          Return to Product
+        </button>
+      </div>
+
     </div>
   </div>
 

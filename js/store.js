@@ -817,3 +817,40 @@ function previewEmailNotification(orderId) {
 function closeEmailPreviewModal() {
   document.getElementById('email-preview-modal').classList.add('hidden');
 }
+
+/**
+ * 7. CINEMATIC BRAND FILM MODAL & PLAYBACK CONTROLLER
+ */
+function openBrandFilmModal() {
+  const modal = document.getElementById('brand-film-modal');
+  const video = document.getElementById('modal-brand-video');
+  if (modal) modal.classList.remove('hidden');
+  if (video) {
+    video.currentTime = 0;
+    video.play().catch(() => {});
+  }
+}
+
+function closeBrandFilmModal() {
+  const modal = document.getElementById('brand-film-modal');
+  const video = document.getElementById('modal-brand-video');
+  if (video) video.pause();
+  if (modal) modal.classList.add('hidden');
+}
+
+function toggleVideoMute() {
+  const video = document.getElementById('hero-cinematic-video');
+  const btn = document.getElementById('video-mute-btn');
+  if (!video || !btn) return;
+  
+  video.muted = !video.muted;
+  if (video.muted) {
+    btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    btn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
+    btn.classList.add('bg-black/70', 'text-[#FBBF24]');
+  } else {
+    btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    btn.classList.remove('bg-black/70', 'text-[#FBBF24]');
+    btn.classList.add('bg-[#E59819]', 'text-[#32040C]');
+  }
+}

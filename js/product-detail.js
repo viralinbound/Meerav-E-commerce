@@ -220,3 +220,20 @@ function renderPDPRelatedProducts(allProducts) {
     `;
   }).join('');
 }
+
+function openProductVideoModal() {
+  const modal = document.getElementById('product-video-modal');
+  const video = document.getElementById('pdp-brand-video');
+  if (modal) modal.classList.remove('hidden');
+  if (video) {
+    video.currentTime = 0;
+    video.play().catch(() => {});
+  }
+}
+
+function closeProductVideoModal() {
+  const modal = document.getElementById('product-video-modal');
+  const video = document.getElementById('pdp-brand-video');
+  if (video) video.pause();
+  if (modal) modal.classList.add('hidden');
+}
