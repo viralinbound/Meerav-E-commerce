@@ -1,0 +1,527 @@
+[
+  {
+    "productId": "p1",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p1/photos/p1_cinematic_bhujia.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p1/videos/p1_clip_bhujia.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p1/photos/p1_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p2",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p2/photos/p2_cinematic_papad.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p2/videos/p2_clip_papad.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p2/photos/p2_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p3",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p3/photos/p3_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p3/photos/p3_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p4",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p4/photos/p4_cinematic_mixture.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p4/videos/p4_clip_mixture.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p4/photos/p4_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p5",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p5/photos/p5_cinematic_namkeen.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p5/videos/p5_clip_namkeen.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p5/photos/p5_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p6",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p6/photos/p6_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p6/photos/p6_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p7",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p7/photos/p7_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p7/photos/p7_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p8",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p8/photos/p8_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p8/photos/p8_sample_drive_8.jpg"
+  },
+  {
+    "productId": "p9",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p9/photos/p9_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p9/photos/p9_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p10",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p10/photos/p10_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p10/photos/p10_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p11",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p11/photos/p11_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p11/photos/p11_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p12",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p12/photos/p12_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p12/photos/p12_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p13",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p13/photos/p13_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p13/photos/p13_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p14",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p14/photos/p14_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p14/photos/p14_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p15",
+    "category": "bhujia-sev",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p15/photos/p15_cinematic_bhujia.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/bhujia-sev/products/p15/photos/p15_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p16",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p16/photos/p16_cinematic_mixture.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p16/videos/p16_clip_mixture.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p16/photos/p16_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p17",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p17/photos/p17_cinematic_namkeen.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p17/videos/p17_clip_namkeen.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p17/photos/p17_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p18",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p18/photos/p18_cinematic_raita_boondi.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p18/videos/p18_clip_raita_boondi.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p18/photos/p18_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p19",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p19/photos/p19_cinematic_chips.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p19/videos/p19_clip_chips.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p19/photos/p19_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p20",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p20/photos/p20_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p20/photos/p20_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p21",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p21/photos/p21_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p21/photos/p21_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p22",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p22/photos/p22_cinematic_namkeen.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p22/videos/p22_clip_namkeen.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p22/photos/p22_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p23",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p23/photos/p23_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p23/photos/p23_sample_drive_8.jpg"
+  },
+  {
+    "productId": "p24",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p24/photos/p24_cinematic_raita_boondi.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p24/videos/p24_clip_raita_boondi.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p24/photos/p24_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p25",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p25/photos/p25_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p25/photos/p25_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p26",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p26/photos/p26_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p26/photos/p26_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p27",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p27/photos/p27_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p27/photos/p27_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p28",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p28/photos/p28_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p28/photos/p28_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p29",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p29/photos/p29_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p29/photos/p29_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p30",
+    "category": "mixture-farsan",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p30/photos/p30_cinematic_mixture.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mixture-farsan/products/p30/photos/p30_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p31",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p31/photos/p31_cinematic_papad.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p31/videos/p31_clip_papad.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p31/photos/p31_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p32",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p32/photos/p32_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p32/photos/p32_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p33",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p33/photos/p33_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p33/photos/p33_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p34",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p34/photos/p34_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p34/photos/p34_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p35",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p35/photos/p35_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p35/photos/p35_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p36",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p36/photos/p36_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p36/photos/p36_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p37",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p37/photos/p37_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p37/photos/p37_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p38",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p38/photos/p38_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p38/photos/p38_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p39",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p39/photos/p39_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p39/photos/p39_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p40",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p40/photos/p40_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p40/photos/p40_sample_drive_8.jpg"
+  },
+  {
+    "productId": "p41",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p41/photos/p41_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p41/photos/p41_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p42",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p42/photos/p42_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p42/photos/p42_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p43",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p43/photos/p43_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p43/photos/p43_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p44",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p44/photos/p44_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p44/photos/p44_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p45",
+    "category": "mathri",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p45/photos/p45_cinematic_papad.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/mathri/products/p45/photos/p45_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p46",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p46/photos/p46_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p46/videos/p46_clip_moong_dal.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p46/photos/p46_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p47",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p47/photos/p47_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p47/photos/p47_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p48",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p48/photos/p48_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p48/photos/p48_sample_drive_8.jpg"
+  },
+  {
+    "productId": "p49",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p49/photos/p49_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p49/photos/p49_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p50",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p50/photos/p50_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p50/photos/p50_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p51",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p51/photos/p51_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p51/photos/p51_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p52",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p52/photos/p52_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p52/photos/p52_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p53",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p53/photos/p53_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p53/photos/p53_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p54",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p54/photos/p54_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p54/photos/p54_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p55",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p55/photos/p55_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p55/photos/p55_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p56",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p56/photos/p56_cinematic_masala_peanuts.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p56/videos/p56_clip_masala_peanuts.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p56/photos/p56_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p57",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p57/photos/p57_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p57/photos/p57_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p58",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p58/photos/p58_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p58/photos/p58_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p59",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p59/photos/p59_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p59/photos/p59_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p60",
+    "category": "roasted-diet",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p60/photos/p60_cinematic_moong_dal.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/roasted-diet/products/p60/photos/p60_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p61",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p61/photos/p61_cinematic_chips.jpg",
+    "cloudVideoUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p61/videos/p61_clip_chips.mp4",
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p61/photos/p61_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p62",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p62/photos/p62_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p62/photos/p62_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p63",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p63/photos/p63_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p63/photos/p63_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p64",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p64/photos/p64_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p64/photos/p64_sample_drive_8.jpg"
+  },
+  {
+    "productId": "p65",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p65/photos/p65_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p65/photos/p65_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p66",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p66/photos/p66_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p66/photos/p66_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p67",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p67/photos/p67_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p67/photos/p67_sample_drive_3.jpg"
+  },
+  {
+    "productId": "p68",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p68/photos/p68_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p68/photos/p68_sample_drive_4.jpg"
+  },
+  {
+    "productId": "p69",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p69/photos/p69_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p69/photos/p69_sample_drive_5.jpg"
+  },
+  {
+    "productId": "p70",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p70/photos/p70_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p70/photos/p70_sample_drive_6.jpg"
+  },
+  {
+    "productId": "p71",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p71/photos/p71_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p71/photos/p71_sample_drive_7.jpg"
+  },
+  {
+    "productId": "p72",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p72/photos/p72_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p72/photos/p72_sample_drive_8.jpg"
+  },
+  {
+    "productId": "p73",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p73/photos/p73_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p73/photos/p73_sample_drive_1.jpg"
+  },
+  {
+    "productId": "p74",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p74/photos/p74_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p74/photos/p74_sample_drive_2.jpg"
+  },
+  {
+    "productId": "p75",
+    "category": "sweets-combos",
+    "cloudImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p75/photos/p75_cinematic_chips.jpg",
+    "cloudVideoUrl": null,
+    "cloudSampleImageUrl": "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/categories/sweets-combos/products/p75/photos/p75_sample_drive_3.jpg"
+  }
+]

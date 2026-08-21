@@ -197,8 +197,10 @@ const MeeravSupabase = {
     const cleanFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
     const storagePath = `categories/${categoryId}/products/${productId}/${type}/${cleanFileName}`;
 
+    const bucketName = (typeof SUPABASE_CONFIG !== 'undefined' && SUPABASE_CONFIG.storageBucket) || 'meerav-media';
+
     const { data, error } = await this.client.storage
-      .from('product-media')
+      .from(bucketName)
       .upload(storagePath, file, {
         cacheControl: '3600',
         upsert: true
@@ -207,7 +209,7 @@ const MeeravSupabase = {
     if (error) throw error;
 
     const { data: publicUrlData } = this.client.storage
-      .from('product-media')
+      .from(bucketName)
       .getPublicUrl(storagePath);
 
     return {

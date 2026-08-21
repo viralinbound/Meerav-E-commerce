@@ -84,15 +84,15 @@ CREATE POLICY "Public insert customers" ON public.customers FOR INSERT WITH CHEC
 CREATE POLICY "Public read customers" ON public.customers FOR SELECT USING (true);
 CREATE POLICY "Public update customers" ON public.customers FOR UPDATE USING (true);
 
--- 7. STORAGE BUCKET (product-media)
--- Systematic folder layout: product-media/categories/{category_id}/products/{product_id}/{photos|videos}/{filename}
+-- 7. STORAGE BUCKET (meerav-media)
+-- Systematic folder layout: meerav-media/categories/{category_id}/products/{product_id}/{photos|videos}/{filename}
 INSERT INTO storage.buckets (id, name, public) 
-VALUES ('product-media', 'product-media', true)
+VALUES ('meerav-media', 'meerav-media', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
-CREATE POLICY "Public storage read" ON storage.objects FOR SELECT USING (bucket_id = 'product-media');
-CREATE POLICY "Public storage insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'product-media');
-CREATE POLICY "Public storage update" ON storage.objects FOR UPDATE USING (bucket_id = 'product-media');
+CREATE POLICY "Public storage read" ON storage.objects FOR SELECT USING (bucket_id = 'meerav-media');
+CREATE POLICY "Public storage insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'meerav-media');
+CREATE POLICY "Public storage update" ON storage.objects FOR UPDATE USING (bucket_id = 'meerav-media');
 
 -- 8. SEED CATEGORIES DATA
 INSERT INTO public.categories (id, name, icon, description) VALUES

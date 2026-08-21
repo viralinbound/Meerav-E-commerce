@@ -8,10 +8,10 @@ import shutil
 import json
 
 BASE_DIR = r"C:\Users\admin\Desktop\viral in bond\LEARNING\mira_gemini"
-STORAGE_ROOT = os.path.join(BASE_DIR, "supabase", "storage", "product-media")
+STORAGE_ROOT = os.path.join(BASE_DIR, "supabase", "storage", "meerav-media")
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
-SUPABASE_PUBLIC_URL_PREFIX = "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/product-media"
+SUPABASE_PUBLIC_URL_PREFIX = "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media"
 
 # Define category mapping for all 75 products
 CATEGORY_MAP = {

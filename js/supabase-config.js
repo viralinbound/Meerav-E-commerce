@@ -6,8 +6,8 @@
 const SUPABASE_CONFIG = {
   url: "https://rudiggwblncwkjmqqemd.supabase.co",
   anonKey: "sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF",
-  storageBucket: "product-media",
-  storageUrl: "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/product-media",
+  storageBucket: "meerav-media",
+  storageUrl: "https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media",
   tables: {
     categories: "categories",
     products: "products",

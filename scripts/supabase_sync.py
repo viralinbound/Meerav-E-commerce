@@ -11,7 +11,7 @@ import ssl
 
 SUPABASE_URL = "https://rudiggwblncwkjmqqemd.supabase.co"
 SUPABASE_ANON_KEY = "sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF"
-BUCKET = "product-media"
+BUCKET = "meerav-media"
 
 print("===================================================================")
 print("MEERAV SUPABASE CLOUD SYNC UTILITY")
