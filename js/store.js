@@ -84,33 +84,35 @@ function renderHomeCategoryCards() {
 
   const validCats = categories.filter(c => c.id !== 'all');
 
+  // Exact 5 Category Icons from User Reference Image (Deep Maroon Squircles with Golden Yellow Icons)
   const categoryIcons = {
-    'bhujia-sev': { icon: 'fas fa-pepper-hot', color: 'from-amber-600 to-red-700' },
-    'mixture-farsan': { icon: 'fas fa-bowl-rice', color: 'from-amber-700 to-[#4A0713]' },
-    'mathri': { icon: 'fas fa-sun', color: 'from-amber-500 to-amber-700' },
-    'papad-mathri': { icon: 'fas fa-sun', color: 'from-amber-500 to-amber-700' },
-    'roasted-diet': { icon: 'fas fa-seedling', color: 'from-emerald-600 to-teal-800' },
-    'healthy-roasted': { icon: 'fas fa-seedling', color: 'from-emerald-600 to-teal-800' },
-    'sweets-combos': { icon: 'fas fa-gift', color: 'from-[#4A0713] to-[#250207]' }
+    'bhujia-sev': { icon: 'fas fa-fire', name: 'Bhujia & Sev' },
+    'mixture-farsan': { icon: 'fas fa-bowl-rice', name: 'Namkeen & Mixtures' },
+    'mathri': { icon: 'fas fa-sun', name: 'Papad & Mathri' },
+    'papad-mathri': { icon: 'fas fa-sun', name: 'Papad & Mathri' },
+    'roasted-diet': { icon: 'fas fa-seedling', name: 'Roasted Diet Snacks' },
+    'healthy-roasted': { icon: 'fas fa-seedling', name: 'Roasted Diet Snacks' },
+    'sweets-combos': { icon: 'fas fa-gift', name: 'Sweets & Hampers' }
   };
 
   container.innerHTML = validCats.map(cat => {
     const count = products.filter(p => p.category === cat.id).length;
-    const catStyle = categoryIcons[cat.id] || { icon: cat.icon || 'fas fa-cookie-bite', color: 'from-[#4A0713] to-amber-800' };
+    const catStyle = categoryIcons[cat.id] || { icon: cat.icon || 'fas fa-cookie-bite', name: cat.name };
 
     return `
       <a href="category.html?cat=${cat.id}" 
-        class="p-5 sm:p-6 bg-white rounded-3xl border-2 border-amber-200 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block">
+        class="p-4 sm:p-6 bg-white rounded-3xl border-2 border-amber-200/80 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block active:scale-98">
         
-        <div class="w-16 h-16 mx-auto mb-3.5 rounded-2xl bg-gradient-to-br ${catStyle.color} text-[#FBBF24] flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 border border-[#E59819]/50">
+        <!-- Royal Deep Maroon Squircle Container with Gold Icon (Matching User Image) -->
+        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-2xl sm:rounded-3xl bg-[#520914] group-hover:bg-[#3B040D] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-lg group-hover:scale-110 transition-all duration-300 border border-[#E59819]/40">
           <i class="${catStyle.icon}"></i>
         </div>
 
-        <h4 class="font-black text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${cat.name}</h4>
-        <span class="text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
+        <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${catStyle.name}</h4>
+        <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
         
-        <span class="inline-flex items-center gap-1 text-[11px] font-black text-[#4A0713] group-hover:underline">
-          Explore Snacks &rarr;
+        <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#4A0713] group-hover:underline">
+          Explore &rarr;
         </span>
       </a>
     `;

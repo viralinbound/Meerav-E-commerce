@@ -22,8 +22,8 @@ const MIRA_DATA = {
   },
 
   categories: [
-    { id: "all", name: "All Delicacies", icon: "fas fa-cookie-bite", description: "Complete Bikaner royal heritage snack collection" },
-    { id: "bhujia-sev", name: "Bhujia & Sev", icon: "fas fa-pepper-hot", description: "Thin, crispy golden sev & authentic Bikaneri bhujia prepared in pure oil" },
+    { id: "all", name: "All Delicacies", icon: "fas fa-border-all", description: "Complete Bikaner royal heritage snack collection" },
+    { id: "bhujia-sev", name: "Bhujia & Sev", icon: "fas fa-fire", description: "Thin, crispy golden sev & authentic Bikaneri bhujia prepared in pure oil" },
     { id: "mixture-farsan", name: "Namkeen & Mixtures", icon: "fas fa-bowl-rice", description: "Rich royal medleys with cashews, raisins, boondi & crunchy namkeens" },
     { id: "mathri", name: "Papad & Mathri", icon: "fas fa-sun", description: "Flaky handmade mathri, sun-dried papad, and authentic Rajasthani crisps" },
     { id: "roasted-diet", name: "Roasted Diet Snacks", icon: "fas fa-seedling", description: "Slow-roasted superfoods, crispy moong dal, and diet makhana with zero palm oil" },
