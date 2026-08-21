@@ -86,7 +86,9 @@ function renderHomeCategoryCards() {
   const categoryImages = {
     'bhujia-sev': 'assets/images/cinematic_bhujia.jpg',
     'mixture-farsan': 'assets/images/cinematic_mixture.jpg',
+    'mathri': 'assets/images/cinematic_papad.jpg',
     'papad-mathri': 'assets/images/cinematic_papad.jpg',
+    'roasted-diet': 'assets/images/cinematic_moong_dal.jpg',
     'healthy-roasted': 'assets/images/cinematic_moong_dal.jpg',
     'sweets-combos': 'assets/images/cinematic_chips.jpg'
   };

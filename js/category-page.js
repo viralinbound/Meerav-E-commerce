@@ -11,22 +11,38 @@ const categoryPageState = {
   products: []
 };
 
+function normalizeCategoryId(catId) {
+  if (!catId || catId === 'all') return 'all';
+  if (catId === 'papad-mathri') return 'mathri';
+  if (catId === 'healthy-roasted') return 'roasted-diet';
+  return catId;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initCategoryPage();
 });
 
 function initCategoryPage() {
   const urlParams = new URLSearchParams(window.location.search);
-  const initialCat = urlParams.get('cat') || 'all';
+  const rawCat = urlParams.get('cat') || 'all';
+  const initialCat = normalizeCategoryId(rawCat);
 
   categoryPageState.selectedCategory = initialCat;
   
-  // Ensure products and categories are always loaded
-  const storedCats = JSON.parse(localStorage.getItem('mira_categories_db'));
-  categoryPageState.categories = (storedCats && storedCats.length > 0) ? storedCats : [...MIRA_DATA.categories];
+  // Guarantee full 75-product catalog from MIRA_DATA
+  let storedCats = JSON.parse(localStorage.getItem('mira_categories_db'));
+  if (!storedCats || storedCats.length < MIRA_DATA.categories.length) {
+    storedCats = [...MIRA_DATA.categories];
+    localStorage.setItem('mira_categories_db', JSON.stringify(storedCats));
+  }
+  categoryPageState.categories = storedCats;
 
-  const storedProds = JSON.parse(localStorage.getItem('mira_products_db'));
-  categoryPageState.products = (storedProds && storedProds.length > 0) ? storedProds : [...MIRA_DATA.products];
+  let storedProds = JSON.parse(localStorage.getItem('mira_products_db'));
+  if (!storedProds || storedProds.length < MIRA_DATA.products.length) {
+    storedProds = [...MIRA_DATA.products];
+    localStorage.setItem('mira_products_db', JSON.stringify(storedProds));
+  }
+  categoryPageState.products = storedProds;
 
   renderCategoryHeader();
   renderCategoryTabs();
@@ -35,13 +51,14 @@ function initCategoryPage() {
 }
 
 function renderCategoryHeader() {
-  const cat = categoryPageState.categories.find(c => c.id === categoryPageState.selectedCategory);
+  const normCat = normalizeCategoryId(categoryPageState.selectedCategory);
+  const cat = categoryPageState.categories.find(c => c.id === normCat || c.id === categoryPageState.selectedCategory);
 
   const titleEl = document.getElementById('current-category-title');
   const descEl = document.getElementById('current-category-desc');
   const breadcrumbEl = document.getElementById('current-category-breadcrumb');
 
-  if (categoryPageState.selectedCategory === 'all' || !cat) {
+  if (normCat === 'all' || !cat) {
     if (titleEl) titleEl.textContent = 'All Authentic Bikaneri Delicacies';
     if (descEl) descEl.textContent = 'Explore our complete heritage collection of crispy Bhujia, Sev, Mathri, and Royal Gift Hampers.';
     if (breadcrumbEl) breadcrumbEl.textContent = 'All Categories';
@@ -59,12 +76,13 @@ function renderCategoryTabs() {
   if (!container) return;
 
   const validCategories = categoryPageState.categories.filter(c => c.id !== 'all');
+  const currentNorm = normalizeCategoryId(categoryPageState.selectedCategory);
 
   const tabsHtml = [
     `
       <button onclick="selectCategory('all')" 
         class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
-          categoryPageState.selectedCategory === 'all' 
+          currentNorm === 'all' 
             ? 'bg-[#4A0713] text-[#FBBF24] shadow-md border border-[#E59819] transform scale-102' 
             : 'bg-white text-gray-800 hover:bg-amber-50 border border-amber-200'
         }">
@@ -73,11 +91,14 @@ function renderCategoryTabs() {
       </button>
     `,
     ...validCategories.map(cat => {
-      const count = categoryPageState.products.filter(p => p.category === cat.id).length;
+      const normId = normalizeCategoryId(cat.id);
+      const count = categoryPageState.products.filter(p => p.category === normId || p.category === cat.id).length;
+      const isActive = currentNorm === normId || currentNorm === cat.id;
+
       return `
         <button onclick="selectCategory('${cat.id}')" 
           class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
-            categoryPageState.selectedCategory === cat.id 
+            isActive 
               ? 'bg-[#4A0713] text-[#FBBF24] shadow-md border border-[#E59819] transform scale-102' 
               : 'bg-white text-gray-800 hover:bg-amber-50 border border-amber-200'
           }">
@@ -109,10 +130,10 @@ function renderCategoryDietaryFilters() {
 }
 
 function selectCategory(catId) {
-  categoryPageState.selectedCategory = catId;
+  categoryPageState.selectedCategory = normalizeCategoryId(catId);
   
   // Update URL state without page reload
-  const newUrl = catId === 'all' ? 'category.html?cat=all' : `category.html?cat=${catId}`;
+  const newUrl = categoryPageState.selectedCategory === 'all' ? 'category.html?cat=all' : `category.html?cat=${categoryPageState.selectedCategory}`;
   window.history.pushState({ path: newUrl }, '', newUrl);
 
   renderCategoryHeader();
@@ -140,9 +161,10 @@ function renderCategoryProducts() {
 
   // Filter products by category, dietary, and search query
   let filtered = categoryPageState.products;
+  const currentNorm = normalizeCategoryId(categoryPageState.selectedCategory);
 
-  if (categoryPageState.selectedCategory !== 'all') {
-    filtered = filtered.filter(p => p.category === categoryPageState.selectedCategory);
+  if (currentNorm !== 'all') {
+    filtered = filtered.filter(p => p.category === currentNorm || p.category === categoryPageState.selectedCategory);
   }
 
   if (categoryPageState.selectedDietary !== 'all') {
