@@ -1,6 +1,6 @@
 /**
  * MEERAV NAMKEENS - DEDICATED PRODUCT DETAIL PAGE CONTROLLER
- * Full Media Carousel (Right/Left Scroll, Touch Swipe, Dedicated 4K Product Video, Fullscreen Lightbox & Mobile Sticky Bar)
+ * Full Media Carousel (Right/Left Scroll, Touch Swipe, Dedicated 4K Product Video / Sample Photo, Fullscreen Lightbox & Mobile Sticky Bar)
  */
 
 const pdpState = {
@@ -45,6 +45,7 @@ function renderPDPDetails() {
   const p = pdpState.currentProduct;
   const selectedVar = p.variants[pdpState.selectedVariantIdx] || p.variants[0];
   const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
+  const hasVideo = !!p.video;
 
   // Breadcrumbs & Title
   document.getElementById('breadcrumb-category').textContent = p.category.replace('-', ' & ');
@@ -62,14 +63,37 @@ function renderPDPDetails() {
   if (thumbImg0) thumbImg0.src = p.image;
 
   const thumbImg1 = document.getElementById('pdp-thumb-img-1');
-  if (thumbImg1) thumbImg1.src = p.image;
+  if (thumbImg1) thumbImg1.src = p.sampleImage || p.image;
 
   const videoElem = document.getElementById('pdp-slide-video');
-  if (videoElem) {
-    const videoSrc = p.video || 'assets/videos/meerav_brand_film.mp4';
-    videoElem.src = videoSrc;
-    videoElem.load();
-    videoElem.play().catch(() => {});
+  const sampleImgElem = document.getElementById('pdp-slide-sample-image');
+  const videoBadge = document.getElementById('pdp-video-badge');
+  const sampleBadge = document.getElementById('pdp-sample-badge');
+  const thumbIcon = document.getElementById('pdp-thumb-icon');
+
+  if (hasVideo) {
+    if (videoElem) {
+      videoElem.src = p.video;
+      videoElem.classList.remove('hidden');
+      videoElem.load();
+    }
+    if (sampleImgElem) sampleImgElem.classList.add('hidden');
+    if (videoBadge) videoBadge.classList.remove('hidden');
+    if (sampleBadge) sampleBadge.classList.add('hidden');
+    if (thumbIcon) thumbIcon.className = 'fas fa-play text-[#FBBF24] text-xs';
+  } else {
+    if (videoElem) {
+      videoElem.pause();
+      videoElem.src = '';
+      videoElem.classList.add('hidden');
+    }
+    if (sampleImgElem) {
+      sampleImgElem.src = p.sampleImage || p.image;
+      sampleImgElem.classList.remove('hidden');
+    }
+    if (videoBadge) videoBadge.classList.add('hidden');
+    if (sampleBadge) sampleBadge.classList.remove('hidden');
+    if (thumbIcon) thumbIcon.className = 'fas fa-camera text-[#FBBF24] text-xs';
   }
 
   // Reset to first slide
@@ -126,10 +150,17 @@ function setPDPSlide(slideIndex) {
     wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
   }
 
+  const p = pdpState.currentProduct;
+  const hasVideo = !!(p && p.video);
+
   // Update slide counter
   const counter = document.getElementById('pdp-slide-counter');
   if (counter) {
-    counter.textContent = slideIndex === 0 ? 'Photo (1 of 2)' : '4K Video (2 of 2)';
+    if (slideIndex === 0) {
+      counter.textContent = 'Pack Photo (1 of 2)';
+    } else {
+      counter.textContent = hasVideo ? '4K Video (2 of 2)' : 'Sample Serving Photo (2 of 2)';
+    }
   }
 
   // Update thumbnail active states
@@ -147,9 +178,11 @@ function setPDPSlide(slideIndex) {
 
   // Video playback handling
   const slideVideo = document.getElementById('pdp-slide-video');
-  if (slideVideo) {
+  if (slideVideo && hasVideo) {
     if (slideIndex === 1) {
       slideVideo.play().catch(() => {});
+    } else {
+      slideVideo.pause();
     }
   }
 }
@@ -193,12 +226,13 @@ function closeFullscreenMedia() {
 
 function syncFullscreenMedia() {
   const p = pdpState.currentProduct;
+  const hasVideo = !!(p && p.video);
   const fsImg = document.getElementById('fs-display-image');
   const fsVideo = document.getElementById('fs-display-video');
   const muteBtn = document.getElementById('fs-mute-btn');
 
   if (pdpState.currentSlide === 0) {
-    // Show Photo
+    // Show Photo 1
     if (fsVideo) {
       fsVideo.pause();
       fsVideo.classList.add('hidden');
@@ -209,15 +243,27 @@ function syncFullscreenMedia() {
     }
     if (muteBtn) muteBtn.classList.add('hidden');
   } else {
-    // Show Video
-    if (fsImg) fsImg.classList.add('hidden');
-    if (fsVideo) {
-      fsVideo.src = p.video || 'assets/videos/meerav_brand_film.mp4';
-      fsVideo.classList.remove('hidden');
-      fsVideo.muted = pdpState.isMuted;
-      fsVideo.play().catch(() => {});
+    // Slide 2: Video OR Sample Photo
+    if (hasVideo) {
+      if (fsImg) fsImg.classList.add('hidden');
+      if (fsVideo) {
+        fsVideo.src = p.video;
+        fsVideo.classList.remove('hidden');
+        fsVideo.muted = pdpState.isMuted;
+        fsVideo.play().catch(() => {});
+      }
+      if (muteBtn) muteBtn.classList.remove('hidden');
+    } else {
+      if (fsVideo) {
+        fsVideo.pause();
+        fsVideo.classList.add('hidden');
+      }
+      if (fsImg) {
+        fsImg.src = p.sampleImage || p.image;
+        fsImg.classList.remove('hidden');
+      }
+      if (muteBtn) muteBtn.classList.add('hidden');
     }
-    if (muteBtn) muteBtn.classList.remove('hidden');
   }
 }
 
@@ -257,11 +303,9 @@ function setupTouchGestures() {
 function handleGesture() {
   const threshold = 40; // minimum swipe distance
   if (touchEndX < touchStartX - threshold) {
-    // Swiped Left -> Next Slide
     nextPDPSlide();
   }
   if (touchEndX > touchStartX + threshold) {
-    // Swiped Right -> Prev Slide
     prevPDPSlide();
   }
 }
