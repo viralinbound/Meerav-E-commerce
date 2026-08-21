@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEERAV - An Authentic Bikaneri Taste • Namkeens & Sweets</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            meerav: {
+              maroon: '#4A0713',
+              dark: '#32040C',
+              gold: '#E59819',
+              goldlight: '#FBBF24',
+              cream: '#FFF9ED',
+              creamdark: '#FDF1D0'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Leaflet OpenStreetMap CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Royal Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pb-mobile-nav selection:bg-amber-200 selection:text-amber-950">
+
+  <!-- ========================================================================= -->
+  <!-- 1. TOP PROMO & BRAND ANNOUNCEMENT BAR                                     -->
+  <!-- ========================================================================= -->
+  <header class="bg-[#32040C] text-white text-xs py-2.5 px-4 border-b border-[#E59819]/40">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2 font-medium">
+        <span class="bg-[#E59819] text-[#32040C] font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Bikaner Special</span>
+        <span>✨ Prepared in Pure & Clean Oil • Use coupon <strong class="text-[#FBBF24] font-black">MEERAV10</strong> for 10% Off!</span>
+      </div>
+      <div class="flex items-center gap-4 text-amber-200 text-[11px]">
+        <a href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-1.5 hover:text-white transition">
+          <i class="fab fa-whatsapp text-emerald-400"></i>
+          <span>Order on WhatsApp: +91 98765 43210</span>
+        </a>
+        <span class="text-[#E59819]/50 hidden sm:inline">|</span>
+        <a href="admin.html" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
+          <i class="fas fa-shield-halved text-[#E59819]"></i> Admin Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================= -->
+  <!-- 2. LUXURY STICKY NAVIGATION BAR WITH OFFICIAL MEERAV LOGO                 -->
+  <!-- ========================================================================= -->
+  <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 gap-4">
+        
+        <!-- Official Brand Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="returnToStorefront()">
+          <img src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="h-14 sm:h-16 w-auto object-contain filter drop-shadow-sm hover:scale-105 transition-transform duration-300" />
+          <div class="hidden sm:block border-l border-amber-300 pl-3">
+            <span class="text-[11px] font-black tracking-wider uppercase text-[#4A0713] block">From the Heart of Bikaner</span>
+            <span class="text-[9px] font-bold text-amber-700 block">An Authentic Bikaneri Taste</span>
+          </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-1 max-w-md hidden md:block">
+          <div class="relative">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+            <input type="text" id="store-search-input" placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri, Makhana..." 
+              class="w-full pl-11 pr-4 py-2.5 bg-amber-50/50 border border-amber-200 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white transition shadow-inner" />
+          </div>
+        </div>
+
+        <!-- Right Quick Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          
+          <!-- Live Tracking Button -->
+          <button onclick="openOrderTrackingView()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-100/70 hover:bg-amber-200 border border-amber-300 transition">
+            <i class="fas fa-map-location-dot text-[#E59819]"></i>
+            <span>Track Order</span>
+          </button>
+
+          <!-- Customer Sign In / Account -->
+          <button id="header-customer-btn" onclick="openCustomerAuthModal()" 
+            class="px-3.5 py-2 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100 text-xs font-bold transition">
+            <!-- Populated via auth.js -->
+          </button>
+
+          <!-- Wishlist -->
+          <button onclick="filterCategory('all'); showToast('Showing all favorites', 'info');" 
+            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
+            <i class="far fa-heart text-lg"></i>
+            <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
+          </button>
+
+          <!-- Cart Button -->
+          <button onclick="openCartDrawer()" 
+            class="relative flex items-center gap-2 px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-2xl font-black text-xs shadow-lg shadow-[#4A0713]/30 transition transform active:scale-95 border border-[#E59819]/40">
+            <i class="fas fa-shopping-bag text-sm"></i>
+            <span class="hidden sm:inline">Cart</span>
+            <span class="cart-badge-count hidden px-2 py-0.5 bg-[#E59819] text-[#32040C] text-[11px] font-black rounded-full shadow-inner">0</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================================= -->
+  <!-- 3. STOREFRONT HERO & CATALOG MAIN CONTENT                                 -->
+  <!-- ========================================================================= -->
+  <main id="storefront-main-content" class="animate-fade-in">
+    
+    <!-- Hero Banner with Authentic Packaging Visuals -->
+    <section class="relative overflow-hidden meerav-hero-pattern py-12 sm:py-18 border-b border-amber-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          
+          <!-- Hero Text Content -->
+          <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4A0713] border border-[#E59819] text-[#FBBF24] text-xs font-black shadow-md">
+              <i class="fas fa-landmark text-[#E59819]"></i>
+              <span>FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-black text-[#32040C] tracking-tight leading-tight">
+              Royal Bikaneri <br/>
+              <span class="text-[#E59819] underline decoration-[#4A0713] decoration-wavy decoration-2">Namkeens & Sev</span>
+            </h1>
+
+            <p class="text-gray-700 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+              Made with finest ingredients and authentic Bikaneri recipes. Prepared fresh daily in <strong>100% pure & clean oil</strong> with zero palm oil.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+              <a href="category.html?cat=all" 
+                class="px-7 py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black rounded-2xl shadow-xl shadow-[#4A0713]/30 transition transform hover:-translate-y-0.5 border border-[#E59819] inline-flex items-center gap-2">
+                <i class="fas fa-cookie-bite text-[#E59819]"></i>
+                <span>Explore Category Collections</span>
+                <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+
+              <a href="category.html?cat=sweets-combos" 
+                class="px-6 py-3.5 bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-sm font-black rounded-2xl shadow-md transition flex items-center gap-2 border border-amber-300">
+                <i class="fas fa-gift text-[#E59819]"></i> Festive Hampers
+              </a>
+            </div>
+
+            <!-- Authentic Trust Badges -->
+            <div class="grid grid-cols-3 gap-3 pt-6 border-t border-amber-300/60 max-w-lg mx-auto lg:mx-0">
+              <div class="text-center lg:text-left">
+                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-droplet text-[#E59819] mr-1"></i> Pure & Clean</div>
+                <div class="text-[11px] text-gray-600 font-medium">Cold-Pressed Oil</div>
+              </div>
+              <div class="text-center lg:text-left">
+                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-seedling text-emerald-700 mr-1"></i> 100% Veg</div>
+                <div class="text-[11px] text-gray-600 font-medium">Certified Recipe</div>
+              </div>
+              <div class="text-center lg:text-left">
+                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-truck-fast text-blue-700 mr-1"></i> Bikaner Hub</div>
+                <div class="text-[11px] text-gray-600 font-medium">Same-Day Dispatch</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Flagship Product Presentation (Aloo Bhujia Packet) -->
+          <div class="lg:col-span-5 flex justify-center">
+            <div class="relative bg-gradient-to-b from-[#FFF9ED] via-white to-[#FDF1D0] p-6 rounded-3xl shadow-2xl border-2 border-[#E59819]/50 float-pack-animation max-w-sm w-full text-center">
+              
+              <div class="flex items-center justify-between mb-2">
+                <span class="px-3 py-1 bg-[#4A0713] text-[#FBBF24] text-[11px] font-black rounded-full uppercase tracking-wider border border-[#E59819]">
+                  Signature Pack
+                </span>
+                <div class="veg-indicator bg-white shadow-xs" title="100% Vegetarian">
+                  <div class="veg-indicator-dot"></div>
+                </div>
+              </div>
+
+              <!-- Official Meerav Packet Image -->
+              <a href="product.html?id=p1" class="cursor-pointer my-2 block">
+                <img src="assets/images/meerav_aloo_bhujia_pack.png" alt="Meerav Aloo Bhujia Pack" 
+                  class="h-72 w-auto mx-auto object-contain filter drop-shadow-xl hover:scale-105 transition-transform duration-500" />
+              </a>
+
+              <a href="product.html?id=p1" class="text-xl font-black text-[#4A0713] mb-1 hover:underline block">Meerav Authentic Aloo Bhujia</a>
+              <p class="text-xs text-gray-600 mb-3 font-medium">Made with finest ingredients & authentic Bikaneri recipe.</p>
+
+              <div class="flex items-center justify-between pt-3 border-t border-amber-200">
+                <div class="text-left">
+                  <span class="text-2xl font-black text-[#4A0713]">₹99</span>
+                  <span class="text-xs text-gray-400 line-through ml-1">₹120</span>
+                  <span class="text-[10px] font-black text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded ml-1">200 g</span>
+                </div>
+                <button onclick="addToCart('p1', 0)" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black shadow-md transition transform active:scale-95 border border-[#E59819]/50">
+                  <i class="fas fa-plus mr-1"></i> Add to Cart
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Visual Category Showcase Section -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="px-4 py-1.5 bg-amber-100 text-[#4A0713] text-xs font-black rounded-full uppercase tracking-wider border border-amber-300 shadow-xs">
+          Royal Bikaner Specialties
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3">Select a Category to Explore Snacks</h2>
+        <p class="text-xs sm:text-sm text-gray-600 mt-2 font-medium">Click any traditional category below to view its handcrafted snacks, live prices & pack sizes</p>
+      </div>
+
+      <!-- Dynamic Category Cards Container (Auto-Calculates Product Numbers from Database) -->
+      <div id="home-category-showcase" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5 mb-10">
+        <!-- Rendered dynamically by renderHomeCategoryCards() in store.js -->
+      </div>
+
+      <!-- Action Banner to All Categories & Products (Dynamically Auto-Counts Total Catalog) -->
+      <div class="bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#1F0307] rounded-3xl p-8 text-white shadow-2xl border-2 border-[#E59819] flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-1 text-center md:text-left">
+          <span class="text-xs text-[#FBBF24] font-black uppercase tracking-wider">✨ Complete Bikaner Catalog</span>
+          <h3 id="home-total-products-count" class="text-2xl font-black text-white">Want to explore all authentic varieties?</h3>
+          <p class="text-xs text-amber-200/80">Filter by pure ingredients, spice levels, and order directly with live GPS tracking.</p>
+        </div>
+
+        <a href="category.html?cat=all" 
+          class="px-8 py-4 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 shrink-0 flex items-center gap-2 border border-white/20">
+          <span id="home-total-products-btn">Explore All Products</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- Royal Trust Section -->
+    <section class="meerav-maroon-bg text-white py-16 mt-12 border-t-2 border-[#E59819]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
+          
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
+              <i class="fas fa-droplet"></i>
+            </div>
+            <h4 class="font-black text-base text-[#FBBF24]">Pure & Clean Oil</h4>
+            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.</p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
+              <i class="fas fa-landmark"></i>
+            </div>
+            <h4 class="font-black text-base text-[#FBBF24]">Bikaneri Heritage</h4>
+            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.</p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
+              <i class="fas fa-box-open"></i>
+            </div>
+            <h4 class="font-black text-base text-[#FBBF24]">Multi-Layer Airtight Pack</h4>
+            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.</p>
+          </div>
+
+          <div class="space-y-2">
+            <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <h4 class="font-black text-base text-[#FBBF24]">Live WhatsApp Alerts</h4>
+            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Instant WhatsApp notifications with courier tracking and live GPS route maps.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#1F0307] text-gray-400 py-10 border-t border-amber-900/40 text-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <img src="assets/images/meerav_logo.png" alt="Meerav Logo" class="h-10 w-auto object-contain" />
+          <span class="font-bold text-gray-200 text-sm">MEERAV Namkeens & Sweets</span>
+          <span>&copy; 2026 All Rights Reserved.</span>
+        </div>
+        <div class="flex items-center gap-6 text-gray-400">
+          <a href="#" class="hover:text-[#FBBF24] transition">Privacy Policy</a>
+          <a href="#" class="hover:text-[#FBBF24] transition">FSSAI Certified</a>
+          <a href="admin.html" class="hover:text-[#FBBF24] transition font-bold text-[#E59819]">
+            <i class="fas fa-lock text-xs mr-1"></i> Admin Portal
+          </a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 4. LIVE GPS ORDER TRACKING VIEW                                           -->
+  <!-- ========================================================================= -->
+  <section id="live-tracking-view" class="hidden animate-fade-in py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-[#4A0713] text-[#FBBF24] rounded-full text-xs font-bold mb-2 border border-[#E59819]">
+          <i class="fas fa-location-dot text-[#E59819]"></i> Live Bikaner Dispatch Route
+        </div>
+        <h2 class="text-3xl font-black text-[#32040C]">Real-Time Delivery Tracker</h2>
+        <p class="text-xs text-gray-600 font-medium">Live GPS tracking of your Meerav fresh namkeens delivery van en route to your address</p>
+      </div>
+
+      <button onclick="returnToStorefront()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
+        <i class="fas fa-arrow-left"></i> Return to Storefront
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+      
+      <!-- Leaflet Map Frame -->
+      <div class="lg:col-span-8 bg-white p-5 rounded-3xl border border-amber-200/80 shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
+            <span class="font-black text-xs text-gray-800 uppercase tracking-wider">Live Delivery Van Position</span>
+          </div>
+          <div class="text-xs font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full border border-amber-300">
+            ETA: <strong id="live-eta-countdown" class="text-[#4A0713] font-black">18 mins</strong>
+          </div>
+        </div>
+
+        <div id="live-tracking-map-container"></div>
+
+        <div class="mt-4 flex flex-wrap items-center justify-between text-xs text-gray-500 pt-3 border-t">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-[#4A0713] inline-block"></span>
+            <span>Origin: Meerav Bikaner Central Kitchen Hub</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span>
+            <span>Driver: Ramesh Bishnoi (Express Van)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span>
+            <span>Destination: Customer Address</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Details Card -->
+      <div class="lg:col-span-4 bg-white p-6 rounded-3xl border border-amber-200/80 shadow-md flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b pb-3 mb-4">
+            <div>
+              <span class="text-[10px] font-bold text-gray-400 uppercase">Tracking Order</span>
+              <h3 id="track-order-id" class="text-xl font-black text-[#4A0713]">#MEERAV-8801</h3>
+            </div>
+            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">Dispatched</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <span class="text-gray-400 block text-[11px]">Recipient Name:</span>
+              <strong id="track-customer-name" class="text-gray-900 text-sm">Pooja Sharma</strong>
+            </div>
+
+            <div>
+              <span class="text-gray-400 block text-[11px]">Delivery Address:</span>
+              <p id="track-customer-address" class="text-gray-700 text-[11px] leading-relaxed">Flat 402, Sea Breeze Apts, Bandra West, Mumbai</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 p-3 bg-amber-50 rounded-xl border border-amber-200">
+              <div>
+                <span class="text-gray-500 text-[10px] block">Courier Partner</span>
+                <strong>DTDC Express</strong>
+              </div>
+              <div>
+                <span class="text-gray-500 text-[10px] block">AWB No.</span>
+                <strong id="track-courier-awb" class="text-blue-700">88492019</strong>
+              </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-2">
+              <span class="text-gray-500">Order Amount:</span>
+              <strong id="track-order-amount" class="text-lg font-black text-emerald-700">₹467</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t space-y-2">
+          <button onclick="openOrderHelpBot(storeState.activeTrackingOrder?.id)" class="w-full py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] border border-[#E59819] rounded-xl text-xs font-black flex items-center justify-center gap-2 transition shadow-sm">
+            <i class="fas fa-robot text-[#E59819]"></i> Need Help with this Order?
+          </button>
+          <button onclick="previewEmailNotification(storeState.activeTrackingOrder?.id)" class="w-full py-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition">
+            <i class="fas fa-file-invoice text-blue-600"></i> View Tax Invoice
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================= -->
+  <!-- 5. PRODUCT DETAIL INSPECTION MODAL                                        -->
+  <!-- ========================================================================= -->
+  <div id="product-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col border border-amber-200">
+      
+      <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div class="flex items-center gap-2">
+          <img src="assets/images/meerav_logo.png" alt="Logo" class="h-8 w-auto object-contain" />
+          <span class="text-xs font-black text-[#FBBF24]">Bikaneri Recipe & Ingredients</span>
+        </div>
+        <button onclick="closeProductDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-times text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-5 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+          <div class="sm:col-span-5 relative h-60 rounded-2xl overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FDF1D0] flex items-center justify-center p-2 border border-amber-200">
+            <img id="pdetail-image" src="" alt="Product" class="max-h-full w-auto object-contain filter drop-shadow-md" />
+            <span id="pdetail-tag" class="absolute top-2.5 left-2.5 px-2.5 py-1 bg-[#4A0713] text-[#FBBF24] font-black text-[10px] rounded-full border border-[#E59819]"></span>
+          </div>
+
+          <div class="sm:col-span-7 space-y-2.5">
+            <h3 id="pdetail-name" class="text-xl font-black text-[#4A0713]"></h3>
+            <div class="flex items-center gap-2 text-amber-600 font-bold">
+              <i class="fas fa-star text-amber-500"></i>
+              <span id="pdetail-rating"></span>
+            </div>
+            <div class="p-2.5 bg-amber-50 rounded-xl border border-amber-200">
+              <span class="text-gray-500 text-[10px] block">Flavor Profile & Spiciness:</span>
+              <strong id="pdetail-spice" class="text-[#4A0713] font-bold"></strong>
+            </div>
+            <p id="pdetail-desc" class="text-gray-600 text-xs leading-relaxed font-medium"></p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t">
+          <div>
+            <h4 class="font-bold text-gray-900 mb-1">🌿 Pure Ingredients:</h4>
+            <p id="pdetail-ingredients" class="text-[11px] text-gray-500 leading-relaxed"></p>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-gray-900 mb-1">📊 Nutrition (Per 100g):</h4>
+            <div class="grid grid-cols-4 gap-1 text-center text-[10px]">
+              <div class="bg-gray-50 p-2 rounded-lg"><span class="block text-gray-400">Energy</span><strong id="pdetail-energy"></strong></div>
+              <div class="bg-gray-50 p-2 rounded-lg"><span class="block text-gray-400">Protein</span><strong id="pdetail-protein"></strong></div>
+              <div class="bg-gray-50 p-2 rounded-lg"><span class="block text-gray-400">Fat</span><strong id="pdetail-fat"></strong></div>
+              <div class="bg-gray-50 p-2 rounded-lg"><span class="block text-gray-400">Carbs</span><strong id="pdetail-carbs"></strong></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t">
+          <span class="font-bold text-gray-800 block mb-2">Select Pack Net Weight:</span>
+          <div id="pdetail-variants" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="pt-4 border-t flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-gray-400 block font-bold">Unit Price</span>
+            <div class="flex items-baseline gap-2">
+              <span id="pdetail-price" class="text-2xl font-black text-[#4A0713]"></span>
+              <span id="pdetail-original-price" class="text-xs text-gray-400 line-through"></span>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <button id="pdetail-add-cart-btn" class="px-7 py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition shadow-md flex items-center gap-2 border border-[#E59819] active:scale-98">
+              <i class="fas fa-shopping-bag"></i> Add to Cart
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 6. MULTI-STEP CHECKOUT WITH LEAFLET LIVE MAP PICKER                       -->
+  <!-- ========================================================================= -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
+      
+      <div class="p-5 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div>
+          <h3 class="font-black text-lg text-[#FBBF24]">Delivery & Location Checkout</h3>
+          <p class="text-xs text-amber-200/80">Pin your exact address on the map for direct dispatch from Bikaner</p>
+        </div>
+        <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-times text-sm"></i>
+        </button>
+      </div>
+
+      <form onsubmit="proceedToPaymentGateway(event)" class="p-6 overflow-y-auto space-y-4 text-xs">
+        
+        <div>
+          <h4 class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+            <i class="fas fa-user text-[#E59819]"></i> 1. Contact Information
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-gray-600 mb-1 font-semibold">Full Name *</label>
+              <input type="text" id="checkout-name" required placeholder="e.g. Pooja Sharma" 
+                class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
+            </div>
+            <div>
+              <label class="block text-gray-600 mb-1 font-semibold">WhatsApp Mobile No. *</label>
+              <input type="tel" id="checkout-phone" required placeholder="e.g. +91 98201 44521" 
+                class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-gray-600 mb-1 font-semibold">Email Address (For Tax Invoice)</label>
+              <input type="email" id="checkout-email" placeholder="e.g. pooja.sharma@example.com" 
+                class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-gray-100">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="font-bold text-gray-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fas fa-location-dot text-[#E59819]"></i> 2. Delivery Address & GPS Pin
+            </h4>
+            <button type="button" onclick="detectUserGPSLocation()" class="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-300 rounded-lg text-[11px] font-bold hover:bg-emerald-100 transition flex items-center gap-1">
+              <i class="fas fa-crosshairs"></i> Detect GPS Location
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <textarea id="checkout-address" required rows="2" placeholder="e.g. Flat 402, Sea Breeze Apts, Bandra West, Mumbai" 
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none"></textarea>
+
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="checkout-pincode" required placeholder="Pincode (e.g. 400050)" 
+                class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
+              <div id="checkout-geo-display" class="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-[10px] text-gray-500 flex items-center">
+                Drag map pin to adjust
+              </div>
+            </div>
+
+            <div id="checkout-map-picker"></div>
+          </div>
+        </div>
+
+        <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 space-y-2">
+          <span class="font-bold text-[#4A0713] block text-xs">🔔 Order Updates Preference</span>
+          <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+            <input type="checkbox" id="opt-whatsapp" checked class="w-4 h-4 text-emerald-600 rounded" />
+            <span>Receive live <strong>WhatsApp</strong> tracking & dispatch updates</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer text-gray-700">
+            <input type="checkbox" id="opt-email" checked class="w-4 h-4 text-blue-600 rounded" />
+            <span>Receive printable <strong>Email Invoice</strong></span>
+          </label>
+        </div>
+
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] text-gray-400 block">Payable Amount (<span id="checkout-items-count"></span>)</span>
+            <span id="checkout-grand-total" class="text-xl font-black text-[#4A0713]">₹0</span>
+          </div>
+          <button type="submit" class="px-6 py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
+            Proceed to Payment <i class="fas fa-arrow-right ml-1"></i>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 7. INTERACTIVE PAYMENT GATEWAY MODAL                                       -->
+  <!-- ========================================================================= -->
+  <div id="payment-gateway-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col">
+      
+      <div class="p-4 bg-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-shield-check text-emerald-400 text-lg"></i>
+          <div>
+            <h3 class="font-black text-sm text-[#FBBF24]">Meerav Secure Payment Gateway</h3>
+            <span class="text-[10px] text-gray-300">256-Bit Encrypted Simulation</span>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] text-gray-300 block">Total Payable:</span>
+          <span id="payment-amount-display" class="font-black text-[#FBBF24] text-sm">₹0</span>
+        </div>
+      </div>
+
+      <div class="flex border-b border-gray-200 bg-gray-50 text-xs font-bold">
+        <button type="button" id="payment-btn-upi" onclick="selectPaymentTab('upi')" class="payment-tab-btn flex-1 py-3 text-center border-r transition">
+          <i class="fab fa-google-pay mr-1"></i> UPI QR
+        </button>
+        <button type="button" id="payment-btn-card" onclick="selectPaymentTab('card')" class="payment-tab-btn flex-1 py-3 text-center border-r transition">
+          <i class="fas fa-credit-card mr-1"></i> Card
+        </button>
+        <button type="button" id="payment-btn-netbanking" onclick="selectPaymentTab('netbanking')" class="payment-tab-btn flex-1 py-3 text-center border-r transition">
+          <i class="fas fa-building-columns mr-1"></i> NetBanking
+        </button>
+        <button type="button" id="payment-btn-cod" onclick="selectPaymentTab('cod')" class="payment-tab-btn flex-1 py-3 text-center transition">
+          <i class="fas fa-hand-holding-dollar mr-1"></i> COD
+        </button>
+      </div>
+
+      <div class="p-6 text-xs">
+        
+        <!-- UPI Tab -->
+        <div id="payment-tab-upi" class="payment-tab-content text-center space-y-4">
+          <div class="w-48 h-48 mx-auto bg-white p-3 rounded-2xl border-2 border-dashed border-[#E59819] shadow-md qr-scanner-box flex flex-col items-center justify-center">
+            <div class="qr-scan-bar"></div>
+            <svg class="w-36 h-36" viewBox="0 0 100 100" fill="currentColor">
+              <path d="M0,0 h30 v30 h-30 z M10,10 h10 v10 h-10 z M70,0 h30 v30 h-30 z M80,10 h10 v10 h-10 z M0,70 h30 v30 h-30 z M10,80 h10 v10 h-10 z M40,10 h10 v10 h-10 z M60,10 h10 v10 h-10 z M40,40 h20 v20 h-20 z M70,40 h10 v10 h-10 z M80,50 h20 v20 h-20 z M40,70 h10 v30 h-10 z M60,80 h30 v10 h-30 z" fill="#4A0713"/>
+            </svg>
+            <span class="text-[9px] font-bold text-gray-500 mt-1">UPI: meeravnamkeens@upi</span>
+          </div>
+
+          <div>
+            <h4 class="font-black text-gray-900 text-sm">Scan with Any UPI App</h4>
+            <p class="text-gray-500 text-[11px]">GPay, PhonePe, Paytm, BHIM, or CRED</p>
+          </div>
+
+          <button onclick="completeOrderWithPayment('UPI (QR Auto-Verified)')" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold rounded-2xl shadow-lg transition">
+            <i class="fas fa-circle-check mr-1.5"></i> Simulate Successful UPI Payment
+          </button>
+        </div>
+
+        <!-- Card Tab -->
+        <div id="payment-tab-card" class="payment-tab-content hidden space-y-3">
+          <div>
+            <label class="block text-gray-600 font-semibold mb-1">Card Number</label>
+            <input type="text" placeholder="4111 2222 3333 4444" value="4111 5590 8821 9021" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-gray-600 font-semibold mb-1">Expiry (MM/YY)</label>
+              <input type="text" placeholder="12/28" value="08/29" class="w-full px-3 py-2 border rounded-xl" />
+            </div>
+            <div>
+              <label class="block text-gray-600 font-semibold mb-1">CVV</label>
+              <input type="password" placeholder="123" value="882" class="w-full px-3 py-2 border rounded-xl" />
+            </div>
+          </div>
+          <button onclick="completeOrderWithPayment('Credit / Debit Card')" class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-2xl shadow-md transition mt-2 border border-[#E59819]">
+            Pay & Confirm Order
+          </button>
+        </div>
+
+        <!-- NetBanking Tab -->
+        <div id="payment-tab-netbanking" class="payment-tab-content hidden space-y-3">
+          <label class="block text-gray-600 font-semibold">Select Your Bank:</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="completeOrderWithPayment('NetBanking (HDFC Bank)')" class="p-2.5 border rounded-xl text-left hover:bg-amber-50 font-bold">HDFC Bank</button>
+            <button onclick="completeOrderWithPayment('NetBanking (ICICI Bank)')" class="p-2.5 border rounded-xl text-left hover:bg-amber-50 font-bold">ICICI Bank</button>
+            <button onclick="completeOrderWithPayment('NetBanking (SBI Bank)')" class="p-2.5 border rounded-xl text-left hover:bg-amber-50 font-bold">State Bank of India</button>
+            <button onclick="completeOrderWithPayment('NetBanking (Axis Bank)')" class="p-2.5 border rounded-xl text-left hover:bg-amber-50 font-bold">Axis Bank</button>
+          </div>
+        </div>
+
+        <!-- COD Tab -->
+        <div id="payment-tab-cod" class="payment-tab-content hidden space-y-3 text-center">
+          <div class="w-12 h-12 bg-amber-100 text-[#4A0713] rounded-full flex items-center justify-center text-xl mx-auto">
+            <i class="fas fa-money-bill-wave"></i>
+          </div>
+          <h4 class="font-black text-gray-900">Cash on Delivery (COD)</h4>
+          <p class="text-gray-500 text-[11px]">Pay in cash or scan delivery rider's QR code upon arrival.</p>
+          <button onclick="completeOrderWithPayment('Cash on Delivery (COD)')" class="w-full py-3.5 bg-gray-900 hover:bg-black text-white font-extrabold rounded-2xl shadow-md transition">
+            Confirm Cash on Delivery
+          </button>
+        </div>
+
+      </div>
+
+      <div class="p-3 bg-gray-50 border-t text-center">
+        <button onclick="closePaymentGatewayModal()" class="text-xs text-gray-500 hover:text-gray-800">
+          Cancel & Edit Address
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 8. SLIDE-OVER CART DRAWER                                                 -->
+  <!-- ========================================================================= -->
+  <div id="cart-overlay" onclick="closeCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
+
+  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
+      <div class="flex items-center gap-2">
+        <i class="fas fa-shopping-bag text-[#FBBF24]"></i>
+        <h3 class="font-black text-[#FBBF24] text-base">Your Bikaneri Cart</h3>
+      </div>
+      <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
+
+    <div class="px-4 py-2.5 bg-amber-100/70 text-[#4A0713] text-xs flex items-center gap-2 border-b border-amber-200">
+      <i class="fas fa-truck-fast text-[#E59819]"></i>
+      <span>Orders above ₹499 get <strong>FREE Express Delivery</strong>!</span>
+    </div>
+
+    <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+
+    <div id="cart-summary-container" class="p-4 border-t border-gray-100 bg-gray-50/50 space-y-3">
+      <div class="flex gap-2">
+        <input type="text" id="coupon-input" placeholder="Coupon (e.g. MEERAV10)" 
+          class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs uppercase font-bold focus:outline-none focus:ring-2 focus:ring-[#E59819]" />
+        <button onclick="applyCoupon()" class="px-4 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-bold rounded-xl transition">
+          Apply
+        </button>
+      </div>
+
+      <div class="space-y-1.5 text-xs text-gray-600 pt-2 border-t border-gray-200/60">
+        <div class="flex justify-between">
+          <span>Subtotal</span>
+          <span id="cart-subtotal" class="font-bold text-gray-800">₹0</span>
+        </div>
+        <div class="flex justify-between text-emerald-700 font-bold">
+          <span>Coupon Discount</span>
+          <span id="cart-discount">₹0</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Shipping Charge</span>
+          <span id="cart-shipping" class="font-bold text-gray-800">₹50</span>
+        </div>
+        <div class="flex justify-between text-sm font-black text-[#4A0713] pt-2 border-t">
+          <span>Total Payable</span>
+          <span id="cart-grandtotal" class="text-base text-[#4A0713]">₹0</span>
+        </div>
+      </div>
+
+      <button onclick="openCheckoutModal()" 
+        class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-sm rounded-2xl shadow-lg shadow-[#4A0713]/30 flex items-center justify-center gap-2 transition transform active:scale-98 border border-[#E59819]">
+        <span>Proceed to Checkout</span>
+        <i class="fas fa-arrow-right text-xs"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 9. CUSTOMER AUTH MODAL                                                    -->
+  <!-- ========================================================================= -->
+  <div id="customer-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
+      <div class="flex justify-end mb-1">
+        <button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <div id="customer-auth-content"></div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 10. PREVIEW NOTIFICATION MODALS (WHATSAPP & EMAIL)                        -->
+  <!-- ========================================================================= -->
+  <div id="whatsapp-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+      <div class="whatsapp-header p-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <img src="assets/images/meerav_logo.png" alt="Logo" class="w-8 h-8 object-contain bg-white rounded-full p-0.5" />
+          <div>
+            <div class="font-bold text-xs">MEERAV Official</div>
+            <div class="text-[10px] text-emerald-200">Customer: <span id="wa-preview-name"></span></div>
+          </div>
+        </div>
+        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="whatsapp-chat-pattern p-4 min-h-[300px] flex flex-col justify-end">
+        <div class="whatsapp-msg-bubble in shadow-md">
+          <div id="wa-preview-body" class="text-xs text-gray-800 leading-relaxed"></div>
+          <div class="text-right text-[10px] text-gray-400 mt-1.5 flex items-center justify-end gap-1">
+            <span id="wa-preview-time"></span>
+            <i class="fas fa-check-double text-blue-500"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gray-100 text-center border-t">
+        <button onclick="closeWhatsAppPreviewModal()" class="px-4 py-1.5 bg-gray-800 text-white rounded-lg text-xs font-bold">
+          Close Preview
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="email-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
+      <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
+        <h4 class="font-bold text-xs"><i class="fas fa-envelope mr-1.5"></i> Tax Invoice & Receipt</h4>
+        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-3 text-xs flex-1">
+        <div class="bg-gray-50 p-3 rounded-xl border space-y-1 text-[11px]">
+          <div><strong>Subject:</strong> <span id="email-preview-subject"></span></div>
+          <div><strong>To:</strong> <span id="email-preview-to"></span></div>
+          <div><strong>Date:</strong> <span id="email-preview-date"></span></div>
+        </div>
+
+        <div class="p-4 border rounded-2xl space-y-3">
+          <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="font-black text-[#4A0713] text-base">MEERAV NAMKEENS</h3>
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">OFFICIAL RECEIPT</span>
+          </div>
+
+          <div class="text-[11px] text-gray-600">
+            <strong>Customer:</strong> <span id="email-preview-customer-name"></span><br/>
+            <strong>Address:</strong> <span id="email-preview-address"></span><br/>
+            <strong>Order ID:</strong> #<span id="email-preview-order-id"></span> | Tracking: <span id="email-preview-tracking" class="text-blue-600 font-bold"></span>
+          </div>
+
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b text-gray-400 text-[10px]">
+                <th class="py-1.5">Item</th>
+                <th class="py-1.5 text-center">Qty</th>
+                <th class="py-1.5 text-right">Price</th>
+              </tr>
+            </thead>
+            <tbody id="email-preview-items"></tbody>
+          </table>
+
+          <div class="flex justify-between items-center pt-2 font-black text-sm text-[#4A0713] border-t">
+            <span>Grand Total:</span>
+            <span id="email-preview-total" class="text-[#4A0713]"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gray-50 border-t text-right">
+        <button onclick="closeEmailPreviewModal()" class="px-4 py-2 bg-gray-800 text-white rounded-xl text-xs font-bold">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 11. MOBILE STICKY BOTTOM NAVIGATION BAR                                   -->
+  <!-- ========================================================================= -->
+  <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
+    <a href="index.html" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
+      <i class="fas fa-home text-base"></i>
+      <span class="text-[10px] font-black">Home</span>
+    </a>
+    <a href="category.html" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+      <i class="fas fa-cookie-bite text-base text-[#E59819]"></i>
+      <span class="text-[10px] font-bold">Categories</span>
+    </a>
+    <button onclick="openCartDrawer()" class="relative flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+      <i class="fas fa-shopping-bag text-base"></i>
+      <span class="cart-badge-count hidden absolute -top-1 right-2 w-4 h-4 bg-[#4A0713] text-[#FBBF24] text-[9px] font-black rounded-full flex items-center justify-center">0</span>
+      <span class="text-[10px] font-bold">Cart</span>
+    </button>
+    <button onclick="openOrderTrackingView()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+      <i class="fas fa-map-location-dot text-base text-blue-600"></i>
+      <span class="text-[10px] font-bold">Tracking</span>
+    </button>
+    <button onclick="openCustomerAuthModal()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+      <i class="far fa-user text-base"></i>
+      <span class="text-[10px] font-bold">Account</span>
+    </button>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

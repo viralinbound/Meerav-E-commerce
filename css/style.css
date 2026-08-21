@@ -1,0 +1,310 @@
+/* ==========================================================================
+   MEERAV NAMKEENS - ROYAL BIKANERI BRAND STYLESHEET
+   Matching Authentic Packaging & Logo: Deep Maroon, Royal Gold & Sandstone Cream
+   ========================================================================== */
+
+:root {
+  --meerav-maroon: #4A0713;
+  --meerav-maroon-dark: #32040C;
+  --meerav-maroon-light: #670E1E;
+  --meerav-gold: #E59819;
+  --meerav-gold-light: #FBBF24;
+  --meerav-gold-dark: #B45309;
+  --meerav-cream: #FFF9ED;
+  --meerav-cream-dark: #FDF1D0;
+  --meerav-text-dark: #1F1517;
+  --meerav-text-muted: #6B5E61;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--meerav-cream);
+  color: var(--meerav-text-dark);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #fdf5e6;
+}
+::-webkit-scrollbar-thumb {
+  background: #d49a37;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b57a22;
+}
+
+/* Royal Pattern Backgrounds */
+.meerav-hero-pattern {
+  background-color: var(--meerav-cream);
+  background-image: radial-gradient(#e59819 0.75px, transparent 0.75px), radial-gradient(#4a0713 0.75px, #fff9ed 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.meerav-maroon-bg {
+  background: linear-gradient(135deg, #4A0713 0%, #32040C 100%);
+}
+
+.meerav-gold-gradient {
+  background: linear-gradient(135deg, #FBBF24 0%, #E59819 50%, #B45309 100%);
+}
+
+/* Royal Arch Badge Styling */
+.royal-arch-shape {
+  border-radius: 20px 20px 14px 14px;
+  position: relative;
+}
+
+/* Product Card - Royal Packaging Look */
+.product-card {
+  transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(229, 152, 25, 0.25);
+  background: #FFFFFF;
+  border-radius: 24px;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 35px -8px rgba(74, 7, 19, 0.18);
+  border-color: rgba(229, 152, 25, 0.6);
+}
+
+/* Product Image Frame */
+.product-pack-frame {
+  position: relative;
+  height: 240px;
+  background: radial-gradient(circle at center, #FFFDF8 0%, #FDF1D0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(229, 152, 25, 0.2);
+}
+
+.product-pack-frame img {
+  max-height: 92%;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 15px rgba(74, 7, 19, 0.18));
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .product-pack-frame img {
+  transform: scale(1.06);
+}
+
+/* 100% Veg Symbol */
+.veg-indicator {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #16A34A;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.veg-indicator-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #16A34A;
+  border-radius: 50%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floatPack {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes scanLine {
+  0% { top: 0; }
+  50% { top: 100%; }
+  100% { top: 0; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.float-pack-animation {
+  animation: floatPack 4s ease-in-out infinite;
+}
+
+/* Interactive Maps */
+#checkout-map-picker {
+  height: 220px;
+  width: 100%;
+  border-radius: 18px;
+  z-index: 10;
+  border: 1px solid #E5E7EB;
+}
+
+#live-tracking-map-container {
+  height: 420px;
+  width: 100%;
+  border-radius: 24px;
+  z-index: 10;
+  border: 2px solid rgba(229, 152, 25, 0.4);
+}
+
+/* WhatsApp Simulator Frame */
+.whatsapp-phone-frame {
+  width: 100%;
+  max-width: 380px;
+  background-color: #EFEAE2;
+  border-radius: 32px;
+  border: 9px solid #1f2937;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35);
+}
+
+.whatsapp-header {
+  background-color: #075E54;
+  color: white;
+}
+
+.whatsapp-chat-pattern {
+  background-color: #E5DDD5;
+  background-image: radial-gradient(#d1c7bc 1.2px, transparent 1.2px);
+  background-size: 16px 16px;
+  min-height: 380px;
+}
+
+.whatsapp-msg-bubble {
+  border-radius: 10px;
+  padding: 10px 14px;
+  max-width: 88%;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.14);
+}
+
+.whatsapp-msg-bubble.in {
+  background-color: #FFFFFF;
+  margin-right: auto;
+  border-top-left-radius: 0;
+}
+
+/* Email Client Frame */
+.email-client-frame {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.email-header-bar {
+  background: #F9FAFB;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 14px 20px;
+}
+
+.email-body-content {
+  padding: 24px;
+  background-color: #FFFFFF;
+}
+
+/* QR Scanner Bar */
+.qr-scanner-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.qr-scan-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #10B981;
+  box-shadow: 0 0 10px #10B981;
+  animation: scanLine 2.2s linear infinite;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  animation: fadeIn 0.25s ease-out;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Mobile Bottom Nav & Touch Optimizations */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+  .pb-mobile-nav {
+    padding-bottom: 84px !important;
+  }
+  
+  /* Touch target enlargement */
+  button, a {
+    touch-action: manipulation;
+  }
+
+  /* Chatbot on mobile as comfortable bottom sheet */
+  #meerav-chatbot-window {
+    width: 94vw !important;
+    right: 3vw !important;
+    bottom: 80px !important;
+    height: 75vh !important;
+    max-height: 520px !important;
+  }
+
+  /* Modals full width on mobile */
+  #checkout-modal > div,
+  #product-form-modal > div,
+  #payment-gateway-modal > div,
+  #category-form-modal > div {
+    max-height: 94vh !important;
+    width: 96vw !important;
+    border-radius: 20px !important;
+  }
+
+  /* Pouch frame responsive sizing */
+  .product-pack-frame {
+    height: 200px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+  .pb-mobile-nav {
+    padding-bottom: 0px !important;
+  }
+}

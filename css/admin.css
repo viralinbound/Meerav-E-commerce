@@ -1,0 +1,125 @@
+/* ==========================================================================
+   MEERAV NAMKEENS - ROYAL BIKANERI ADMIN COMMAND CENTER STYLES
+   Matching Authentic Brand Theme: Deep Maroon (#4A0713), Royal Gold (#E59819) & Sandstone Cream
+   ========================================================================== */
+
+:root {
+  --admin-maroon: #4A0713;
+  --admin-maroon-dark: #32040C;
+  --admin-maroon-night: #1F0307;
+  --admin-gold: #E59819;
+  --admin-gold-light: #FBBF24;
+  --admin-cream: #FFFDF8;
+  --admin-cream-dark: #FBF0D5;
+  --admin-card-bg: #FFFFFF;
+}
+
+body.admin-body {
+  background-color: #FDF9F2;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #1F1517;
+}
+
+/* Sidebar Styling */
+.admin-sidebar {
+  background: linear-gradient(180deg, #2A030A 0%, #170104 100%);
+  color: #FDF1D0;
+  box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(229, 152, 25, 0.35);
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #D1C5C7;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.admin-nav-item:hover {
+  background: rgba(229, 152, 25, 0.15);
+  color: #FBBF24;
+  border-color: rgba(229, 152, 25, 0.3);
+  transform: translateX(4px);
+}
+
+.admin-nav-item.active {
+  background: linear-gradient(135deg, #4A0713 0%, #670E1E 100%) !important;
+  color: #FBBF24 !important;
+  border: 1px solid #E59819 !important;
+  box-shadow: 0 8px 18px rgba(74, 7, 19, 0.4);
+}
+
+/* Luxury Metric Cards */
+.admin-stat-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(229, 152, 25, 0.25);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(74, 7, 19, 0.06);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.admin-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #E59819 0%, #FBBF24 50%, #B45309 100%);
+}
+
+.admin-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 35px -8px rgba(74, 7, 19, 0.12);
+  border-color: rgba(229, 152, 25, 0.6);
+}
+
+/* Table Card Frame */
+.admin-table-wrap {
+  background: #FFFFFF;
+  border-radius: 24px;
+  border: 1px solid rgba(229, 152, 25, 0.25);
+  box-shadow: 0 12px 30px -8px rgba(74, 7, 19, 0.07);
+  overflow: hidden;
+}
+
+.admin-table th {
+  background: #FFF9ED;
+  color: #4A0713;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 16px 20px;
+  border-bottom: 2px solid rgba(229, 152, 25, 0.3);
+}
+
+.admin-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F6EFE5;
+  font-size: 0.82rem;
+}
+
+.admin-table tr:hover td {
+  background-color: #FFFDF8;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeInAdmin 0.3s ease-out forwards;
+}
+
+@keyframes fadeInAdmin {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

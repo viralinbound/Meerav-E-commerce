@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="rasgullaBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF7"/>
+      <stop offset="45%" stop-color="#FBF0D5"/>
+      <stop offset="55%" stop-color="#4A0713"/>
+      <stop offset="100%" stop-color="#2D040B"/>
+    </linearGradient>
+    <linearGradient id="goldSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#E59819"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <filter id="packShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#32040C" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <rect x="15" y="15" width="370" height="570" rx="28" fill="url(#rasgullaBg)" stroke="url(#goldSheen)" stroke-width="4" filter="url(#packShadow)"/>
+  <path d="M 25 45 Q 40 30 55 45 Q 70 30 85 45 Q 100 30 115 45 Q 130 30 145 45 Q 160 30 175 45 Q 190 30 205 45 Q 220 30 235 45 Q 250 30 265 45 Q 280 30 295 45 Q 310 30 325 45 Q 340 30 355 45 Q 370 30 380 45" fill="none" stroke="#E59819" stroke-width="2.5"/>
+
+  <g transform="translate(35, 55)">
+    <path d="M 0 25 L 0 10 Q 0 0 15 0 L 25 0 Q 40 0 40 10 L 40 25 Z" fill="#4A0713" stroke="#E59819" stroke-width="1.5"/>
+    <text x="20" y="32" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="900" fill="#4A0713" text-anchor="middle">FROM THE HEART</text>
+    <text x="20" y="37" font-family="'Plus Jakarta Sans', sans-serif" font-size="4.5" font-weight="800" fill="#4A0713" text-anchor="middle">OF BIKANER</text>
+  </g>
+
+  <g transform="translate(335, 55)">
+    <rect x="0" y="0" width="26" height="26" rx="4" fill="#FFFFFF" stroke="#16A34A" stroke-width="2"/>
+    <circle cx="13" cy="13" r="6" fill="#16A34A"/>
+    <text x="13" y="33" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="800" fill="#16A34A" text-anchor="middle">100% VEG</text>
+  </g>
+
+  <g transform="translate(200, 115)">
+    <path d="M -85 30 C -85 -15 -45 -40 0 -40 C 45 -40 85 -15 85 30 C 85 45 -85 45 -85 30 Z" fill="#4A0713" stroke="url(#goldSheen)" stroke-width="3.5"/>
+    <text x="0" y="18" font-family="'Outfit', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="1.5" text-anchor="middle">meerav</text>
+    <text x="0" y="27" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="800" fill="#FBBF24" letter-spacing="3" text-anchor="middle">TRADITIONAL BIKANER</text>
+  </g>
+
+  <text x="200" y="182" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#4A0713" text-anchor="middle">An Authentic Bikaneri Taste</text>
+  <text x="200" y="218" font-family="'Outfit', sans-serif" font-size="26" font-weight="900" fill="#4A0713" letter-spacing="0.5" text-anchor="middle">BIKANERI RASGULLA</text>
+  <text x="200" y="235" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" font-weight="800" fill="#6B5E61" letter-spacing="1" text-anchor="middle">SPONGY CHHENA DIPPED IN CARDAMOM SYRUP</text>
+
+  <!-- Sweet Bowl Artwork -->
+  <g transform="translate(200, 390)">
+    <ellipse cx="0" cy="50" rx="140" ry="40" fill="#1A0205" opacity="0.6"/>
+    <!-- Brass Urli Bowl -->
+    <path d="M -130 10 Q 0 95 130 10 Q 90 -20 0 -20 Q -90 -20 -130 10 Z" fill="#F59E0B" stroke="#FBBF24" stroke-width="3"/>
+    <!-- Spongy White Rasgullas -->
+    <circle cx="-50" cy="-20" r="28" fill="#FFFDF5" stroke="#FDE68A" stroke-width="2"/>
+    <circle cx="50" cy="-20" r="28" fill="#FFFDF5" stroke="#FDE68A" stroke-width="2"/>
+    <circle cx="0" cy="-35" r="32" fill="#FFFFFF" stroke="#FDE68A" stroke-width="2"/>
+    <circle cx="-25" cy="5" r="26" fill="#FFFDF5" stroke="#FDE68A" stroke-width="2"/>
+    <circle cx="30" cy="5" r="26" fill="#FFFDF5" stroke="#FDE68A" stroke-width="2"/>
+    <!-- Saffron Strands & Pistachios -->
+    <path d="M -5 -35 Q 5 -42 10 -30" stroke="#DC2626" stroke-width="2" fill="none"/>
+    <path d="M -45 -18 Q -35 -25 -30 -15" stroke="#DC2626" stroke-width="1.8" fill="none"/>
+    <ellipse cx="2" cy="-28" rx="4" ry="2.5" fill="#16A34A"/>
+    <ellipse cx="45" cy="-20" rx="3.5" ry="2" fill="#16A34A"/>
+  </g>
+
+  <g transform="translate(200, 525)">
+    <rect x="-160" y="0" width="320" height="34" rx="10" fill="#FFFFFF" opacity="0.95" stroke="#E59819" stroke-width="1.5"/>
+    <text x="-80" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="900" fill="#4A0713" text-anchor="middle">PURE DESI COW MILK</text>
+    <line x1="0" y1="5" x2="0" y2="29" stroke="#E59819" stroke-width="1.5"/>
+    <text x="80" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="900" fill="#4A0713" text-anchor="middle">NET WT. 1 kg TIN</text>
+  </g>
+</svg>

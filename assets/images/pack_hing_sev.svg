@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="hingPackBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF7"/>
+      <stop offset="45%" stop-color="#FBF0D5"/>
+      <stop offset="55%" stop-color="#4A0713"/>
+      <stop offset="100%" stop-color="#2D040B"/>
+    </linearGradient>
+    <linearGradient id="goldSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#E59819"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <filter id="packShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#32040C" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Pouch Outline -->
+  <rect x="15" y="15" width="370" height="570" rx="28" fill="url(#hingPackBg)" stroke="url(#goldSheen)" stroke-width="4" filter="url(#packShadow)"/>
+  <path d="M 25 45 Q 40 30 55 45 Q 70 30 85 45 Q 100 30 115 45 Q 130 30 145 45 Q 160 30 175 45 Q 190 30 205 45 Q 220 30 235 45 Q 250 30 265 45 Q 280 30 295 45 Q 310 30 325 45 Q 340 30 355 45 Q 370 30 380 45" fill="none" stroke="#E59819" stroke-width="2.5"/>
+
+  <!-- Top Badges -->
+  <g transform="translate(35, 55)">
+    <path d="M 0 25 L 0 10 Q 0 0 15 0 L 25 0 Q 40 0 40 10 L 40 25 Z" fill="#4A0713" stroke="#E59819" stroke-width="1.5"/>
+    <text x="20" y="32" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="900" fill="#4A0713" text-anchor="middle">FROM THE HEART</text>
+    <text x="20" y="37" font-family="'Plus Jakarta Sans', sans-serif" font-size="4.5" font-weight="800" fill="#4A0713" text-anchor="middle">OF BIKANER</text>
+  </g>
+
+  <g transform="translate(335, 55)">
+    <rect x="0" y="0" width="26" height="26" rx="4" fill="#FFFFFF" stroke="#16A34A" stroke-width="2"/>
+    <circle cx="13" cy="13" r="6" fill="#16A34A"/>
+    <text x="13" y="33" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="800" fill="#16A34A" text-anchor="middle">100% VEG</text>
+  </g>
+
+  <!-- MEERAV Brand Arch Badge -->
+  <g transform="translate(200, 115)">
+    <path d="M -85 30 C -85 -15 -45 -40 0 -40 C 45 -40 85 -15 85 30 C 85 45 -85 45 -85 30 Z" fill="#4A0713" stroke="url(#goldSheen)" stroke-width="3.5"/>
+    <text x="0" y="18" font-family="'Outfit', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="1.5" text-anchor="middle">meerav</text>
+    <text x="0" y="27" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="800" fill="#FBBF24" letter-spacing="3" text-anchor="middle">TRADITIONAL BIKANER</text>
+  </g>
+
+  <text x="200" y="182" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#4A0713" text-anchor="middle">An Authentic Bikaneri Taste</text>
+  <text x="200" y="218" font-family="'Outfit', sans-serif" font-size="28" font-weight="900" fill="#4A0713" letter-spacing="0.5" text-anchor="middle">SHAHI HING SEV</text>
+  <text x="200" y="235" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" font-weight="800" fill="#6B5E61" letter-spacing="1" text-anchor="middle">INFUSED WITH ROASTED HING &amp; DESI SPICES</text>
+
+  <!-- Snack Bowl Illustration -->
+  <g transform="translate(200, 390)">
+    <ellipse cx="0" cy="50" rx="140" ry="40" fill="#1A0205" opacity="0.6"/>
+    <!-- Bowl -->
+    <path d="M -130 10 Q 0 95 130 10 Q 90 -20 0 -20 Q -90 -20 -130 10 Z" fill="#E59819" stroke="#FBBF24" stroke-width="3"/>
+    <!-- Sev Strands Artwork -->
+    <g stroke="#F59E0B" stroke-width="3" stroke-linecap="round">
+      <path d="M -90 -10 Q -60 -40 -30 -15 T 30 -30 T 80 -10"/>
+      <path d="M -80 -25 Q -40 -50 0 -25 T 60 -45 T 100 -20"/>
+      <path d="M -70 5 Q -30 -35 20 -5 T 70 -30"/>
+      <path d="M -50 -15 Q -10 -45 40 -15 T 90 -5"/>
+      <path d="M -100 -5 Q -50 -30 10 -20 T 60 -10"/>
+      <path d="M -60 -35 Q 0 -60 50 -30 T 95 -15"/>
+    </g>
+    <!-- Asafoetida Pods & Cumin Grains -->
+    <circle cx="-40" cy="-25" r="4.5" fill="#78350F"/>
+    <circle cx="25" cy="-35" r="4.5" fill="#78350F"/>
+    <circle cx="65" cy="-15" r="4.5" fill="#78350F"/>
+  </g>
+
+  <!-- Bottom Badges -->
+  <g transform="translate(200, 525)">
+    <rect x="-160" y="0" width="320" height="34" rx="10" fill="#FFFFFF" opacity="0.95" stroke="#E59819" stroke-width="1.5"/>
+    <text x="-80" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="900" fill="#4A0713" text-anchor="middle">PREPARED IN PURE OIL</text>
+    <line x1="0" y1="5" x2="0" y2="29" stroke="#E59819" stroke-width="1.5"/>
+    <text x="80" y="21" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="900" fill="#4A0713" text-anchor="middle">NET WT. 200 g</text>
+  </g>
+</svg>

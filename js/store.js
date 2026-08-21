@@ -1,0 +1,819 @@
+/**
+ * MEERAV NAMKEENS - CUSTOMER STOREFRONT CONTROLLER
+ * High Performance, Royal Bikaneri Packaging Theme with Cart, Leaflet GPS, Payments & Order History
+ */
+
+const storeState = {
+  customer: JSON.parse(localStorage.getItem('mira_customer_session')) || null,
+  selectedCategory: 'all',
+  selectedDietary: 'all',
+  searchQuery: '',
+  cart: [],
+  wishlist: [],
+  selectedVariants: {},
+  appliedCoupon: null,
+  products: JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products],
+  orders: JSON.parse(localStorage.getItem('mira_orders_db')) || [...MIRA_DATA.initialOrders],
+  activeTrackingOrder: null,
+  pendingCheckoutData: null,
+  activeProductDetail: null
+};
+
+// Global Toast Helper
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  const bgColor = type === 'success' ? 'bg-emerald-700' : type === 'error' ? 'bg-red-700' : 'bg-gray-900';
+  const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
+
+  toast.className = `toast flex items-center gap-2.5 px-4 py-3 rounded-2xl text-white text-xs font-bold ${bgColor} shadow-xl border border-white/20`;
+  toast.innerHTML = `<i class="fas ${icon} text-amber-300"></i><span>${message}</span>`;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+function saveOrdersToStorage() {
+  localStorage.setItem('mira_orders_db', JSON.stringify(storeState.orders));
+}
+
+// Initialize on Load
+document.addEventListener('DOMContentLoaded', () => {
+  initProductVariants();
+  renderHomeCategoryCards();
+  renderStoreCategories();
+  renderStoreDietaryFilters();
+  renderStoreProducts();
+  renderStoreCart();
+  updateStoreBadgeCounts();
+  updateCustomerHeaderBadge();
+  setupStoreSearch();
+
+  const savedOrderId = localStorage.getItem('mira_last_order_id');
+  if (savedOrderId) {
+    const found = storeState.orders.find(o => o.id === savedOrderId);
+    if (found) storeState.activeTrackingOrder = found;
+  }
+});
+
+/**
+ * Dynamic Home Category Cards with Live Product Counter Calculation
+ */
+function renderHomeCategoryCards() {
+  const container = document.getElementById('home-category-showcase');
+  const bannerCount = document.getElementById('home-total-products-count');
+  const bannerBtn = document.getElementById('home-total-products-btn');
+
+  const categories = JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories];
+  const products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
+
+  if (bannerCount) bannerCount.textContent = `Want to explore all ${products.length} authentic varieties?`;
+  if (bannerBtn) bannerBtn.textContent = `Explore All ${products.length} Products`;
+
+  if (!container) return;
+
+  const validCats = categories.filter(c => c.id !== 'all');
+
+  container.innerHTML = validCats.map(cat => {
+    const count = products.filter(p => p.category === cat.id).length;
+
+    return `
+      <a href="category.html?cat=${cat.id}" 
+        class="p-6 bg-white rounded-3xl border-2 border-amber-200 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block">
+        <div class="w-16 h-16 mx-auto mb-3.5 rounded-2xl bg-gradient-to-tr from-[#4A0713] to-[#670E1E] text-[#FBBF24] flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
+          <i class="${cat.icon || 'fas fa-cookie'}"></i>
+        </div>
+        <h4 class="font-black text-sm text-gray-900 group-hover:text-[#4A0713] mb-1">${cat.name}</h4>
+        <span class="text-[11px] text-amber-700 font-bold block mb-2">${count} Signature Varieties</span>
+        <span class="inline-flex items-center gap-1 text-[11px] font-black text-[#4A0713] group-hover:underline">
+          View Snacks &rarr;
+        </span>
+      </a>
+    `;
+  }).join('');
+}
+
+/**
+ * 1. PRODUCT VARIANTS
+ */
+function initProductVariants() {
+  storeState.products.forEach(p => {
+    storeState.selectedVariants[p.id] = 0;
+  });
+}
+
+function setProductVariant(productId, variantIdx) {
+  storeState.selectedVariants[productId] = variantIdx;
+  renderStoreProducts();
+  
+  if (storeState.activeProductDetail && storeState.activeProductDetail.id === productId) {
+    renderProductDetailModal(storeState.activeProductDetail);
+  }
+
+  const p = storeState.products.find(item => item.id === productId);
+  if (p) {
+    const v = p.variants[variantIdx];
+    showToast(`Selected ${p.name} (${v.weight}) - ₹${v.price}`, 'info');
+  }
+}
+
+/**
+ * 2. CATEGORIES & DIETARY FILTERING
+ */
+function renderStoreCategories() {
+  const container = document.getElementById('categories-container');
+  if (!container) return;
+
+  container.innerHTML = MIRA_DATA.categories.map(cat => `
+    <button onclick="filterCategory('${cat.id}')" 
+      class="flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 ${
+        storeState.selectedCategory === cat.id 
+          ? 'bg-[#4A0713] text-[#FBBF24] shadow-lg border border-[#E59819] transform scale-105' 
+          : 'bg-white text-gray-800 hover:bg-amber-50/80 border border-amber-200/80'
+      }">
+      <i class="${cat.icon} text-[#E59819]"></i>
+      <span>${cat.name}</span>
+    </button>
+  `).join('');
+}
+
+function renderStoreDietaryFilters() {
+  const container = document.getElementById('dietary-container');
+  if (!container) return;
+
+  const filters = ['all', ...MIRA_DATA.dietaryTags];
+  container.innerHTML = filters.map(tag => `
+    <button onclick="filterDietary('${tag}')" 
+      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+        storeState.selectedDietary === tag 
+          ? 'bg-[#4A0713] text-white shadow-sm' 
+          : 'bg-amber-100/50 text-[#4A0713] hover:bg-amber-100 border border-amber-300/60'
+      }">
+      ${tag === 'all' ? '✨ All Varieties' : tag}
+    </button>
+  `).join('');
+}
+
+function filterCategory(catId) {
+  storeState.selectedCategory = catId;
+  renderStoreCategories();
+  renderStoreProducts();
+}
+
+function filterDietary(tag) {
+  storeState.selectedDietary = tag;
+  renderStoreDietaryFilters();
+  renderStoreProducts();
+}
+
+function setupStoreSearch() {
+  const searchInput = document.getElementById('store-search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      storeState.searchQuery = e.target.value.toLowerCase().trim();
+      renderStoreProducts();
+    });
+  }
+}
+
+/**
+ * 3. PRODUCT CARDS WITH MEERAV PACKAGING PRESENTATION
+ */
+function renderStoreProducts() {
+  const container = document.getElementById('products-grid');
+  if (!container) return;
+
+  let filtered = storeState.products.filter(p => {
+    const matchCat = storeState.selectedCategory === 'all' || p.category === storeState.selectedCategory;
+    const matchDiet = storeState.selectedDietary === 'all' || p.dietary.some(d => d.toLowerCase().includes(storeState.selectedDietary.toLowerCase()));
+    const matchSearch = !storeState.searchQuery || 
+      p.name.toLowerCase().includes(storeState.searchQuery) ||
+      p.description.toLowerCase().includes(storeState.searchQuery) ||
+      p.dietary.some(d => d.toLowerCase().includes(storeState.searchQuery));
+    return matchCat && matchDiet && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full py-16 text-center">
+        <div class="w-20 h-20 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center text-[#4A0713] text-3xl">
+          <i class="fas fa-cookie-bite"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800">No Bikaneri Namkeens Found</h3>
+        <p class="text-gray-500 text-xs mt-1">Try resetting filters to explore our complete collection.</p>
+        <button onclick="filterCategory('all'); filterDietary('all');" class="mt-4 px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] rounded-xl text-xs font-bold hover:bg-[#32040C] shadow-md transition">
+          View All Namkeens
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const selectedIdx = storeState.selectedVariants[p.id] || 0;
+    const selectedVar = p.variants[selectedIdx] || p.variants[0];
+    const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
+
+    return `
+      <div class="product-card overflow-hidden flex flex-col justify-between relative group">
+        <!-- Packaging Visual Frame -->
+        <a href="product.html?id=${p.id}" class="product-pack-frame cursor-pointer block">
+          <img src="${p.image}" alt="${p.name}" class="group-hover:scale-108 transition-transform duration-500" />
+          
+          <!-- Top Badges -->
+          <div class="absolute top-3 left-3 flex items-center gap-1.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shadow-sm">
+              ${p.tag}
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#E59819] text-[#32040C] shadow-sm transition-transform duration-300">
+              ${selectedVar.weight}
+            </span>
+          </div>
+
+          <div class="absolute top-3 right-3 flex items-center gap-1.5">
+            <!-- 100% Veg Dot -->
+            <div class="veg-indicator bg-white shadow-sm" title="100% Pure Vegetarian">
+              <div class="veg-indicator-dot"></div>
+            </div>
+
+            <!-- Wishlist Button -->
+            <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');" class="w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-gray-600 hover:text-red-600 shadow-sm transition">
+              <i class="${storeState.wishlist.includes(p.id) ? 'fas fa-heart text-red-600' : 'far fa-heart'} text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Bottom Quality Pill -->
+          <div class="absolute bottom-2 left-3 right-3 flex justify-between items-center text-[10px] text-amber-900 font-bold bg-white/85 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-amber-200">
+            <span><i class="fas fa-droplet text-amber-600 mr-0.5"></i> Pure & Clean Oil</span>
+            <span class="text-emerald-700 font-black"><i class="fas fa-check-circle text-[9px]"></i> 100% Fresh</span>
+          </div>
+        </a>
+
+        <!-- Product Card Content -->
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <!-- Rating & Reviews -->
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-1 text-amber-600 text-xs font-extrabold">
+                <i class="fas fa-star text-amber-500 text-xs"></i>
+                <span>${p.rating}</span>
+                <span class="text-gray-400 font-medium text-[11px]">(${p.reviewsCount})</span>
+              </div>
+              <span class="text-[10px] font-extrabold text-[#78350F] bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                Bikaneri Recipe
+              </span>
+            </div>
+
+            <!-- Product Title & Description -->
+            <a href="product.html?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
+              ${p.name}
+            </a>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed">
+              ${p.description}
+            </p>
+
+            <!-- Weight Variant Selector -->
+            <div class="mb-3.5">
+              <span class="text-[10px] font-extrabold text-gray-400 block mb-1.5 uppercase tracking-wider">Select Pack Net Weight:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${p.variants.map((v, idx) => `
+                  <button onclick="setProductVariant('${p.id}', ${idx})" 
+                    class="px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
+                      idx === selectedIdx 
+                        ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm border border-[#E59819]' 
+                        : 'bg-amber-50/70 text-gray-700 hover:bg-amber-100 border border-amber-200'
+                    }">
+                    ${v.weight}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Price & Actions -->
+          <div class="pt-3 border-t border-amber-100">
+            <div class="flex items-baseline justify-between mb-3">
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-black text-[#4A0713]">₹${selectedVar.price}</span>
+                <span class="text-xs text-gray-400 line-through">₹${selectedVar.originalPrice}</span>
+                <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
+              </div>
+              <a href="product.html?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
+                <span>Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
+              </a>
+            </div>
+
+            <div>
+              <button onclick="addToCart('${p.id}', ${selectedIdx})" 
+                class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-black transition shadow-md hover:shadow-lg border border-[#E59819]/50 active:scale-98">
+                <i class="fas fa-shopping-bag text-xs"></i>
+                <span>Add to Cart</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openProductDetailModal(productId) {
+  const product = storeState.products.find(p => p.id === productId);
+  if (!product) return;
+
+  storeState.activeProductDetail = product;
+  renderProductDetailModal(product);
+  document.getElementById('product-detail-modal').classList.remove('hidden');
+}
+
+function closeProductDetailModal() {
+  document.getElementById('product-detail-modal').classList.add('hidden');
+  storeState.activeProductDetail = null;
+}
+
+function renderProductDetailModal(p) {
+  const selectedIdx = storeState.selectedVariants[p.id] || 0;
+  const selectedVar = p.variants[selectedIdx] || p.variants[0];
+
+  document.getElementById('pdetail-image').src = p.image;
+  document.getElementById('pdetail-tag').textContent = p.tag;
+  document.getElementById('pdetail-name').textContent = p.name;
+  document.getElementById('pdetail-rating').textContent = `${p.rating} (${p.reviewsCount} customer reviews)`;
+  document.getElementById('pdetail-spice').textContent = p.spiceLevel;
+  document.getElementById('pdetail-desc').textContent = p.description;
+  document.getElementById('pdetail-ingredients').textContent = p.ingredients;
+  document.getElementById('pdetail-price').textContent = `₹${selectedVar.price}`;
+  document.getElementById('pdetail-original-price').textContent = `₹${selectedVar.originalPrice}`;
+
+  document.getElementById('pdetail-energy').textContent = p.nutrition.energy;
+  document.getElementById('pdetail-protein').textContent = p.nutrition.protein;
+  document.getElementById('pdetail-fat').textContent = p.nutrition.fat;
+  document.getElementById('pdetail-carbs').textContent = p.nutrition.carbs;
+
+  const variantsContainer = document.getElementById('pdetail-variants');
+  variantsContainer.innerHTML = p.variants.map((v, idx) => `
+    <button onclick="setProductVariant('${p.id}', ${idx})" 
+      class="px-4 py-2 rounded-xl text-xs font-black border transition ${
+        idx === selectedIdx ? 'bg-[#4A0713] text-[#FBBF24] border-[#E59819] shadow-sm' : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-amber-50'
+      }">
+      ${v.weight} - ₹${v.price}
+    </button>
+  `).join('');
+
+  const btnCart = document.getElementById('pdetail-add-cart-btn');
+  if (btnCart) {
+    btnCart.onclick = () => {
+      addToCart(p.id, selectedIdx);
+      closeProductDetailModal();
+    };
+  }
+}
+
+/**
+ * 4. CART & PROMO CODE CONTROLLER
+ */
+function addToCart(productId, variantIndex = 0) {
+  const product = storeState.products.find(p => p.id === productId);
+  if (!product) return;
+
+  const variant = product.variants[variantIndex] || product.variants[0];
+  const cartItemId = `${productId}-${variant.weight}`;
+
+  const existingItem = storeState.cart.find(item => item.id === cartItemId);
+  if (existingItem) {
+    existingItem.qty += 1;
+  } else {
+    storeState.cart.push({
+      id: cartItemId,
+      productId: product.id,
+      name: product.name,
+      image: product.image,
+      weight: variant.weight,
+      price: variant.price,
+      originalPrice: variant.originalPrice,
+      qty: 1
+    });
+  }
+
+  showToast(`Added ${product.name} (${variant.weight}) to Cart!`, 'success');
+  renderStoreCart();
+  updateStoreBadgeCounts();
+  openCartDrawer();
+}
+
+function updateCartQty(cartItemId, change) {
+  const item = storeState.cart.find(i => i.id === cartItemId);
+  if (!item) return;
+
+  item.qty += change;
+  if (item.qty <= 0) {
+    storeState.cart = storeState.cart.filter(i => i.id !== cartItemId);
+    showToast('Item removed from cart', 'info');
+  }
+  renderStoreCart();
+  updateStoreBadgeCounts();
+}
+
+function removeFromCart(cartItemId) {
+  storeState.cart = storeState.cart.filter(i => i.id !== cartItemId);
+  renderStoreCart();
+  updateStoreBadgeCounts();
+  showToast('Item removed from cart', 'info');
+}
+
+function applyCoupon() {
+  const input = document.getElementById('coupon-input');
+  if (!input) return;
+  const code = input.value.trim().toUpperCase();
+
+  if (code === 'MIRA10' || code === 'MEERAV10') {
+    storeState.appliedCoupon = { code, discountPercent: 10 };
+    showToast(`Coupon ${code} applied! 10% Royal Discount saved 🎉`, 'success');
+  } else if (code === 'FREESHIP') {
+    storeState.appliedCoupon = { code: 'FREESHIP', freeShipping: true };
+    showToast('Free shipping coupon applied! 🚚', 'success');
+  } else {
+    showToast('Invalid coupon code. Try "MEERAV10" or "FREESHIP"', 'error');
+    return;
+  }
+  renderStoreCart();
+}
+
+function calculateCartTotals() {
+  const subtotal = storeState.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  let discount = 0;
+  let shipping = subtotal > 499 || subtotal === 0 ? 0 : 50;
+
+  if (storeState.appliedCoupon) {
+    if (storeState.appliedCoupon.discountPercent) {
+      discount = Math.round(subtotal * (storeState.appliedCoupon.discountPercent / 100));
+    }
+    if (storeState.appliedCoupon.freeShipping) {
+      shipping = 0;
+    }
+  }
+
+  const grandTotal = Math.max(0, subtotal - discount + shipping);
+  return { subtotal, discount, shipping, grandTotal };
+}
+
+function renderStoreCart() {
+  const container = document.getElementById('cart-items-container');
+  const summaryContainer = document.getElementById('cart-summary-container');
+  if (!container || !summaryContainer) return;
+
+  if (storeState.cart.length === 0) {
+    container.innerHTML = `
+      <div class="py-16 text-center text-gray-500">
+        <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 rounded-full flex items-center justify-center text-[#4A0713] text-2xl">
+          <i class="fas fa-shopping-basket"></i>
+        </div>
+        <p class="font-black text-gray-800 text-base">Your Cart is Empty</p>
+        <p class="text-xs text-gray-400 mt-1">Discover authentic Bikaneri namkeens & savory treats!</p>
+        <button onclick="closeCartDrawer()" class="mt-4 px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] text-xs font-bold rounded-xl hover:bg-[#32040C] shadow-md">
+          Start Shopping
+        </button>
+      </div>
+    `;
+    summaryContainer.classList.add('hidden');
+    return;
+  }
+
+  summaryContainer.classList.remove('hidden');
+
+  container.innerHTML = storeState.cart.map(item => `
+    <div class="flex items-center gap-3 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/70">
+      <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-contain bg-white p-1 border border-amber-200/60" />
+      <div class="flex-1 min-w-0">
+        <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
+        <div class="flex items-center gap-2 mt-0.5">
+          <span class="text-[11px] font-black text-[#4A0713] bg-amber-100 px-2 py-0.2 rounded-md">${item.weight}</span>
+          <span class="text-xs font-bold text-gray-900">₹${item.price}</span>
+        </div>
+        
+        <div class="flex items-center gap-2 mt-2">
+          <div class="flex items-center border border-amber-200 bg-white rounded-lg overflow-hidden">
+            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
+              <i class="fas fa-minus text-[9px]"></i>
+            </button>
+            <span class="w-7 text-center text-xs font-black text-gray-800">${item.qty}</span>
+            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
+              <i class="fas fa-plus text-[9px]"></i>
+            </button>
+          </div>
+          <span class="text-xs font-black text-[#4A0713] ml-auto">₹${item.price * item.qty}</span>
+        </div>
+      </div>
+      <button onclick="removeFromCart('${item.id}')" class="text-gray-400 hover:text-red-500 p-1.5 transition">
+        <i class="fas fa-trash-alt text-xs"></i>
+      </button>
+    </div>
+  `).join('');
+
+  const { subtotal, discount, shipping, grandTotal } = calculateCartTotals();
+  document.getElementById('cart-subtotal').textContent = `₹${subtotal}`;
+  document.getElementById('cart-discount').textContent = discount > 0 ? `-₹${discount}` : `₹0`;
+  document.getElementById('cart-shipping').textContent = shipping === 0 ? 'FREE' : `₹${shipping}`;
+  document.getElementById('cart-grandtotal').textContent = `₹${grandTotal}`;
+}
+
+function updateStoreBadgeCounts() {
+  const totalCount = storeState.cart.reduce((sum, item) => sum + item.qty, 0);
+  document.querySelectorAll('.cart-badge-count').forEach(badge => {
+    badge.textContent = totalCount;
+    badge.classList.toggle('hidden', totalCount === 0);
+  });
+
+  const wishlistCount = storeState.wishlist.length;
+  document.querySelectorAll('.wishlist-badge-count').forEach(badge => {
+    badge.textContent = wishlistCount;
+    badge.classList.toggle('hidden', wishlistCount === 0);
+  });
+}
+
+function toggleWishlist(productId) {
+  const index = storeState.wishlist.indexOf(productId);
+  if (index === -1) {
+    storeState.wishlist.push(productId);
+    showToast('Saved to your favorites! ❤️', 'success');
+  } else {
+    storeState.wishlist.splice(index, 1);
+    showToast('Removed from favorites', 'info');
+  }
+  updateStoreBadgeCounts();
+  renderStoreProducts();
+}
+
+function openCartDrawer() {
+  document.getElementById('cart-drawer').classList.remove('translate-x-full');
+  document.getElementById('cart-overlay').classList.remove('hidden');
+}
+
+function closeCartDrawer() {
+  document.getElementById('cart-drawer').classList.add('translate-x-full');
+  document.getElementById('cart-overlay').classList.add('hidden');
+}
+
+/**
+ * 5. MULTI-STEP CHECKOUT & LEAFLET MAP PICKER
+ */
+function openCheckoutModal() {
+  if (storeState.cart.length === 0) {
+    showToast('Your cart is empty!', 'error');
+    return;
+  }
+  closeCartDrawer();
+  const { grandTotal } = calculateCartTotals();
+  document.getElementById('checkout-grand-total').textContent = `₹${grandTotal}`;
+  document.getElementById('checkout-items-count').textContent = `${storeState.cart.reduce((s, i) => s + i.qty, 0)} Items`;
+  document.getElementById('checkout-modal').classList.remove('hidden');
+
+  fillCheckoutFormIfLoggedIn();
+
+  setTimeout(() => {
+    initAddressPickerMap();
+  }, 250);
+}
+
+function closeCheckoutModal() {
+  document.getElementById('checkout-modal').classList.add('hidden');
+}
+
+function proceedToPaymentGateway(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('checkout-name').value.trim();
+  const phone = document.getElementById('checkout-phone').value.trim();
+  const email = document.getElementById('checkout-email').value.trim();
+  const address = document.getElementById('checkout-address').value.trim();
+  const pincode = document.getElementById('checkout-pincode').value.trim();
+  const optWhatsApp = document.getElementById('opt-whatsapp')?.checked ?? true;
+  const optEmail = document.getElementById('opt-email')?.checked ?? true;
+
+  if (!name || !phone || !address || !pincode) {
+    showToast('Please fill in all required address fields', 'error');
+    return;
+  }
+
+  const { grandTotal } = calculateCartTotals();
+
+  storeState.pendingCheckoutData = {
+    name,
+    phone,
+    email: email || `${name.toLowerCase().replace(/\s+/g, '')}@example.com`,
+    address,
+    pincode,
+    lat: addressMarker ? addressMarker.getLatLng().lat : 19.0596,
+    lng: addressMarker ? addressMarker.getLatLng().lng : 72.8295,
+    optWhatsApp,
+    optEmail,
+    grandTotal
+  };
+
+  closeCheckoutModal();
+  openPaymentGatewayModal(grandTotal);
+}
+
+/**
+ * 6. PAYMENT GATEWAY SIMULATION
+ */
+function openPaymentGatewayModal(amount) {
+  const modal = document.getElementById('payment-gateway-modal');
+  if (!modal) return;
+
+  document.getElementById('payment-amount-display').textContent = `₹${amount}`;
+  modal.classList.remove('hidden');
+  selectPaymentTab('upi');
+}
+
+function closePaymentGatewayModal() {
+  document.getElementById('payment-gateway-modal').classList.add('hidden');
+}
+
+function selectPaymentTab(tabName) {
+  document.querySelectorAll('.payment-tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.payment-tab-btn').forEach(btn => {
+    btn.classList.remove('bg-[#4A0713]', 'text-[#FBBF24]');
+    btn.classList.add('bg-gray-100', 'text-gray-700');
+  });
+
+  const activeContent = document.getElementById(`payment-tab-${tabName}`);
+  const activeBtn = document.getElementById(`payment-btn-${tabName}`);
+
+  if (activeContent) activeContent.classList.remove('hidden');
+  if (activeBtn) {
+    activeBtn.classList.add('bg-[#4A0713]', 'text-[#FBBF24]');
+    activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+  }
+}
+
+function completeOrderWithPayment(paymentMethod) {
+  if (!storeState.pendingCheckoutData) {
+    showToast('Checkout session expired', 'error');
+    return;
+  }
+
+  const data = storeState.pendingCheckoutData;
+  const newOrderId = `MEERAV-${Math.floor(1000 + Math.random() * 9000)}`;
+  const orderDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+  const trackingNumber = `DTDC-${Math.floor(10000000 + Math.random() * 90000000)}`;
+
+  const newOrder = {
+    id: newOrderId,
+    customer: {
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      city: `Pincode: ${data.pincode}`,
+      address: data.address,
+      pincode: data.pincode,
+      lat: data.lat,
+      lng: data.lng
+    },
+    items: storeState.cart.map(item => ({
+      name: `${item.name} (${item.weight})`,
+      qty: item.qty,
+      price: item.price
+    })),
+    totalAmount: data.grandTotal,
+    paymentMethod,
+    paymentStatus: paymentMethod.includes('COD') ? 'Unpaid (COD)' : 'Paid',
+    orderStatus: 'Dispatched',
+    date: orderDate,
+    trackingNumber,
+    driver: {
+      name: "Ramesh Bishnoi",
+      phone: "+91 98700 11223",
+      vehicle: "Meerav Express Van (RJ-07-EA-4921)",
+      lat: MIRA_DATA.warehouseLocation.lat,
+      lng: MIRA_DATA.warehouseLocation.lng,
+      etaMinutes: 18
+    },
+    notifications: {
+      whatsappSent: data.optWhatsApp,
+      emailSent: data.optEmail
+    }
+  };
+
+  storeState.orders.unshift(newOrder);
+  saveOrdersToStorage();
+  localStorage.setItem('mira_last_order_id', newOrderId);
+
+  // Auto-link customer session if not logged in
+  if (!authState.customer) {
+    const autoUser = {
+      id: `usr-${Date.now()}`,
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      address: data.address,
+      pincode: data.pincode,
+      lat: data.lat,
+      lng: data.lng
+    };
+    authState.customer = autoUser;
+    localStorage.setItem('mira_customer_session', JSON.stringify(autoUser));
+    updateCustomerHeaderBadge();
+  }
+
+  storeState.cart = [];
+  storeState.appliedCoupon = null;
+  storeState.activeTrackingOrder = newOrder;
+
+  renderStoreCart();
+  updateStoreBadgeCounts();
+
+  closePaymentGatewayModal();
+  showToast('Payment Verified! Order Dispatched from Bikaner Hub 🎉', 'success');
+
+  openOrderTrackingView(newOrderId);
+}
+
+/**
+ * 7. LIVE TRACKING VIEW
+ */
+function openOrderTrackingView(orderId) {
+  const order = storeState.orders.find(o => o.id === orderId) || storeState.orders[0];
+  if (!order) {
+    showToast('No orders found to track', 'info');
+    return;
+  }
+
+  storeState.activeTrackingOrder = order;
+
+  document.getElementById('storefront-main-content').classList.add('hidden');
+  document.getElementById('live-tracking-view').classList.remove('hidden');
+
+  document.getElementById('track-order-id').textContent = `#${order.id}`;
+  document.getElementById('track-order-amount').textContent = `₹${order.totalAmount}`;
+  document.getElementById('track-customer-name').textContent = order.customer.name;
+  document.getElementById('track-customer-address').textContent = order.customer.address;
+  document.getElementById('track-courier-awb').textContent = order.trackingNumber;
+
+  initLiveOrderTrackingMap(order);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function returnToStorefront() {
+  document.getElementById('storefront-main-content').classList.remove('hidden');
+  document.getElementById('live-tracking-view').classList.add('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * 8. NOTIFICATION MODAL PREVIEWS
+ */
+function previewWhatsAppNotification(orderId) {
+  const order = storeState.orders.find(o => o.id === orderId) || storeState.orders[0];
+  if (!order) return;
+
+  const itemsList = order.items.map(i => `• ${i.name} x${i.qty} (₹${i.price * i.qty})`).join('\n');
+  const messageBody = `*Namaste ${order.customer.name}!* 🙏\n\nThank you for choosing *MEERAV Namkeens* (An Authentic Bikaneri Taste)! 🍿✨\n\n📦 *Order ID:* #${order.id}\n💰 *Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n📍 *Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n🚚 *Status:* ${order.orderStatus}\n🗺️ *Live GPS Tracking:* https://meerav.com/track/${order.id}\n\nPrepared fresh in pure & clean oil with authentic royal recipes.`;
+
+  document.getElementById('wa-preview-name').textContent = order.customer.name;
+  document.getElementById('wa-preview-body').innerHTML = messageBody.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+  document.getElementById('wa-preview-time').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  document.getElementById('whatsapp-preview-modal').classList.remove('hidden');
+}
+
+function closeWhatsAppPreviewModal() {
+  document.getElementById('whatsapp-preview-modal').classList.add('hidden');
+}
+
+function previewEmailNotification(orderId) {
+  const order = storeState.orders.find(o => o.id === orderId) || storeState.orders[0];
+  if (!order) return;
+
+  document.getElementById('email-preview-subject').textContent = `Order Confirmation #${order.id} - MEERAV Namkeens`;
+  document.getElementById('email-preview-to').textContent = `${order.customer.name} <${order.customer.email}>`;
+  document.getElementById('email-preview-order-id').textContent = order.id;
+  document.getElementById('email-preview-date').textContent = order.date;
+  document.getElementById('email-preview-customer-name').textContent = order.customer.name;
+  document.getElementById('email-preview-address').textContent = order.customer.address;
+  document.getElementById('email-preview-tracking').textContent = order.trackingNumber;
+  document.getElementById('email-preview-total').textContent = `₹${order.totalAmount}`;
+  
+  const itemsContainer = document.getElementById('email-preview-items');
+  itemsContainer.innerHTML = order.items.map(i => `
+    <tr class="border-b border-gray-100 text-xs">
+      <td class="py-2 text-gray-800 font-medium">${i.name}</td>
+      <td class="py-2 text-center text-gray-600">${i.qty}</td>
+      <td class="py-2 text-right text-gray-900 font-bold">₹${i.price * i.qty}</td>
+    </tr>
+  `).join('');
+
+  document.getElementById('email-preview-modal').classList.remove('hidden');
+}
+
+function closeEmailPreviewModal() {
+  document.getElementById('email-preview-modal').classList.add('hidden');
+}

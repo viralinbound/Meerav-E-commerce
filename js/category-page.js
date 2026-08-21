@@ -1,0 +1,278 @@
+/**
+ * MEERAV NAMKEENS - DEDICATED CATEGORY & PRODUCTS PAGE CONTROLLER
+ * Handles URL ?cat= parameter, Category Switch Tabs, Dietary Filters, Search & Product Rendering
+ */
+
+const categoryPageState = {
+  selectedCategory: 'all',
+  selectedDietary: 'all',
+  searchQuery: '',
+  categories: JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories],
+  products: JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products]
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCategoryPage();
+});
+
+function initCategoryPage() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialCat = urlParams.get('cat') || 'all';
+
+  categoryPageState.selectedCategory = initialCat;
+  categoryPageState.categories = JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories];
+  categoryPageState.products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
+
+  renderCategoryHeader();
+  renderCategoryTabs();
+  renderCategoryDietaryFilters();
+  renderCategoryProducts();
+}
+
+function renderCategoryHeader() {
+  const cat = categoryPageState.categories.find(c => c.id === categoryPageState.selectedCategory);
+
+  const titleEl = document.getElementById('current-category-title');
+  const descEl = document.getElementById('current-category-desc');
+  const breadcrumbEl = document.getElementById('current-category-breadcrumb');
+
+  if (categoryPageState.selectedCategory === 'all' || !cat) {
+    if (titleEl) titleEl.textContent = 'All Authentic Bikaneri Delicacies';
+    if (descEl) descEl.textContent = 'Explore our complete heritage collection of crispy Bhujia, Sev, Mathri, and Royal Gift Hampers.';
+    if (breadcrumbEl) breadcrumbEl.textContent = 'All Categories';
+    document.title = 'All Bikaneri Namkeens & Snacks - MEERAV';
+  } else {
+    if (titleEl) titleEl.textContent = cat.name;
+    if (descEl) descEl.textContent = cat.description || 'Authentic Bikaneri recipe prepared in 100% pure & clean cold-pressed oil with zero palm oil.';
+    if (breadcrumbEl) breadcrumbEl.textContent = cat.name;
+    document.title = `${cat.name} - MEERAV Bikaneri Namkeens`;
+  }
+}
+
+function renderCategoryTabs() {
+  const container = document.getElementById('category-tabs-container');
+  if (!container) return;
+
+  const validCategories = categoryPageState.categories.filter(c => c.id !== 'all');
+
+  const tabsHtml = [
+    `
+      <button onclick="selectCategory('all')" 
+        class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
+          categoryPageState.selectedCategory === 'all' 
+            ? 'bg-[#4A0713] text-[#FBBF24] shadow-md border border-[#E59819] transform scale-102' 
+            : 'bg-white text-gray-800 hover:bg-amber-50 border border-amber-200'
+        }">
+        <i class="fas fa-border-all text-[#E59819]"></i>
+        <span>✨ All Delicacies (${categoryPageState.products.length})</span>
+      </button>
+    `,
+    ...validCategories.map(cat => {
+      const count = categoryPageState.products.filter(p => p.category === cat.id).length;
+      return `
+        <button onclick="selectCategory('${cat.id}')" 
+          class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
+            categoryPageState.selectedCategory === cat.id 
+              ? 'bg-[#4A0713] text-[#FBBF24] shadow-md border border-[#E59819] transform scale-102' 
+              : 'bg-white text-gray-800 hover:bg-amber-50 border border-amber-200'
+          }">
+          <i class="${cat.icon || 'fas fa-cookie'} text-[#E59819]"></i>
+          <span>${cat.name} (${count})</span>
+        </button>
+      `;
+    })
+  ].join('');
+
+  container.innerHTML = tabsHtml;
+}
+
+function renderCategoryDietaryFilters() {
+  const container = document.getElementById('category-dietary-container');
+  if (!container) return;
+
+  const filters = ['all', ...MIRA_DATA.dietaryTags];
+  container.innerHTML = filters.map(tag => `
+    <button onclick="selectDietaryFilter('${tag}')" 
+      class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+        categoryPageState.selectedDietary === tag 
+          ? 'bg-[#4A0713] text-[#FBBF24] shadow-xs' 
+          : 'bg-amber-100/50 text-[#4A0713] hover:bg-amber-100 border border-amber-300/60'
+      }">
+      ${tag === 'all' ? '🌱 All Dietary Tags' : tag}
+    </button>
+  `).join('');
+}
+
+function selectCategory(catId) {
+  categoryPageState.selectedCategory = catId;
+  
+  // Update URL state without page reload
+  const newUrl = catId === 'all' ? 'category.html' : `category.html?cat=${catId}`;
+  window.history.pushState({ path: newUrl }, '', newUrl);
+
+  renderCategoryHeader();
+  renderCategoryTabs();
+  renderCategoryProducts();
+}
+
+function selectDietaryFilter(tag) {
+  categoryPageState.selectedDietary = tag;
+  renderCategoryDietaryFilters();
+  renderCategoryProducts();
+}
+
+function handleCategorySearch(query) {
+  categoryPageState.searchQuery = query.toLowerCase().trim();
+  renderCategoryProducts();
+}
+
+function renderCategoryProducts() {
+  const grid = document.getElementById('category-products-grid');
+  const emptyState = document.getElementById('category-empty-state');
+  const countBadge = document.getElementById('category-items-count');
+
+  if (!grid) return;
+
+  // Filter products by category, dietary, and search query
+  let filtered = categoryPageState.products;
+
+  if (categoryPageState.selectedCategory !== 'all') {
+    filtered = filtered.filter(p => p.category === categoryPageState.selectedCategory);
+  }
+
+  if (categoryPageState.selectedDietary !== 'all') {
+    filtered = filtered.filter(p => p.dietary && p.dietary.includes(categoryPageState.selectedDietary));
+  }
+
+  if (categoryPageState.searchQuery) {
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(categoryPageState.searchQuery) ||
+      p.description.toLowerCase().includes(categoryPageState.searchQuery) ||
+      p.ingredients.toLowerCase().includes(categoryPageState.searchQuery)
+    );
+  }
+
+  if (countBadge) {
+    countBadge.textContent = `Showing ${filtered.length} Items`;
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '';
+    if (emptyState) emptyState.classList.remove('hidden');
+    return;
+  }
+
+  if (emptyState) emptyState.classList.add('hidden');
+
+  grid.innerHTML = filtered.map(p => {
+    const selectedIdx = storeState.selectedVariants[p.id] || 0;
+    const selectedVar = p.variants[selectedIdx] || p.variants[0];
+    const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
+
+    return `
+      <div class="product-card overflow-hidden flex flex-col justify-between relative group">
+        <!-- Packaging Visual Frame Linking to Product Page -->
+        <a href="product.html?id=${p.id}" class="product-pack-frame cursor-pointer block">
+          <img src="${p.image}" alt="${p.name}" class="group-hover:scale-108 transition-transform duration-500" />
+          
+          <!-- Top Badges -->
+          <div class="absolute top-3 left-3 flex items-center gap-1.5">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shadow-sm">
+              ${p.tag}
+            </span>
+            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#E59819] text-[#32040C] shadow-sm">
+              ${selectedVar.weight}
+            </span>
+          </div>
+
+          <div class="absolute top-3 right-3 flex items-center gap-1.5">
+            <!-- 100% Veg Dot -->
+            <div class="veg-indicator bg-white shadow-sm" title="100% Pure Vegetarian">
+              <div class="veg-indicator-dot"></div>
+            </div>
+
+            <!-- Wishlist Button -->
+            <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');" class="w-8 h-8 rounded-full bg-white/95 flex items-center justify-center text-gray-600 hover:text-red-600 shadow-sm transition">
+              <i class="${storeState.wishlist.includes(p.id) ? 'fas fa-heart text-red-600' : 'far fa-heart'} text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Bottom Quality Pill -->
+          <div class="absolute bottom-2 left-3 right-3 flex justify-between items-center text-[10px] text-amber-900 font-bold bg-white/85 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-amber-200">
+            <span><i class="fas fa-droplet text-amber-600 mr-0.5"></i> Pure & Clean Oil</span>
+            <span class="text-emerald-700 font-black"><i class="fas fa-check-circle text-[9px]"></i> 100% Fresh</span>
+          </div>
+        </a>
+
+        <!-- Product Card Content -->
+        <div class="p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <!-- Rating & Reviews -->
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center gap-1 text-amber-600 text-xs font-extrabold">
+                <i class="fas fa-star text-amber-500 text-xs"></i>
+                <span>${p.rating}</span>
+                <span class="text-gray-400 font-medium text-[11px]">(${p.reviewsCount})</span>
+              </div>
+              <span class="text-[10px] font-extrabold text-[#78350F] bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                Bikaneri Recipe
+              </span>
+            </div>
+
+            <!-- Product Title & Description -->
+            <a href="product.html?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
+              ${p.name}
+            </a>
+            <p class="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed">
+              ${p.description}
+            </p>
+
+            <!-- Weight Variant Selector -->
+            <div class="mb-3.5">
+              <span class="text-[10px] font-extrabold text-gray-400 block mb-1.5 uppercase tracking-wider">Select Pack Net Weight:</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${p.variants.map((v, idx) => `
+                  <button onclick="setCategoryProductVariant('${p.id}', ${idx})" 
+                    class="px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
+                      idx === selectedIdx 
+                        ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm border border-[#E59819]' 
+                        : 'bg-amber-50/70 text-gray-700 hover:bg-amber-100 border border-amber-200'
+                    }">
+                    ${v.weight}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <!-- Price & Actions -->
+          <div class="pt-3 border-t border-amber-100">
+            <div class="flex items-baseline justify-between mb-3">
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-black text-[#4A0713]">₹${selectedVar.price}</span>
+                <span class="text-xs text-gray-400 line-through">₹${selectedVar.originalPrice}</span>
+                <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
+              </div>
+              <a href="product.html?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
+                <span>Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
+              </a>
+            </div>
+
+            <div>
+              <button onclick="addToCart('${p.id}', ${selectedIdx})" 
+                class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-black transition shadow-md hover:shadow-lg border border-[#E59819]/50 active:scale-98">
+                <i class="fas fa-shopping-bag text-xs"></i>
+                <span>Add to Cart</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setCategoryProductVariant(productId, variantIdx) {
+  storeState.selectedVariants[productId] = variantIdx;
+  renderCategoryProducts();
+}
