@@ -1,82 +1,94 @@
-# 🍿 Mira Namkeens - Professional Separated E-Commerce Platform
-> **Pure HTML5, CSS3 & Vanilla JavaScript** — Zero dependencies, instant loading, 100% mobile-friendly, beautiful Indian culinary luxury theme.
+# 🍿 MEERAV Authentic Bikaneri Namkeens & Sweets
+> **Full-Stack D2C E-Commerce Platform with Supabase Cloud Integration** — 75 Signature Delicacies, 4K Product Media, Mobile-First UI, Real-Time Orders & Delivery Tracking.
 
 ---
 
-## 📂 Separated Web Architecture
+## ☁️ Supabase Cloud Configuration & API Keys
+
+All cloud endpoints, API keys, and bucket configurations are centralized in [`.env`](.env) and [`js/supabase-config.js`](js/supabase-config.js):
+
+| Setting | Value |
+|---|---|
+| **Supabase URL** | `https://rudiggwblncwkjmqqemd.supabase.co` |
+| **Publishable / Anon Key** | `sb_publishable_-ksMHdEpOjDa5Z9hDdodNg__yz6HisF` |
+| **Storage Bucket** | `product-media` (Public Bucket) |
+| **Storage Public URL** | `https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/product-media` |
+
+---
+
+## 🗄️ Systematic Cloud Database Schema
+
+The complete database schema with Row Level Security (RLS) policies and all 75 product seeds is available in [`supabase/schema.sql`](supabase/schema.sql).
+
+### 1. Categories (`public.categories`)
+* `id` (TEXT, PK): `bhujia-sev`, `mixture-farsan`, `mathri`, `roasted-diet`, `sweets-combos`
+* `name` (TEXT): Category display name
+* `icon` (TEXT): FontAwesome / Luxury badge identifier
+* `description` (TEXT): Authentic culinary description
+
+### 2. Products (`public.products`)
+* `id` (TEXT, PK): `p1` to `p75`
+* `name` (TEXT): Product name
+* `category` (TEXT, FK): References `categories(id)`
+* `tag` (TEXT): *Best Seller*, *Signature Pack*, *Heritage GI Tag*
+* `rating` (NUMERIC): 4.8 - 5.0
+* `reviews_count` (INTEGER): Verified customer review count
+* `spice_level` (TEXT): Spice rating & description
+* `dietary` (JSONB): Dietary badges (*100% Veg, Pure Oil, No Palm Oil*)
+* `image` (TEXT): Cloud storage path to high-res packaging photo
+* `video` (TEXT): Cloud storage path to 4K cinematic video reel
+* `sample_image` (TEXT): Cloud storage path to sample serving photo
+* `description` (TEXT): Heritage recipe story
+* `ingredients` (TEXT): Authentic ingredients list
+* `nutrition` (JSONB): Energy, fat, carbohydrates, protein breakdown
+* `variants` (JSONB): Pack weight options (`200 g`, `500 g`, `1 kg`) with offer & original prices
+* `in_stock` (BOOLEAN): Real-time availability flag
+
+### 3. Orders (`public.orders`)
+* `id` (TEXT, PK): Order ID (e.g. `ORD-88210`)
+* `customer` (JSONB): Name, phone, email, delivery address, GPS coordinates
+* `items` (JSONB): Array of cart items, pack weights, quantities, and prices
+* `total_amount` (NUMERIC): Grand total payable
+* `payment_method` (TEXT): *UPI (QR Auto-Verified)*, *Credit/Debit Card*, *COD*
+* `order_status` (TEXT): *Order Placed*, *Processing*, *Dispatched*, *Delivered*
+
+### 4. Storage Bucket Structure (`product-media`)
+Systematic hierarchical folder layout:
+```
+product-media/
+├── categories/
+│   ├── bhujia-sev/
+│   │   └── products/
+│   │       ├── p1/
+│   │       │   ├── photos/meerav_aloo_bhujia.jpg
+│   │       │   └── videos/clip_bhujia.mp4
+│   │       └── p2/
+│   │           ├── photos/meerav_papad.jpg
+│   │           └── videos/clip_papad.mp4
+│   ├── mixture-farsan/
+│   ├── mathri/
+│   ├── roasted-diet/
+│   └── sweets-combos/
+└── brand/
+    └── videos/meerav_brand_film.mp4
+```
+
+---
+
+## 🚀 How to Setup Supabase Database
+
+1. Open your **[Supabase Project Dashboard](https://supabase.com/dashboard/project/rudiggwblncwkjmqqemd)**.
+2. Navigate to the **SQL Editor**.
+3. Open [`supabase/schema.sql`](supabase/schema.sql) in this repository, copy its entire contents, paste into the SQL Editor, and click **RUN**.
+4. That's it! All tables, RLS security policies, and 75 products are seeded instantly!
+
+---
+
+## 📂 Web Architecture
 
 | Page | URL / File | Purpose |
 |---|---|---|
-| 🛍️ **Customer Storefront** | [`index.html`](index.html) | High-impact, eye-catching customer shopping experience, pack size variants, cart drawer, GPS address picker, payment gateway, and live delivery van route map. |
-| 🛡️ **Admin Operations Portal** | [`admin.html`](admin.html) | Protected operations command center with login gate, KPI counters, order status updater with live WhatsApp notification dispatch, product inventory, and customer CRM. |
-
----
-
-## 🌟 What Mira Sells (18 Authentic Namkeens & Hampers)
-
-1. **Bhujia & Sev**:
-   - *Royal Ratlami Laung Sev* (Fiery clove spiced)
-   - *Bikaneri Special Moth Bhujia* (Thin crisp moth dal strands)
-   - *Crispy Aloo Bhujia* (Potato & mint seasoned)
-   - *Crispy Moong Dal Namkeen* (Golden split moong lentils)
-   - *Chana Dal Sev* (Nutty coarse chickpea sev)
-
-2. **Mixture & Farsan**:
-   - *Sweet & Tangy Khatta Meetha Mixture* (Tea-time favorite)
-   - *Royal Kaju Shahi Mixture* (Loaded with whole cashews & raisins)
-   - *Punjabi Tadka Mixture* (Mustard seed & chili tempered)
-   - *Navratan Royal Mixture* (9 rich textures & dry fruits)
-
-3. **Crispy Mathri & Crisps**:
-   - *Crispy Hand-Rolled Methi Mathri* (Fenugreek diamond crisps)
-   - *Traditional Bengali Nimki Crackers* (Kalonji seed crisps)
-   - *Masala Puri Mathri* (Spiced rounds)
-
-4. **Roasted Diet Snacks**:
-   - *Roasted Himalayan Salted Makhana* (Pink rock salt fox-nuts)
-   - *Roasted Chana Diet Mix* (High-protein chana & roasted peanuts)
-   - *Roasted Peanut Masala* (Whole spice masala toss)
-   - *Baked Zero-Oil Diet Sev* (Oven-baked guilt-free crunch)
-
-5. **Festive Sweets & Gift Combos**:
-   - *Mira Festive Namkeen Combo Box* (1kg & 2kg assorted gift hamper)
-   - *Diwali Mega Luxury Snack Hamper* (8 namkeens + 2 sweets in royal box)
-
----
-
-## 🚀 Key Features
-
-### 🛍️ Customer Storefront (`index.html`)
-- **Luxury Visual Design**: Floating 3D Deal of the Day card, parallax glow hero banner, and gold spice accents.
-- **Dietary & Category Filters**: *No Onion-Garlic, Jain, Roasted, Gluten-Free, High Protein*.
-- **Interactive Pack Size Variants**: `200g`, `500g`, `1kg` with dynamic price calculation and % discount savings badge.
-- **Product Inspection Modal**: Spice level meter (🌶️), pure ingredients, and nutrition facts table.
-- **Slide-Over Cart Drawer**: Quantity steppers, coupon code engine (`MIRA10`, `FREESHIP`), and free delivery threshold.
-- **Interactive Leaflet GPS Map Picker**: "Detect GPS Location" button using `navigator.geolocation` or draggable map pin.
-- **Multi-Method Payment Gateway**:
-  - 📱 **UPI QR Code** with live scanner animation
-  - 💳 **Credit / Debit Cards**
-  - 🏦 **NetBanking**
-  - 💵 **Cash on Delivery (COD)**
-- **Real-Time Live Driver Map**: OpenStreetMap Leaflet route showing **Central Kitchen Hub ➔ Moving Delivery Van ➔ Customer Address** with live ETA countdown timer.
-- **Customer Auth**: 1-Click Fast Demo Login (*Pooja Sharma*) with saved addresses.
-
----
-
-### 🛡️ Admin Operations Portal (`admin.html`)
-- **Protected Login Gate**:
-  - Demo Password: `admin` | PIN: `1234`
-- **Real-Time KPI Counters**: Total Revenue, Orders, Catalog items, and WhatsApp Delivery Rate (99.4%).
-- **Live Order Status Automations**: Changing status (`Pending`, `Processing`, `Dispatched`, `Delivered`) **automatically dispatches simulated WhatsApp & Email alerts** to clients!
-- **Product Inventory & Stock Controls**: Instant 1-click In Stock / Out of Stock toggle.
-- **Customer CRM**: Client spend history and order counts.
-- **Notification Center**:
-  - Live **WhatsApp Chat Mockup Frame**
-  - Branded **Email Invoice Layout**
-  - Notification Activity Logs
-  - Test Broadcast Dispatcher
-
----
-
-## 💻 How to Run
-Simply open **`index.html`** or **`admin.html`** in any web browser with zero configuration!
+| 🛍️ **Customer Storefront** | [`index.html`](index.html) | Embedded 4K Master Brand Film, authentic squircle category cards, live cart drawer, GPS delivery map. |
+| 🏷️ **Category Explorer** | [`category.html`](category.html) | 5 Category tabs, 75 delicacies, live search & dietary filter pills. |
+| 🍿 **Product Detail Open Page** | [`product.html`](product.html) | Multi-slide image & 4K video carousel, touch-swipe, tap-to-fullscreen lightbox, sticky mobile bar. |
+| 🛡️ **Admin Portal** | [`admin.html`](admin.html) | Real-time operations center, live order statuses, product catalog & customer CRM. |

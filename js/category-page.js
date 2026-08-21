@@ -22,32 +22,42 @@ document.addEventListener('DOMContentLoaded', () => {
   initCategoryPage();
 });
 
-function initCategoryPage() {
+async function initCategoryPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const rawCat = urlParams.get('cat') || 'all';
   const initialCat = normalizeCategoryId(rawCat);
 
   categoryPageState.selectedCategory = initialCat;
-  
-  // Guarantee full 75-product catalog from MIRA_DATA
-  let storedCats = JSON.parse(localStorage.getItem('mira_categories_db'));
-  if (!storedCats || storedCats.length < MIRA_DATA.categories.length) {
-    storedCats = [...MIRA_DATA.categories];
-    localStorage.setItem('mira_categories_db', JSON.stringify(storedCats));
-  }
-  categoryPageState.categories = storedCats;
 
-  let storedProds = JSON.parse(localStorage.getItem('mira_products_db'));
-  if (!storedProds || storedProds.length < MIRA_DATA.products.length) {
-    storedProds = [...MIRA_DATA.products];
-    localStorage.setItem('mira_products_db', JSON.stringify(storedProds));
+  const [cats, prods] = await Promise.all([fetchCategories(), fetchProducts()]);
+  categoryPageState.categories = cats.length ? cats : [...MIRA_DATA.categories];
+  categoryPageState.products = prods.length ? prods : [...MIRA_DATA.products];
+
+  // Keep storeState (cart/wishlist controller in store.js) in sync too
+  if (typeof storeState !== 'undefined') {
+    storeState.categories = categoryPageState.categories;
+    storeState.products = categoryPageState.products;
+    categoryPageState.products.forEach(p => {
+      if (storeState.selectedVariants[p.id] === undefined) storeState.selectedVariants[p.id] = 0;
+    });
   }
-  categoryPageState.products = storedProds;
 
   renderCategoryHeader();
   renderCategoryTabs();
   renderCategoryDietaryFilters();
   renderCategoryProducts();
+
+  MiraDB.subscribeTable('products', (payload) => {
+    if (payload.eventType === 'DELETE') {
+      categoryPageState.products = categoryPageState.products.filter(p => p.id !== payload.old.id);
+    } else {
+      const updated = MiraDB.mappers.dbProductToApp(payload.new);
+      const idx = categoryPageState.products.findIndex(p => p.id === updated.id);
+      if (idx === -1) categoryPageState.products.unshift(updated); else categoryPageState.products[idx] = updated;
+    }
+    renderCategoryTabs();
+    renderCategoryProducts();
+  });
 }
 
 function renderCategoryHeader() {

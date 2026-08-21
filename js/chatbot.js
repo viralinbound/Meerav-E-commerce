@@ -44,7 +44,7 @@ function toggleChatbot(forceOpen = null) {
  * DEDICATED ORDER RESOLUTION CONTROLLER (Triggered from Order History)
  */
 function openOrderHelpBot(orderId) {
-  const allOrders = JSON.parse(localStorage.getItem('mira_orders_db')) || MIRA_DATA.initialOrders;
+  const allOrders = (typeof storeState !== 'undefined' && storeState.orders) || [];
   const order = allOrders.find(o => o.id === orderId) || allOrders[0];
   if (!order) return;
 
@@ -263,9 +263,9 @@ function handleChatbotSubmit(event) {
 
 function analyzeQueryAndRecommend(query) {
   const q = query.toLowerCase();
-  const allOrders = JSON.parse(localStorage.getItem('mira_orders_db')) || MIRA_DATA.initialOrders;
+  const allOrders = (typeof storeState !== 'undefined' && storeState.orders) || [];
   const currentOrder = allOrders.find(o => o.id === chatbotState.activeOrderId) || allOrders[0];
-  const allProducts = JSON.parse(localStorage.getItem('mira_products_db')) || MIRA_DATA.products;
+  const allProducts = (typeof storeState !== 'undefined' && storeState.products) || MIRA_DATA.products;
 
   let matched = [];
   let responseText = "";

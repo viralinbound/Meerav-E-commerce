@@ -4,7 +4,6 @@
  */
 
 const storeState = {
-  customer: JSON.parse(localStorage.getItem('mira_customer_session')) || null,
   selectedCategory: 'all',
   selectedDietary: 'all',
   searchQuery: '',
@@ -12,8 +11,9 @@ const storeState = {
   wishlist: [],
   selectedVariants: {},
   appliedCoupon: null,
-  products: JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products],
-  orders: JSON.parse(localStorage.getItem('mira_orders_db')) || [...MIRA_DATA.initialOrders],
+  categories: [],
+  products: [],
+  orders: [],
   activeTrackingOrder: null,
   pendingCheckoutData: null,
   activeProductDetail: null
@@ -41,12 +41,18 @@ function showToast(message, type = 'info') {
   }, 3200);
 }
 
-function saveOrdersToStorage() {
-  localStorage.setItem('mira_orders_db', JSON.stringify(storeState.orders));
-}
+// Initialize on Load (fetches live data from Supabase, then subscribes to realtime changes)
+document.addEventListener('DOMContentLoaded', async () => {
+  const [categories, products, orders] = await Promise.all([
+    fetchCategories(),
+    fetchProducts(),
+    fetchOrders()
+  ]);
 
-// Initialize on Load
-document.addEventListener('DOMContentLoaded', () => {
+  storeState.categories = categories.length ? categories : MIRA_DATA.categories;
+  storeState.products = products.length ? products : [...MIRA_DATA.products];
+  storeState.orders = orders;
+
   initProductVariants();
   renderCinematicVideoReels();
   renderHomeCategoryCards();
@@ -63,7 +69,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const found = storeState.orders.find(o => o.id === savedOrderId);
     if (found) storeState.activeTrackingOrder = found;
   }
+
+  setupStoreRealtime();
 });
+
+/**
+ * REAL-TIME SYNC — storefront reflects admin changes (stock, price, new
+ * orders being dispatched) live, without a page reload.
+ */
+function setupStoreRealtime() {
+  MiraDB.subscribeTable('products', (payload) => {
+    if (payload.eventType === 'DELETE') {
+      storeState.products = storeState.products.filter(p => p.id !== payload.old.id);
+    } else {
+      const updated = MiraDB.mappers.dbProductToApp(payload.new);
+      const idx = storeState.products.findIndex(p => p.id === updated.id);
+      if (idx === -1) storeState.products.unshift(updated); else storeState.products[idx] = updated;
+      if (storeState.selectedVariants[updated.id] === undefined) storeState.selectedVariants[updated.id] = 0;
+    }
+    renderStoreProducts();
+    renderHomeCategoryCards();
+    renderCinematicVideoReels();
+    if (storeState.activeProductDetail) renderProductDetailModal(storeState.activeProductDetail);
+  });
+
+  MiraDB.subscribeTable('categories', async () => {
+    storeState.categories = await fetchCategories();
+    renderStoreCategories();
+    renderHomeCategoryCards();
+  });
+
+  MiraDB.subscribeTable('orders', (payload) => {
+    if (payload.eventType === 'DELETE') {
+      storeState.orders = storeState.orders.filter(o => o.id !== payload.old.id);
+      return;
+    }
+    const updated = MiraDB.mappers.dbOrderToApp(payload.new);
+    const idx = storeState.orders.findIndex(o => o.id === updated.id);
+    if (idx === -1) storeState.orders.unshift(updated); else storeState.orders[idx] = updated;
+
+    if (storeState.activeTrackingOrder && storeState.activeTrackingOrder.id === updated.id) {
+      storeState.activeTrackingOrder = updated;
+      const trackingView = document.getElementById('live-tracking-view');
+      if (trackingView && !trackingView.classList.contains('hidden')) {
+        openOrderTrackingView(updated.id);
+        showToast(`Order #${updated.id} status: ${updated.orderStatus}`, 'success');
+      }
+    }
+  });
+}
 
 /**
  * Dynamic Home Category Cards with Live Product Counter Calculation
@@ -73,9 +127,8 @@ function renderHomeCategoryCards() {
   const bannerCount = document.getElementById('home-total-products-count');
   const bannerBtn = document.getElementById('home-total-products-btn');
 
-  // Always use latest MIRA_DATA categories
-  const categories = MIRA_DATA.categories;
-  const products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
+  const categories = storeState.categories.length ? storeState.categories : MIRA_DATA.categories;
+  const products = storeState.products.length ? storeState.products : [...MIRA_DATA.products];
 
   if (bannerCount) bannerCount.textContent = `Want to explore all ${products.length} authentic varieties?`;
   if (bannerBtn) bannerBtn.textContent = `Explore All ${products.length} Products`;
@@ -128,7 +181,7 @@ function renderCinematicVideoReels() {
   const track = document.getElementById('reels-scroll-track');
   if (!track) return;
 
-  const products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
+  const products = storeState.products.length ? storeState.products : [...MIRA_DATA.products];
   const videoProducts = products.filter(p => p.video);
 
   if (videoProducts.length === 0) return;
@@ -270,8 +323,9 @@ function renderStoreCategories() {
   const container = document.getElementById('categories-container');
   if (!container) return;
 
-  container.innerHTML = MIRA_DATA.categories.map(cat => `
-    <button onclick="filterCategory('${cat.id}')" 
+  const cats = [{ id: 'all', name: 'All Delicacies', icon: 'fas fa-border-all' }, ...storeState.categories];
+  container.innerHTML = cats.map(cat => `
+    <button onclick="filterCategory('${cat.id}')"
       class="flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 ${
         storeState.selectedCategory === cat.id 
           ? 'bg-[#4A0713] text-[#FBBF24] shadow-lg border border-[#E59819] transform scale-105' 
@@ -816,7 +870,7 @@ function selectPaymentTab(tabName) {
   }
 }
 
-function completeOrderWithPayment(paymentMethod) {
+async function completeOrderWithPayment(paymentMethod) {
   if (!storeState.pendingCheckoutData) {
     showToast('Checkout session expired', 'error');
     return;
@@ -865,7 +919,7 @@ function completeOrderWithPayment(paymentMethod) {
   };
 
   storeState.orders.unshift(newOrder);
-  saveOrdersToStorage();
+  await MiraDB.dbInsertOrder(newOrder);
   localStorage.setItem('mira_last_order_id', newOrderId);
 
   // Auto-link customer session if not logged in
@@ -881,9 +935,19 @@ function completeOrderWithPayment(paymentMethod) {
       lng: data.lng
     };
     authState.customer = autoUser;
-    localStorage.setItem('mira_customer_session', JSON.stringify(autoUser));
     updateCustomerHeaderBadge();
+    MiraDB.dbUpsertCustomer(autoUser);
   }
+
+  MiraDB.dbInsertNotification({
+    id: `NOTIF-${Math.floor(100 + Math.random() * 900)}`,
+    type: 'WhatsApp',
+    recipient: `${newOrder.customer.phone} (${newOrder.customer.name})`,
+    template: `New Order Placed #${newOrder.id}`,
+    time: 'Just now',
+    status: 'Delivered & Read',
+    statusColor: 'green'
+  });
 
   storeState.cart = [];
   storeState.appliedCoupon = null;

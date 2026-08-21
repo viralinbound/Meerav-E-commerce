@@ -612,16 +612,31 @@
             </select>
           </div>
 
-          <!-- Direct Image File Uploader & Live Preview -->
+          <!-- Direct Image File Uploader & Live Preview (uploads to Supabase Storage) -->
           <div class="sm:col-span-2 p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-2">
             <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
               <i class="fas fa-cloud-arrow-up text-[#E59819]"></i> Or Upload Custom Packet Image (PNG / JPG / SVG)
             </label>
             <div class="flex items-center gap-4">
-              <input type="file" accept="image/*" onchange="handleProductImageUpload(event)" 
+              <input type="file" accept="image/*" onchange="handleProductImageUpload(event)"
                 class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#4A0713] file:text-[#FBBF24] hover:file:bg-[#32040C] cursor-pointer text-xs text-gray-500" />
-              <img id="prod-img-preview" src="assets/images/pack_bikaneri_bhujia.svg" alt="Preview" 
+              <img id="prod-img-preview" src="assets/images/pack_bikaneri_bhujia.svg" alt="Preview"
                 class="w-14 h-14 object-contain bg-white rounded-xl p-1 border border-amber-300 shadow-sm" />
+              <span id="prod-img-upload-status" class="text-[10px] text-gray-400"></span>
+            </div>
+          </div>
+
+          <!-- Direct Video File Uploader & Live Preview (uploads to Supabase Storage) -->
+          <div class="sm:col-span-2 p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-2">
+            <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
+              <i class="fas fa-video text-[#E59819]"></i> Upload Product Video (MP4, optional — plays on hover/reels)
+            </label>
+            <div class="flex items-center gap-4">
+              <input type="file" accept="video/*" onchange="handleProductVideoUpload(event)"
+                class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#4A0713] file:text-[#FBBF24] hover:file:bg-[#32040C] cursor-pointer text-xs text-gray-500" />
+              <video id="prod-video-preview" class="hidden w-20 h-14 object-cover bg-black rounded-xl border border-amber-300 shadow-sm" muted loop playsinline></video>
+              <button type="button" id="prod-video-clear-btn" onclick="clearProductVideo()" class="hidden text-[10px] text-red-600 font-bold hover:underline">Remove</button>
+              <span id="prod-video-upload-status" class="text-[10px] text-gray-400"></span>
             </div>
           </div>
 
@@ -817,6 +832,9 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/data.js"></script>
   <script src="js/admin.js"></script>
 </body>

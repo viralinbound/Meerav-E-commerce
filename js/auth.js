@@ -4,9 +4,36 @@
  */
 
 const authState = {
-  customer: JSON.parse(localStorage.getItem('mira_customer_session')) || null,
+  customer: null,
+  authView: 'signup', // 'signup' | 'signin' — first-time visitors land on Sign Up
   isAdminAuthenticated: sessionStorage.getItem('mira_admin_session') === 'true'
 };
+
+/**
+ * Real auto-login: Supabase Auth persists the session in the browser, so on
+ * every page load we just ask it "is anyone still signed in?" — if yes, the
+ * customer is logged back in instantly with no form to fill out.
+ */
+(async function initCustomerAuth() {
+  if (typeof MiraDB === 'undefined') return;
+
+  const session = await MiraDB.getCurrentSession();
+  if (session) {
+    authState.customer = await MiraDB.getOrCreateCustomerProfile(session.user);
+    updateCustomerHeaderBadge();
+    fillCheckoutFormIfLoggedIn();
+  }
+
+  MiraDB.onAuthChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      authState.customer = await MiraDB.getOrCreateCustomerProfile(session.user);
+      updateCustomerHeaderBadge();
+    } else if (event === 'SIGNED_OUT') {
+      authState.customer = null;
+      updateCustomerHeaderBadge();
+    }
+  });
+})();
 
 // Global Toast Helper
 function showToast(message, type = 'info') {
@@ -52,8 +79,8 @@ function renderCustomerAuthUI() {
   if (authState.customer) {
     const avatarSrc = authState.customer.avatar || defaultAvatar;
 
-    // Get customer's orders from storage or state
-    const allOrders = JSON.parse(localStorage.getItem('mira_orders_db')) || (typeof storeState !== 'undefined' ? storeState.orders : MIRA_DATA.initialOrders);
+    // Get customer's orders from live app state
+    const allOrders = (typeof storeState !== 'undefined' && storeState.orders) || [];
     const customerOrders = allOrders.filter(o => 
       (o.customer && o.customer.name && o.customer.name.toLowerCase() === authState.customer.name.toLowerCase()) ||
       (o.customer && o.customer.phone && o.customer.phone.includes(authState.customer.phone.replace(/\D/g, '').slice(-10)))
@@ -150,7 +177,8 @@ function renderCustomerAuthUI() {
       </div>
     `;
   } else {
-    // Show Login / Registration Form with Profile Upload Option
+    const isSignup = authState.authView !== 'signin';
+
     container.innerHTML = `
       <div class="space-y-4">
         <div class="text-center">
@@ -162,46 +190,50 @@ function renderCustomerAuthUI() {
             </label>
           </div>
           <h3 class="text-xl font-black text-amber-950">Customer Account</h3>
-          <p class="text-xs text-gray-500 mt-0.5">Sign in to view past orders, live delivery tracking & saved profile</p>
+          <p class="text-xs text-gray-500 mt-0.5">Create an account once — you'll stay signed in automatically next time</p>
         </div>
 
-        <!-- Fast Demo Account Callout -->
-        <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 text-center">
-          <span class="text-[11px] text-amber-900 font-bold block mb-1.5">⚡ Fast 1-Click Demo Account:</span>
-          <button type="button" onclick="loginDemoCustomer()" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-extrabold rounded-xl shadow-xs transition">
-            Sign In as "Pooja Sharma" (With Order History)
+        <!-- Sign Up / Sign In Tabs -->
+        <div class="grid grid-cols-2 gap-1.5 p-1 bg-amber-50 rounded-2xl border border-amber-200">
+          <button type="button" onclick="switchCustomerAuthView('signup')" class="py-2 rounded-xl text-xs font-black transition ${isSignup ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm' : 'text-amber-900 hover:bg-amber-100'}">
+            Create Account
+          </button>
+          <button type="button" onclick="switchCustomerAuthView('signin')" class="py-2 rounded-xl text-xs font-black transition ${!isSignup ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm' : 'text-amber-900 hover:bg-amber-100'}">
+            Sign In
           </button>
         </div>
 
-        <div class="relative flex py-1 items-center">
-          <div class="flex-grow border-t border-gray-200"></div>
-          <span class="flex-shrink mx-3 text-[11px] text-gray-400 font-medium">Or enter your details</span>
-          <div class="flex-grow border-t border-gray-200"></div>
-        </div>
-
-        <form onsubmit="handleCustomerLogin(event)" class="space-y-3 text-xs">
+        ${isSignup ? `
+        <form onsubmit="handleCustomerSignUp(event)" class="space-y-3 text-xs">
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Full Name</label>
-            <input type="text" id="cust-login-name" required placeholder="e.g. Rajesh Kothari" 
+            <input type="text" id="cust-signup-name" required placeholder="e.g. Rajesh Kothari"
               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
           </div>
-
+          <div>
+            <label class="block text-gray-600 font-semibold mb-1">Email Address</label>
+            <input type="email" id="cust-signup-email" required placeholder="you@example.com"
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-gray-600 font-semibold mb-1">Password</label>
+            <input type="password" id="cust-signup-password" required minlength="6" placeholder="Minimum 6 characters"
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
           <div>
             <label class="block text-gray-600 font-semibold mb-1">WhatsApp / Phone Number</label>
-            <input type="tel" id="cust-login-phone" required placeholder="+91 98765 00000" 
+            <input type="tel" id="cust-signup-phone" required placeholder="+91 98765 00000"
               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
           </div>
-
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Delivery Address</label>
-            <input type="text" id="cust-login-address" required placeholder="Flat/House, Society, City" 
+            <input type="text" id="cust-signup-address" required placeholder="Flat/House, Society, City"
               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
           </div>
-
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-gray-600 font-semibold mb-1">Pincode</label>
-              <input type="text" id="cust-login-pincode" required placeholder="e.g. 400050" 
+              <input type="text" id="cust-signup-pincode" required placeholder="e.g. 400050"
                 class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
             </div>
             <div>
@@ -212,96 +244,150 @@ function renderCustomerAuthUI() {
               </label>
             </div>
           </div>
-
           <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
-            Sign In & Save Profile <i class="fas fa-arrow-right ml-1"></i>
+            Create Account & Sign In <i class="fas fa-arrow-right ml-1"></i>
           </button>
         </form>
+        ` : `
+        <form onsubmit="handleCustomerSignIn(event)" class="space-y-3 text-xs">
+          <div>
+            <label class="block text-gray-600 font-semibold mb-1">Email Address</label>
+            <input type="email" id="cust-signin-email" required placeholder="you@example.com"
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <div>
+            <label class="block text-gray-600 font-semibold mb-1">Password</label>
+            <input type="password" id="cust-signin-password" required placeholder="Your password"
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+          </div>
+          <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
+            Sign In <i class="fas fa-arrow-right ml-1"></i>
+          </button>
+          <p class="text-center text-[11px] text-gray-400">New here? <button type="button" onclick="switchCustomerAuthView('signup')" class="text-[#4A0713] font-bold hover:underline">Create an account</button></p>
+        </form>
+        `}
       </div>
     `;
   }
   updateCustomerHeaderBadge();
 }
 
-let tempAvatarData = null;
+function switchCustomerAuthView(view) {
+  authState.authView = view;
+  renderCustomerAuthUI();
+}
 
-function handlePreviewAvatar(e) {
+let tempAvatarData = null; // public Storage URL of the avatar picked before the account exists yet
+
+async function handlePreviewAvatar(e) {
   const file = e.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    tempAvatarData = evt.target.result;
-    const preview = document.getElementById('login-preview-avatar');
-    if (preview) preview.src = tempAvatarData;
-    const label = document.getElementById('photo-upload-label');
-    if (label) label.textContent = 'Photo Added ✓';
-    showToast('Photo selected! Click Sign In to save.', 'success');
-  };
-  reader.readAsDataURL(file);
+  // Instant local preview while the real upload runs in the background
+  const preview = document.getElementById('login-preview-avatar');
+  if (preview) preview.src = URL.createObjectURL(file);
+  const label = document.getElementById('photo-upload-label');
+  if (label) label.textContent = 'Uploading...';
+
+  const publicUrl = await MiraDB.uploadMedia(file, 'avatars');
+  if (!publicUrl) {
+    showToast('Photo upload failed — please try again', 'error');
+    if (label) label.textContent = 'Choose Photo';
+    return;
+  }
+
+  tempAvatarData = publicUrl;
+  if (label) label.textContent = 'Photo Added ✓';
+  showToast('Photo uploaded! Click Sign In to save.', 'success');
 }
 
-function handleUserAvatarUpload(e) {
+async function handleUserAvatarUpload(e) {
   const file = e.target.files[0];
   if (!file || !authState.customer) return;
 
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    const base64 = evt.target.result;
-    authState.customer.avatar = base64;
-    localStorage.setItem('mira_customer_session', JSON.stringify(authState.customer));
-    showToast('Profile photo updated & saved permanently! 📸', 'success');
-    renderCustomerAuthUI();
-    updateCustomerHeaderBadge();
-  };
-  reader.readAsDataURL(file);
-}
+  const publicUrl = await MiraDB.uploadMedia(file, 'avatars');
+  if (!publicUrl) {
+    showToast('Photo upload failed — please try again', 'error');
+    return;
+  }
 
-function loginDemoCustomer() {
-  const demo = {
-    ...MIRA_DATA.mockUsers[0],
-    avatar: 'assets/images/default_avatar.jpg'
-  };
-  authState.customer = demo;
-  localStorage.setItem('mira_customer_session', JSON.stringify(demo));
-  showToast(`Welcome back, ${demo.name}! 👋`, 'success');
+  authState.customer.avatar = publicUrl;
+  showToast('Profile photo updated & saved permanently! 📸', 'success');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();
-  fillCheckoutFormIfLoggedIn();
+  MiraDB.dbUpsertCustomer(authState.customer);
 }
 
-function handleCustomerLogin(e) {
+async function handleCustomerSignUp(e) {
   e.preventDefault();
-  const name = document.getElementById('cust-login-name').value.trim();
-  const phone = document.getElementById('cust-login-phone').value.trim();
-  const address = document.getElementById('cust-login-address').value.trim();
-  const pincode = document.getElementById('cust-login-pincode').value.trim();
+  const name = document.getElementById('cust-signup-name').value.trim();
+  const email = document.getElementById('cust-signup-email').value.trim();
+  const password = document.getElementById('cust-signup-password').value;
+  const phone = document.getElementById('cust-signup-phone').value.trim();
+  const address = document.getElementById('cust-signup-address').value.trim();
+  const pincode = document.getElementById('cust-signup-pincode').value.trim();
 
-  const user = {
-    id: `usr-${Date.now()}`,
-    name,
-    phone,
-    email: `${name.toLowerCase().replace(/\s+/g, '')}@example.com`,
-    address,
-    pincode,
-    avatar: tempAvatarData || 'assets/images/default_avatar.jpg',
-    lat: 19.0760 + (Math.random() - 0.5) * 0.05,
-    lng: 72.8777 + (Math.random() - 0.5) * 0.05
-  };
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating account...'; }
 
-  authState.customer = user;
-  localStorage.setItem('mira_customer_session', JSON.stringify(user));
-  showToast(`Welcome to MEERAV Namkeens, ${name}! 🎉`, 'success');
+  const result = await MiraDB.signUpCustomer({ email, password, name, phone, address, pincode });
+
+  if (result.error) {
+    showToast(result.error.message || 'Could not create account', 'error');
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Create Account & Sign In <i class="fas fa-arrow-right ml-1"></i>'; }
+    return;
+  }
+
+  if (tempAvatarData) {
+    result.profile.avatar = tempAvatarData;
+    await MiraDB.dbUpsertCustomer(result.profile);
+  }
+
+  if (result.needsConfirmation) {
+    showToast('Account created! Check your email to confirm, then sign in. 📧', 'success');
+    authState.authView = 'signin';
+    renderCustomerAuthUI();
+    return;
+  }
+
+  // Session came back immediately — customer is auto-logged-in right now.
+  authState.customer = result.profile;
+  showToast(`Welcome to MEERAV Namkeens, ${name}! 🎉 You're signed in.`, 'success');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();
   fillCheckoutFormIfLoggedIn();
   setTimeout(closeCustomerAuthModal, 400);
 }
 
-function logoutCustomer() {
+async function handleCustomerSignIn(e) {
+  e.preventDefault();
+  const email = document.getElementById('cust-signin-email').value.trim();
+  const password = document.getElementById('cust-signin-password').value;
+
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Signing in...'; }
+
+  const result = await MiraDB.signInCustomer(email, password);
+
+  if (result.error) {
+    showToast(result.error.message || 'Invalid email or password', 'error');
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Sign In <i class="fas fa-arrow-right ml-1"></i>'; }
+    return;
+  }
+
+  authState.customer = result.profile;
+  showToast(`Welcome back, ${result.profile.name}! 👋`, 'success');
+  renderCustomerAuthUI();
+  updateCustomerHeaderBadge();
+  fillCheckoutFormIfLoggedIn();
+  setTimeout(closeCustomerAuthModal, 400);
+}
+
+async function logoutCustomer() {
+  await MiraDB.signOutCustomer();
   authState.customer = null;
+  authState.authView = 'signin';
   tempAvatarData = null;
-  localStorage.removeItem('mira_customer_session');
   showToast('Logged out of customer account', 'info');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();

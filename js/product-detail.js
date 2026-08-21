@@ -18,16 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
   setupKeyboardNavigation();
 });
 
-function initProductDetailPage() {
+async function initProductDetailPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id') || 'p1';
 
-  const allProducts = JSON.parse(localStorage.getItem('mira_products_db')) || MIRA_DATA.products;
+  let allProducts = await fetchProducts();
+  if (!allProducts.length) allProducts = MIRA_DATA.products;
   const product = allProducts.find(p => p.id === productId) || allProducts[0];
 
   if (!product) {
     window.location.href = 'index.html';
     return;
+  }
+
+  if (typeof storeState !== 'undefined') {
+    storeState.products = allProducts;
+    allProducts.forEach(p => {
+      if (storeState.selectedVariants[p.id] === undefined) storeState.selectedVariants[p.id] = 0;
+    });
   }
 
   pdpState.currentProduct = product;
@@ -39,6 +47,12 @@ function initProductDetailPage() {
 
   renderPDPDetails();
   renderPDPRelatedProducts(allProducts);
+
+  MiraDB.subscribeTable('products', (payload) => {
+    if (payload.eventType === 'DELETE' || payload.new.id !== productId) return;
+    pdpState.currentProduct = MiraDB.mappers.dbProductToApp(payload.new);
+    renderPDPDetails();
+  });
 }
 
 function renderPDPDetails() {

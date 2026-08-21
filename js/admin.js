@@ -7,31 +7,107 @@
 const adminState = {
   isAuthenticated: sessionStorage.getItem('mira_admin_session') === 'true',
   currentPage: 'overview',
-  orders: JSON.parse(localStorage.getItem('mira_orders_db')) || [...MIRA_DATA.initialOrders],
-  products: JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products],
-  categories: JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories],
-  customers: JSON.parse(localStorage.getItem('mira_customers_db')) || [...MIRA_DATA.customers],
-  notifications: JSON.parse(localStorage.getItem('mira_notifs_db')) || [...MIRA_DATA.notificationLogs],
+  orders: [],
+  products: [],
+  categories: [],
+  customers: [],
+  notifications: [],
   editingProductId: null,
   editingCategoryId: null,
-  uploadedProductImageBase64: null,
-  uploadedCategoryImageBase64: null,
+  uploadedProductImageUrl: null,
+  uploadedProductVideoUrl: null,
+  removeExistingVideo: false,
+  uploadedCategoryImageUrl: null,
   orderFilter: 'all',
   customerSearchQuery: '',
   productSearchQuery: ''
 };
 
-function saveAdminState() {
-  localStorage.setItem('mira_orders_db', JSON.stringify(adminState.orders));
-  localStorage.setItem('mira_products_db', JSON.stringify(adminState.products));
-  localStorage.setItem('mira_categories_db', JSON.stringify(adminState.categories));
-  localStorage.setItem('mira_customers_db', JSON.stringify(adminState.customers));
-  localStorage.setItem('mira_notifs_db', JSON.stringify(adminState.notifications));
+/**
+ * Recomputes each customer's live orders-count / lifetime-spend from the
+ * current orders table, matched by phone number (matches the same rule
+ * auth.js uses to link an order to a customer).
+ */
+function recomputeCustomerStats() {
+  adminState.customers.forEach(c => {
+    const digits = (c.phone || '').replace(/\D/g, '').slice(-10);
+    const matched = adminState.orders.filter(o =>
+      o.customer && ((o.customer.name || '').toLowerCase() === c.name.toLowerCase() ||
+        (digits && (o.customer.phone || '').replace(/\D/g, '').includes(digits)))
+    );
+    c.ordersCount = matched.length;
+    c.totalSpent = matched.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+async function loadAdminData() {
+  const [categories, products, orders, customers, notifications] = await Promise.all([
+    fetchCategories(), fetchProducts(), fetchOrders(), fetchCustomers(), fetchNotifications()
+  ]);
+  adminState.categories = categories.length ? categories : [...MIRA_DATA.categories];
+  adminState.products = products.length ? products : [...MIRA_DATA.products];
+  adminState.orders = orders;
+  adminState.customers = customers.length ? customers : [...MIRA_DATA.customers];
+  adminState.notifications = notifications;
+  recomputeCustomerStats();
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadAdminData();
   checkAdminAuth();
+  setupAdminRealtime();
 });
+
+/**
+ * REAL-TIME SYNC — dashboard reflects new storefront orders, stock/price
+ * edits from other admin sessions, and notification events live.
+ */
+function setupAdminRealtime() {
+  MiraDB.subscribeTable('orders', (payload) => {
+    if (payload.eventType === 'DELETE') {
+      adminState.orders = adminState.orders.filter(o => o.id !== payload.old.id);
+    } else {
+      const updated = MiraDB.mappers.dbOrderToApp(payload.new);
+      const idx = adminState.orders.findIndex(o => o.id === updated.id);
+      if (idx === -1) {
+        adminState.orders.unshift(updated);
+        if (payload.eventType === 'INSERT') showToast(`New order received: #${updated.id} 🛎️`, 'success');
+      } else {
+        adminState.orders[idx] = updated;
+      }
+    }
+    recomputeCustomerStats();
+    if (adminState.currentPage === 'overview') { renderAdminKPIs(); renderOverviewRecentOrders(); }
+    if (adminState.currentPage === 'orders') renderAdminOrders();
+    if (adminState.currentPage === 'customers') renderAdminCustomers();
+  });
+
+  MiraDB.subscribeTable('products', (payload) => {
+    if (payload.eventType === 'DELETE') {
+      adminState.products = adminState.products.filter(p => p.id !== payload.old.id);
+    } else {
+      const updated = MiraDB.mappers.dbProductToApp(payload.new);
+      const idx = adminState.products.findIndex(p => p.id === updated.id);
+      if (idx === -1) adminState.products.unshift(updated); else adminState.products[idx] = updated;
+    }
+    if (adminState.currentPage === 'catalog') renderAdminProducts();
+    if (adminState.currentPage === 'overview') renderAdminKPIs();
+  });
+
+  MiraDB.subscribeTable('categories', async () => {
+    adminState.categories = await fetchCategories();
+    populateCategoryDropdowns();
+    if (adminState.currentPage === 'categories') renderAdminCategories();
+    if (adminState.currentPage === 'overview') renderAdminKPIs();
+  });
+
+  MiraDB.subscribeTable('notifications', (payload) => {
+    if (payload.eventType === 'INSERT') {
+      adminState.notifications.unshift(MiraDB.mappers.dbNotifToApp(payload.new));
+      if (adminState.currentPage === 'notifications') renderAdminNotificationLogs();
+    }
+  });
+}
 
 /**
  * 1. AUTHENTICATION & LOGIN GATE
@@ -212,13 +288,13 @@ function renderAdminOrders() {
   `).join('');
 }
 
-function updateOrderStatus(orderId, newStatus) {
+async function updateOrderStatus(orderId, newStatus) {
   const order = adminState.orders.find(o => o.id === orderId);
   if (!order) return;
 
   order.orderStatus = newStatus;
-  
-  adminState.notifications.unshift({
+
+  const notif = {
     id: `NOTIF-${Math.floor(100 + Math.random() * 900)}`,
     type: 'WhatsApp',
     recipient: `${order.customer.phone} (${order.customer.name})`,
@@ -226,9 +302,14 @@ function updateOrderStatus(orderId, newStatus) {
     time: 'Just now',
     status: 'Delivered & Read',
     statusColor: 'green'
-  });
+  };
+  adminState.notifications.unshift(notif);
 
-  saveAdminState();
+  await Promise.all([
+    MiraDB.dbUpdateOrderStatus(order.id, newStatus),
+    MiraDB.dbInsertNotification(notif)
+  ]);
+
   renderAdminOrders();
   renderAdminNotificationLogs();
   showToast(`Order #${order.id} status updated to "${newStatus}". WhatsApp alert dispatched! 🚀`, 'success');
@@ -300,26 +381,71 @@ function renderAdminProducts() {
   }).join('');
 }
 
-function handleProductImageUpload(event) {
+async function handleProductImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    adminState.uploadedProductImageBase64 = e.target.result;
-    const preview = document.getElementById('prod-img-preview');
-    if (preview) {
-      preview.src = e.target.result;
-      preview.classList.remove('hidden');
-    }
-    showToast('Product Image File Uploaded Successfully! 📸', 'success');
-  };
-  reader.readAsDataURL(file);
+  const status = document.getElementById('prod-img-upload-status');
+  if (status) status.textContent = 'Uploading...';
+
+  // Instant local preview while the real upload runs in the background
+  const preview = document.getElementById('prod-img-preview');
+  const localUrl = URL.createObjectURL(file);
+  if (preview) { preview.src = localUrl; preview.classList.remove('hidden'); }
+
+  const publicUrl = await MiraDB.uploadMedia(file, 'products');
+  if (!publicUrl) {
+    if (status) status.textContent = 'Upload failed';
+    showToast('Image upload failed — please try again', 'error');
+    return;
+  }
+
+  adminState.uploadedProductImageUrl = publicUrl;
+  if (status) status.textContent = 'Uploaded ✓';
+  showToast('Product Image Uploaded to Storage! 📸', 'success');
+}
+
+async function handleProductVideoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const status = document.getElementById('prod-video-upload-status');
+  const preview = document.getElementById('prod-video-preview');
+  const clearBtn = document.getElementById('prod-video-clear-btn');
+  if (status) status.textContent = 'Uploading...';
+
+  const localUrl = URL.createObjectURL(file);
+  if (preview) { preview.src = localUrl; preview.classList.remove('hidden'); preview.play().catch(() => {}); }
+
+  const publicUrl = await MiraDB.uploadMedia(file, 'products');
+  if (!publicUrl) {
+    if (status) status.textContent = 'Upload failed';
+    showToast('Video upload failed — please try again', 'error');
+    return;
+  }
+
+  adminState.uploadedProductVideoUrl = publicUrl;
+  if (status) status.textContent = 'Uploaded ✓';
+  if (clearBtn) clearBtn.classList.remove('hidden');
+  showToast('Product Video Uploaded to Storage! 🎬', 'success');
+}
+
+function clearProductVideo() {
+  adminState.uploadedProductVideoUrl = null;
+  adminState.removeExistingVideo = true;
+  const preview = document.getElementById('prod-video-preview');
+  const clearBtn = document.getElementById('prod-video-clear-btn');
+  const status = document.getElementById('prod-video-upload-status');
+  if (preview) { preview.pause(); preview.src = ''; preview.classList.add('hidden'); }
+  if (clearBtn) clearBtn.classList.add('hidden');
+  if (status) status.textContent = 'Removed';
 }
 
 function openAddProductModal() {
   adminState.editingProductId = null;
-  adminState.uploadedProductImageBase64 = null;
+  adminState.uploadedProductImageUrl = null;
+  adminState.uploadedProductVideoUrl = null;
+  adminState.removeExistingVideo = false;
   populateCategoryDropdowns();
 
   document.getElementById('product-modal-title').textContent = 'Add New Bikaneri Product & Upload Packaging';
@@ -329,12 +455,21 @@ function openAddProductModal() {
   document.getElementById('prod-form-spice').value = 'Medium (🌶️🌶️)';
   document.getElementById('prod-form-desc').value = '';
   document.getElementById('prod-form-image').value = 'assets/images/pack_bikaneri_bhujia.svg';
-  
+
   const preview = document.getElementById('prod-img-preview');
   if (preview) {
     preview.src = 'assets/images/pack_bikaneri_bhujia.svg';
     preview.classList.remove('hidden');
   }
+  const imgStatus = document.getElementById('prod-img-upload-status');
+  if (imgStatus) imgStatus.textContent = '';
+
+  const videoPreview = document.getElementById('prod-video-preview');
+  if (videoPreview) { videoPreview.pause(); videoPreview.src = ''; videoPreview.classList.add('hidden'); }
+  const videoClearBtn = document.getElementById('prod-video-clear-btn');
+  if (videoClearBtn) videoClearBtn.classList.add('hidden');
+  const videoStatus = document.getElementById('prod-video-upload-status');
+  if (videoStatus) videoStatus.textContent = '';
 
   document.getElementById('prod-form-p200').value = 99;
   document.getElementById('prod-form-orig200').value = 120;
@@ -351,7 +486,9 @@ function openEditProductModal(productId) {
   if (!p) return;
 
   adminState.editingProductId = productId;
-  adminState.uploadedProductImageBase64 = null;
+  adminState.uploadedProductImageUrl = null;
+  adminState.uploadedProductVideoUrl = null;
+  adminState.removeExistingVideo = false;
   populateCategoryDropdowns();
 
   document.getElementById('product-modal-title').textContent = `Edit Product: ${p.name}`;
@@ -361,12 +498,26 @@ function openEditProductModal(productId) {
   document.getElementById('prod-form-category').value = p.category;
   document.getElementById('prod-form-spice').value = p.spiceLevel;
   document.getElementById('prod-form-desc').value = p.description;
-  
+
   const preview = document.getElementById('prod-img-preview');
   if (preview) {
     preview.src = p.image;
     preview.classList.remove('hidden');
   }
+  const imgStatus = document.getElementById('prod-img-upload-status');
+  if (imgStatus) imgStatus.textContent = '';
+
+  const videoPreview = document.getElementById('prod-video-preview');
+  const videoClearBtn = document.getElementById('prod-video-clear-btn');
+  const videoStatus = document.getElementById('prod-video-upload-status');
+  if (p.video) {
+    if (videoPreview) { videoPreview.src = p.video; videoPreview.classList.remove('hidden'); }
+    if (videoClearBtn) videoClearBtn.classList.remove('hidden');
+  } else {
+    if (videoPreview) { videoPreview.pause(); videoPreview.src = ''; videoPreview.classList.add('hidden'); }
+    if (videoClearBtn) videoClearBtn.classList.add('hidden');
+  }
+  if (videoStatus) videoStatus.textContent = '';
 
   document.getElementById('prod-form-p200').value = p.variants[0]?.price || 99;
   document.getElementById('prod-form-orig200').value = p.variants[0]?.originalPrice || 120;
@@ -382,7 +533,7 @@ function closeProductFormModal() {
   document.getElementById('product-form-modal').classList.add('hidden');
 }
 
-function saveProductForm(event) {
+async function saveProductForm(event) {
   event.preventDefault();
 
   const id = document.getElementById('prod-form-id').value.trim() || `p-${Date.now()}`;
@@ -392,8 +543,13 @@ function saveProductForm(event) {
   const spiceLevel = document.getElementById('prod-form-spice').value;
   const description = document.getElementById('prod-form-desc').value.trim();
   
-  // Use uploaded base64 if uploaded, otherwise use selected pouch preset
-  const image = adminState.uploadedProductImageBase64 || document.getElementById('prod-form-image').value.trim() || 'assets/images/pack_bikaneri_bhujia.svg';
+  // Use the Storage-uploaded file if one was uploaded, otherwise the selected pouch preset
+  const image = adminState.uploadedProductImageUrl || document.getElementById('prod-form-image').value.trim() || 'assets/images/pack_bikaneri_bhujia.svg';
+
+  const existingProduct = adminState.products.find(item => item.id === id);
+  let video = existingProduct ? existingProduct.video : undefined;
+  if (adminState.uploadedProductVideoUrl) video = adminState.uploadedProductVideoUrl;
+  if (adminState.removeExistingVideo) video = undefined;
 
   const p200 = Number(document.getElementById('prod-form-p200').value) || 99;
   const orig200 = Number(document.getElementById('prod-form-orig200').value) || p200;
@@ -409,9 +565,10 @@ function saveProductForm(event) {
   ];
 
   const existingIndex = adminState.products.findIndex(item => item.id === id);
+  let savedProduct;
 
   if (existingIndex !== -1) {
-    adminState.products[existingIndex] = {
+    savedProduct = {
       ...adminState.products[existingIndex],
       name,
       tag,
@@ -419,11 +576,13 @@ function saveProductForm(event) {
       spiceLevel,
       description,
       image,
+      video,
       variants
     };
+    adminState.products[existingIndex] = savedProduct;
     showToast(`Updated product: ${name} with new packaging image & pricing! 🎉`, 'success');
   } else {
-    const newProd = {
+    savedProduct = {
       id,
       name,
       tag,
@@ -433,40 +592,41 @@ function saveProductForm(event) {
       spiceLevel,
       dietary: ["100% Veg", "Pure & Clean Oil"],
       image,
+      video,
       description,
       ingredients: "Traditional ingredients, pure cold-pressed oil, authentic desert spices.",
       nutrition: { energy: "520 kcal", fat: "30g", carbs: "48g", protein: "12g" },
       inStock: true,
       variants
     };
-    adminState.products.unshift(newProd);
+    adminState.products.unshift(savedProduct);
     showToast(`Added new product: ${name} with uploaded pouch packaging! 🍿`, 'success');
   }
 
-  saveAdminState();
+  await MiraDB.dbUpsertProduct(savedProduct);
   renderAdminProducts();
   renderAdminKPIs();
   closeProductFormModal();
 }
 
-function deleteProduct(productId) {
+async function deleteProduct(productId) {
   const p = adminState.products.find(item => item.id === productId);
   if (!p) return;
 
   if (confirm(`Are you sure you want to delete "${p.name}" from catalog?`)) {
     adminState.products = adminState.products.filter(item => item.id !== productId);
-    saveAdminState();
+    await MiraDB.dbDeleteProduct(productId);
     renderAdminProducts();
     renderAdminKPIs();
     showToast(`Deleted ${p.name} from catalog`, 'info');
   }
 }
 
-function toggleProductStock(productId) {
+async function toggleProductStock(productId) {
   const p = adminState.products.find(item => item.id === productId);
   if (p) {
     p.inStock = !p.inStock;
-    saveAdminState();
+    await MiraDB.dbUpsertProduct(p);
     renderAdminProducts();
     showToast(`Stock availability updated for ${p.name}`, 'info');
   }
@@ -530,7 +690,7 @@ function populateCategoryDropdowns() {
 
 function openAddCategoryModal() {
   adminState.editingCategoryId = null;
-  adminState.uploadedCategoryImageBase64 = null;
+  adminState.uploadedCategoryImageUrl = null;
 
   document.getElementById('cat-modal-title').textContent = 'Add New Snack Category';
   document.getElementById('cat-form-id').value = '';
@@ -559,7 +719,7 @@ function closeCategoryFormModal() {
   document.getElementById('category-form-modal').classList.add('hidden');
 }
 
-function saveCategoryForm(event) {
+async function saveCategoryForm(event) {
   event.preventDefault();
 
   const name = document.getElementById('cat-form-name').value.trim();
@@ -569,39 +729,30 @@ function saveCategoryForm(event) {
   const description = document.getElementById('cat-form-desc').value.trim();
 
   const existingIdx = adminState.categories.findIndex(c => c.id === id);
+  const savedCategory = { id, name, icon, description };
 
   if (existingIdx !== -1) {
-    adminState.categories[existingIdx] = {
-      ...adminState.categories[existingIdx],
-      name,
-      icon,
-      description
-    };
+    adminState.categories[existingIdx] = { ...adminState.categories[existingIdx], ...savedCategory };
     showToast(`Updated category: ${name}! 📁`, 'success');
   } else {
-    adminState.categories.push({
-      id,
-      name,
-      icon,
-      description
-    });
+    adminState.categories.push(savedCategory);
     showToast(`Added new category: ${name}! 📁`, 'success');
   }
 
-  saveAdminState();
+  await MiraDB.dbUpsertCategory(savedCategory);
   populateCategoryDropdowns();
   renderAdminCategories();
   renderAdminKPIs();
   closeCategoryFormModal();
 }
 
-function deleteCategory(catId) {
+async function deleteCategory(catId) {
   const cat = adminState.categories.find(c => c.id === catId);
   if (!cat) return;
 
   if (confirm(`Are you sure you want to delete category "${cat.name}"?`)) {
     adminState.categories = adminState.categories.filter(c => c.id !== catId);
-    saveAdminState();
+    await MiraDB.dbDeleteCategory(catId);
     populateCategoryDropdowns();
     renderAdminCategories();
     renderAdminKPIs();
@@ -705,7 +856,7 @@ function renderAdminNotificationLogs() {
   `).join('');
 }
 
-function triggerCustomNotification(event) {
+async function triggerCustomNotification(event) {
   event.preventDefault();
   const type = document.getElementById('custom-notif-type').value;
   const target = document.getElementById('custom-notif-target').value.trim();
@@ -716,7 +867,7 @@ function triggerCustomNotification(event) {
     return;
   }
 
-  adminState.notifications.unshift({
+  const notif = {
     id: `NOTIF-${Math.floor(100 + Math.random() * 900)}`,
     type,
     recipient: target,
@@ -724,9 +875,10 @@ function triggerCustomNotification(event) {
     time: 'Just now',
     status: 'Delivered & Read',
     statusColor: type === 'WhatsApp' ? 'green' : 'blue'
-  });
+  };
+  adminState.notifications.unshift(notif);
 
-  saveAdminState();
+  await MiraDB.dbInsertNotification(notif);
   renderAdminNotificationLogs();
   showToast(`Test ${type} alert sent successfully to ${target}! 🚀`, 'success');
   document.getElementById('custom-notif-msg').value = '';
