@@ -41,17 +41,12 @@ function showToast(message, type = 'info') {
   }, 3200);
 }
 
-// Initialize on Load (fetches live data from Supabase, then subscribes to realtime changes)
+// Initialize on Load (instant local render + background cloud sync)
 document.addEventListener('DOMContentLoaded', async () => {
-  const [categories, products, orders] = await Promise.all([
-    fetchCategories(),
-    fetchProducts(),
-    fetchOrders()
-  ]);
-
-  storeState.categories = categories.length ? categories : MIRA_DATA.categories;
-  storeState.products = products.length ? products : [...MIRA_DATA.products];
-  storeState.orders = orders;
+  // 1. Instant local render (0 ms delay)
+  storeState.categories = JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories];
+  storeState.products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
+  storeState.orders = JSON.parse(localStorage.getItem('mira_orders_db')) || [];
 
   initProductVariants();
   renderCinematicVideoReels();
@@ -70,7 +65,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (found) storeState.activeTrackingOrder = found;
   }
 
-  setupStoreRealtime();
+  // 2. Asynchronous Cloud Sync from Supabase
+  try {
+    if (typeof MeeravSupabase !== 'undefined') {
+      const [categories, products, orders] = await Promise.all([
+        MeeravSupabase.getCategories(),
+        MeeravSupabase.getProducts('all'),
+        fetchOrders()
+      ]);
+
+      if (categories && categories.length > 0) storeState.categories = categories;
+      if (products && products.length > 0) storeState.products = products;
+      if (orders) storeState.orders = orders;
+
+      initProductVariants();
+      renderHomeCategoryCards();
+      renderStoreCategories();
+      renderStoreProducts();
+    }
+  } catch (err) {
+    console.warn('Storefront cloud sync fallback:', err.message);
+  }
 });
 
 /**

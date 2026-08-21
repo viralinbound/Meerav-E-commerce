@@ -219,6 +219,30 @@ const MeeravSupabase = {
   }
 };
 
+// Global Async Bridge Functions for Storefront & Admin
+async function fetchCategories() {
+  return await MeeravSupabase.getCategories();
+}
+
+async function fetchProducts(category = 'all', searchQuery = '') {
+  return await MeeravSupabase.getProducts(category, searchQuery);
+}
+
+async function fetchOrders() {
+  if (MeeravSupabase.client) {
+    try {
+      const { data, error } = await MeeravSupabase.client
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && data) return data;
+    } catch (e) {
+      console.warn('Orders fetch note:', e.message);
+    }
+  }
+  return JSON.parse(localStorage.getItem('mira_orders_db')) || [];
+}
+
 // Auto-initialize on load
 document.addEventListener('DOMContentLoaded', () => {
   MeeravSupabase.init();

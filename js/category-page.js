@@ -29,11 +29,11 @@ async function initCategoryPage() {
 
   categoryPageState.selectedCategory = initialCat;
 
-  const [cats, prods] = await Promise.all([fetchCategories(), fetchProducts()]);
-  categoryPageState.categories = cats.length ? cats : [...MIRA_DATA.categories];
-  categoryPageState.products = prods.length ? prods : [...MIRA_DATA.products];
+  // 1. Instant Synchronous Load from MIRA_DATA / LocalStorage (0 ms delay)
+  categoryPageState.categories = [...MIRA_DATA.categories];
+  categoryPageState.products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
 
-  // Keep storeState (cart/wishlist controller in store.js) in sync too
+  // Keep storeState in sync
   if (typeof storeState !== 'undefined') {
     storeState.categories = categoryPageState.categories;
     storeState.products = categoryPageState.products;
@@ -47,17 +47,29 @@ async function initCategoryPage() {
   renderCategoryDietaryFilters();
   renderCategoryProducts();
 
-  MiraDB.subscribeTable('products', (payload) => {
-    if (payload.eventType === 'DELETE') {
-      categoryPageState.products = categoryPageState.products.filter(p => p.id !== payload.old.id);
-    } else {
-      const updated = MiraDB.mappers.dbProductToApp(payload.new);
-      const idx = categoryPageState.products.findIndex(p => p.id === updated.id);
-      if (idx === -1) categoryPageState.products.unshift(updated); else categoryPageState.products[idx] = updated;
+  // 2. Asynchronous Cloud Sync from Supabase
+  try {
+    if (typeof MeeravSupabase !== 'undefined') {
+      const [cloudCats, cloudProds] = await Promise.all([
+        MeeravSupabase.getCategories(),
+        MeeravSupabase.getProducts('all')
+      ]);
+
+      if (cloudCats && cloudCats.length > 0) categoryPageState.categories = cloudCats;
+      if (cloudProds && cloudProds.length > 0) categoryPageState.products = cloudProds;
+
+      if (typeof storeState !== 'undefined') {
+        storeState.categories = categoryPageState.categories;
+        storeState.products = categoryPageState.products;
+      }
+
+      renderCategoryHeader();
+      renderCategoryTabs();
+      renderCategoryProducts();
     }
-    renderCategoryTabs();
-    renderCategoryProducts();
-  });
+  } catch (err) {
+    console.warn('Category cloud sync fallback to local data:', err.message);
+  }
 }
 
 function renderCategoryHeader() {
