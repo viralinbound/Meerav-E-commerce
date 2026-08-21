@@ -119,6 +119,32 @@ function renderCustomerAuthUI() {
           <p class="text-gray-600 text-[11px] leading-relaxed">${authState.customer.address} (PIN: ${authState.customer.pincode})</p>
         </div>
 
+        <!-- AI Taste Profile & Personalization Memory Box -->
+        <div class="p-3.5 bg-gradient-to-r from-[#4A0713]/5 via-amber-50 to-amber-100/40 rounded-2xl border border-[#E59819]/50 text-xs space-y-2">
+          <div class="flex items-center justify-between">
+            <div class="font-black text-[#4A0713] flex items-center gap-1.5 text-xs">
+              <i class="fas fa-sparkles text-[#E59819]"></i> AI Taste Profile & Preferences
+            </div>
+            <button onclick="closeCustomerAuthModal(); toggleChatbot(true);" class="text-[10px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
+              <span>Ask Sommelier</span> &rarr;
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 text-[10px]">
+            <span class="px-2 py-0.5 bg-[#4A0713] text-[#FBBF24] rounded-lg font-black border border-[#E59819]">
+              🌶️ ${getUserPersonalization().preferredSpice || 'Classic Bikaneri'}
+            </span>
+            ${getUserPersonalization().favoriteCategories.map(cat => `
+              <span class="px-2 py-0.5 bg-white text-gray-800 rounded-lg font-bold border border-amber-200 shadow-2xs">
+                🍿 ${cat.replace('-', ' & ')}
+              </span>
+            `).join('')}
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded-lg font-bold">
+              🤖 ${getUserPersonalization().chatOrderCount || 0} Chat Orders
+            </span>
+          </div>
+        </div>
+
         <!-- Customer Order History -->
         <div class="space-y-2 pt-2 border-t border-gray-100">
           <div class="flex items-center justify-between">
