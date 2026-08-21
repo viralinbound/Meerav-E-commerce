@@ -1,16 +1,21 @@
 /**
  * MEERAV NAMKEENS - DEDICATED PRODUCT DETAIL PAGE CONTROLLER
- * Handles URL Parameters, Live Variant Switching, Express Buy Now, Tab Switching & Related Snacks
+ * Full Media Carousel (Right/Left Scroll, Touch Swipe, Dedicated 4K Product Video, Fullscreen Lightbox & Mobile Sticky Bar)
  */
 
 const pdpState = {
   currentProduct: null,
   selectedVariantIdx: 0,
-  quantity: 1
+  quantity: 1,
+  currentSlide: 0,
+  totalSlides: 2,
+  isMuted: false
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   initProductDetailPage();
+  setupTouchGestures();
+  setupKeyboardNavigation();
 });
 
 function initProductDetailPage() {
@@ -28,6 +33,7 @@ function initProductDetailPage() {
   pdpState.currentProduct = product;
   pdpState.selectedVariantIdx = 0;
   pdpState.quantity = 1;
+  pdpState.currentSlide = 0;
 
   document.title = `${product.name} - MEERAV Authentic Bikaneri Namkeens`;
 
@@ -48,18 +54,26 @@ function renderPDPDetails() {
   document.getElementById('pdp-tag-badge').textContent = p.tag;
   document.getElementById('pdp-active-weight-pill').textContent = selectedVar.weight;
 
-  // Pouch Visual Frame & Video
-  document.getElementById('pdp-pack-image').src = p.image;
-  document.getElementById('pdp-pack-image').alt = p.name;
-  
-  const videoElem = document.getElementById('pdp-pack-video');
+  // Media Slider Assets
+  const packImg = document.getElementById('pdp-pack-image');
+  if (packImg) packImg.src = p.image;
+
+  const thumbImg0 = document.getElementById('pdp-thumb-img-0');
+  if (thumbImg0) thumbImg0.src = p.image;
+
+  const thumbImg1 = document.getElementById('pdp-thumb-img-1');
+  if (thumbImg1) thumbImg1.src = p.image;
+
+  const videoElem = document.getElementById('pdp-slide-video');
   if (videoElem) {
-    if (p.video) {
-      videoElem.src = p.video;
-    } else {
-      videoElem.src = 'assets/videos/meerav_brand_film.mp4';
-    }
+    const videoSrc = p.video || 'assets/videos/meerav_brand_film.mp4';
+    videoElem.src = videoSrc;
+    videoElem.load();
+    videoElem.play().catch(() => {});
   }
+
+  // Reset to first slide
+  setPDPSlide(0);
 
   // Spice Profile & Rating
   document.getElementById('pdp-spice-profile').textContent = p.spiceLevel;
@@ -67,10 +81,18 @@ function renderPDPDetails() {
   document.getElementById('pdp-reviews-count').textContent = `(${p.reviewsCount} Verified Bikaneri Foodie Reviews)`;
 
   // Pricing & Discounts
-  document.getElementById('pdp-price').textContent = `₹${selectedVar.price * pdpState.quantity}`;
-  document.getElementById('pdp-orig-price').textContent = `₹${selectedVar.originalPrice * pdpState.quantity}`;
+  const currentTotal = selectedVar.price * pdpState.quantity;
+  const originalTotal = selectedVar.originalPrice * pdpState.quantity;
+  document.getElementById('pdp-price').textContent = `₹${currentTotal}`;
+  document.getElementById('pdp-orig-price').textContent = `₹${originalTotal}`;
   document.getElementById('pdp-discount-badge').textContent = `${discount}% OFF`;
   document.getElementById('pdp-qty-display').textContent = pdpState.quantity;
+
+  // Mobile Sticky Bar Sync
+  const mobilePrice = document.getElementById('mobile-sticky-price');
+  const mobileWeight = document.getElementById('mobile-sticky-weight');
+  if (mobilePrice) mobilePrice.textContent = `₹${currentTotal}`;
+  if (mobileWeight) mobileWeight.textContent = `${selectedVar.weight} • 100% Fresh`;
 
   // Variant Pills
   const variantsContainer = document.getElementById('pdp-variants-container');
@@ -94,16 +116,175 @@ function renderPDPDetails() {
   document.getElementById('pdp-carbs').textContent = p.nutrition.carbs;
 }
 
+/**
+ * MEDIA SLIDER CONTROLLERS (Right/Left Scroll)
+ */
+function setPDPSlide(slideIndex) {
+  pdpState.currentSlide = slideIndex;
+  const wrapper = document.getElementById('pdp-slides-wrapper');
+  if (wrapper) {
+    wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+  }
+
+  // Update slide counter
+  const counter = document.getElementById('pdp-slide-counter');
+  if (counter) {
+    counter.textContent = slideIndex === 0 ? 'Photo (1 of 2)' : '4K Video (2 of 2)';
+  }
+
+  // Update thumbnail active states
+  const thumb0 = document.getElementById('pdp-thumb-0');
+  const thumb1 = document.getElementById('pdp-thumb-1');
+  if (thumb0 && thumb1) {
+    if (slideIndex === 0) {
+      thumb0.className = 'w-16 h-16 rounded-2xl border-2 border-[#E59819] overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-[#1F0307] ring-2 ring-[#E59819]/50';
+      thumb1.className = 'w-16 h-16 rounded-2xl border-2 border-amber-300/60 opacity-60 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center';
+    } else {
+      thumb1.className = 'w-16 h-16 rounded-2xl border-2 border-[#E59819] opacity-100 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center ring-2 ring-[#E59819]/50';
+      thumb0.className = 'w-16 h-16 rounded-2xl border-2 border-amber-300/60 opacity-60 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-[#1F0307]';
+    }
+  }
+
+  // Video playback handling
+  const slideVideo = document.getElementById('pdp-slide-video');
+  if (slideVideo) {
+    if (slideIndex === 1) {
+      slideVideo.play().catch(() => {});
+    }
+  }
+}
+
+function nextPDPSlide() {
+  const nextIdx = (pdpState.currentSlide + 1) % pdpState.totalSlides;
+  setPDPSlide(nextIdx);
+}
+
+function prevPDPSlide() {
+  const prevIdx = (pdpState.currentSlide - 1 + pdpState.totalSlides) % pdpState.totalSlides;
+  setPDPSlide(prevIdx);
+}
+
+function handleMainMediaClick() {
+  openFullscreenMedia();
+}
+
+/**
+ * FULLSCREEN LIGHTBOX VIEWER
+ */
+function openFullscreenMedia() {
+  const modal = document.getElementById('pdp-fullscreen-modal');
+  if (!modal) return;
+
+  const p = pdpState.currentProduct;
+  document.getElementById('fs-modal-title').textContent = p.name;
+  document.getElementById('fs-modal-subtitle').textContent = `Heritage Recipe • ${p.spiceLevel}`;
+
+  modal.classList.remove('hidden');
+  syncFullscreenMedia();
+}
+
+function closeFullscreenMedia() {
+  const modal = document.getElementById('pdp-fullscreen-modal');
+  if (modal) modal.classList.add('hidden');
+
+  const fsVideo = document.getElementById('fs-display-video');
+  if (fsVideo) fsVideo.pause();
+}
+
+function syncFullscreenMedia() {
+  const p = pdpState.currentProduct;
+  const fsImg = document.getElementById('fs-display-image');
+  const fsVideo = document.getElementById('fs-display-video');
+  const muteBtn = document.getElementById('fs-mute-btn');
+
+  if (pdpState.currentSlide === 0) {
+    // Show Photo
+    if (fsVideo) {
+      fsVideo.pause();
+      fsVideo.classList.add('hidden');
+    }
+    if (fsImg) {
+      fsImg.src = p.image;
+      fsImg.classList.remove('hidden');
+    }
+    if (muteBtn) muteBtn.classList.add('hidden');
+  } else {
+    // Show Video
+    if (fsImg) fsImg.classList.add('hidden');
+    if (fsVideo) {
+      fsVideo.src = p.video || 'assets/videos/meerav_brand_film.mp4';
+      fsVideo.classList.remove('hidden');
+      fsVideo.muted = pdpState.isMuted;
+      fsVideo.play().catch(() => {});
+    }
+    if (muteBtn) muteBtn.classList.remove('hidden');
+  }
+}
+
+function toggleFSMute() {
+  const fsVideo = document.getElementById('fs-display-video');
+  const muteIcon = document.getElementById('fs-mute-icon');
+  if (!fsVideo) return;
+
+  pdpState.isMuted = !pdpState.isMuted;
+  fsVideo.muted = pdpState.isMuted;
+
+  if (muteIcon) {
+    muteIcon.className = pdpState.isMuted ? 'fas fa-volume-mute text-red-400' : 'fas fa-volume-up text-amber-300';
+  }
+}
+
+/**
+ * TOUCH SWIPE GESTURES FOR MOBILE
+ */
+let touchStartX = 0;
+let touchEndX = 0;
+
+function setupTouchGestures() {
+  const sliderBox = document.getElementById('pdp-slider-box');
+  if (!sliderBox) return;
+
+  sliderBox.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  sliderBox.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleGesture();
+  }, { passive: true });
+}
+
+function handleGesture() {
+  const threshold = 40; // minimum swipe distance
+  if (touchEndX < touchStartX - threshold) {
+    // Swiped Left -> Next Slide
+    nextPDPSlide();
+  }
+  if (touchEndX > touchStartX + threshold) {
+    // Swiped Right -> Prev Slide
+    prevPDPSlide();
+  }
+}
+
+function setupKeyboardNavigation() {
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      nextPDPSlide();
+      const fsModal = document.getElementById('pdp-fullscreen-modal');
+      if (fsModal && !fsModal.classList.contains('hidden')) syncFullscreenMedia();
+    } else if (e.key === 'ArrowLeft') {
+      prevPDPSlide();
+      const fsModal = document.getElementById('pdp-fullscreen-modal');
+      if (fsModal && !fsModal.classList.contains('hidden')) syncFullscreenMedia();
+    } else if (e.key === 'Escape') {
+      closeFullscreenMedia();
+    }
+  });
+}
+
 function selectPDPVariant(idx) {
   pdpState.selectedVariantIdx = idx;
   const selectedVar = pdpState.currentProduct.variants[idx];
-
-  // Visual Image Animation Feedback
-  const img = document.getElementById('pdp-pack-image');
-  if (img) {
-    img.style.transform = 'scale(1.08)';
-    setTimeout(() => { img.style.transform = 'scale(1)'; }, 280);
-  }
 
   renderPDPDetails();
   showToast(`Selected pack size: ${selectedVar.weight} (₹${selectedVar.price})`, 'info');
@@ -141,10 +322,18 @@ function addCurrentProductToCart() {
   openCartDrawer();
 }
 
-function buyNowCurrentProduct() {
+function addCurrentPDPToCart() {
+  addCurrentProductToCart();
+}
+
+function quickBuyCurrentPDP() {
   addCurrentProductToCart();
   closeCartDrawer();
   openCheckoutModal();
+}
+
+function buyNowCurrentProduct() {
+  quickBuyCurrentPDP();
 }
 
 function switchPDPTab(tabName) {
@@ -191,7 +380,6 @@ function renderPDPRelatedProducts(allProducts) {
 
   container.innerHTML = related.map(p => {
     const v = p.variants[0];
-    const discount = Math.round(((v.originalPrice - v.price) / v.originalPrice) * 100);
 
     return `
       <div class="product-card overflow-hidden flex flex-col justify-between relative group">
@@ -228,55 +416,4 @@ function renderPDPRelatedProducts(allProducts) {
       </div>
     `;
   }).join('');
-}
-
-function openProductVideoModal() {
-  const modal = document.getElementById('product-video-modal');
-  const video = document.getElementById('pdp-brand-video');
-  if (modal) modal.classList.remove('hidden');
-  if (video) {
-    video.currentTime = 0;
-    video.play().catch(() => {});
-  }
-}
-
-function closeProductVideoModal() {
-  const modal = document.getElementById('product-video-modal');
-  const video = document.getElementById('pdp-brand-video');
-  if (video) video.pause();
-  if (modal) modal.classList.add('hidden');
-}
-
-function switchPDPMedia(type) {
-  const imgElem = document.getElementById('pdp-pack-image');
-  const videoElem = document.getElementById('pdp-pack-video');
-  const tabPhoto = document.getElementById('pdp-tab-photo');
-  const tabVideo = document.getElementById('pdp-tab-video');
-
-  if (type === 'video') {
-    if (imgElem) imgElem.classList.add('hidden');
-    if (videoElem) {
-      videoElem.classList.remove('hidden');
-      videoElem.currentTime = 0;
-      videoElem.play().catch(() => {});
-    }
-    if (tabVideo) {
-      tabVideo.className = 'px-4 py-1.5 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] shadow-xs transition flex items-center gap-1.5';
-    }
-    if (tabPhoto) {
-      tabPhoto.className = 'px-4 py-1.5 rounded-xl text-xs font-black text-gray-700 hover:text-[#4A0713] hover:bg-amber-200/50 transition flex items-center gap-1.5';
-    }
-  } else {
-    if (videoElem) {
-      videoElem.pause();
-      videoElem.classList.add('hidden');
-    }
-    if (imgElem) imgElem.classList.remove('hidden');
-    if (tabPhoto) {
-      tabPhoto.className = 'px-4 py-1.5 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] shadow-xs transition flex items-center gap-1.5';
-    }
-    if (tabVideo) {
-      tabVideo.className = 'px-4 py-1.5 rounded-xl text-xs font-black text-gray-700 hover:text-[#4A0713] hover:bg-amber-200/50 transition flex items-center gap-1.5';
-    }
-  }
 }

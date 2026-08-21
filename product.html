@@ -107,44 +107,65 @@
       <span id="breadcrumb-product-name" class="font-black text-[#4A0713] truncate max-w-[200px]">Product Details</span>
     </nav>
 
-    <!-- Product Main Grid (Left: Image & Video / Right: Details & Buying) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+    <!-- Product Main Grid (Left: Image & Video Slider / Right: Details & Buying) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start pb-20 lg:pb-0">
       
-      <!-- LEFT COLUMN: Packaging Visual Frame & Interactive 4K Video Showcase -->
-      <div class="lg:col-span-5 space-y-4">
+      <!-- LEFT COLUMN: Interactive Media Slider (Scroll Left/Right & Fullscreen Zoom) -->
+      <div class="lg:col-span-5 space-y-3">
         
-        <!-- Media View Switcher (Photo vs Video) -->
-        <div class="flex items-center justify-between px-1">
-          <div class="inline-flex p-1 bg-amber-100/70 border border-amber-300/80 rounded-2xl gap-1">
-            <button id="pdp-tab-photo" onclick="switchPDPMedia('photo')" 
-              class="px-4 py-1.5 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] shadow-xs transition flex items-center gap-1.5">
-              <i class="fas fa-camera text-[11px]"></i>
-              <span>HD Photo</span>
-            </button>
-            <button id="pdp-tab-video" onclick="switchPDPMedia('video')" 
-              class="px-4 py-1.5 rounded-xl text-xs font-black text-gray-700 hover:text-[#4A0713] hover:bg-amber-200/50 transition flex items-center gap-1.5">
-              <i class="fas fa-play text-[10px] text-red-600 animate-pulse"></i>
-              <span>4K Video Reel</span>
-            </button>
+        <!-- Gallery Slide Indicator & Fullscreen Hint -->
+        <div class="flex items-center justify-between px-1 text-xs">
+          <div class="flex items-center gap-1.5 text-amber-900 font-extrabold">
+            <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+            <span id="pdp-slide-counter">Slide 1 of 2</span>
+            <span class="text-gray-400 font-normal">| Scroll &larr; &rarr;</span>
           </div>
 
-          <span class="text-[11px] text-emerald-800 font-extrabold flex items-center gap-1">
-            <i class="fas fa-shield-check text-emerald-600"></i> FSSAI Certified
-          </span>
+          <button onclick="openFullscreenMedia()" 
+            class="text-[11px] font-black text-[#4A0713] hover:text-[#E59819] flex items-center gap-1 bg-amber-100/80 hover:bg-amber-200 px-2.5 py-1 rounded-xl transition border border-amber-300">
+            <i class="fas fa-expand-alt text-[10px]"></i>
+            <span>Fullscreen View</span>
+          </button>
         </div>
 
-        <!-- Main Media Frame Container (Full-Bleed Luxury Frame with Badges) -->
-        <div class="relative w-full aspect-square rounded-3xl border-2 border-[#E59819] shadow-2xl overflow-hidden bg-[#1F0307] group">
+        <!-- Main Slider Box with Left/Right Navigation Arrows -->
+        <div class="relative w-full aspect-square rounded-3xl border-2 border-[#E59819] shadow-2xl overflow-hidden bg-[#1F0307] group cursor-pointer"
+             id="pdp-slider-box" onclick="handleMainMediaClick()">
           
-          <!-- Image View -->
-          <img id="pdp-pack-image" src="" alt="Product Pouch" 
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+          <!-- Slide Track -->
+          <div id="pdp-slides-wrapper" class="w-full h-full flex transition-transform duration-500 ease-out">
+            <!-- Slide 0: High-Res Packaging Photo -->
+            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-[#1F0307]">
+              <img id="pdp-pack-image" src="" alt="Product Photo" 
+                class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+            </div>
 
-          <!-- Embedded Looping Video View (Hidden by default, shown when video tab clicked) -->
-          <video id="pdp-pack-video" src="" 
-            autoplay loop muted playsinline 
-            class="w-full h-full object-cover hidden">
-          </video>
+            <!-- Slide 1: 4K Looping Cinematic Video -->
+            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-black">
+              <video id="pdp-slide-video" src="" 
+                autoplay loop muted playsinline 
+                class="w-full h-full object-cover">
+              </video>
+              
+              <!-- Video Badge Overlay -->
+              <div class="absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#FBBF24] text-xs font-black flex items-center gap-1.5 border border-[#E59819]">
+                <i class="fas fa-play text-[10px] text-red-500 animate-pulse"></i>
+                <span>4K TASTE FILM</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Left Arrow Button -->
+          <button onclick="event.stopPropagation(); prevPDPSlide();" 
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/65 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-sm shadow-xl transition border border-white/20 z-20">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+
+          <!-- Right Arrow Button -->
+          <button onclick="event.stopPropagation(); nextPDPSlide();" 
+            class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/65 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-sm shadow-xl transition border border-white/20 z-20">
+            <i class="fas fa-chevron-right"></i>
+          </button>
 
           <!-- Top Glassmorphic Badges Overlay -->
           <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-20 pointer-events-none">
@@ -158,36 +179,43 @@
             </div>
 
             <div class="flex items-center gap-2 pointer-events-auto">
-              <!-- 100% Veg Symbol -->
               <div class="veg-indicator bg-white/95 backdrop-blur-md shadow-md p-0.5" title="100% Pure Vegetarian">
                 <div class="veg-indicator-dot"></div>
               </div>
-              <!-- Wishlist -->
-              <button onclick="togglePDPWishlist()" class="w-9 h-9 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
+              <button onclick="event.stopPropagation(); togglePDPWishlist();" class="w-9 h-9 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
                 <i id="pdp-wishlist-icon" class="far fa-heart text-sm"></i>
               </button>
             </div>
           </div>
 
           <!-- Bottom Authenticity Glassmorphic Banner -->
-          <div class="absolute bottom-3.5 left-3.5 right-3.5 bg-[#32040C]/85 backdrop-blur-md p-2.5 rounded-2xl border border-[#E59819]/50 flex items-center justify-between text-xs text-[#FBBF24] font-bold shadow-lg z-20">
-            <span><i class="fas fa-droplet text-[#E59819] mr-1"></i> Prepared in Pure & Clean Oil</span>
-            <span class="text-emerald-400 font-black"><i class="fas fa-check-circle mr-0.5"></i> 100% Taste Promise</span>
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 bg-[#32040C]/85 backdrop-blur-md p-2 rounded-2xl border border-[#E59819]/50 flex items-center justify-between text-xs text-[#FBBF24] font-bold shadow-lg z-20 pointer-events-none">
+            <span><i class="fas fa-droplet text-[#E59819] mr-1"></i> Pure & Clean Oil</span>
+            <span class="text-emerald-400 font-black"><i class="fas fa-check-circle mr-0.5"></i> Tap to View Fullscreen</span>
           </div>
 
         </div>
 
-        <!-- Watch Cinematic Product Video Button -->
-        <button onclick="openProductVideoModal()" 
-          class="w-full py-3.5 px-4 bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#4A0713] hover:from-[#32040C] hover:to-[#1F0307] text-[#FBBF24] rounded-2xl font-black text-xs shadow-xl flex items-center justify-center gap-2.5 border border-[#E59819] transition transform hover:-translate-y-0.5">
-          <span class="w-7 h-7 rounded-full bg-[#E59819] text-[#32040C] flex items-center justify-center text-xs shadow-md animate-pulse">
-            <i class="fas fa-play ml-0.5"></i>
-          </span>
-          <span>Watch Fullscreen Cinematic Film (35s)</span>
-        </button>
+        <!-- Thumbnails Navigation Row -->
+        <div class="flex items-center gap-2.5 overflow-x-auto pb-1" id="pdp-thumbnails-row">
+          <!-- Thumbnail 0: HD Photo -->
+          <button onclick="setPDPSlide(0)" id="pdp-thumb-0"
+            class="w-16 h-16 rounded-2xl border-2 border-[#E59819] overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-[#1F0307]">
+            <img id="pdp-thumb-img-0" src="" alt="Thumbnail" class="w-full h-full object-cover" />
+          </button>
+
+          <!-- Thumbnail 1: 4K Video -->
+          <button onclick="setPDPSlide(1)" id="pdp-thumb-1"
+            class="w-16 h-16 rounded-2xl border-2 border-amber-300/60 opacity-60 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center">
+            <img id="pdp-thumb-img-1" src="" alt="Video Thumbnail" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <i class="fas fa-play text-[#FBBF24] text-xs"></i>
+            </div>
+          </button>
+        </div>
 
         <!-- Trust Mini Cards -->
-        <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
+        <div class="grid grid-cols-3 gap-2.5 text-center text-xs pt-1">
           <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200">
             <i class="fas fa-truck-fast text-[#E59819] text-base mb-1 block"></i>
             <span class="font-black text-gray-900 block text-[11px]">Bikaner Dispatch</span>
@@ -513,44 +541,67 @@
     </div>
   </div>
 
-  <!-- Cinematic Product Video Reel Modal -->
-  <div id="product-video-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-gradient-to-b from-[#32040C] to-[#1a0206] w-full max-w-4xl rounded-3xl shadow-2xl border-2 border-[#E59819] overflow-hidden animate-fade-in text-white">
-      
-      <!-- Modal Header -->
-      <div class="p-4 sm:p-5 flex items-center justify-between border-b border-[#E59819]/30 bg-black/40">
-        <div class="flex items-center gap-3">
-          <img src="assets/images/meerav_logo.png" alt="Logo" class="h-8 w-auto bg-white rounded-lg p-1 shadow-sm" />
-          <div>
-            <h4 class="font-black text-sm text-[#FBBF24]">MEERAV • Cinematic Brand Video Reel</h4>
-            <p class="text-[11px] text-amber-200/70">From the Heart of Bikaner • Since 1948</p>
-          </div>
+  <!-- Interactive Fullscreen Media Lightbox Modal (Photo Zoom & 4K Video Player) -->
+  <div id="pdp-fullscreen-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-lg flex flex-col justify-between p-3 sm:p-6 hidden animate-fade-in">
+    
+    <!-- Lightbox Header -->
+    <div class="flex items-center justify-between text-white border-b border-white/15 pb-3">
+      <div class="flex items-center gap-3">
+        <img src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="h-8 w-auto bg-white rounded-lg p-1" />
+        <div>
+          <h4 id="fs-modal-title" class="font-black text-sm text-[#FBBF24]">Product Viewer</h4>
+          <span id="fs-modal-subtitle" class="text-[11px] text-gray-400">100% Authentic Bikaneri Namkeen</span>
         </div>
-        <button onclick="closeProductVideoModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center transition">
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="toggleFSMute()" id="fs-mute-btn" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition text-sm">
+          <i class="fas fa-volume-up" id="fs-mute-icon"></i>
+        </button>
+        <button onclick="closeFullscreenMedia()" class="w-10 h-10 rounded-full bg-red-600/80 hover:bg-red-600 text-white flex items-center justify-center transition text-base font-bold shadow-lg">
           <i class="fas fa-times"></i>
         </button>
       </div>
+    </div>
 
-      <!-- Video Player -->
-      <div class="relative aspect-video max-h-[65vh] bg-black flex items-center justify-center">
-        <video id="pdp-brand-video" 
-          src="assets/videos/meerav_brand_film.mp4" 
-          controls 
-          class="w-full h-full object-contain">
-        </video>
-      </div>
+    <!-- Main Lightbox Display Area with Left / Right Arrows -->
+    <div class="relative flex-1 flex items-center justify-center overflow-hidden my-3">
+      
+      <!-- Fullscreen Image -->
+      <img id="fs-display-image" src="" alt="Fullscreen View" 
+        class="max-h-[75vh] max-w-full object-contain rounded-2xl shadow-2xl transition-transform duration-300" />
 
-      <!-- Quick Action Footer -->
-      <div class="p-4 sm:p-5 bg-black/50 border-t border-[#E59819]/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div class="text-xs text-amber-100/90 text-center sm:text-left">
-          <span>✨ <strong>100% Pure Oil & Authentic Recipe</strong> — Guaranteed freshness & crunch.</span>
-        </div>
-        <button onclick="closeProductVideoModal()" class="px-6 py-2 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
-          Return to Product
+      <!-- Fullscreen Video Player -->
+      <video id="fs-display-video" src="" 
+        controls autoplay loop playsinline 
+        class="max-h-[75vh] max-w-full object-contain rounded-2xl shadow-2xl hidden">
+      </video>
+
+      <!-- Prev / Next Lightbox Controls -->
+      <button onclick="prevPDPSlide(); syncFullscreenMedia();" 
+        class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-lg shadow-2xl transition border border-white/20">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button onclick="nextPDPSlide(); syncFullscreenMedia();" 
+        class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-lg shadow-2xl transition border border-white/20">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Lightbox Footer -->
+    <div class="flex items-center justify-between text-white border-t border-white/15 pt-3">
+      <span class="text-xs text-amber-200/90 font-medium">
+        ✨ <strong>From Bikaner, Rajasthan</strong> &bull; Prepared Daily in Pure & Clean Oil
+      </span>
+
+      <div class="flex items-center gap-3">
+        <button onclick="closeFullscreenMedia(); openCartDrawer();" 
+          class="px-5 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-lg transition">
+          🛒 Buy This Snack Now
         </button>
       </div>
-
     </div>
+
   </div>
 
   <!-- Customer Auth Modal -->
@@ -558,6 +609,28 @@
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
       <div class="flex justify-end mb-1"><button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button></div>
       <div id="customer-auth-content"></div>
+    </div>
+  </div>
+
+  <!-- Sticky Mobile Bottom Purchase Bar (Appears on Mobile only) -->
+  <div class="fixed bottom-14 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-amber-200 p-3 flex items-center justify-between gap-3 shadow-2xl lg:hidden">
+    <div>
+      <span id="mobile-sticky-price" class="text-lg font-black text-[#4A0713] block">₹99</span>
+      <span id="mobile-sticky-weight" class="text-[10px] text-gray-500 font-bold">200 g &bull; 100% Fresh</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button onclick="addCurrentPDPToCart()" 
+        class="px-3.5 py-2.5 bg-amber-100 text-[#4A0713] font-black text-xs rounded-xl border border-amber-300 shadow-sm active:scale-95 transition flex items-center gap-1">
+        <i class="fas fa-shopping-bag text-xs"></i>
+        <span>Add</span>
+      </button>
+      
+      <button onclick="quickBuyCurrentPDP()" 
+        class="px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] font-black text-xs rounded-xl border border-[#E59819] shadow-lg active:scale-95 transition flex items-center gap-1.5">
+        <i class="fas fa-bolt text-xs text-[#E59819]"></i>
+        <span>Express Buy</span>
+      </button>
     </div>
   </div>
 
