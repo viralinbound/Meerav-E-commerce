@@ -48,9 +48,18 @@ function renderPDPDetails() {
   document.getElementById('pdp-tag-badge').textContent = p.tag;
   document.getElementById('pdp-active-weight-pill').textContent = selectedVar.weight;
 
-  // Pouch Visual Frame
+  // Pouch Visual Frame & Video
   document.getElementById('pdp-pack-image').src = p.image;
   document.getElementById('pdp-pack-image').alt = p.name;
+  
+  const videoElem = document.getElementById('pdp-pack-video');
+  if (videoElem) {
+    if (p.video) {
+      videoElem.src = p.video;
+    } else {
+      videoElem.src = 'assets/videos/meerav_brand_film.mp4';
+    }
+  }
 
   // Spice Profile & Rating
   document.getElementById('pdp-spice-profile').textContent = p.spiceLevel;
@@ -236,4 +245,38 @@ function closeProductVideoModal() {
   const video = document.getElementById('pdp-brand-video');
   if (video) video.pause();
   if (modal) modal.classList.add('hidden');
+}
+
+function switchPDPMedia(type) {
+  const imgElem = document.getElementById('pdp-pack-image');
+  const videoElem = document.getElementById('pdp-pack-video');
+  const tabPhoto = document.getElementById('pdp-tab-photo');
+  const tabVideo = document.getElementById('pdp-tab-video');
+
+  if (type === 'video') {
+    if (imgElem) imgElem.classList.add('hidden');
+    if (videoElem) {
+      videoElem.classList.remove('hidden');
+      videoElem.currentTime = 0;
+      videoElem.play().catch(() => {});
+    }
+    if (tabVideo) {
+      tabVideo.className = 'px-4 py-1.5 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] shadow-xs transition flex items-center gap-1.5';
+    }
+    if (tabPhoto) {
+      tabPhoto.className = 'px-4 py-1.5 rounded-xl text-xs font-black text-gray-700 hover:text-[#4A0713] hover:bg-amber-200/50 transition flex items-center gap-1.5';
+    }
+  } else {
+    if (videoElem) {
+      videoElem.pause();
+      videoElem.classList.add('hidden');
+    }
+    if (imgElem) imgElem.classList.remove('hidden');
+    if (tabPhoto) {
+      tabPhoto.className = 'px-4 py-1.5 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] shadow-xs transition flex items-center gap-1.5';
+    }
+    if (tabVideo) {
+      tabVideo.className = 'px-4 py-1.5 rounded-xl text-xs font-black text-gray-700 hover:text-[#4A0713] hover:bg-amber-200/50 transition flex items-center gap-1.5';
+    }
+  }
 }

@@ -107,52 +107,83 @@
       <span id="breadcrumb-product-name" class="font-black text-[#4A0713] truncate max-w-[200px]">Product Details</span>
     </nav>
 
-    <!-- Product Main Grid (Left: Image / Right: Details & Buying) -->
+    <!-- Product Main Grid (Left: Image & Video / Right: Details & Buying) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
       
-      <!-- LEFT COLUMN: Packaging Frame & Visual Showcase -->
+      <!-- LEFT COLUMN: Packaging Visual Frame & Interactive 4K Video Showcase -->
       <div class="lg:col-span-5 space-y-4">
-        <div class="relative bg-gradient-to-b from-[#FFFDF8] via-white to-[#FDF1D0] p-8 rounded-3xl border-2 border-[#E59819]/50 shadow-2xl overflow-hidden flex items-center justify-center min-h-[440px] group">
-          
-          <!-- Top Badges on Pack -->
-          <div class="absolute top-4 left-4 flex items-center gap-2">
-            <span id="pdp-tag-badge" class="px-3 py-1 bg-[#4A0713] text-[#FBBF24] font-black text-xs rounded-full border border-[#E59819] shadow-sm">
-              Signature Bikaneri
-            </span>
-            <span id="pdp-active-weight-pill" class="px-2.5 py-1 bg-[#E59819] text-[#32040C] font-black text-xs rounded-full shadow-sm">
-              200 g
-            </span>
-          </div>
-
-          <div class="absolute top-4 right-4 flex items-center gap-2">
-            <!-- 100% Veg Symbol -->
-            <div class="veg-indicator bg-white shadow-xs p-0.5" title="100% Pure Vegetarian">
-              <div class="veg-indicator-dot"></div>
-            </div>
-            <!-- Wishlist -->
-            <button onclick="togglePDPWishlist()" class="w-9 h-9 rounded-full bg-white flex items-center justify-center text-gray-600 hover:text-red-600 shadow-md transition">
-              <i id="pdp-wishlist-icon" class="far fa-heart text-sm"></i>
+        
+        <!-- Media View Switcher (Photo vs Video) -->
+        <div class="flex items-center justify-between px-1">
+          <div class="inline-flex p-1 bg-amber-100/70 border border-amber-300/80 rounded-2xl gap-1">
+            <button id="pdp-tab-photo" onclick="switchPDPMedia('photo')" 
+              class="px-4 py-1.5 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] shadow-xs transition flex items-center gap-1.5">
+              <i class="fas fa-camera text-[11px]"></i>
+              <span>HD Photo</span>
+            </button>
+            <button id="pdp-tab-video" onclick="switchPDPMedia('video')" 
+              class="px-4 py-1.5 rounded-xl text-xs font-black text-gray-700 hover:text-[#4A0713] hover:bg-amber-200/50 transition flex items-center gap-1.5">
+              <i class="fas fa-play text-[10px] text-red-600 animate-pulse"></i>
+              <span>4K Video Reel</span>
             </button>
           </div>
 
-          <!-- Pouch Image Display with Hover Zoom -->
-          <img id="pdp-pack-image" src="" alt="Product Pouch" 
-            class="h-80 sm:h-96 w-auto object-contain filter drop-shadow-2xl transition-transform duration-500 group-hover:scale-108" />
+          <span class="text-[11px] text-emerald-800 font-extrabold flex items-center gap-1">
+            <i class="fas fa-shield-check text-emerald-600"></i> FSSAI Certified
+          </span>
+        </div>
 
-          <!-- Bottom Authenticity Banner -->
-          <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-xs p-2.5 rounded-2xl border border-amber-200 flex items-center justify-between text-xs text-amber-950 font-bold">
-            <span><i class="fas fa-droplet text-amber-600 mr-1"></i> Prepared in Pure & Clean Oil</span>
-            <span class="text-emerald-700 font-black"><i class="fas fa-shield-check mr-0.5"></i> FSSAI Certified</span>
+        <!-- Main Media Frame Container (Full-Bleed Luxury Frame with Badges) -->
+        <div class="relative w-full aspect-square rounded-3xl border-2 border-[#E59819] shadow-2xl overflow-hidden bg-[#1F0307] group">
+          
+          <!-- Image View -->
+          <img id="pdp-pack-image" src="" alt="Product Pouch" 
+            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+
+          <!-- Embedded Looping Video View (Hidden by default, shown when video tab clicked) -->
+          <video id="pdp-pack-video" src="" 
+            autoplay loop muted playsinline 
+            class="w-full h-full object-cover hidden">
+          </video>
+
+          <!-- Top Glassmorphic Badges Overlay -->
+          <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between z-20 pointer-events-none">
+            <div class="flex items-center gap-2 pointer-events-auto">
+              <span id="pdp-tag-badge" class="px-3 py-1 bg-[#4A0713]/90 backdrop-blur-md text-[#FBBF24] font-black text-xs rounded-full border border-[#E59819]/60 shadow-md">
+                Signature Pack
+              </span>
+              <span id="pdp-active-weight-pill" class="px-2.5 py-1 bg-[#E59819] text-[#32040C] font-black text-xs rounded-full shadow-md">
+                200 g
+              </span>
+            </div>
+
+            <div class="flex items-center gap-2 pointer-events-auto">
+              <!-- 100% Veg Symbol -->
+              <div class="veg-indicator bg-white/95 backdrop-blur-md shadow-md p-0.5" title="100% Pure Vegetarian">
+                <div class="veg-indicator-dot"></div>
+              </div>
+              <!-- Wishlist -->
+              <button onclick="togglePDPWishlist()" class="w-9 h-9 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
+                <i id="pdp-wishlist-icon" class="far fa-heart text-sm"></i>
+              </button>
+            </div>
           </div>
+
+          <!-- Bottom Authenticity Glassmorphic Banner -->
+          <div class="absolute bottom-3.5 left-3.5 right-3.5 bg-[#32040C]/85 backdrop-blur-md p-2.5 rounded-2xl border border-[#E59819]/50 flex items-center justify-between text-xs text-[#FBBF24] font-bold shadow-lg z-20">
+            <span><i class="fas fa-droplet text-[#E59819] mr-1"></i> Prepared in Pure & Clean Oil</span>
+            <span class="text-emerald-400 font-black"><i class="fas fa-check-circle mr-0.5"></i> 100% Taste Promise</span>
+          </div>
+
         </div>
 
         <!-- Watch Cinematic Product Video Button -->
         <button onclick="openProductVideoModal()" 
-          class="w-full py-3 px-4 bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#4A0713] hover:from-[#32040C] hover:to-[#1F0307] text-[#FBBF24] rounded-2xl font-black text-xs shadow-lg flex items-center justify-center gap-2.5 border border-[#E59819] transition transform hover:-translate-y-0.5">
-          <span class="w-6 h-6 rounded-full bg-[#E59819] text-[#32040C] flex items-center justify-center text-[10px] shadow-sm animate-pulse">
+          class="w-full py-3.5 px-4 bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#4A0713] hover:from-[#32040C] hover:to-[#1F0307] text-[#FBBF24] rounded-2xl font-black text-xs shadow-xl flex items-center justify-center gap-2.5 border border-[#E59819] transition transform hover:-translate-y-0.5">
+          <span class="w-7 h-7 rounded-full bg-[#E59819] text-[#32040C] flex items-center justify-center text-xs shadow-md animate-pulse">
             <i class="fas fa-play ml-0.5"></i>
           </span>
-          <span>Watch Cinematic Brand Video (24s)</span>
+          <span>Watch Fullscreen Cinematic Film (35s)</span>
         </button>
 
         <!-- Trust Mini Cards -->
