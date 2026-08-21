@@ -1,12 +1,14 @@
 /**
  * MEERAV NAMKEENS - SMART AI CONVERSATIONAL ORDERING & PERSONALIZATION BOT
- * 1. AI Conversational Ordering: Discover snacks, select weights, add to cart & 1-click checkout inside chat.
- * 2. Taste Profile & Personalization Memory: Persists spice preferences, favorite categories & dietary tags to user profile & Supabase Cloud for future tailored recommendations.
- * 3. Dedicated Order Support: Live GPS van ETA, address updates, cancellations & tax invoices.
+ * 1. AI Conversational Ordering: Compact, professional in-chat snack cards with 1-click add & express order.
+ * 2. Animated Thinking & Finding Indicator: Unique royal 3-dot bouncing animation when the AI is searching.
+ * 3. Taste Profile & Personalization Memory: Persists spice preferences, favorite categories & dietary tags to user profile & Supabase Cloud.
+ * 4. Dedicated Order Support: Live GPS van ETA, address updates, cancellations & tax invoices.
  */
 
 const chatbotState = {
   isOpen: false,
+  isThinking: false,
   activeOrderId: null,
   messages: []
 };
@@ -61,10 +63,10 @@ function initChatbot() {
   const session = JSON.parse(localStorage.getItem('mira_customer_session'));
   const customerName = session ? session.name : 'Foodie';
 
-  let initialGreeting = `Namaste ${customerName}! 🙏 Welcome to **MEERAV Namkeens**.\n\nI am your personal **Snack Sommelier & Ordering Assistant**! 🍿✨\n\nI can help you **order delicious snacks right here**, customize pack sizes, and remember your taste preferences for tailored suggestions!`;
+  let initialGreeting = `Namaste ${customerName}! 🙏 Welcome to **MEERAV Namkeens**.\n\nI am your personal **Snack Sommelier & Ordering Assistant**! 🍿✨\n\nI can help you discover and order authentic Bikaneri snacks directly in chat!`;
 
   if (profile.favoriteCategories.length > 0 || profile.orderedSnacks.length > 0) {
-    initialGreeting += `\n\n🌟 *Based on your taste profile, you love **${profile.preferredSpice}** snacks and **${profile.favoriteCategories.join(' & ')}**!*`;
+    initialGreeting += `\n\n🌟 *Saved Preferences: **${profile.preferredSpice}** & **${profile.favoriteCategories.join(' & ')}**!*`;
   }
 
   chatbotState.messages = [
@@ -86,11 +88,11 @@ function getPersonalizedRecommendations() {
 
   if (profile.favoriteCategories.length > 0) {
     const matched = allProducts.filter(p => profile.favoriteCategories.includes(p.category));
-    if (matched.length > 0) return matched.slice(0, 3);
+    if (matched.length > 0) return matched.slice(0, 2);
   }
 
   // Default flagship top sellers
-  return allProducts.filter(p => ['p1', 'p4', 'p2'].includes(p.id)).slice(0, 3);
+  return allProducts.filter(p => ['p1', 'p4'].includes(p.id)).slice(0, 2);
 }
 
 function toggleChatbot(forceOpen = null) {
@@ -164,12 +166,12 @@ function renderChatbotWidget() {
 
       <!-- Chatbot Popup Window Frame -->
       <div id="meerav-chatbot-window" 
-        class="hidden fixed bottom-24 sm:bottom-24 right-4 sm:right-6 w-[94vw] sm:w-[410px] max-w-md h-[550px] max-h-[86vh] bg-white rounded-3xl shadow-2xl border-2 border-[#E59819]/60 flex flex-col overflow-hidden transition-all duration-300 z-50">
+        class="hidden fixed bottom-24 sm:bottom-24 right-4 sm:right-6 w-[94vw] sm:w-[400px] max-w-sm h-[540px] max-h-[86vh] bg-white rounded-3xl shadow-2xl border-2 border-[#E59819]/60 flex flex-col overflow-hidden transition-all duration-300 z-50">
         
         <!-- Header -->
         <div class="p-3.5 bg-gradient-to-r from-[#4A0713] to-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-amber-100 p-0.5 flex items-center justify-center">
+            <div class="w-9 h-9 rounded-xl bg-amber-100 p-0.5 flex items-center justify-center shadow-xs">
               <img src="assets/images/meerav_logo.png" alt="Logo" class="w-full h-full object-contain" />
             </div>
             <div>
@@ -193,20 +195,20 @@ function renderChatbotWidget() {
 
         <!-- Quick Action Suggestion Chips -->
         <div id="chatbot-quick-pills" class="p-2 bg-amber-50/80 border-b border-amber-200/60 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold text-[#4A0713]">
-          <button onclick="sendQuickPrompt('Help me order spicy snacks for today')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🌶️ Order Spicy Snacks</button>
+          <button onclick="sendQuickPrompt('Help me order spicy snacks for today')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🌶️ Order Spicy</button>
           <button onclick="sendQuickPrompt('Show me roasted diet snacks with zero palm oil')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🌱 Diet & Roasted</button>
           <button onclick="sendQuickPrompt('I want gift boxes and sweets for celebration')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🎁 Gift Boxes</button>
-          <button onclick="sendQuickPrompt('Where is my order delivery van right now?')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🚚 Track Order</button>
+          <button onclick="sendQuickPrompt('Where is my order delivery van right now?')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🚚 Track Van</button>
         </div>
 
         <!-- Chat Messages Container -->
-        <div id="chatbot-messages-container" class="flex-1 p-3.5 overflow-y-auto space-y-3 bg-[#FFFDF8] text-xs">
+        <div id="chatbot-messages-container" class="flex-1 p-3 overflow-y-auto space-y-3 bg-[#FFFDF8] text-xs">
           <!-- Populated by renderChatMessages() -->
         </div>
 
         <!-- Input Bar -->
         <form onsubmit="handleChatbotSubmit(event)" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
-          <input type="text" id="chatbot-user-input" placeholder="Ask to order (e.g. 'Order 500g Bikaneri Bhujia')..." 
+          <input type="text" id="chatbot-user-input" placeholder="Ask to order (e.g. 'Order Bikaneri Bhujia')..." 
             class="flex-1 px-3.5 py-2 bg-amber-50/50 border border-amber-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white" />
           <button type="submit" class="w-9 h-9 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#E59819]">
             <i class="fas fa-paper-plane text-xs"></i>
@@ -224,50 +226,53 @@ function renderChatMessages() {
   const container = document.getElementById('chatbot-messages-container');
   if (!container) return;
 
-  container.innerHTML = chatbotState.messages.map((msg, msgIdx) => `
-    <div class="flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} space-y-1">
-      <div class="max-w-[90%] p-3.5 rounded-2xl ${
+  const messagesHtml = chatbotState.messages.map((msg, msgIdx) => `
+    <div class="flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} space-y-1 animate-fade-in">
+      <div class="max-w-[90%] p-3 rounded-2xl ${
         msg.sender === 'user' 
-          ? 'bg-[#4A0713] text-[#FBBF24] rounded-br-none shadow-sm font-medium' 
-          : 'bg-white text-gray-800 border border-amber-200/80 rounded-bl-none shadow-sm leading-relaxed'
+          ? 'bg-[#4A0713] text-[#FBBF24] rounded-br-none shadow-xs font-medium' 
+          : 'bg-white text-gray-800 border border-amber-200/80 rounded-bl-none shadow-xs leading-relaxed'
       } text-xs">
         ${msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}
       </div>
 
-      <!-- Interactive Ordering Product Cards Inside Chat -->
+      <!-- Compact & Professional In-Chat Snack Cards -->
       ${msg.recommendations && msg.recommendations.length > 0 ? `
-        <div class="w-full space-y-2 mt-2 pt-1">
-          <div class="text-[10px] font-black text-[#4A0713] uppercase tracking-wider flex items-center gap-1">
+        <div class="w-full space-y-1.5 mt-1.5 pt-0.5">
+          <div class="text-[10px] font-black text-[#4A0713] uppercase tracking-wider flex items-center gap-1 px-1">
             <i class="fas fa-bag-shopping text-[#E59819]"></i>
-            <span>Recommended for Your Order:</span>
+            <span>Recommended for You:</span>
           </div>
 
           ${msg.recommendations.map(p => {
             const v = p.variants[0];
             return `
-              <div class="p-2.5 bg-white rounded-2xl border-2 border-amber-200 hover:border-[#E59819] shadow-md flex flex-col gap-2 transition-all">
-                <div class="flex items-center gap-2.5">
+              <div class="p-2 bg-white rounded-2xl border border-amber-200 hover:border-[#E59819] shadow-xs flex items-center justify-between gap-2 transition hover:shadow-md">
+                
+                <!-- Compact Product Thumbnail & Details -->
+                <div class="flex items-center gap-2 min-w-0 flex-1">
                   <a href="product.html?id=${p.id}" class="shrink-0 block">
-                    <img src="${p.image}" alt="${p.name}" class="w-13 h-13 object-cover rounded-xl border border-amber-200" />
+                    <img src="${p.image}" alt="${p.name}" class="w-11 h-11 object-cover rounded-xl border border-amber-200 shadow-2xs group-hover:scale-105 transition-transform" />
                   </a>
-                  <div class="flex-1 min-w-0">
-                    <a href="product.html?id=${p.id}" class="font-black text-xs text-[#4A0713] truncate block hover:underline">${p.name}</a>
-                    <div class="text-[10px] text-gray-500 font-bold">${p.tag || 'Signature Pack'} &bull; <span class="text-amber-700">${p.spiceLevel}</span></div>
-                    <div class="text-xs font-black text-gray-900 mt-0.5">₹${v.price} <span class="text-[10px] text-gray-400 line-through">₹${v.originalPrice}</span></div>
+                  <div class="min-w-0 flex-1">
+                    <a href="product.html?id=${p.id}" class="font-black text-[11px] text-[#4A0713] truncate block hover:underline leading-tight">${p.name}</a>
+                    <div class="text-[9px] text-amber-800 font-bold truncate mt-0.5">🌶️ ${p.spiceLevel}</div>
+                    <div class="text-[11px] font-black text-gray-900 mt-0.5">₹${v.price} <span class="text-[9px] text-gray-400 line-through">₹${v.originalPrice}</span></div>
                   </div>
                 </div>
 
-                <!-- 1-Click Add / Express Order Buttons -->
-                <div class="grid grid-cols-2 gap-1.5 pt-1.5 border-t border-amber-100">
+                <!-- Sleek Mini Buttons -->
+                <div class="flex items-center gap-1 shrink-0">
                   <button onclick="handleChatAddToCart('${p.id}', 0)" 
-                    class="py-1.5 px-2.5 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1">
-                    <i class="fas fa-cart-plus text-[10px]"></i> Add ${v.weight}
+                    class="py-1 px-2 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-amber-300" title="Add to Cart">
+                    <i class="fas fa-plus text-[8px]"></i> Add
                   </button>
                   <button onclick="handleChatDirectBuy('${p.id}', 0)" 
-                    class="py-1.5 px-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-[11px] font-black transition flex items-center justify-center gap-1 border border-[#E59819]">
-                    <i class="fas fa-bolt text-[10px]"></i> Order Now
+                    class="py-1 px-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-[#E59819] shadow-2xs" title="Instant Checkout">
+                    <i class="fas fa-bolt text-[8px]"></i> Buy
                   </button>
                 </div>
+
               </div>
             `;
           }).join('')}
@@ -277,16 +282,16 @@ function renderChatMessages() {
       <!-- Order Help Action Buttons -->
       ${msg.isOrderHelp ? `
         <div class="grid grid-cols-2 gap-1.5 w-full mt-1.5">
-          <button onclick="sendQuickPrompt('Where is my delivery van right now?')" class="p-2 bg-amber-50 hover:bg-amber-100 text-[#4A0713] border border-amber-200 rounded-xl text-[11px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
+          <button onclick="sendQuickPrompt('Where is my delivery van right now?')" class="p-2 bg-amber-50 hover:bg-amber-100 text-[#4A0713] border border-amber-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
             <i class="fas fa-truck-fast text-[#E59819]"></i> <span>Live Van GPS</span>
           </button>
-          <button onclick="sendQuickPrompt('Download my tax invoice receipt')" class="p-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-[11px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
+          <button onclick="sendQuickPrompt('Download my tax invoice receipt')" class="p-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
             <i class="fas fa-receipt text-blue-600"></i> <span>View Invoice</span>
           </button>
-          <button onclick="sendQuickPrompt('I want to change my delivery address or phone number')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl text-[11px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
+          <button onclick="sendQuickPrompt('I want to change my delivery address or phone number')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
             <i class="fas fa-pen text-emerald-600"></i> <span>Edit Address</span>
           </button>
-          <button onclick="sendQuickPrompt('I want to cancel or modify this order')" class="p-2 bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 rounded-xl text-[11px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
+          <button onclick="sendQuickPrompt('I want to cancel or modify this order')" class="p-2 bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
             <i class="fas fa-ban text-red-600"></i> <span>Cancel Order</span>
           </button>
         </div>
@@ -296,6 +301,24 @@ function renderChatMessages() {
     </div>
   `).join('');
 
+  // Append Animated Thinking/Finding Indicator if active
+  const thinkingHtml = chatbotState.isThinking ? `
+    <div id="chatbot-thinking-indicator" class="flex items-center gap-2 p-3 bg-white border border-amber-200 rounded-2xl rounded-bl-none shadow-xs text-xs max-w-[85%] animate-fade-in">
+      <div class="w-6 h-6 rounded-lg bg-[#4A0713] flex items-center justify-center text-[#FBBF24] text-[10px] animate-pulse shrink-0">
+        <i class="fas fa-sparkles"></i>
+      </div>
+      <div class="flex items-center gap-1 font-bold text-gray-700 text-[11px]">
+        <span>Sommelier is finding authentic snacks</span>
+        <div class="flex items-center gap-0.5 ml-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#E59819] animate-bounce" style="animation-delay: 0ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#E59819] animate-bounce" style="animation-delay: 150ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#E59819] animate-bounce" style="animation-delay: 300ms"></span>
+        </div>
+      </div>
+    </div>
+  ` : '';
+
+  container.innerHTML = messagesHtml + thinkingHtml;
   scrollChatToBottom();
 }
 
@@ -360,7 +383,7 @@ function handleChatbotSubmit(event) {
 
   const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  // Add User Message
+  // 1. Add User Message
   chatbotState.messages.push({
     sender: 'user',
     text: userQuery,
@@ -369,9 +392,12 @@ function handleChatbotSubmit(event) {
   });
 
   input.value = '';
+
+  // 2. Trigger Animated AI Thinking Indicator
+  chatbotState.isThinking = true;
   renderChatMessages();
 
-  // Generate Smart Bot Resolution & Update Personalization
+  // 3. Generate Smart Bot Resolution & Update Personalization after smooth delay
   setTimeout(() => {
     const { botResponse, matchedProducts, learnedPreference } = analyzeQueryAndRecommend(userQuery);
     
@@ -391,6 +417,7 @@ function handleChatbotSubmit(event) {
       saveUserPersonalization(profile);
     }
 
+    chatbotState.isThinking = false;
     chatbotState.messages.push({
       sender: 'bot',
       text: botResponse,
@@ -398,7 +425,7 @@ function handleChatbotSubmit(event) {
       recommendations: matchedProducts
     });
     renderChatMessages();
-  }, 400);
+  }, 600);
 }
 
 function analyzeQueryAndRecommend(query) {
@@ -425,9 +452,9 @@ function analyzeQueryAndRecommend(query) {
              (q.includes('sweet') && pCat === 'sweets-combos');
     });
 
-    if (matched.length === 0) matched = allProducts.slice(0, 3);
+    if (matched.length === 0) matched = allProducts.slice(0, 2);
 
-    responseText = `🛒 **Instant Order Assistance**\n\nI have prepared the best match for your craving! You can **Add to Cart** or click **Order Now** directly below. I've also saved your preference to your profile for tailored recommendations! ✨`;
+    responseText = `🛒 **Instant Order Assistance**\n\nI have matched the best snack for your craving! You can **Add to Cart** or click **Buy** directly below. Your preference is also saved for future visits! ✨`;
     learnedPreference = { category: matched[0]?.category, spice: matched[0]?.spiceLevel };
   }
   // 2. LIVE TRACKING & SUPPORT INTENTS
@@ -466,13 +493,13 @@ function analyzeQueryAndRecommend(query) {
     responseText = "🎁 Our **Grand Celebration Bikaneri Gift Box** contains an assortment of signature namkeens and sweets in a luxury keepsake box!";
     learnedPreference = { category: 'sweets-combos' };
   } else {
-    matched = allProducts.slice(0, 3);
+    matched = allProducts.slice(0, 2);
     responseText = `I can help you place an order right now! Tell me your favorite snack or craving (e.g. *"Order spicy sev"*, *"Healthy snacks for tea-time"*), and I'll tailor it for you! 🍿`;
   }
 
   return {
     botResponse: responseText,
-    matchedProducts: matched.slice(0, 3),
+    matchedProducts: matched.slice(0, 2),
     learnedPreference
   };
 }
