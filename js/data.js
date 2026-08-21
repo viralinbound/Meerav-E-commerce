@@ -22,12 +22,12 @@ const MIRA_DATA = {
   },
 
   categories: [
-    { id: "all", name: "All Namkeens", icon: "fas fa-cookie", description: "Complete Bikaner royal heritage snack collection" },
-    { id: "bhujia-sev", name: "Bikaneri Bhujia & Sev", icon: "fas fa-fire", description: "Thin, crispy golden sev & bhujia fried in pure oil with desert spices" },
-    { id: "mixture-farsan", name: "Royal Mixtures & Farsan", icon: "fas fa-bowl-rice", description: "Rich royal medleys with whole cashews, raisins, boondi & dry fruits" },
-    { id: "mathri", name: "Handmade Mathri & Crisps", icon: "fas fa-sun", description: "Flaky, handcrafted tea-time crisps kneaded with ajwain and kasuri methi" },
-    { id: "roasted-diet", name: "Roasted Diet & Healthy", icon: "fas fa-seedling", description: "Slow-roasted guilt-free superfood snacks with zero palm oil" },
-    { id: "sweets-combos", name: "Festive Gift Boxes", icon: "fas fa-gift", description: "Keepsake gift boxes and authentic chhena sweets in sugar syrup" }
+    { id: "all", name: "All Delicacies", icon: "fas fa-cookie-bite", description: "Complete Bikaner royal heritage snack collection" },
+    { id: "bhujia-sev", name: "Bhujia & Sev", icon: "fas fa-pepper-hot", description: "Thin, crispy golden sev & authentic Bikaneri bhujia prepared in pure oil" },
+    { id: "mixture-farsan", name: "Namkeen & Mixtures", icon: "fas fa-bowl-rice", description: "Rich royal medleys with cashews, raisins, boondi & crunchy namkeens" },
+    { id: "mathri", name: "Papad & Mathri", icon: "fas fa-sun", description: "Flaky handmade mathri, sun-dried papad, and authentic Rajasthani crisps" },
+    { id: "roasted-diet", name: "Roasted Diet Snacks", icon: "fas fa-seedling", description: "Slow-roasted superfoods, crispy moong dal, and diet makhana with zero palm oil" },
+    { id: "sweets-combos", name: "Sweets & Hampers", icon: "fas fa-gift", description: "Traditional Bikaneri sweets, festive combo boxes, and luxury gift hampers" }
   ],
 
   dietaryTags: ["No Onion-Garlic", "Jain Friendly", "Roasted", "Gluten-Free", "100% Pure Oil", "Pure Desi Ghee"],

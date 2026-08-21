@@ -73,7 +73,8 @@ function renderHomeCategoryCards() {
   const bannerCount = document.getElementById('home-total-products-count');
   const bannerBtn = document.getElementById('home-total-products-btn');
 
-  const categories = JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories];
+  // Always use latest MIRA_DATA categories
+  const categories = MIRA_DATA.categories;
   const products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
 
   if (bannerCount) bannerCount.textContent = `Want to explore all ${products.length} authentic varieties?`;
@@ -83,35 +84,33 @@ function renderHomeCategoryCards() {
 
   const validCats = categories.filter(c => c.id !== 'all');
 
-  const categoryImages = {
-    'bhujia-sev': 'assets/images/cinematic_bhujia.jpg',
-    'mixture-farsan': 'assets/images/cinematic_mixture.jpg',
-    'mathri': 'assets/images/cinematic_papad.jpg',
-    'papad-mathri': 'assets/images/cinematic_papad.jpg',
-    'roasted-diet': 'assets/images/cinematic_moong_dal.jpg',
-    'healthy-roasted': 'assets/images/cinematic_moong_dal.jpg',
-    'sweets-combos': 'assets/images/cinematic_chips.jpg'
+  const categoryIcons = {
+    'bhujia-sev': { icon: 'fas fa-pepper-hot', color: 'from-amber-600 to-red-700' },
+    'mixture-farsan': { icon: 'fas fa-bowl-rice', color: 'from-amber-700 to-[#4A0713]' },
+    'mathri': { icon: 'fas fa-sun', color: 'from-amber-500 to-amber-700' },
+    'papad-mathri': { icon: 'fas fa-sun', color: 'from-amber-500 to-amber-700' },
+    'roasted-diet': { icon: 'fas fa-seedling', color: 'from-emerald-600 to-teal-800' },
+    'healthy-roasted': { icon: 'fas fa-seedling', color: 'from-emerald-600 to-teal-800' },
+    'sweets-combos': { icon: 'fas fa-gift', color: 'from-[#4A0713] to-[#250207]' }
   };
 
   container.innerHTML = validCats.map(cat => {
     const count = products.filter(p => p.category === cat.id).length;
-    const catImg = categoryImages[cat.id] || 'assets/images/cinematic_bhujia.jpg';
+    const catStyle = categoryIcons[cat.id] || { icon: cat.icon || 'fas fa-cookie-bite', color: 'from-[#4A0713] to-amber-800' };
 
     return `
       <a href="category.html?cat=${cat.id}" 
-        class="p-4 sm:p-5 bg-white rounded-3xl border-2 border-amber-200 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block overflow-hidden">
+        class="p-5 sm:p-6 bg-white rounded-3xl border-2 border-amber-200 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block">
         
-        <div class="w-full aspect-square mb-3 rounded-2xl overflow-hidden shadow-md bg-[#1F0307] relative">
-          <img src="${catImg}" alt="${cat.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-          <span class="absolute bottom-2 left-2 right-2 px-2 py-0.5 bg-[#4A0713]/90 text-[#FBBF24] border border-[#E59819]/50 rounded-full text-[10px] font-black backdrop-blur-xs">
-            ${count} Varieties
-          </span>
+        <div class="w-16 h-16 mx-auto mb-3.5 rounded-2xl bg-gradient-to-br ${catStyle.color} text-[#FBBF24] flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform duration-300 border border-[#E59819]/50">
+          <i class="${catStyle.icon}"></i>
         </div>
 
         <h4 class="font-black text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${cat.name}</h4>
+        <span class="text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
+        
         <span class="inline-flex items-center gap-1 text-[11px] font-black text-[#4A0713] group-hover:underline">
-          Explore Collection &rarr;
+          Explore Snacks &rarr;
         </span>
       </a>
     `;
