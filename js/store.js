@@ -83,19 +83,33 @@ function renderHomeCategoryCards() {
 
   const validCats = categories.filter(c => c.id !== 'all');
 
+  const categoryImages = {
+    'bhujia-sev': 'assets/images/cinematic_bhujia.jpg',
+    'mixture-farsan': 'assets/images/cinematic_mixture.jpg',
+    'papad-mathri': 'assets/images/cinematic_papad.jpg',
+    'healthy-roasted': 'assets/images/cinematic_moong_dal.jpg',
+    'sweets-combos': 'assets/images/cinematic_chips.jpg'
+  };
+
   container.innerHTML = validCats.map(cat => {
     const count = products.filter(p => p.category === cat.id).length;
+    const catImg = categoryImages[cat.id] || 'assets/images/cinematic_bhujia.jpg';
 
     return `
       <a href="category.html?cat=${cat.id}" 
-        class="p-6 bg-white rounded-3xl border-2 border-amber-200 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block">
-        <div class="w-16 h-16 mx-auto mb-3.5 rounded-2xl bg-gradient-to-tr from-[#4A0713] to-[#670E1E] text-[#FBBF24] flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform">
-          <i class="${cat.icon || 'fas fa-cookie'}"></i>
+        class="p-4 sm:p-5 bg-white rounded-3xl border-2 border-amber-200 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block overflow-hidden">
+        
+        <div class="w-full aspect-square mb-3 rounded-2xl overflow-hidden shadow-md bg-[#1F0307] relative">
+          <img src="${catImg}" alt="${cat.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+          <span class="absolute bottom-2 left-2 right-2 px-2 py-0.5 bg-[#4A0713]/90 text-[#FBBF24] border border-[#E59819]/50 rounded-full text-[10px] font-black backdrop-blur-xs">
+            ${count} Varieties
+          </span>
         </div>
-        <h4 class="font-black text-sm text-gray-900 group-hover:text-[#4A0713] mb-1">${cat.name}</h4>
-        <span class="text-[11px] text-amber-700 font-bold block mb-2">${count} Signature Varieties</span>
+
+        <h4 class="font-black text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${cat.name}</h4>
         <span class="inline-flex items-center gap-1 text-[11px] font-black text-[#4A0713] group-hover:underline">
-          View Snacks &rarr;
+          Explore Collection &rarr;
         </span>
       </a>
     `;

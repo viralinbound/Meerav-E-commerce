@@ -47,7 +47,11 @@ function renderCustomerAuthUI() {
   const container = document.getElementById('customer-auth-content');
   if (!container) return;
 
+  const defaultAvatar = 'assets/images/default_avatar.jpg';
+
   if (authState.customer) {
+    const avatarSrc = authState.customer.avatar || defaultAvatar;
+
     // Get customer's orders from storage or state
     const allOrders = JSON.parse(localStorage.getItem('mira_orders_db')) || (typeof storeState !== 'undefined' ? storeState.orders : MIRA_DATA.initialOrders);
     const customerOrders = allOrders.filter(o => 
@@ -57,14 +61,23 @@ function renderCustomerAuthUI() {
 
     container.innerHTML = `
       <div class="space-y-4">
-        <!-- Customer Profile Card -->
+        <!-- Customer Profile Card with Avatar & Upload -->
         <div class="flex items-center gap-3.5 p-3.5 bg-gradient-to-r from-amber-50 to-amber-100/60 rounded-2xl border border-amber-200">
-          <div class="w-12 h-12 bg-amber-600 text-white rounded-xl flex items-center justify-center text-xl font-black shadow-md">
-            ${authState.customer.name.charAt(0)}
+          <div class="relative group">
+            <img src="${avatarSrc}" alt="${authState.customer.name}" 
+              class="w-14 h-14 rounded-2xl object-cover border-2 border-[#E59819] shadow-md" />
+            <label class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#4A0713] text-[#FBBF24] hover:bg-[#32040C] rounded-full flex items-center justify-center cursor-pointer shadow-md border border-white text-[10px]" title="Change Photo">
+              <i class="fas fa-camera"></i>
+              <input type="file" accept="image/*" onchange="handleUserAvatarUpload(event)" class="hidden" />
+            </label>
           </div>
           <div class="flex-1 min-w-0">
             <h3 class="text-base font-black text-gray-900 truncate">${authState.customer.name}</h3>
-            <p class="text-xs text-gray-500 truncate">${authState.customer.phone} &bull; ${authState.customer.email || 'customer@mira.com'}</p>
+            <p class="text-xs text-gray-500 truncate">${authState.customer.phone} &bull; ${authState.customer.email || 'customer@meerav.com'}</p>
+            <label class="inline-flex items-center gap-1 text-[10px] font-black text-[#4A0713] hover:underline cursor-pointer mt-0.5">
+              <i class="fas fa-upload text-[9px] text-[#E59819]"></i> Upload New Photo
+              <input type="file" accept="image/*" onchange="handleUserAvatarUpload(event)" class="hidden" />
+            </label>
           </div>
           <button onclick="logoutCustomer()" title="Logout" class="p-2 text-gray-400 hover:text-red-600 transition">
             <i class="fas fa-sign-out-alt text-sm"></i>
@@ -137,12 +150,19 @@ function renderCustomerAuthUI() {
       </div>
     `;
   } else {
-    // Show Login / Registration Form
+    // Show Login / Registration Form with Profile Upload Option
     container.innerHTML = `
       <div class="space-y-4">
         <div class="text-center">
+          <div class="w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden border-2 border-[#E59819] shadow-md bg-amber-100 relative group">
+            <img id="login-preview-avatar" src="${defaultAvatar}" alt="Human Profile" class="w-full h-full object-cover" />
+            <label class="absolute inset-0 bg-black/40 hover:bg-black/60 text-white flex flex-col items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition cursor-pointer">
+              <i class="fas fa-camera mb-0.5"></i> Photo
+              <input type="file" accept="image/*" onchange="handlePreviewAvatar(event)" class="hidden" />
+            </label>
+          </div>
           <h3 class="text-xl font-black text-amber-950">Customer Account</h3>
-          <p class="text-xs text-gray-500 mt-1">Sign in to view your past orders, live delivery tracking & saved addresses</p>
+          <p class="text-xs text-gray-500 mt-0.5">Sign in to view past orders, live delivery tracking & saved profile</p>
         </div>
 
         <!-- Fast Demo Account Callout -->
@@ -185,13 +205,15 @@ function renderCustomerAuthUI() {
                 class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
             </div>
             <div>
-              <label class="block text-gray-600 font-semibold mb-1">OTP Simulation</label>
-              <input type="text" value="Auto-Verified ✓" readonly 
-                class="w-full px-3 py-2 bg-emerald-50 text-emerald-800 font-bold border border-emerald-200 rounded-xl text-center" />
+              <label class="block text-gray-600 font-semibold mb-1">Photo Upload</label>
+              <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer truncate">
+                <i class="fas fa-camera text-[#E59819] mr-1"></i> <span id="photo-upload-label">Choose Photo</span>
+                <input type="file" id="cust-login-photo" accept="image/*" onchange="handlePreviewAvatar(event)" class="hidden" />
+              </label>
             </div>
           </div>
 
-          <button type="submit" class="w-full py-3 bg-gray-900 hover:bg-black text-white font-extrabold text-xs rounded-xl shadow-md transition">
+          <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
             Sign In & Save Profile <i class="fas fa-arrow-right ml-1"></i>
           </button>
         </form>
@@ -201,8 +223,45 @@ function renderCustomerAuthUI() {
   updateCustomerHeaderBadge();
 }
 
+let tempAvatarData = null;
+
+function handlePreviewAvatar(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    tempAvatarData = evt.target.result;
+    const preview = document.getElementById('login-preview-avatar');
+    if (preview) preview.src = tempAvatarData;
+    const label = document.getElementById('photo-upload-label');
+    if (label) label.textContent = 'Photo Added ✓';
+    showToast('Photo selected! Click Sign In to save.', 'success');
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleUserAvatarUpload(e) {
+  const file = e.target.files[0];
+  if (!file || !authState.customer) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const base64 = evt.target.result;
+    authState.customer.avatar = base64;
+    localStorage.setItem('mira_customer_session', JSON.stringify(authState.customer));
+    showToast('Profile photo updated & saved permanently! 📸', 'success');
+    renderCustomerAuthUI();
+    updateCustomerHeaderBadge();
+  };
+  reader.readAsDataURL(file);
+}
+
 function loginDemoCustomer() {
-  const demo = MIRA_DATA.mockUsers[0];
+  const demo = {
+    ...MIRA_DATA.mockUsers[0],
+    avatar: 'assets/images/default_avatar.jpg'
+  };
   authState.customer = demo;
   localStorage.setItem('mira_customer_session', JSON.stringify(demo));
   showToast(`Welcome back, ${demo.name}! 👋`, 'success');
@@ -225,13 +284,14 @@ function handleCustomerLogin(e) {
     email: `${name.toLowerCase().replace(/\s+/g, '')}@example.com`,
     address,
     pincode,
+    avatar: tempAvatarData || 'assets/images/default_avatar.jpg',
     lat: 19.0760 + (Math.random() - 0.5) * 0.05,
     lng: 72.8777 + (Math.random() - 0.5) * 0.05
   };
 
   authState.customer = user;
   localStorage.setItem('mira_customer_session', JSON.stringify(user));
-  showToast(`Welcome to Mira Namkeens, ${name}! 🎉`, 'success');
+  showToast(`Welcome to MEERAV Namkeens, ${name}! 🎉`, 'success');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();
   fillCheckoutFormIfLoggedIn();
@@ -240,6 +300,7 @@ function handleCustomerLogin(e) {
 
 function logoutCustomer() {
   authState.customer = null;
+  tempAvatarData = null;
   localStorage.removeItem('mira_customer_session');
   showToast('Logged out of customer account', 'info');
   renderCustomerAuthUI();
@@ -250,19 +311,20 @@ function updateCustomerHeaderBadge() {
   const btn = document.getElementById('header-customer-btn');
   if (!btn) return;
 
+  const defaultAvatar = 'assets/images/default_avatar.jpg';
+
   if (authState.customer) {
+    const avatarSrc = authState.customer.avatar || defaultAvatar;
     btn.innerHTML = `
       <div class="flex items-center gap-2">
-        <div class="w-7 h-7 rounded-full bg-amber-200 text-amber-900 font-bold text-xs flex items-center justify-center shadow-xs">
-          ${authState.customer.name.charAt(0)}
-        </div>
-        <span class="hidden sm:inline font-bold text-xs text-amber-900 truncate max-w-[100px]">${authState.customer.name.split(' ')[0]}</span>
+        <img src="${avatarSrc}" alt="User Avatar" class="w-8 h-8 rounded-full object-cover border-2 border-[#E59819] shadow-sm" />
+        <span class="hidden sm:inline font-black text-xs text-[#4A0713] truncate max-w-[100px]">${authState.customer.name.split(' ')[0]}</span>
       </div>
     `;
   } else {
     btn.innerHTML = `
-      <div class="flex items-center gap-1.5 text-gray-700">
-        <i class="far fa-user text-sm"></i>
+      <div class="flex items-center gap-2 text-gray-700">
+        <img src="${defaultAvatar}" alt="Guest Avatar" class="w-7 h-7 rounded-full object-cover border border-amber-300 opacity-80" />
         <span class="hidden sm:inline font-bold text-xs">Sign In</span>
       </div>
     `;
