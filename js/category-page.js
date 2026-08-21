@@ -7,8 +7,8 @@ const categoryPageState = {
   selectedCategory: 'all',
   selectedDietary: 'all',
   searchQuery: '',
-  categories: JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories],
-  products: JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products]
+  categories: [],
+  products: []
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,8 +20,13 @@ function initCategoryPage() {
   const initialCat = urlParams.get('cat') || 'all';
 
   categoryPageState.selectedCategory = initialCat;
-  categoryPageState.categories = JSON.parse(localStorage.getItem('mira_categories_db')) || [...MIRA_DATA.categories];
-  categoryPageState.products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
+  
+  // Ensure products and categories are always loaded
+  const storedCats = JSON.parse(localStorage.getItem('mira_categories_db'));
+  categoryPageState.categories = (storedCats && storedCats.length > 0) ? storedCats : [...MIRA_DATA.categories];
+
+  const storedProds = JSON.parse(localStorage.getItem('mira_products_db'));
+  categoryPageState.products = (storedProds && storedProds.length > 0) ? storedProds : [...MIRA_DATA.products];
 
   renderCategoryHeader();
   renderCategoryTabs();
@@ -90,7 +95,7 @@ function renderCategoryDietaryFilters() {
   const container = document.getElementById('category-dietary-container');
   if (!container) return;
 
-  const filters = ['all', ...MIRA_DATA.dietaryTags];
+  const filters = ['all', ...(MIRA_DATA.dietaryTags || [])];
   container.innerHTML = filters.map(tag => `
     <button onclick="selectDietaryFilter('${tag}')" 
       class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
@@ -107,7 +112,7 @@ function selectCategory(catId) {
   categoryPageState.selectedCategory = catId;
   
   // Update URL state without page reload
-  const newUrl = catId === 'all' ? 'category.html' : `category.html?cat=${catId}`;
+  const newUrl = catId === 'all' ? 'category.html?cat=all' : `category.html?cat=${catId}`;
   window.history.pushState({ path: newUrl }, '', newUrl);
 
   renderCategoryHeader();
@@ -148,7 +153,7 @@ function renderCategoryProducts() {
     filtered = filtered.filter(p => 
       p.name.toLowerCase().includes(categoryPageState.searchQuery) ||
       p.description.toLowerCase().includes(categoryPageState.searchQuery) ||
-      p.ingredients.toLowerCase().includes(categoryPageState.searchQuery)
+      (p.ingredients && p.ingredients.toLowerCase().includes(categoryPageState.searchQuery))
     );
   }
 
@@ -164,10 +169,14 @@ function renderCategoryProducts() {
 
   if (emptyState) emptyState.classList.add('hidden');
 
+  const selectedVariantsMap = (typeof storeState !== 'undefined' && storeState.selectedVariants) || {};
+  const wishlist = (typeof storeState !== 'undefined' && storeState.wishlist) || [];
+
   grid.innerHTML = filtered.map(p => {
-    const selectedIdx = storeState.selectedVariants[p.id] || 0;
+    const selectedIdx = selectedVariantsMap[p.id] || 0;
     const selectedVar = p.variants[selectedIdx] || p.variants[0];
     const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
+    const isWishlisted = wishlist.includes(p.id);
 
     return `
       <div class="product-card overflow-hidden flex flex-col justify-between relative group">
@@ -204,7 +213,7 @@ function renderCategoryProducts() {
 
             <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');" 
               class="w-8 h-8 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
-              <i class="${storeState.wishlist.includes(p.id) ? 'fas fa-heart text-red-500' : 'far fa-heart'} text-xs"></i>
+              <i class="${isWishlisted ? 'fas fa-heart text-red-500' : 'far fa-heart'} text-xs"></i>
             </button>
           </div>
 
@@ -286,10 +295,13 @@ function renderCategoryProducts() {
           </div>
         </div>
       </div>
+    `;
   }).join('');
 }
 
 function setCategoryProductVariant(productId, variantIdx) {
-  storeState.selectedVariants[productId] = variantIdx;
+  if (typeof storeState !== 'undefined') {
+    storeState.selectedVariants[productId] = variantIdx;
+  }
   renderCategoryProducts();
 }
