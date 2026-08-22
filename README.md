@@ -3,16 +3,41 @@
 
 ---
 
-## ☁️ Supabase Cloud Configuration & API Keys
+## 🔐 Environment Variables (no keys live in source code)
 
-All cloud endpoints, API keys, and bucket configurations are centralized in [`.env`](.env) and [`js/supabase-config.js`](js/supabase-config.js):
+The Supabase URL and publishable key are **never hardcoded** in any `.js`/`.html` file. They're injected at build time from environment variables into a generated, git-ignored `js/env-config.js`:
 
-| Setting | Value |
+```
+.env (local, git-ignored)  ──┐
+Vercel Env Vars (production) ─┴──▶  npm run build  ──▶  js/env-config.js  ──▶  window.__ENV__  ──▶  js/supabase-client.js
+```
+
+**Local setup:**
+```bash
+cp .env.example .env      # then fill in your real Supabase values
+npm run build              # generates js/env-config.js
+npm run dev                # serves the site on http://localhost:8080
+```
+
+Required variables (see [`.env.example`](.env.example)):
+
+| Variable | Description |
 |---|---|
-| **Supabase URL** | `https://rudiggwblncwkjmqqemd.supabase.co` |
-| **Publishable / Anon Key** | `[CONFIGURED_IN_SUPABASE_CONFIG]` |
-| **Storage Bucket** | `meerav-media` (Public Bucket) |
-| **Storage Public URL** | `https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/product-media` |
+| `SUPABASE_URL` | Your Supabase project URL |
+| `SUPABASE_ANON_KEY` | Your Supabase **publishable/anon** key (safe for client-side use — this is what it's designed for; Row Level Security is what actually protects your data, not hiding this key) |
+| `SUPABASE_STORAGE_BUCKET` | Public bucket name for product/category/avatar media (`meerav-media`) |
+
+---
+
+## 🚀 Deploy to Vercel
+
+1. Push this repo to GitHub (already done: [viralinbound/Meerav-E-commerce](https://github.com/viralinbound/Meerav-E-commerce)).
+2. In Vercel, **Import Project** from that GitHub repo.
+3. Framework preset: **Other**. Vercel will read [`vercel.json`](vercel.json) automatically (`buildCommand: npm run build`, `outputDirectory: .`).
+4. In **Project Settings → Environment Variables**, add:
+   - `SUPABASE_URL` = `https://rudiggwblncwkjmqqemd.supabase.co`
+   - `SUPABASE_ANON_KEY` = *(your publishable key, from Supabase Project Settings → API)*
+5. Deploy. Vercel runs `npm run build` on every deploy, which regenerates `js/env-config.js` fresh from those Environment Variables — the real values never touch the git repo.
 
 ---
 

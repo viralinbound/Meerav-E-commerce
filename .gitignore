@@ -15,3 +15,11 @@ desktop.ini
 .env.local
 .env.*.local
 
+# Build output — regenerated from .env / Vercel env vars by `npm run build`
+# (scripts/generate-env.js). Never commit real config values.
+js/env-config.js
+
+# Node / Vercel
+node_modules/
+.vercel
+

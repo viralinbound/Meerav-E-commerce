@@ -1,249 +1,356 @@
 /**
- * MEERAV NAMKEENS - SUPABASE CLOUD CLIENT & DATA MANAGER
- * Real-time Cloud Sync for Categories, 75 Products, Orders & Media Storage
+ * MEERAV NAMKEENS - SUPABASE BACKEND LAYER
+ * Single source of truth for the database. Every page loads this after the
+ * Supabase JS CDN script and js/env-config.js (which supplies the URL/key —
+ * see scripts/generate-env.js) and before data.js/store.js/admin.js/etc.
+ *
+ * Exposes `MiraDB` with read/write helpers (mapped to the same camelCase
+ * shape the existing UI code already expects) plus realtime subscriptions
+ * so the storefront and admin portal stay in sync live, across tabs/devices.
  */
 
-const MeeravSupabase = {
-  client: null,
-  isOnline: false,
+const SUPABASE_URL = window.__ENV__ && window.__ENV__.SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = window.__ENV__ && window.__ENV__.SUPABASE_ANON_KEY;
 
-  init() {
-    try {
-      if (typeof window !== 'undefined' && window.supabase && typeof SUPABASE_CONFIG !== 'undefined') {
-        this.client = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-        this.isOnline = true;
-        console.log('✅ Connected to Supabase Cloud:', SUPABASE_CONFIG.url);
-      } else {
-        console.warn('⚠️ Supabase JS SDK not loaded, using offline fallback dataset.');
-      }
-    } catch (err) {
-      console.warn('⚠️ Supabase initialization note:', err.message);
-      this.isOnline = false;
-    }
-  },
-
-  // 1. Fetch Categories
-  async getCategories() {
-    if (this.client) {
-      try {
-        const { data, error } = await this.client
-          .from('categories')
-          .select('*')
-          .order('id', { ascending: true });
-
-        if (!error && data && data.length > 0) {
-          localStorage.setItem('mira_categories_db', JSON.stringify(data));
-          return data;
-        }
-      } catch (e) {
-        console.warn('Supabase categories fetch error, using local fallback:', e.message);
-      }
-    }
-    return JSON.parse(localStorage.getItem('mira_categories_db')) || MIRA_DATA.categories;
-  },
-
-  // 2. Fetch Products (With Category & Search Filtering)
-  async getProducts(category = 'all', searchQuery = '') {
-    if (this.client) {
-      try {
-        let query = this.client
-          .from('products')
-          .select('*')
-          .eq('in_stock', true);
-
-        if (category && category !== 'all') {
-          query = query.eq('category', category);
-        }
-
-        if (searchQuery) {
-          query = query.ilike('name', `%${searchQuery}%`);
-        }
-
-        const { data, error } = await query.order('id', { ascending: true });
-
-        if (!error && data && data.length > 0) {
-          // Normalize column names
-          const normalized = data.map(p => ({
-            id: p.id,
-            name: p.name,
-            category: p.category,
-            tag: p.tag,
-            rating: Number(p.rating),
-            reviewsCount: p.reviews_count,
-            spiceLevel: p.spice_level,
-            dietary: p.dietary || [],
-            image: p.image,
-            video: p.video,
-            sampleImage: p.sample_image,
-            description: p.description,
-            ingredients: p.ingredients,
-            nutrition: p.nutrition || {},
-            variants: p.variants || [],
-            inStock: p.in_stock
-          }));
-
-          localStorage.setItem('mira_products_db', JSON.stringify(normalized));
-          return normalized;
-        }
-      } catch (e) {
-        console.warn('Supabase products fetch error, using local catalog:', e.message);
-      }
-    }
-
-    const localProds = JSON.parse(localStorage.getItem('mira_products_db')) || MIRA_DATA.products;
-    return localProds;
-  },
-
-  // 3. Fetch Single Product by ID
-  async getProductById(productId) {
-    if (this.client) {
-      try {
-        const { data, error } = await this.client
-          .from('products')
-          .select('*')
-          .eq('id', productId)
-          .single();
-
-        if (!error && data) {
-          return {
-            id: data.id,
-            name: data.name,
-            category: data.category,
-            tag: data.tag,
-            rating: Number(data.rating),
-            reviewsCount: data.reviews_count,
-            spiceLevel: data.spice_level,
-            dietary: data.dietary || [],
-            image: data.image,
-            video: data.video,
-            sampleImage: data.sample_image,
-            description: data.description,
-            ingredients: data.ingredients,
-            nutrition: data.nutrition || {},
-            variants: data.variants || [],
-            inStock: data.in_stock
-          };
-        }
-      } catch (e) {
-        console.warn('Supabase product single fetch fallback:', e.message);
-      }
-    }
-
-    const all = JSON.parse(localStorage.getItem('mira_products_db')) || MIRA_DATA.products;
-    return all.find(p => p.id === productId) || all[0];
-  },
-
-  // 4. Save Customer Order to Cloud
-  async createOrder(orderData) {
-    const orderPayload = {
-      id: orderData.id,
-      customer: orderData.customer,
-      items: orderData.items,
-      total_amount: orderData.totalAmount,
-      discount_amount: orderData.discountAmount || 0,
-      shipping_charge: orderData.shippingCharge || 0,
-      payment_method: orderData.paymentMethod,
-      payment_status: orderData.paymentStatus || 'Completed',
-      order_status: orderData.orderStatus || 'Order Placed'
-    };
-
-    if (this.client) {
-      try {
-        const { data, error } = await this.client
-          .from('orders')
-          .insert([orderPayload]);
-
-        if (!error) {
-          console.log('✅ Order synced to Supabase Cloud:', orderData.id);
-        }
-      } catch (e) {
-        console.warn('Cloud order sync note:', e.message);
-      }
-    }
-
-    return orderData;
-  },
-
-  // 5. Save/Update Customer Profile
-  async upsertCustomer(customerData) {
-    if (this.client) {
-      try {
-        const { error } = await this.client
-          .from('customers')
-          .upsert([{
-            id: customerData.id,
-            name: customerData.name,
-            phone: customerData.phone,
-            email: customerData.email,
-            address: customerData.address,
-            pincode: customerData.pincode,
-            avatar: customerData.avatar
-          }]);
-
-        if (!error) {
-          console.log('✅ Customer profile saved to Supabase');
-        }
-      } catch (e) {
-        console.warn('Customer upsert fallback:', e.message);
-      }
-    }
-  },
-
-  // 6. Systematic Media Upload (Categories/Products/Photos/Videos)
-  // product-media/categories/{categoryId}/products/{productId}/{photos|videos}/{filename}
-  async uploadMedia(file, categoryId, productId, type = 'photos') {
-    if (!this.client) throw new Error('Supabase client not initialized');
-
-    const cleanFileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-    const storagePath = `categories/${categoryId}/products/${productId}/${type}/${cleanFileName}`;
-
-    const bucketName = (typeof SUPABASE_CONFIG !== 'undefined' && SUPABASE_CONFIG.storageBucket) || 'meerav-media';
-
-    const { data, error } = await this.client.storage
-      .from(bucketName)
-      .upload(storagePath, file, {
-        cacheControl: '3600',
-        upsert: true
-      });
-
-    if (error) throw error;
-
-    const { data: publicUrlData } = this.client.storage
-      .from(bucketName)
-      .getPublicUrl(storagePath);
-
-    return {
-      storagePath,
-      publicUrl: publicUrlData.publicUrl
-    };
-  }
-};
-
-// Global Async Bridge Functions for Storefront & Admin
-async function fetchCategories() {
-  return await MeeravSupabase.getCategories();
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  throw new Error(
+    'Missing Supabase config. js/env-config.js did not load (or is empty) before js/supabase-client.js. ' +
+    'Run `npm run build` after creating .env from .env.example, or set SUPABASE_URL / SUPABASE_ANON_KEY ' +
+    'as Environment Variables in your Vercel project settings.'
+  );
 }
 
-async function fetchProducts(category = 'all', searchQuery = '') {
-  return await MeeravSupabase.getProducts(category, searchQuery);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+/* ---------------------------------------------------------------------- */
+/* Row <-> App-shape mappers                                              */
+/* ---------------------------------------------------------------------- */
+
+function dbProductToApp(row) {
+  return {
+    id: row.id,
+    category: row.category,
+    name: row.name,
+    tag: row.tag,
+    rating: Number(row.rating) || 0,
+    reviewsCount: row.reviews_count || 0,
+    spiceLevel: row.spice_level,
+    dietary: row.dietary || [],
+    image: row.image,
+    video: row.video || undefined,
+    sampleImage: row.sample_image || undefined,
+    description: row.description,
+    ingredients: row.ingredients,
+    nutrition: row.nutrition || {},
+    inStock: row.in_stock,
+    variants: row.variants || []
+  };
+}
+
+function appProductToDb(p) {
+  return {
+    id: p.id,
+    category: p.category,
+    name: p.name,
+    tag: p.tag,
+    rating: p.rating,
+    reviews_count: p.reviewsCount,
+    spice_level: p.spiceLevel,
+    dietary: p.dietary || [],
+    image: p.image,
+    video: p.video || null,
+    sample_image: p.sampleImage || null,
+    description: p.description,
+    ingredients: p.ingredients,
+    nutrition: p.nutrition || {},
+    in_stock: p.inStock,
+    variants: p.variants || []
+  };
+}
+
+function dbCategoryToApp(row) {
+  return { id: row.id, name: row.name, icon: row.icon, description: row.description };
+}
+
+function dbCustomerToApp(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    phone: row.phone,
+    email: row.email,
+    address: row.address,
+    pincode: row.pincode,
+    lat: row.lat,
+    lng: row.lng,
+    avatar: row.avatar,
+    wishlist: row.wishlist || [],
+    savedAddresses: row.saved_addresses || []
+  };
+}
+
+function appCustomerToDb(c) {
+  return {
+    id: c.id,
+    name: c.name,
+    phone: c.phone,
+    email: c.email,
+    address: c.address,
+    pincode: c.pincode,
+    lat: c.lat,
+    lng: c.lng,
+    avatar: c.avatar || null,
+    wishlist: c.wishlist || [],
+    saved_addresses: c.savedAddresses || []
+  };
+}
+
+function dbOrderToApp(row) {
+  return {
+    id: row.id,
+    customer: row.customer,
+    items: row.items || [],
+    totalAmount: Number(row.total_amount) || 0,
+    paymentMethod: row.payment_method,
+    paymentStatus: row.payment_status,
+    orderStatus: row.order_status,
+    date: row.order_date,
+    trackingNumber: row.tracking_number,
+    driver: row.driver || {},
+    notifications: row.notifications || {}
+  };
+}
+
+function appOrderToDb(o) {
+  return {
+    id: o.id,
+    customer: o.customer,
+    items: o.items || [],
+    total_amount: o.totalAmount,
+    payment_method: o.paymentMethod,
+    payment_status: o.paymentStatus,
+    order_status: o.orderStatus,
+    order_date: o.date,
+    tracking_number: o.trackingNumber,
+    driver: o.driver || {},
+    notifications: o.notifications || {}
+  };
+}
+
+function dbNotifToApp(row) {
+  return {
+    id: row.id,
+    type: row.type,
+    recipient: row.recipient,
+    template: row.template,
+    time: row.notif_time,
+    status: row.status,
+    statusColor: row.status_color
+  };
+}
+
+/* ---------------------------------------------------------------------- */
+/* Reads                                                                  */
+/* ---------------------------------------------------------------------- */
+
+async function fetchCategories() {
+  const { data, error } = await supabaseClient.from('categories').select('*').order('sort_order');
+  if (error) { console.error('fetchCategories', error); return []; }
+  return data.map(dbCategoryToApp);
+}
+
+async function fetchProducts() {
+  const { data, error } = await supabaseClient.from('products').select('*').order('created_at');
+  if (error) { console.error('fetchProducts', error); return []; }
+  return data.map(dbProductToApp);
 }
 
 async function fetchOrders() {
-  if (MeeravSupabase.client) {
-    try {
-      const { data, error } = await MeeravSupabase.client
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (!error && data) return data;
-    } catch (e) {
-      console.warn('Orders fetch note:', e.message);
-    }
-  }
-  return JSON.parse(localStorage.getItem('mira_orders_db')) || [];
+  const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('fetchOrders', error); return []; }
+  return data.map(dbOrderToApp);
 }
 
-// Auto-initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-  MeeravSupabase.init();
-});
+async function fetchCustomers() {
+  const { data, error } = await supabaseClient.from('customers').select('*').order('created_at', { ascending: false });
+  if (error) { console.error('fetchCustomers', error); return []; }
+  return data.map(dbCustomerToApp);
+}
+
+async function fetchNotifications() {
+  const { data, error } = await supabaseClient.from('notifications').select('*').order('created_at', { ascending: false }).limit(100);
+  if (error) { console.error('fetchNotifications', error); return []; }
+  return data.map(dbNotifToApp);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Writes                                                                 */
+/* ---------------------------------------------------------------------- */
+
+async function dbUpsertProduct(product) {
+  const { error } = await supabaseClient.from('products').upsert(appProductToDb(product));
+  if (error) console.error('dbUpsertProduct', error);
+  return !error;
+}
+
+async function dbDeleteProduct(productId) {
+  const { error } = await supabaseClient.from('products').delete().eq('id', productId);
+  if (error) console.error('dbDeleteProduct', error);
+  return !error;
+}
+
+async function dbUpsertCategory(category) {
+  const { error } = await supabaseClient.from('categories').upsert({
+    id: category.id, name: category.name, icon: category.icon, description: category.description
+  });
+  if (error) console.error('dbUpsertCategory', error);
+  return !error;
+}
+
+async function dbDeleteCategory(categoryId) {
+  const { error } = await supabaseClient.from('categories').delete().eq('id', categoryId);
+  if (error) console.error('dbDeleteCategory', error);
+  return !error;
+}
+
+async function dbInsertOrder(order) {
+  const { error } = await supabaseClient.from('orders').insert(appOrderToDb(order));
+  if (error) console.error('dbInsertOrder', error);
+  return !error;
+}
+
+async function dbUpdateOrderStatus(orderId, newStatus) {
+  const { error } = await supabaseClient.from('orders').update({ order_status: newStatus }).eq('id', orderId);
+  if (error) console.error('dbUpdateOrderStatus', error);
+  return !error;
+}
+
+async function dbUpsertCustomer(customer) {
+  const { error } = await supabaseClient.from('customers').upsert(appCustomerToDb(customer));
+  if (error) console.error('dbUpsertCustomer', error);
+  return !error;
+}
+
+async function dbInsertNotification(notif) {
+  const { error } = await supabaseClient.from('notifications').insert({
+    id: notif.id, type: notif.type, recipient: notif.recipient, template: notif.template,
+    notif_time: notif.time, status: notif.status, status_color: notif.statusColor
+  });
+  if (error) console.error('dbInsertNotification', error);
+  return !error;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Storage — product/category images & videos live in the "meerav-media"  */
+/* public bucket instead of base64 blobs, so any device/tab sees the same */
+/* uploaded file via a stable public URL the moment it's saved.           */
+/* ---------------------------------------------------------------------- */
+
+const MEDIA_BUCKET = 'meerav-media';
+
+/**
+ * Uploads a File to Supabase Storage under `folder/` and returns its public
+ * URL (or null on failure). `folder` is e.g. "products", "categories",
+ * "avatars" — keeps the bucket organized.
+ */
+async function uploadMedia(file, folder) {
+  if (!file) return null;
+  const ext = file.name.split('.').pop() || 'bin';
+  const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+  const { error } = await supabaseClient.storage.from(MEDIA_BUCKET).upload(path, file, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: file.type || undefined
+  });
+  if (error) { console.error('uploadMedia', error); return null; }
+
+  const { data } = supabaseClient.storage.from(MEDIA_BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Customer Auth (real Supabase Auth — email + password)                  */
+/* ---------------------------------------------------------------------- */
+
+/**
+ * Creates a real account (Supabase Auth) plus a matching row in
+ * `customers` keyed by the new auth user's id. If the project has email
+ * confirmation ON, `session` comes back null — the caller should tell the
+ * user to confirm their email before signing in. If it's OFF (or already
+ * auto-confirmed), a session comes back immediately and the caller is
+ * already logged in.
+ */
+async function signUpCustomer({ email, password, name, phone, address, pincode }) {
+  const { data, error } = await supabaseClient.auth.signUp({
+    email, password, options: { data: { name, phone } }
+  });
+  if (error) return { error };
+
+  const profile = {
+    id: data.user.id, name, phone, email, address, pincode,
+    avatar: null, wishlist: [], savedAddresses: []
+  };
+  await dbUpsertCustomer(profile);
+
+  return { user: data.user, session: data.session, needsConfirmation: !data.session, profile };
+}
+
+async function signInCustomer(email, password) {
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) return { error };
+  const profile = await getOrCreateCustomerProfile(data.user);
+  return { user: data.user, session: data.session, profile };
+}
+
+async function signOutCustomer() {
+  await supabaseClient.auth.signOut();
+}
+
+async function getCurrentSession() {
+  const { data } = await supabaseClient.auth.getSession();
+  return data.session;
+}
+
+async function getOrCreateCustomerProfile(user) {
+  const { data, error } = await supabaseClient.from('customers').select('*').eq('id', user.id).maybeSingle();
+  if (data) return dbCustomerToApp(data);
+  if (error) console.error('getOrCreateCustomerProfile', error);
+
+  const fallback = {
+    id: user.id,
+    name: user.user_metadata?.name || user.email.split('@')[0],
+    phone: user.user_metadata?.phone || '',
+    email: user.email,
+    address: '', pincode: '', avatar: null, wishlist: [], savedAddresses: []
+  };
+  await dbUpsertCustomer(fallback);
+  return fallback;
+}
+
+function onAuthChange(callback) {
+  return supabaseClient.auth.onAuthStateChange(callback);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Realtime subscriptions                                                 */
+/* ---------------------------------------------------------------------- */
+
+function subscribeTable(table, onChange) {
+  return supabaseClient
+    .channel(`realtime:${table}:${Math.random().toString(36).slice(2)}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table }, onChange)
+    .subscribe();
+}
+
+const MiraDB = {
+  fetchCategories, fetchProducts, fetchOrders, fetchCustomers, fetchNotifications,
+  dbUpsertProduct, dbDeleteProduct,
+  dbUpsertCategory, dbDeleteCategory,
+  dbInsertOrder, dbUpdateOrderStatus,
+  dbUpsertCustomer,
+  dbInsertNotification,
+  subscribeTable,
+  uploadMedia,
+  signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange,
+  mappers: { dbProductToApp, dbCategoryToApp, dbCustomerToApp, dbOrderToApp, dbNotifToApp }
+};
