@@ -1185,7 +1185,7 @@ async function toggleBanAdminAccount(adminId, name, currentlyBanned) {
   }
 
   showToast(`${name} has been ${currentlyBanned ? 'restored' : 'banned'}.`, currentlyBanned ? 'success' : 'info');
-  renderAdminAccounts();
+  await renderAdminAccounts();
   if (adminState.viewingAdminId === adminId) openAdminDetailModal(adminId);
 }
 
