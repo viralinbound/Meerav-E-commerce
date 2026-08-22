@@ -362,6 +362,10 @@ async function signInAdmin(email, password) {
     await adminSupabaseClient.auth.signOut();
     return { error: { message: 'This account is not registered as an admin.' } };
   }
+  if (profile.banned) {
+    await adminSupabaseClient.auth.signOut();
+    return { error: { message: 'This admin account has been banned. Contact the root admin.' } };
+  }
   return { user: data.user, session: data.session, profile };
 }
 
@@ -411,10 +415,59 @@ async function readFunctionError(error) {
   }
 }
 
-/** Creates a brand-new admin account. Only succeeds if the caller is already signed in as an admin (enforced server-side). */
-async function registerAdmin({ email, password, name }) {
+/**
+ * Creates a brand-new sub-admin (root only). The server generates a
+ * one-time temporary password and returns it in the response — show it to
+ * root once so they can hand it to the new admin. That admin is forced to
+ * set their own password on first login (must_change_password).
+ */
+async function registerAdmin({ email, name }) {
   const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
-    body: { action: 'register', email, password, name }
+    body: { action: 'register', email, name }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+/** Root only — issues a fresh temporary password for an existing admin (e.g. "forgot password") and forces a change on next login. */
+async function resetAdminPassword(adminId) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'reset_password', adminId }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+/** Self-service — any signed-in admin sets their own new password (used for the forced first-login / post-reset flow). */
+async function changeOwnPassword(newPassword) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'change_password', newPassword }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+/** Root only — locks out (or restores) a sub-admin's login without deleting their account/history. */
+async function banAdmin(adminId) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'ban', adminId }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+async function unbanAdmin(adminId) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'unban', adminId }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+/** Root only — sends a warning message to a sub-admin; they see it on their own dashboard until acknowledged. */
+async function warnAdmin(adminId, message) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'warn', adminId, message }
   });
   if (error) return { error: { message: await readFunctionError(error) } };
   return data;
@@ -429,6 +482,28 @@ async function removeAdmin(adminId) {
   return data;
 }
 
+async function fetchMyWarnings() {
+  const { data: userData } = await adminSupabaseClient.auth.getUser();
+  if (!userData.user) return [];
+  const { data, error } = await adminSupabaseClient.from('admin_warnings')
+    .select('*').eq('admin_id', userData.user.id).eq('acknowledged', false).order('created_at', { ascending: false });
+  if (error) { console.error('fetchMyWarnings', error); return []; }
+  return data;
+}
+
+async function fetchWarningsForAdmin(adminId) {
+  const { data, error } = await adminSupabaseClient.from('admin_warnings')
+    .select('*').eq('admin_id', adminId).order('created_at', { ascending: false });
+  if (error) { console.error('fetchWarningsForAdmin', error); return []; }
+  return data;
+}
+
+async function acknowledgeWarning(warningId) {
+  const { error } = await adminSupabaseClient.from('admin_warnings').update({ acknowledged: true }).eq('id', warningId);
+  if (error) console.error('acknowledgeWarning', error);
+  return !error;
+}
+
 /* ---------------------------------------------------------------------- */
 /* Admin Activity Log — every catalog/order/notification change a signed- */
 /* in admin makes is written here. Only the root admin can read it (RLS), */
@@ -437,12 +512,13 @@ async function removeAdmin(adminId) {
 /* ---------------------------------------------------------------------- */
 
 async function logAdminActivity(admin, action, target, details = {}) {
-  if (!admin) return;
+  if (!admin) return false;
   const { error } = await adminSupabaseClient.from('admin_activity_log').insert({
     admin_id: admin.id, admin_name: admin.name, admin_role: admin.role,
     action, target, details
   });
   if (error) console.error('logAdminActivity', error);
+  return !error;
 }
 
 /** Root admin only — RLS blocks this for anyone else and returns an empty list. */
@@ -451,6 +527,20 @@ async function fetchActivityLog(limit = 200) {
     .from('admin_activity_log').select('*').order('created_at', { ascending: false }).limit(limit);
   if (error) { console.error('fetchActivityLog', error); return []; }
   return data;
+}
+
+async function fetchActivityForAdmin(adminId, limit = 100) {
+  const { data, error } = await adminSupabaseClient
+    .from('admin_activity_log').select('*').eq('admin_id', adminId).order('created_at', { ascending: false }).limit(limit);
+  if (error) { console.error('fetchActivityForAdmin', error); return []; }
+  return data;
+}
+
+/** Root only — flags a log entry as reverted, after the caller has actually applied the undo. */
+async function markActivityUndone(entryId) {
+  const { error } = await adminSupabaseClient.from('admin_activity_log').update({ undone: true }).eq('id', entryId);
+  if (error) console.error('markActivityUndone', error);
+  return !error;
 }
 
 /* ---------------------------------------------------------------------- */
@@ -477,6 +567,8 @@ const MiraDB = {
   adminClient: adminSupabaseClient,
   signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
   fetchAdmins, registerAdmin, removeAdmin,
-  logAdminActivity, fetchActivityLog,
+  resetAdminPassword, changeOwnPassword, banAdmin, unbanAdmin, warnAdmin,
+  fetchMyWarnings, fetchWarningsForAdmin, acknowledgeWarning,
+  logAdminActivity, fetchActivityLog, fetchActivityForAdmin, markActivityUndone,
   mappers: { dbProductToApp, dbCategoryToApp, dbCustomerToApp, dbOrderToApp, dbNotifToApp }
 };

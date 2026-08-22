@@ -14,6 +14,8 @@ const adminState = {
   customers: [],
   notifications: [],
   admins: [],
+  myWarnings: [],
+  viewingAdminId: null, // set while the per-admin detail modal is open
   editingProductId: null,
   editingCategoryId: null,
   uploadedProductImageUrl: null,
@@ -70,11 +72,8 @@ MiraDB.onAdminAuthChange(async (event, session) => {
   if (event === 'INITIAL_SESSION') {
     if (session) {
       const profile = await MiraDB.getCurrentAdminProfile();
-      if (profile) {
-        adminState.isAuthenticated = true;
-        adminState.currentAdmin = profile;
-        await loadAdminData();
-        setupAdminRealtime();
+      if (profile && !profile.banned) {
+        await enterAdminDashboard(profile);
       } else {
         await MiraDB.signOutAdmin();
       }
@@ -87,6 +86,15 @@ MiraDB.onAdminAuthChange(async (event, session) => {
     checkAdminAuth();
   }
 });
+
+/** Shared by auto-login and the login form: hydrate state, then route to either the forced password-change screen or the real dashboard. */
+async function enterAdminDashboard(profile) {
+  adminState.isAuthenticated = true;
+  adminState.currentAdmin = profile;
+  await loadAdminData();
+  setupAdminRealtime();
+  adminState.myWarnings = await MiraDB.fetchMyWarnings();
+}
 
 /**
  * REAL-TIME SYNC — dashboard reflects new storefront orders, stock/price
@@ -150,17 +158,57 @@ function setupAdminRealtime() {
 function checkAdminAuth() {
   const loginGate = document.getElementById('admin-login-gate');
   const dashboard = document.getElementById('admin-dashboard-container');
+  const forcedPwScreen = document.getElementById('admin-force-password-gate');
+
+  if (adminState.isAuthenticated && adminState.currentAdmin?.must_change_password) {
+    if (loginGate) loginGate.classList.add('hidden');
+    if (dashboard) dashboard.classList.add('hidden');
+    if (forcedPwScreen) forcedPwScreen.classList.remove('hidden');
+    return;
+  }
+  if (forcedPwScreen) forcedPwScreen.classList.add('hidden');
 
   if (adminState.isAuthenticated) {
     if (loginGate) loginGate.classList.add('hidden');
     if (dashboard) dashboard.classList.remove('hidden');
     populateCategoryDropdowns();
     renderAdminIdentityBadge();
+    renderWarningBanner();
     showAdminPage(adminState.currentPage || 'overview');
   } else {
     if (loginGate) loginGate.classList.remove('hidden');
     if (dashboard) dashboard.classList.add('hidden');
   }
+}
+
+function renderWarningBanner() {
+  const container = document.getElementById('admin-warning-banner');
+  if (!container) return;
+
+  if (!adminState.myWarnings.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = adminState.myWarnings.map(w => `
+    <div class="p-4 bg-red-50 border-2 border-red-300 rounded-2xl flex items-start gap-3 mb-3">
+      <i class="fas fa-triangle-exclamation text-red-500 text-lg mt-0.5"></i>
+      <div class="flex-1 text-xs">
+        <div class="font-black text-red-800 mb-0.5">Warning from ${w.issued_by_name}</div>
+        <p class="text-red-700">${w.message}</p>
+        <p class="text-[10px] text-red-400 mt-1">${new Date(w.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+      </div>
+      <button onclick="acknowledgeMyWarning('${w.id}')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-[11px] font-black rounded-lg transition shrink-0">
+        Acknowledge
+      </button>
+    </div>
+  `).join('');
+}
+
+async function acknowledgeMyWarning(warningId) {
+  await MiraDB.acknowledgeWarning(warningId);
+  adminState.myWarnings = adminState.myWarnings.filter(w => w.id !== warningId);
+  renderWarningBanner();
 }
 
 function renderAdminIdentityBadge() {
@@ -196,12 +244,37 @@ async function handleAdminLogin(event) {
     return;
   }
 
-  adminState.isAuthenticated = true;
-  adminState.currentAdmin = result.profile;
   showToast(`Welcome, ${result.profile.name}! Admin Operations Portal Unlocked 🛡️`, 'success');
+  await enterAdminDashboard(result.profile);
+  checkAdminAuth();
+}
 
-  await loadAdminData();
-  setupAdminRealtime();
+/** First login with a temp password, or after root resets one — the admin must set their own password before the dashboard unlocks. */
+async function handleForcePasswordChange(event) {
+  event.preventDefault();
+  const newPassword = document.getElementById('force-pw-new').value;
+  const confirmPassword = document.getElementById('force-pw-confirm').value;
+  const errorBox = document.getElementById('force-pw-error');
+  if (errorBox) errorBox.classList.add('hidden');
+
+  if (newPassword !== confirmPassword) {
+    if (errorBox) { errorBox.textContent = 'Passwords do not match'; errorBox.classList.remove('hidden'); }
+    return;
+  }
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Updating...'; }
+
+  const result = await MiraDB.changeOwnPassword(newPassword);
+
+  if (result.error) {
+    if (errorBox) { errorBox.textContent = result.error.message || 'Could not update password'; errorBox.classList.remove('hidden'); }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Set New Password & Continue'; }
+    return;
+  }
+
+  adminState.currentAdmin.must_change_password = false;
+  showToast('Password updated! Welcome to the portal. 🔐', 'success');
   checkAdminAuth();
 }
 
@@ -363,6 +436,7 @@ async function updateOrderStatus(orderId, newStatus) {
   const order = adminState.orders.find(o => o.id === orderId);
   if (!order) return;
 
+  const previousStatus = order.orderStatus;
   order.orderStatus = newStatus;
 
   const notif = {
@@ -380,7 +454,7 @@ async function updateOrderStatus(orderId, newStatus) {
     MiraDB.dbUpdateOrderStatus(order.id, newStatus, MiraDB.adminClient),
     MiraDB.dbInsertNotification(notif, MiraDB.adminClient)
   ]);
-  MiraDB.logAdminActivity(adminState.currentAdmin, 'order.status_update', `#${order.id}`, { newStatus });
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'order.status_update', `#${order.id}`, { orderId: order.id, from: previousStatus, to: newStatus });
 
   renderAdminOrders();
   renderAdminNotificationLogs();
@@ -639,6 +713,8 @@ async function saveProductForm(event) {
   const existingIndex = adminState.products.findIndex(item => item.id === id);
   let savedProduct;
 
+  const beforeProduct = existingIndex !== -1 ? { ...adminState.products[existingIndex] } : null;
+
   if (existingIndex !== -1) {
     savedProduct = {
       ...adminState.products[existingIndex],
@@ -676,7 +752,7 @@ async function saveProductForm(event) {
   }
 
   await MiraDB.dbUpsertProduct(savedProduct, MiraDB.adminClient);
-  MiraDB.logAdminActivity(adminState.currentAdmin, existingIndex !== -1 ? 'product.update' : 'product.create', name);
+  MiraDB.logAdminActivity(adminState.currentAdmin, existingIndex !== -1 ? 'product.update' : 'product.create', name, { productId: savedProduct.id, before: beforeProduct });
   renderAdminProducts();
   renderAdminKPIs();
   closeProductFormModal();
@@ -689,7 +765,7 @@ async function deleteProduct(productId) {
   if (confirm(`Are you sure you want to delete "${p.name}" from catalog?`)) {
     adminState.products = adminState.products.filter(item => item.id !== productId);
     await MiraDB.dbDeleteProduct(productId, MiraDB.adminClient);
-    MiraDB.logAdminActivity(adminState.currentAdmin, 'product.delete', p.name);
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'product.delete', p.name, { productId, before: p });
     renderAdminProducts();
     renderAdminKPIs();
     showToast(`Deleted ${p.name} from catalog`, 'info');
@@ -699,9 +775,10 @@ async function deleteProduct(productId) {
 async function toggleProductStock(productId) {
   const p = adminState.products.find(item => item.id === productId);
   if (p) {
+    const previousInStock = p.inStock;
     p.inStock = !p.inStock;
     await MiraDB.dbUpsertProduct(p, MiraDB.adminClient);
-    MiraDB.logAdminActivity(adminState.currentAdmin, 'product.toggle_stock', p.name, { inStock: p.inStock });
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'product.toggle_stock', p.name, { productId, from: previousInStock, to: p.inStock });
     renderAdminProducts();
     showToast(`Stock availability updated for ${p.name}`, 'info');
   }
@@ -804,6 +881,7 @@ async function saveCategoryForm(event) {
   const description = document.getElementById('cat-form-desc').value.trim();
 
   const existingIdx = adminState.categories.findIndex(c => c.id === id);
+  const beforeCategory = existingIdx !== -1 ? { ...adminState.categories[existingIdx] } : null;
   const savedCategory = { id, name, icon, description };
 
   if (existingIdx !== -1) {
@@ -815,7 +893,7 @@ async function saveCategoryForm(event) {
   }
 
   await MiraDB.dbUpsertCategory(savedCategory, MiraDB.adminClient);
-  MiraDB.logAdminActivity(adminState.currentAdmin, existingIdx !== -1 ? 'category.update' : 'category.create', name);
+  MiraDB.logAdminActivity(adminState.currentAdmin, existingIdx !== -1 ? 'category.update' : 'category.create', name, { categoryId: id, before: beforeCategory });
   populateCategoryDropdowns();
   renderAdminCategories();
   renderAdminKPIs();
@@ -829,7 +907,7 @@ async function deleteCategory(catId) {
   if (confirm(`Are you sure you want to delete category "${cat.name}"?`)) {
     adminState.categories = adminState.categories.filter(c => c.id !== catId);
     await MiraDB.dbDeleteCategory(catId, MiraDB.adminClient);
-    MiraDB.logAdminActivity(adminState.currentAdmin, 'category.delete', cat.name);
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'category.delete', cat.name, { categoryId: catId, before: cat });
     populateCategoryDropdowns();
     renderAdminCategories();
     renderAdminKPIs();
@@ -963,8 +1041,9 @@ async function triggerCustomNotification(event) {
 }
 
 /**
- * 9. ADMIN ACCOUNTS (register / remove — backed by real Supabase Auth via
- * the "admin-manage" Edge Function; see js/supabase-client.js)
+ * 9. ADMIN ACCOUNTS (register / reset password / ban / warn / remove —
+ * backed by real Supabase Auth via the "admin-manage" Edge Function; see
+ * js/supabase-client.js) plus the per-admin activity drill-down with undo.
  */
 async function renderAdminAccounts() {
   const tbody = document.getElementById('admin-accounts-table');
@@ -979,7 +1058,7 @@ async function renderAdminAccounts() {
     logTbody.innerHTML = activityLog.length ? activityLog.map(entry => `
       <tr class="hover:bg-amber-50/40 transition">
         <td class="text-xs font-bold text-gray-900">${entry.admin_name} <span class="text-[10px] text-gray-400 uppercase">(${entry.admin_role})</span></td>
-        <td class="text-xs text-gray-700 font-mono">${entry.action}</td>
+        <td class="text-xs text-gray-700 font-mono">${entry.action}${entry.undone ? ' <span class="text-[9px] text-gray-400 font-sans">(undone)</span>' : ''}</td>
         <td class="text-xs text-gray-600">${entry.target || '—'}</td>
         <td class="text-xs text-gray-400">${new Date(entry.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</td>
       </tr>
@@ -990,7 +1069,12 @@ async function renderAdminAccounts() {
 
   tbody.innerHTML = adminState.admins.map(a => `
     <tr class="hover:bg-amber-50/40 transition">
-      <td class="font-black text-xs text-gray-900">${a.name}${a.id === meId ? ' <span class=\"text-[10px] text-amber-600 font-bold\">(you)</span>' : ''}</td>
+      <td>
+        <button onclick="openAdminDetailModal('${a.id}')" class="font-black text-xs text-gray-900 hover:text-[#4A0713] hover:underline transition">
+          ${a.name}${a.id === meId ? ' <span class="text-[10px] text-amber-600 font-bold">(you)</span>' : ''}
+        </button>
+        ${a.banned ? '<span class="ml-1.5 px-1.5 py-0.2 text-[9px] font-black rounded bg-red-100 text-red-700">BANNED</span>' : ''}
+      </td>
       <td class="text-xs text-gray-600">${a.email}</td>
       <td>
         <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#4A0713] text-[#FBBF24]' : 'bg-amber-100 text-amber-800'}">
@@ -1002,8 +1086,8 @@ async function renderAdminAccounts() {
         ${a.role === 'root' || a.id === meId ? `
           <span class="text-[10px] text-gray-300 font-bold">—</span>
         ` : `
-          <button onclick="removeAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}')" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">
-            <i class="fas fa-user-xmark mr-1"></i> Remove
+          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">
+            <i class="fas fa-eye mr-1"></i> View
           </button>
         `}
       </td>
@@ -1014,7 +1098,6 @@ async function renderAdminAccounts() {
 function openAddAdminModal() {
   document.getElementById('admin-form-name').value = '';
   document.getElementById('admin-form-email').value = '';
-  document.getElementById('admin-form-password').value = '';
   document.getElementById('admin-form-modal').classList.remove('hidden');
 }
 
@@ -1026,12 +1109,11 @@ async function saveAdminForm(event) {
   event.preventDefault();
   const name = document.getElementById('admin-form-name').value.trim();
   const email = document.getElementById('admin-form-email').value.trim();
-  const password = document.getElementById('admin-form-password').value;
 
   const submitBtn = event.target.querySelector('button[type="submit"]');
   if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating...'; }
 
-  const result = await MiraDB.registerAdmin({ email, password, name });
+  const result = await MiraDB.registerAdmin({ email, name });
 
   if (result.error) {
     showToast(result.error.message || 'Could not create admin account', 'error');
@@ -1039,9 +1121,31 @@ async function saveAdminForm(event) {
     return;
   }
 
-  showToast(`Admin account created for ${name}! They can sign in immediately. 🛡️`, 'success');
   closeAdminFormModal();
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Admin Account'; }
   renderAdminAccounts();
+  showTempPasswordModal(name, email, result.tempPassword, `Admin account created for ${name}! Share this one-time password with them — they'll be asked to set their own on first login.`);
+}
+
+/**
+ * A one-time temporary password (new admin, or a reset) is only ever
+ * returned once by the server — this modal is the single place root sees
+ * and copies it before it's gone.
+ */
+function showTempPasswordModal(name, email, tempPassword, message) {
+  document.getElementById('temp-pw-message').textContent = message;
+  document.getElementById('temp-pw-name-email').textContent = `${name} · ${email}`;
+  document.getElementById('temp-pw-value').textContent = tempPassword;
+  document.getElementById('temp-password-modal').classList.remove('hidden');
+}
+
+function closeTempPasswordModal() {
+  document.getElementById('temp-password-modal').classList.add('hidden');
+}
+
+function copyTempPassword() {
+  const pw = document.getElementById('temp-pw-value').textContent;
+  navigator.clipboard?.writeText(pw).then(() => showToast('Password copied to clipboard 📋', 'success'));
 }
 
 async function removeAdminAccount(adminId, name) {
@@ -1054,7 +1158,191 @@ async function removeAdminAccount(adminId, name) {
   }
 
   showToast(`Removed admin access for ${name}`, 'info');
+  closeAdminDetailModal();
   renderAdminAccounts();
+}
+
+async function resetAdminPasswordAccount(adminId, name, email) {
+  if (!confirm(`Issue a new temporary password for "${name}"? Their current password stops working immediately.`)) return;
+
+  const result = await MiraDB.resetAdminPassword(adminId);
+  if (result.error) {
+    showToast(result.error.message || 'Could not reset password', 'error');
+    return;
+  }
+
+  showTempPasswordModal(name, email, result.tempPassword, `New temporary password for ${name}. They'll be asked to set their own on next login.`);
+}
+
+async function toggleBanAdminAccount(adminId, name, currentlyBanned) {
+  const verb = currentlyBanned ? 'unban' : 'ban';
+  if (!confirm(`${currentlyBanned ? 'Restore' : 'Ban'} "${name}"? ${currentlyBanned ? 'They will be able to log in again.' : 'They will be locked out immediately, but their account and history stay on record.'}`)) return;
+
+  const result = currentlyBanned ? await MiraDB.unbanAdmin(adminId) : await MiraDB.banAdmin(adminId);
+  if (result.error) {
+    showToast(result.error.message || `Could not ${verb} admin`, 'error');
+    return;
+  }
+
+  showToast(`${name} has been ${currentlyBanned ? 'restored' : 'banned'}.`, currentlyBanned ? 'success' : 'info');
+  renderAdminAccounts();
+  if (adminState.viewingAdminId === adminId) openAdminDetailModal(adminId);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Per-Admin Detail Modal — what a sub-admin has done, warnings, and the  */
+/* controls (reset password / ban / warn / remove) root uses to act on it.*/
+/* ---------------------------------------------------------------------- */
+
+async function openAdminDetailModal(adminId) {
+  const a = adminState.admins.find(x => x.id === adminId);
+  if (!a) return;
+  adminState.viewingAdminId = adminId;
+
+  document.getElementById('admin-detail-name').textContent = a.name;
+  document.getElementById('admin-detail-meta').textContent = `${a.email} · joined ${new Date(a.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+  document.getElementById('admin-detail-badge').innerHTML = `
+    <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#4A0713] text-[#FBBF24]' : 'bg-amber-100 text-amber-800'}">${a.role.toUpperCase()}</span>
+    ${a.banned ? '<span class="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-red-100 text-red-700">BANNED</span>' : ''}
+  `;
+
+  const actionsBox = document.getElementById('admin-detail-actions');
+  if (a.role === 'root') {
+    actionsBox.innerHTML = `<p class="text-xs text-gray-400">The root admin manages itself.</p>`;
+  } else {
+    actionsBox.innerHTML = `
+      <button onclick="resetAdminPasswordAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', '${a.email}')" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition">
+        <i class="fas fa-key mr-1"></i> Reset Password
+      </button>
+      <button onclick="toggleBanAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', ${a.banned})" class="px-3 py-2 ${a.banned ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200'} border rounded-xl text-xs font-bold transition">
+        <i class="fas ${a.banned ? 'fa-circle-check' : 'fa-ban'} mr-1"></i> ${a.banned ? 'Unban' : 'Ban'}
+      </button>
+      <button onclick="removeAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}')" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+        <i class="fas fa-user-xmark mr-1"></i> Remove
+      </button>
+    `;
+  }
+
+  document.getElementById('admin-detail-modal').classList.remove('hidden');
+  await Promise.all([renderAdminDetailActivity(adminId), renderAdminDetailWarnings(adminId)]);
+}
+
+function closeAdminDetailModal() {
+  document.getElementById('admin-detail-modal').classList.add('hidden');
+  adminState.viewingAdminId = null;
+}
+
+const UNDOABLE_ACTIONS = new Set(['product.update', 'product.create', 'product.delete', 'product.toggle_stock', 'category.update', 'category.create', 'category.delete', 'order.status_update']);
+
+async function renderAdminDetailActivity(adminId) {
+  const container = document.getElementById('admin-detail-activity');
+  if (!container) return;
+
+  const entries = await MiraDB.fetchActivityForAdmin(adminId);
+  adminState._detailActivityCache = entries;
+
+  container.innerHTML = entries.length ? entries.map(entry => `
+    <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between gap-3">
+      <div class="min-w-0">
+        <div class="text-xs font-bold text-gray-900 font-mono">${entry.action}${entry.undone ? ' <span class="text-[10px] text-gray-400 font-sans">(undone)</span>' : ''}</div>
+        <div class="text-[11px] text-gray-600 truncate">${entry.target || '—'}</div>
+        <div class="text-[10px] text-gray-400">${new Date(entry.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</div>
+      </div>
+      ${UNDOABLE_ACTIONS.has(entry.action) && !entry.undone ? `
+        <button onclick="undoActivity('${entry.id}')" class="px-2.5 py-1.5 bg-white hover:bg-amber-50 text-[#4A0713] border border-amber-300 rounded-lg text-[11px] font-black transition shrink-0">
+          <i class="fas fa-rotate-left mr-1"></i> Undo
+        </button>
+      ` : ''}
+    </div>
+  `).join('') : `<p class="text-xs text-gray-400 text-center py-6">No activity from this admin yet.</p>`;
+}
+
+async function undoActivity(entryId) {
+  const entry = (adminState._detailActivityCache || []).find(e => e.id === entryId);
+  if (!entry) return;
+  if (!confirm(`Undo this "${entry.action}" change?`)) return;
+
+  const d = entry.details || {};
+  try {
+    switch (entry.action) {
+      case 'product.update':
+      case 'product.delete':
+        if (!d.before) throw new Error('No prior state recorded to restore');
+        await MiraDB.dbUpsertProduct(d.before, MiraDB.adminClient);
+        break;
+      case 'product.create':
+        await MiraDB.dbDeleteProduct(d.productId, MiraDB.adminClient);
+        break;
+      case 'product.toggle_stock': {
+        const prod = adminState.products.find(p => p.id === d.productId);
+        if (!prod) throw new Error('Product no longer exists');
+        prod.inStock = d.from;
+        await MiraDB.dbUpsertProduct(prod, MiraDB.adminClient);
+        break;
+      }
+      case 'category.update':
+      case 'category.delete':
+        if (!d.before) throw new Error('No prior state recorded to restore');
+        await MiraDB.dbUpsertCategory(d.before, MiraDB.adminClient);
+        break;
+      case 'category.create':
+        await MiraDB.dbDeleteCategory(d.categoryId, MiraDB.adminClient);
+        break;
+      case 'order.status_update':
+        await MiraDB.dbUpdateOrderStatus(d.orderId, d.from, MiraDB.adminClient);
+        break;
+      default:
+        throw new Error('This action type cannot be undone');
+    }
+
+    await MiraDB.markActivityUndone(entryId);
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'admin.undo', entry.target, { undidEntryId: entryId, originalAction: entry.action });
+    showToast('Change reverted ↩️', 'success');
+    await renderAdminDetailActivity(entry.admin_id);
+    renderAdminProducts();
+    renderAdminCategories();
+    renderAdminOrders();
+    renderAdminKPIs();
+  } catch (e) {
+    showToast(e.message || 'Could not undo this change', 'error');
+  }
+}
+
+async function renderAdminDetailWarnings(adminId) {
+  const container = document.getElementById('admin-detail-warnings');
+  if (!container) return;
+
+  const warnings = await MiraDB.fetchWarningsForAdmin(adminId);
+  container.innerHTML = warnings.length ? warnings.map(w => `
+    <div class="p-2.5 bg-white rounded-lg border ${w.acknowledged ? 'border-gray-200' : 'border-red-300'} text-xs">
+      <div class="flex items-center justify-between mb-0.5">
+        <span class="font-bold text-gray-800">From ${w.issued_by_name}</span>
+        <span class="text-[10px] font-black ${w.acknowledged ? 'text-emerald-600' : 'text-red-600'}">${w.acknowledged ? 'Acknowledged' : 'Unread'}</span>
+      </div>
+      <p class="text-gray-600">${w.message}</p>
+      <p class="text-[10px] text-gray-400 mt-0.5">${new Date(w.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+    </div>
+  `).join('') : `<p class="text-xs text-gray-400 text-center py-4">No warnings sent.</p>`;
+}
+
+async function sendWarningToAdmin(event) {
+  event.preventDefault();
+  const adminId = adminState.viewingAdminId;
+  if (!adminId) return;
+
+  const input = document.getElementById('admin-warning-message');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const result = await MiraDB.warnAdmin(adminId, message);
+  if (result.error) {
+    showToast(result.error.message || 'Could not send warning', 'error');
+    return;
+  }
+
+  input.value = '';
+  showToast('Warning sent', 'success');
+  renderAdminDetailWarnings(adminId);
 }
 
 /**
