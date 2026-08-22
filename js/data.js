@@ -32,12 +32,6 @@ const MIRA_DATA = {
 
   dietaryTags: ["No Onion-Garlic", "Jain Friendly", "Roasted", "Gluten-Free", "100% Pure Oil", "Pure Desi Ghee"],
 
-  adminCredentials: {
-    email: "admin@meerav.com",
-    password: "admin",
-    pin: "1234"
-  },
-
   mockUsers: [
     {
       id: "usr-1",

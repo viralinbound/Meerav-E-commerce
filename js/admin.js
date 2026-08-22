@@ -5,13 +5,15 @@
  */
 
 const adminState = {
-  isAuthenticated: sessionStorage.getItem('mira_admin_session') === 'true',
+  isAuthenticated: false,
+  currentAdmin: null, // { id, name, email, role } — set once signed in as a real admin
   currentPage: 'overview',
   orders: [],
   products: [],
   categories: [],
   customers: [],
   notifications: [],
+  admins: [],
   editingProductId: null,
   editingCategoryId: null,
   uploadedProductImageUrl: null,
@@ -41,8 +43,9 @@ function recomputeCustomerStats() {
 }
 
 async function loadAdminData() {
+  const adminClient = MiraDB.adminClient;
   const [categories, products, orders, customers, notifications] = await Promise.all([
-    fetchCategories(), fetchProducts(), fetchOrders(), fetchCustomers(), fetchNotifications()
+    fetchCategories(), fetchProducts(), fetchOrders(), fetchCustomers(adminClient), fetchNotifications(adminClient)
   ]);
   adminState.categories = categories.length ? categories : [...MIRA_DATA.categories];
   adminState.products = products.length ? products : [...MIRA_DATA.products];
@@ -52,10 +55,37 @@ async function loadAdminData() {
   recomputeCustomerStats();
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadAdminData();
-  checkAdminAuth();
-  setupAdminRealtime();
+/**
+ * Real auto-login: if this browser already has a valid admin session
+ * (Supabase Auth, isolated from the customer session), skip the login form.
+ *
+ * Waits for the INITIAL_SESSION event rather than calling getSession() once
+ * on DOMContentLoaded — a one-shot check can race ahead of the client's own
+ * async session hydration on a fresh page load and wrongly report "signed
+ * out" even though a valid session is sitting right there in storage.
+ */
+let adminAuthBootstrapped = false;
+
+MiraDB.onAdminAuthChange(async (event, session) => {
+  if (event === 'INITIAL_SESSION') {
+    if (session) {
+      const profile = await MiraDB.getCurrentAdminProfile();
+      if (profile) {
+        adminState.isAuthenticated = true;
+        adminState.currentAdmin = profile;
+        await loadAdminData();
+        setupAdminRealtime();
+      } else {
+        await MiraDB.signOutAdmin();
+      }
+    }
+    adminAuthBootstrapped = true;
+    checkAdminAuth();
+  } else if (event === 'SIGNED_OUT' && adminAuthBootstrapped) {
+    adminState.isAuthenticated = false;
+    adminState.currentAdmin = null;
+    checkAdminAuth();
+  }
 });
 
 /**
@@ -107,6 +137,11 @@ function setupAdminRealtime() {
       if (adminState.currentPage === 'notifications') renderAdminNotificationLogs();
     }
   });
+
+  // Root sees sub-admin activity live (RLS hides this entirely for non-root sessions).
+  MiraDB.subscribeTable('admin_activity_log', () => {
+    if (adminState.currentPage === 'admins') renderAdminAccounts();
+  });
 }
 
 /**
@@ -120,6 +155,7 @@ function checkAdminAuth() {
     if (loginGate) loginGate.classList.add('hidden');
     if (dashboard) dashboard.classList.remove('hidden');
     populateCategoryDropdowns();
+    renderAdminIdentityBadge();
     showAdminPage(adminState.currentPage || 'overview');
   } else {
     if (loginGate) loginGate.classList.remove('hidden');
@@ -127,23 +163,52 @@ function checkAdminAuth() {
   }
 }
 
-function handleAdminLogin(event) {
-  event.preventDefault();
-  const input = document.getElementById('admin-login-input').value.trim();
+function renderAdminIdentityBadge() {
+  const badge = document.getElementById('admin-identity-badge');
+  if (!badge || !adminState.currentAdmin) return;
+  const a = adminState.currentAdmin;
+  badge.innerHTML = `
+    <div class="font-bold text-white truncate">${a.name}</div>
+    <div class="truncate">${a.email} &bull; <span class="text-[#FBBF24] font-bold uppercase">${a.role}</span></div>
+  `;
 
-  if (input === MIRA_DATA.adminCredentials.password || input === MIRA_DATA.adminCredentials.pin || input === MIRA_DATA.adminCredentials.email) {
-    adminState.isAuthenticated = true;
-    sessionStorage.setItem('mira_admin_session', 'true');
-    showToast('Admin Operations Portal Unlocked 🛡️', 'success');
-    checkAdminAuth();
-  } else {
-    showToast('Invalid Admin Credentials (Hint: "admin" or "1234")', 'error');
-  }
+  // Admin account management (register/remove/activity log) is root-only.
+  const isRoot = a.role === 'root';
+  document.getElementById('admin-nav-admins-btn')?.classList.toggle('hidden', !isRoot);
+  document.getElementById('admin-mobile-admins-btn')?.classList.toggle('hidden', !isRoot);
 }
 
-function logoutAdmin() {
+async function handleAdminLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('admin-login-email').value.trim();
+  const password = document.getElementById('admin-login-password').value;
+  const errorBox = document.getElementById('admin-login-error');
+  if (errorBox) errorBox.classList.add('hidden');
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Authorizing...'; }
+
+  const result = await MiraDB.signInAdmin(email, password);
+
+  if (result.error) {
+    if (errorBox) { errorBox.textContent = result.error.message || 'Invalid credentials'; errorBox.classList.remove('hidden'); }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> <i class="fas fa-arrow-right text-xs"></i>'; }
+    return;
+  }
+
+  adminState.isAuthenticated = true;
+  adminState.currentAdmin = result.profile;
+  showToast(`Welcome, ${result.profile.name}! Admin Operations Portal Unlocked 🛡️`, 'success');
+
+  await loadAdminData();
+  setupAdminRealtime();
+  checkAdminAuth();
+}
+
+async function logoutAdmin() {
+  await MiraDB.signOutAdmin();
   adminState.isAuthenticated = false;
-  sessionStorage.removeItem('mira_admin_session');
+  adminState.currentAdmin = null;
   showToast('Logged out of Admin Portal', 'info');
   checkAdminAuth();
 }
@@ -152,6 +217,10 @@ function logoutAdmin() {
  * 2. MULTI-PAGE ROUTER CONTROLLER
  */
 function showAdminPage(pageId) {
+  if (pageId === 'admins' && adminState.currentAdmin?.role !== 'root') {
+    showToast('Only the root admin can manage admin accounts', 'error');
+    pageId = 'overview';
+  }
   adminState.currentPage = pageId;
 
   // Update Sidebar Navigation active states
@@ -191,6 +260,8 @@ function showAdminPage(pageId) {
     renderAdminCustomers();
   } else if (pageId === 'notifications') {
     renderAdminNotificationLogs();
+  } else if (pageId === 'admins') {
+    renderAdminAccounts();
   }
 }
 
@@ -306,9 +377,10 @@ async function updateOrderStatus(orderId, newStatus) {
   adminState.notifications.unshift(notif);
 
   await Promise.all([
-    MiraDB.dbUpdateOrderStatus(order.id, newStatus),
-    MiraDB.dbInsertNotification(notif)
+    MiraDB.dbUpdateOrderStatus(order.id, newStatus, MiraDB.adminClient),
+    MiraDB.dbInsertNotification(notif, MiraDB.adminClient)
   ]);
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'order.status_update', `#${order.id}`, { newStatus });
 
   renderAdminOrders();
   renderAdminNotificationLogs();
@@ -603,7 +675,8 @@ async function saveProductForm(event) {
     showToast(`Added new product: ${name} with uploaded pouch packaging! 🍿`, 'success');
   }
 
-  await MiraDB.dbUpsertProduct(savedProduct);
+  await MiraDB.dbUpsertProduct(savedProduct, MiraDB.adminClient);
+  MiraDB.logAdminActivity(adminState.currentAdmin, existingIndex !== -1 ? 'product.update' : 'product.create', name);
   renderAdminProducts();
   renderAdminKPIs();
   closeProductFormModal();
@@ -615,7 +688,8 @@ async function deleteProduct(productId) {
 
   if (confirm(`Are you sure you want to delete "${p.name}" from catalog?`)) {
     adminState.products = adminState.products.filter(item => item.id !== productId);
-    await MiraDB.dbDeleteProduct(productId);
+    await MiraDB.dbDeleteProduct(productId, MiraDB.adminClient);
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'product.delete', p.name);
     renderAdminProducts();
     renderAdminKPIs();
     showToast(`Deleted ${p.name} from catalog`, 'info');
@@ -626,7 +700,8 @@ async function toggleProductStock(productId) {
   const p = adminState.products.find(item => item.id === productId);
   if (p) {
     p.inStock = !p.inStock;
-    await MiraDB.dbUpsertProduct(p);
+    await MiraDB.dbUpsertProduct(p, MiraDB.adminClient);
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'product.toggle_stock', p.name, { inStock: p.inStock });
     renderAdminProducts();
     showToast(`Stock availability updated for ${p.name}`, 'info');
   }
@@ -739,7 +814,8 @@ async function saveCategoryForm(event) {
     showToast(`Added new category: ${name}! 📁`, 'success');
   }
 
-  await MiraDB.dbUpsertCategory(savedCategory);
+  await MiraDB.dbUpsertCategory(savedCategory, MiraDB.adminClient);
+  MiraDB.logAdminActivity(adminState.currentAdmin, existingIdx !== -1 ? 'category.update' : 'category.create', name);
   populateCategoryDropdowns();
   renderAdminCategories();
   renderAdminKPIs();
@@ -752,7 +828,8 @@ async function deleteCategory(catId) {
 
   if (confirm(`Are you sure you want to delete category "${cat.name}"?`)) {
     adminState.categories = adminState.categories.filter(c => c.id !== catId);
-    await MiraDB.dbDeleteCategory(catId);
+    await MiraDB.dbDeleteCategory(catId, MiraDB.adminClient);
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'category.delete', cat.name);
     populateCategoryDropdowns();
     renderAdminCategories();
     renderAdminKPIs();
@@ -878,14 +955,110 @@ async function triggerCustomNotification(event) {
   };
   adminState.notifications.unshift(notif);
 
-  await MiraDB.dbInsertNotification(notif);
+  await MiraDB.dbInsertNotification(notif, MiraDB.adminClient);
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'notification.broadcast', target, { type });
   renderAdminNotificationLogs();
   showToast(`Test ${type} alert sent successfully to ${target}! 🚀`, 'success');
   document.getElementById('custom-notif-msg').value = '';
 }
 
 /**
- * 9. MODAL PREVIEWS
+ * 9. ADMIN ACCOUNTS (register / remove — backed by real Supabase Auth via
+ * the "admin-manage" Edge Function; see js/supabase-client.js)
+ */
+async function renderAdminAccounts() {
+  const tbody = document.getElementById('admin-accounts-table');
+  if (!tbody) return;
+
+  const [admins, activityLog] = await Promise.all([MiraDB.fetchAdmins(), MiraDB.fetchActivityLog()]);
+  adminState.admins = admins;
+  const meId = adminState.currentAdmin?.id;
+
+  const logTbody = document.getElementById('admin-activity-log-table');
+  if (logTbody) {
+    logTbody.innerHTML = activityLog.length ? activityLog.map(entry => `
+      <tr class="hover:bg-amber-50/40 transition">
+        <td class="text-xs font-bold text-gray-900">${entry.admin_name} <span class="text-[10px] text-gray-400 uppercase">(${entry.admin_role})</span></td>
+        <td class="text-xs text-gray-700 font-mono">${entry.action}</td>
+        <td class="text-xs text-gray-600">${entry.target || '—'}</td>
+        <td class="text-xs text-gray-400">${new Date(entry.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</td>
+      </tr>
+    `).join('') : `
+      <tr><td colspan="4" class="text-xs text-gray-400 text-center py-6">No admin activity recorded yet.</td></tr>
+    `;
+  }
+
+  tbody.innerHTML = adminState.admins.map(a => `
+    <tr class="hover:bg-amber-50/40 transition">
+      <td class="font-black text-xs text-gray-900">${a.name}${a.id === meId ? ' <span class=\"text-[10px] text-amber-600 font-bold\">(you)</span>' : ''}</td>
+      <td class="text-xs text-gray-600">${a.email}</td>
+      <td>
+        <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#4A0713] text-[#FBBF24]' : 'bg-amber-100 text-amber-800'}">
+          ${a.role.toUpperCase()}
+        </span>
+      </td>
+      <td class="text-xs text-gray-400">${new Date(a.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+      <td class="text-right">
+        ${a.role === 'root' || a.id === meId ? `
+          <span class="text-[10px] text-gray-300 font-bold">—</span>
+        ` : `
+          <button onclick="removeAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}')" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">
+            <i class="fas fa-user-xmark mr-1"></i> Remove
+          </button>
+        `}
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openAddAdminModal() {
+  document.getElementById('admin-form-name').value = '';
+  document.getElementById('admin-form-email').value = '';
+  document.getElementById('admin-form-password').value = '';
+  document.getElementById('admin-form-modal').classList.remove('hidden');
+}
+
+function closeAdminFormModal() {
+  document.getElementById('admin-form-modal').classList.add('hidden');
+}
+
+async function saveAdminForm(event) {
+  event.preventDefault();
+  const name = document.getElementById('admin-form-name').value.trim();
+  const email = document.getElementById('admin-form-email').value.trim();
+  const password = document.getElementById('admin-form-password').value;
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating...'; }
+
+  const result = await MiraDB.registerAdmin({ email, password, name });
+
+  if (result.error) {
+    showToast(result.error.message || 'Could not create admin account', 'error');
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Admin Account'; }
+    return;
+  }
+
+  showToast(`Admin account created for ${name}! They can sign in immediately. 🛡️`, 'success');
+  closeAdminFormModal();
+  renderAdminAccounts();
+}
+
+async function removeAdminAccount(adminId, name) {
+  if (!confirm(`Remove admin access for "${name}"? This permanently deletes their login.`)) return;
+
+  const result = await MiraDB.removeAdmin(adminId);
+  if (result.error) {
+    showToast(result.error.message || 'Could not remove admin', 'error');
+    return;
+  }
+
+  showToast(`Removed admin access for ${name}`, 'info');
+  renderAdminAccounts();
+}
+
+/**
+ * 10. MODAL PREVIEWS
  */
 function previewWhatsAppNotification(orderId) {
   const order = adminState.orders.find(o => o.id === orderId) || adminState.orders[0];
@@ -937,7 +1110,7 @@ function closeEmailPreviewModal() {
 }
 
 /**
- * 10. TOAST HELPER
+ * 11. TOAST HELPER
  */
 function showToast(message, type = 'info') {
   const container = document.getElementById('toast-container');

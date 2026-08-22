@@ -22,6 +22,16 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
+/**
+ * A second, fully isolated client for the admin portal (distinct
+ * localStorage session key) so a customer signed in on the storefront and
+ * an admin signed in on admin.html never share/clobber each other's
+ * session in the same browser.
+ */
+const adminSupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: { storageKey: 'sb-meerav-admin-auth' }
+});
+
 /* ---------------------------------------------------------------------- */
 /* Row <-> App-shape mappers                                              */
 /* ---------------------------------------------------------------------- */
@@ -170,14 +180,16 @@ async function fetchOrders() {
   return data.map(dbOrderToApp);
 }
 
-async function fetchCustomers() {
-  const { data, error } = await supabaseClient.from('customers').select('*').order('created_at', { ascending: false });
+// customers/notifications are only selectable by their owner or an admin
+// (see RLS) — admin.js always passes adminSupabaseClient here.
+async function fetchCustomers(client = supabaseClient) {
+  const { data, error } = await client.from('customers').select('*').order('created_at', { ascending: false });
   if (error) { console.error('fetchCustomers', error); return []; }
   return data.map(dbCustomerToApp);
 }
 
-async function fetchNotifications() {
-  const { data, error } = await supabaseClient.from('notifications').select('*').order('created_at', { ascending: false }).limit(100);
+async function fetchNotifications(client = supabaseClient) {
+  const { data, error } = await client.from('notifications').select('*').order('created_at', { ascending: false }).limit(100);
   if (error) { console.error('fetchNotifications', error); return []; }
   return data.map(dbNotifToApp);
 }
@@ -186,28 +198,30 @@ async function fetchNotifications() {
 /* Writes                                                                 */
 /* ---------------------------------------------------------------------- */
 
-async function dbUpsertProduct(product) {
-  const { error } = await supabaseClient.from('products').upsert(appProductToDb(product));
+// Product/category writes and order-status updates now require an
+// authenticated admin (see RLS) — admin.js always passes adminSupabaseClient.
+async function dbUpsertProduct(product, client = supabaseClient) {
+  const { error } = await client.from('products').upsert(appProductToDb(product));
   if (error) console.error('dbUpsertProduct', error);
   return !error;
 }
 
-async function dbDeleteProduct(productId) {
-  const { error } = await supabaseClient.from('products').delete().eq('id', productId);
+async function dbDeleteProduct(productId, client = supabaseClient) {
+  const { error } = await client.from('products').delete().eq('id', productId);
   if (error) console.error('dbDeleteProduct', error);
   return !error;
 }
 
-async function dbUpsertCategory(category) {
-  const { error } = await supabaseClient.from('categories').upsert({
+async function dbUpsertCategory(category, client = supabaseClient) {
+  const { error } = await client.from('categories').upsert({
     id: category.id, name: category.name, icon: category.icon, description: category.description
   });
   if (error) console.error('dbUpsertCategory', error);
   return !error;
 }
 
-async function dbDeleteCategory(categoryId) {
-  const { error } = await supabaseClient.from('categories').delete().eq('id', categoryId);
+async function dbDeleteCategory(categoryId, client = supabaseClient) {
+  const { error } = await client.from('categories').delete().eq('id', categoryId);
   if (error) console.error('dbDeleteCategory', error);
   return !error;
 }
@@ -218,8 +232,8 @@ async function dbInsertOrder(order) {
   return !error;
 }
 
-async function dbUpdateOrderStatus(orderId, newStatus) {
-  const { error } = await supabaseClient.from('orders').update({ order_status: newStatus }).eq('id', orderId);
+async function dbUpdateOrderStatus(orderId, newStatus, client = supabaseClient) {
+  const { error } = await client.from('orders').update({ order_status: newStatus }).eq('id', orderId);
   if (error) console.error('dbUpdateOrderStatus', error);
   return !error;
 }
@@ -230,8 +244,8 @@ async function dbUpsertCustomer(customer) {
   return !error;
 }
 
-async function dbInsertNotification(notif) {
-  const { error } = await supabaseClient.from('notifications').insert({
+async function dbInsertNotification(notif, client = supabaseClient) {
+  const { error } = await client.from('notifications').insert({
     id: notif.id, type: notif.type, recipient: notif.recipient, template: notif.template,
     notif_time: notif.time, status: notif.status, status_color: notif.statusColor
   });
@@ -332,6 +346,114 @@ function onAuthChange(callback) {
 }
 
 /* ---------------------------------------------------------------------- */
+/* Admin Auth & Account Management                                        */
+/* Real Supabase Auth accounts, gated by the `admins` table (RLS-checked   */
+/* via the is_admin() function) — not a shared client-side password.      */
+/* Registering/removing admins goes through the "admin-manage" Edge       */
+/* Function so the service_role key never reaches the browser.            */
+/* ---------------------------------------------------------------------- */
+
+async function signInAdmin(email, password) {
+  const { data, error } = await adminSupabaseClient.auth.signInWithPassword({ email, password });
+  if (error) return { error };
+
+  const profile = await getCurrentAdminProfile();
+  if (!profile) {
+    await adminSupabaseClient.auth.signOut();
+    return { error: { message: 'This account is not registered as an admin.' } };
+  }
+  return { user: data.user, session: data.session, profile };
+}
+
+async function signOutAdmin() {
+  await adminSupabaseClient.auth.signOut();
+}
+
+async function getAdminSession() {
+  const { data } = await adminSupabaseClient.auth.getSession();
+  return data.session;
+}
+
+/**
+ * Fires once with the INITIAL_SESSION event as soon as the admin client has
+ * finished reading (and, if needed, refreshing) whatever session is in
+ * storage — the reliable way to check "is anyone already logged in?" on
+ * page load. A plain one-shot getSession() call can race ahead of that
+ * hydration on a fresh page load and wrongly report "no session".
+ */
+function onAdminAuthChange(callback) {
+  return adminSupabaseClient.auth.onAuthStateChange(callback);
+}
+
+/** Returns the current admin's own row from `admins`, or null if signed out / not an admin. */
+async function getCurrentAdminProfile() {
+  const { data: userData } = await adminSupabaseClient.auth.getUser();
+  if (!userData.user) return null;
+
+  const { data, error } = await adminSupabaseClient.from('admins').select('*').eq('id', userData.user.id).maybeSingle();
+  if (error) { console.error('getCurrentAdminProfile', error); return null; }
+  return data || null;
+}
+
+async function fetchAdmins() {
+  const { data, error } = await adminSupabaseClient.from('admins').select('*').order('created_at');
+  if (error) { console.error('fetchAdmins', error); return []; }
+  return data;
+}
+
+/** Edge Function errors arrive as a Response on error.context — pull the real {error} message out of its JSON body. */
+async function readFunctionError(error) {
+  try {
+    const body = await error.context.json();
+    return body?.error || error.message;
+  } catch {
+    return error.message;
+  }
+}
+
+/** Creates a brand-new admin account. Only succeeds if the caller is already signed in as an admin (enforced server-side). */
+async function registerAdmin({ email, password, name }) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'register', email, password, name }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+/** Deletes an admin's real auth account (cascades to remove their `admins` row). Root admin cannot be removed. */
+async function removeAdmin(adminId) {
+  const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', {
+    body: { action: 'remove', adminId }
+  });
+  if (error) return { error: { message: await readFunctionError(error) } };
+  return data;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Admin Activity Log — every catalog/order/notification change a signed- */
+/* in admin makes is written here. Only the root admin can read it (RLS), */
+/* giving them full visibility into what sub-admins are doing so they can */
+/* revoke access if needed.                                               */
+/* ---------------------------------------------------------------------- */
+
+async function logAdminActivity(admin, action, target, details = {}) {
+  if (!admin) return;
+  const { error } = await adminSupabaseClient.from('admin_activity_log').insert({
+    admin_id: admin.id, admin_name: admin.name, admin_role: admin.role,
+    action, target, details
+  });
+  if (error) console.error('logAdminActivity', error);
+}
+
+/** Root admin only — RLS blocks this for anyone else and returns an empty list. */
+async function fetchActivityLog(limit = 200) {
+  const { data, error } = await adminSupabaseClient
+    .from('admin_activity_log').select('*').order('created_at', { ascending: false }).limit(limit);
+  if (error) { console.error('fetchActivityLog', error); return []; }
+  return data;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Realtime subscriptions                                                 */
 /* ---------------------------------------------------------------------- */
 
@@ -352,5 +474,9 @@ const MiraDB = {
   subscribeTable,
   uploadMedia,
   signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange,
+  adminClient: adminSupabaseClient,
+  signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
+  fetchAdmins, registerAdmin, removeAdmin,
+  logAdminActivity, fetchActivityLog,
   mappers: { dbProductToApp, dbCategoryToApp, dbCustomerToApp, dbOrderToApp, dbNotifToApp }
 };
