@@ -18,9 +18,8 @@ const adminState = {
   viewingAdminId: null, // set while the per-admin detail modal is open
   editingProductId: null,
   editingCategoryId: null,
-  uploadedProductImageUrl: null,
-  uploadedProductVideoUrl: null,
-  removeExistingVideo: false,
+  productGalleryPhotos: [],
+  productGalleryVideos: [],
   uploadedCategoryImageUrl: null,
   orderFilter: 'all',
   customerSearchQuery: '',
@@ -527,71 +526,98 @@ function renderAdminProducts() {
   }).join('');
 }
 
-async function handleProductImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+/**
+ * Product media galleries — unlimited photos/videos, each uploaded to
+ * Storage individually. adminState.productGalleryPhotos/Videos hold the
+ * working list while the Add/Edit Product modal is open; index 0 is the
+ * "cover" used everywhere the old single image/video field used to be read.
+ */
+async function handleProductPhotosUpload(event) {
+  const files = [...event.target.files];
+  if (!files.length) return;
+  event.target.value = '';
 
-  const status = document.getElementById('prod-img-upload-status');
-  if (status) status.textContent = 'Uploading...';
+  const status = document.getElementById('prod-photos-upload-status');
+  let uploaded = 0;
 
-  // Instant local preview while the real upload runs in the background
-  const preview = document.getElementById('prod-img-preview');
-  const localUrl = URL.createObjectURL(file);
-  if (preview) { preview.src = localUrl; preview.classList.remove('hidden'); }
-
-  const publicUrl = await MiraDB.uploadMedia(file, 'products');
-  if (!publicUrl) {
-    if (status) status.textContent = 'Upload failed';
-    showToast('Image upload failed — please try again', 'error');
-    return;
+  for (const file of files) {
+    if (status) status.textContent = `Uploading ${uploaded + 1} of ${files.length}...`;
+    const publicUrl = await MiraDB.uploadMedia(file, 'products');
+    if (publicUrl) {
+      adminState.productGalleryPhotos.push(publicUrl);
+      uploaded++;
+      renderProductPhotosGrid();
+    }
   }
 
-  adminState.uploadedProductImageUrl = publicUrl;
-  if (status) status.textContent = 'Uploaded ✓';
-  showToast('Product Image Uploaded to Storage! 📸', 'success');
+  if (status) status.textContent = uploaded === files.length ? `Uploaded ${uploaded} photo(s) ✓` : `Uploaded ${uploaded} of ${files.length} — some failed`;
+  if (uploaded < files.length) showToast('Some photos failed to upload — please retry those', 'error');
 }
 
-async function handleProductVideoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+async function handleProductVideosUpload(event) {
+  const files = [...event.target.files];
+  if (!files.length) return;
+  event.target.value = '';
 
-  const status = document.getElementById('prod-video-upload-status');
-  const preview = document.getElementById('prod-video-preview');
-  const clearBtn = document.getElementById('prod-video-clear-btn');
-  if (status) status.textContent = 'Uploading...';
+  const status = document.getElementById('prod-videos-upload-status');
+  let uploaded = 0;
 
-  const localUrl = URL.createObjectURL(file);
-  if (preview) { preview.src = localUrl; preview.classList.remove('hidden'); preview.play().catch(() => {}); }
-
-  const publicUrl = await MiraDB.uploadMedia(file, 'products');
-  if (!publicUrl) {
-    if (status) status.textContent = 'Upload failed';
-    showToast('Video upload failed — please try again', 'error');
-    return;
+  for (const file of files) {
+    if (status) status.textContent = `Uploading ${uploaded + 1} of ${files.length}...`;
+    const publicUrl = await MiraDB.uploadMedia(file, 'products');
+    if (publicUrl) {
+      adminState.productGalleryVideos.push(publicUrl);
+      uploaded++;
+      renderProductVideosGrid();
+    }
   }
 
-  adminState.uploadedProductVideoUrl = publicUrl;
-  if (status) status.textContent = 'Uploaded ✓';
-  if (clearBtn) clearBtn.classList.remove('hidden');
-  showToast('Product Video Uploaded to Storage! 🎬', 'success');
+  if (status) status.textContent = uploaded === files.length ? `Uploaded ${uploaded} video(s) ✓` : `Uploaded ${uploaded} of ${files.length} — some failed`;
+  if (uploaded < files.length) showToast('Some videos failed to upload — please retry those', 'error');
 }
 
-function clearProductVideo() {
-  adminState.uploadedProductVideoUrl = null;
-  adminState.removeExistingVideo = true;
-  const preview = document.getElementById('prod-video-preview');
-  const clearBtn = document.getElementById('prod-video-clear-btn');
-  const status = document.getElementById('prod-video-upload-status');
-  if (preview) { preview.pause(); preview.src = ''; preview.classList.add('hidden'); }
-  if (clearBtn) clearBtn.classList.add('hidden');
-  if (status) status.textContent = 'Removed';
+function removeProductPhoto(index) {
+  adminState.productGalleryPhotos.splice(index, 1);
+  renderProductPhotosGrid();
+}
+
+function removeProductVideo(index) {
+  adminState.productGalleryVideos.splice(index, 1);
+  renderProductVideosGrid();
+}
+
+function renderProductPhotosGrid() {
+  const grid = document.getElementById('prod-photos-grid');
+  if (!grid) return;
+  grid.innerHTML = adminState.productGalleryPhotos.map((url, idx) => `
+    <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-white shrink-0">
+      <img src="${url}" class="w-full h-full object-contain" />
+      ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
+      <button type="button" onclick="removeProductPhoto(${idx})" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
+}
+
+function renderProductVideosGrid() {
+  const grid = document.getElementById('prod-videos-grid');
+  if (!grid) return;
+  grid.innerHTML = adminState.productGalleryVideos.map((url, idx) => `
+    <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-black shrink-0">
+      <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
+      ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
+      <button type="button" onclick="removeProductVideo(${idx})" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
 }
 
 function openAddProductModal() {
   adminState.editingProductId = null;
-  adminState.uploadedProductImageUrl = null;
-  adminState.uploadedProductVideoUrl = null;
-  adminState.removeExistingVideo = false;
+  adminState.productGalleryPhotos = [];
+  adminState.productGalleryVideos = [];
   populateCategoryDropdowns();
 
   document.getElementById('product-modal-title').textContent = 'Add New Bikaneri Product & Upload Packaging';
@@ -602,20 +628,10 @@ function openAddProductModal() {
   document.getElementById('prod-form-desc').value = '';
   document.getElementById('prod-form-image').value = 'assets/images/pack_bikaneri_bhujia.svg';
 
-  const preview = document.getElementById('prod-img-preview');
-  if (preview) {
-    preview.src = 'assets/images/pack_bikaneri_bhujia.svg';
-    preview.classList.remove('hidden');
-  }
-  const imgStatus = document.getElementById('prod-img-upload-status');
-  if (imgStatus) imgStatus.textContent = '';
-
-  const videoPreview = document.getElementById('prod-video-preview');
-  if (videoPreview) { videoPreview.pause(); videoPreview.src = ''; videoPreview.classList.add('hidden'); }
-  const videoClearBtn = document.getElementById('prod-video-clear-btn');
-  if (videoClearBtn) videoClearBtn.classList.add('hidden');
-  const videoStatus = document.getElementById('prod-video-upload-status');
-  if (videoStatus) videoStatus.textContent = '';
+  document.getElementById('prod-photos-upload-status').textContent = '';
+  document.getElementById('prod-videos-upload-status').textContent = '';
+  renderProductPhotosGrid();
+  renderProductVideosGrid();
 
   document.getElementById('prod-form-p200').value = 99;
   document.getElementById('prod-form-orig200').value = 120;
@@ -632,9 +648,8 @@ function openEditProductModal(productId) {
   if (!p) return;
 
   adminState.editingProductId = productId;
-  adminState.uploadedProductImageUrl = null;
-  adminState.uploadedProductVideoUrl = null;
-  adminState.removeExistingVideo = false;
+  adminState.productGalleryPhotos = [...(p.photos && p.photos.length ? p.photos : (p.image ? [p.image] : []))];
+  adminState.productGalleryVideos = [...(p.videos && p.videos.length ? p.videos : (p.video ? [p.video] : []))];
   populateCategoryDropdowns();
 
   document.getElementById('product-modal-title').textContent = `Edit Product: ${p.name}`;
@@ -645,25 +660,10 @@ function openEditProductModal(productId) {
   document.getElementById('prod-form-spice').value = p.spiceLevel;
   document.getElementById('prod-form-desc').value = p.description;
 
-  const preview = document.getElementById('prod-img-preview');
-  if (preview) {
-    preview.src = p.image;
-    preview.classList.remove('hidden');
-  }
-  const imgStatus = document.getElementById('prod-img-upload-status');
-  if (imgStatus) imgStatus.textContent = '';
-
-  const videoPreview = document.getElementById('prod-video-preview');
-  const videoClearBtn = document.getElementById('prod-video-clear-btn');
-  const videoStatus = document.getElementById('prod-video-upload-status');
-  if (p.video) {
-    if (videoPreview) { videoPreview.src = p.video; videoPreview.classList.remove('hidden'); }
-    if (videoClearBtn) videoClearBtn.classList.remove('hidden');
-  } else {
-    if (videoPreview) { videoPreview.pause(); videoPreview.src = ''; videoPreview.classList.add('hidden'); }
-    if (videoClearBtn) videoClearBtn.classList.add('hidden');
-  }
-  if (videoStatus) videoStatus.textContent = '';
+  document.getElementById('prod-photos-upload-status').textContent = '';
+  document.getElementById('prod-videos-upload-status').textContent = '';
+  renderProductPhotosGrid();
+  renderProductVideosGrid();
 
   document.getElementById('prod-form-p200').value = p.variants[0]?.price || 99;
   document.getElementById('prod-form-orig200').value = p.variants[0]?.originalPrice || 120;
@@ -689,13 +689,13 @@ async function saveProductForm(event) {
   const spiceLevel = document.getElementById('prod-form-spice').value;
   const description = document.getElementById('prod-form-desc').value.trim();
   
-  // Use the Storage-uploaded file if one was uploaded, otherwise the selected pouch preset
-  const image = adminState.uploadedProductImageUrl || document.getElementById('prod-form-image').value.trim() || 'assets/images/pack_bikaneri_bhujia.svg';
-
-  const existingProduct = adminState.products.find(item => item.id === id);
-  let video = existingProduct ? existingProduct.video : undefined;
-  if (adminState.uploadedProductVideoUrl) video = adminState.uploadedProductVideoUrl;
-  if (adminState.removeExistingVideo) video = undefined;
+  // Gallery uploads are the source of truth; fall back to the preset pouch if nothing was uploaded
+  const photos = adminState.productGalleryPhotos.length
+    ? [...adminState.productGalleryPhotos]
+    : [document.getElementById('prod-form-image').value.trim() || 'assets/images/pack_bikaneri_bhujia.svg'];
+  const videos = [...adminState.productGalleryVideos];
+  const image = photos[0];
+  const video = videos[0] || undefined;
 
   const p200 = Number(document.getElementById('prod-form-p200').value) || 99;
   const orig200 = Number(document.getElementById('prod-form-orig200').value) || p200;
@@ -725,6 +725,8 @@ async function saveProductForm(event) {
       description,
       image,
       video,
+      photos,
+      videos,
       variants
     };
     adminState.products[existingIndex] = savedProduct;
@@ -741,6 +743,8 @@ async function saveProductForm(event) {
       dietary: ["100% Veg", "Pure & Clean Oil"],
       image,
       video,
+      photos,
+      videos,
       description,
       ingredients: "Traditional ingredients, pure cold-pressed oil, authentic desert spices.",
       nutrition: { energy: "520 kcal", fat: "30g", carbs: "48g", protein: "12g" },

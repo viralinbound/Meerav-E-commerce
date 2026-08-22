@@ -8,9 +8,21 @@ const pdpState = {
   selectedVariantIdx: 0,
   quantity: 1,
   currentSlide: 0,
-  totalSlides: 2,
+  media: [], // [{type:'image'|'video', url}] — the product's full photo/video gallery, built fresh per product
+  totalSlides: 1,
   isMuted: false
 };
+
+/** Combines a product's photos[]/videos[] galleries into one ordered slide list (photos first, cover photo leads). */
+function buildPDPMediaList(p) {
+  const photos = (p.photos && p.photos.length ? p.photos : (p.image ? [p.image] : []));
+  const videos = (p.videos && p.videos.length ? p.videos : (p.video ? [p.video] : []));
+  const media = [
+    ...photos.map(url => ({ type: 'image', url })),
+    ...videos.map(url => ({ type: 'video', url }))
+  ];
+  return media.length ? media : [{ type: 'image', url: p.image || 'assets/images/pack_bikaneri_bhujia.svg' }];
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   initProductDetailPage();
@@ -59,7 +71,6 @@ function renderPDPDetails() {
   const p = pdpState.currentProduct;
   const selectedVar = p.variants[pdpState.selectedVariantIdx] || p.variants[0];
   const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
-  const hasVideo = !!p.video;
 
   // Breadcrumbs & Title
   document.getElementById('breadcrumb-category').textContent = p.category.replace('-', ' & ');
@@ -69,48 +80,10 @@ function renderPDPDetails() {
   document.getElementById('pdp-tag-badge').textContent = p.tag;
   document.getElementById('pdp-active-weight-pill').textContent = selectedVar.weight;
 
-  // Media Slider Assets
-  const packImg = document.getElementById('pdp-pack-image');
-  if (packImg) packImg.src = p.image;
-
-  const thumbImg0 = document.getElementById('pdp-thumb-img-0');
-  if (thumbImg0) thumbImg0.src = p.image;
-
-  const thumbImg1 = document.getElementById('pdp-thumb-img-1');
-  if (thumbImg1) thumbImg1.src = p.sampleImage || p.image;
-
-  const videoElem = document.getElementById('pdp-slide-video');
-  const sampleImgElem = document.getElementById('pdp-slide-sample-image');
-  const videoBadge = document.getElementById('pdp-video-badge');
-  const sampleBadge = document.getElementById('pdp-sample-badge');
-  const thumbIcon = document.getElementById('pdp-thumb-icon');
-
-  if (hasVideo) {
-    if (videoElem) {
-      videoElem.src = p.video;
-      videoElem.classList.remove('hidden');
-      videoElem.load();
-    }
-    if (sampleImgElem) sampleImgElem.classList.add('hidden');
-    if (videoBadge) videoBadge.classList.remove('hidden');
-    if (sampleBadge) sampleBadge.classList.add('hidden');
-    if (thumbIcon) thumbIcon.className = 'fas fa-play text-[#FBBF24] text-xs';
-  } else {
-    if (videoElem) {
-      videoElem.pause();
-      videoElem.src = '';
-      videoElem.classList.add('hidden');
-    }
-    if (sampleImgElem) {
-      sampleImgElem.src = p.sampleImage || p.image;
-      sampleImgElem.classList.remove('hidden');
-    }
-    if (videoBadge) videoBadge.classList.add('hidden');
-    if (sampleBadge) sampleBadge.classList.remove('hidden');
-    if (thumbIcon) thumbIcon.className = 'fas fa-camera text-[#FBBF24] text-xs';
-  }
-
-  // Reset to first slide
+  // Media Gallery — rebuild the slider fresh for this product's full photo/video set
+  pdpState.media = buildPDPMediaList(p);
+  pdpState.totalSlides = pdpState.media.length;
+  renderPDPMediaSlider();
   setPDPSlide(0);
 
   // Spice Profile & Rating
@@ -155,8 +128,36 @@ function renderPDPDetails() {
 }
 
 /**
- * MEDIA SLIDER CONTROLLERS (Right/Left Scroll)
+ * MEDIA SLIDER CONTROLLERS (Right/Left Scroll) — dynamic gallery, any number of photos/videos
  */
+function renderPDPMediaSlider() {
+  const wrapper = document.getElementById('pdp-slides-wrapper');
+  const thumbsRow = document.getElementById('pdp-thumbnails-row');
+  if (!wrapper || !thumbsRow) return;
+
+  wrapper.innerHTML = pdpState.media.map((m, idx) => m.type === 'video' ? `
+    <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-black">
+      <video id="pdp-slide-video-${idx}" src="${m.url}" loop muted playsinline class="w-full h-full object-cover"></video>
+      <div class="absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#FBBF24] text-xs font-black flex items-center gap-1.5 border border-[#E59819]">
+        <i class="fas fa-play text-[10px] text-red-500 animate-pulse"></i>
+        <span>4K TASTE FILM</span>
+      </div>
+    </div>
+  ` : `
+    <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-[#1F0307]">
+      <img src="${m.url}" alt="Product Photo" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
+    </div>
+  `).join('');
+
+  thumbsRow.innerHTML = pdpState.media.map((m, idx) => `
+    <button onclick="setPDPSlide(${idx})" id="pdp-thumb-${idx}"
+      class="w-16 h-16 rounded-2xl border-2 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center">
+      <img src="${m.type === 'video' ? m.url : m.url}" alt="Thumbnail" class="w-full h-full object-cover" ${m.type === 'video' ? 'style="opacity:.85"' : ''} />
+      ${m.type === 'video' ? '<div class="absolute inset-0 bg-black/30 flex items-center justify-center"><i class="fas fa-play text-[#FBBF24] text-xs"></i></div>' : ''}
+    </button>
+  `).join('');
+}
+
 function setPDPSlide(slideIndex) {
   pdpState.currentSlide = slideIndex;
   const wrapper = document.getElementById('pdp-slides-wrapper');
@@ -164,41 +165,31 @@ function setPDPSlide(slideIndex) {
     wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
   }
 
-  const p = pdpState.currentProduct;
-  const hasVideo = !!(p && p.video);
+  const media = pdpState.media[slideIndex];
 
   // Update slide counter
   const counter = document.getElementById('pdp-slide-counter');
-  if (counter) {
-    if (slideIndex === 0) {
-      counter.textContent = 'Pack Photo (1 of 2)';
-    } else {
-      counter.textContent = hasVideo ? '4K Video (2 of 2)' : 'Sample Serving Photo (2 of 2)';
-    }
+  if (counter && media) {
+    counter.textContent = `${media.type === 'video' ? '4K Video' : 'Photo'} (${slideIndex + 1} of ${pdpState.totalSlides})`;
   }
 
   // Update thumbnail active states
-  const thumb0 = document.getElementById('pdp-thumb-0');
-  const thumb1 = document.getElementById('pdp-thumb-1');
-  if (thumb0 && thumb1) {
-    if (slideIndex === 0) {
-      thumb0.className = 'w-16 h-16 rounded-2xl border-2 border-[#E59819] overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-[#1F0307] ring-2 ring-[#E59819]/50';
-      thumb1.className = 'w-16 h-16 rounded-2xl border-2 border-amber-300/60 opacity-60 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center';
-    } else {
-      thumb1.className = 'w-16 h-16 rounded-2xl border-2 border-[#E59819] opacity-100 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center ring-2 ring-[#E59819]/50';
-      thumb0.className = 'w-16 h-16 rounded-2xl border-2 border-amber-300/60 opacity-60 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-[#1F0307]';
-    }
-  }
+  pdpState.media.forEach((m, idx) => {
+    const thumb = document.getElementById(`pdp-thumb-${idx}`);
+    if (!thumb) return;
+    thumb.className = `w-16 h-16 rounded-2xl border-2 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center ${
+      idx === slideIndex ? 'border-[#E59819] ring-2 ring-[#E59819]/50 opacity-100' : 'border-amber-300/60 opacity-60'
+    }`;
+  });
 
-  // Video playback handling
-  const slideVideo = document.getElementById('pdp-slide-video');
-  if (slideVideo && hasVideo) {
-    if (slideIndex === 1) {
-      slideVideo.play().catch(() => {});
-    } else {
-      slideVideo.pause();
-    }
-  }
+  // Play the active slide's video (if any), pause all others
+  pdpState.media.forEach((m, idx) => {
+    if (m.type !== 'video') return;
+    const vid = document.getElementById(`pdp-slide-video-${idx}`);
+    if (!vid) return;
+    if (idx === slideIndex) vid.play().catch(() => {});
+    else vid.pause();
+  });
 }
 
 function nextPDPSlide() {
@@ -239,45 +230,31 @@ function closeFullscreenMedia() {
 }
 
 function syncFullscreenMedia() {
-  const p = pdpState.currentProduct;
-  const hasVideo = !!(p && p.video);
+  const media = pdpState.media[pdpState.currentSlide];
   const fsImg = document.getElementById('fs-display-image');
   const fsVideo = document.getElementById('fs-display-video');
   const muteBtn = document.getElementById('fs-mute-btn');
+  if (!media) return;
 
-  if (pdpState.currentSlide === 0) {
-    // Show Photo 1
+  if (media.type === 'video') {
+    if (fsImg) fsImg.classList.add('hidden');
+    if (fsVideo) {
+      fsVideo.src = media.url;
+      fsVideo.classList.remove('hidden');
+      fsVideo.muted = pdpState.isMuted;
+      fsVideo.play().catch(() => {});
+    }
+    if (muteBtn) muteBtn.classList.remove('hidden');
+  } else {
     if (fsVideo) {
       fsVideo.pause();
       fsVideo.classList.add('hidden');
     }
     if (fsImg) {
-      fsImg.src = p.image;
+      fsImg.src = media.url;
       fsImg.classList.remove('hidden');
     }
     if (muteBtn) muteBtn.classList.add('hidden');
-  } else {
-    // Slide 2: Video OR Sample Photo
-    if (hasVideo) {
-      if (fsImg) fsImg.classList.add('hidden');
-      if (fsVideo) {
-        fsVideo.src = p.video;
-        fsVideo.classList.remove('hidden');
-        fsVideo.muted = pdpState.isMuted;
-        fsVideo.play().catch(() => {});
-      }
-      if (muteBtn) muteBtn.classList.remove('hidden');
-    } else {
-      if (fsVideo) {
-        fsVideo.pause();
-        fsVideo.classList.add('hidden');
-      }
-      if (fsImg) {
-        fsImg.src = p.sampleImage || p.image;
-        fsImg.classList.remove('hidden');
-      }
-      if (muteBtn) muteBtn.classList.add('hidden');
-    }
   }
 }
 

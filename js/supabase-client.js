@@ -37,6 +37,8 @@ const adminSupabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_
 /* ---------------------------------------------------------------------- */
 
 function dbProductToApp(row) {
+  const photos = row.photos && row.photos.length ? row.photos : (row.image ? [row.image] : []);
+  const videos = row.videos && row.videos.length ? row.videos : (row.video ? [row.video] : []);
   return {
     id: row.id,
     category: row.category,
@@ -46,8 +48,12 @@ function dbProductToApp(row) {
     reviewsCount: row.reviews_count || 0,
     spiceLevel: row.spice_level,
     dietary: row.dietary || [],
-    image: row.image,
-    video: row.video || undefined,
+    // Unlimited galleries — photos[0]/videos[0] double as the "cover" used
+    // everywhere the old single image/video fields used to be read.
+    photos,
+    videos,
+    image: photos[0] || row.image,
+    video: videos[0] || row.video || undefined,
     sampleImage: row.sample_image || undefined,
     description: row.description,
     ingredients: row.ingredients,
@@ -58,6 +64,8 @@ function dbProductToApp(row) {
 }
 
 function appProductToDb(p) {
+  const photos = p.photos && p.photos.length ? p.photos : (p.image ? [p.image] : []);
+  const videos = p.videos && p.videos.length ? p.videos : (p.video ? [p.video] : []);
   return {
     id: p.id,
     category: p.category,
@@ -67,8 +75,10 @@ function appProductToDb(p) {
     reviews_count: p.reviewsCount,
     spice_level: p.spiceLevel,
     dietary: p.dietary || [],
-    image: p.image,
-    video: p.video || null,
+    photos,
+    videos,
+    image: photos[0] || null,
+    video: videos[0] || null,
     sample_image: p.sampleImage || null,
     description: p.description,
     ingredients: p.ingredients,

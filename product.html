@@ -132,37 +132,8 @@
         <div class="relative w-full aspect-square rounded-3xl border-2 border-[#E59819] shadow-2xl overflow-hidden bg-[#1F0307] group cursor-pointer"
              id="pdp-slider-box" onclick="handleMainMediaClick()">
           
-          <!-- Slide Track -->
-          <div id="pdp-slides-wrapper" class="w-full h-full flex transition-transform duration-500 ease-out">
-            <!-- Slide 0: High-Res Packaging Photo -->
-            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-[#1F0307]">
-              <img id="pdp-pack-image" src="" alt="Product Photo" 
-                class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
-            </div>
-
-            <!-- Slide 1: 4K Looping Cinematic Video OR Sample Detail Photo -->
-            <div id="pdp-slide-1-container" class="w-full h-full shrink-0 relative flex items-center justify-center bg-black">
-              <video id="pdp-slide-video" src="" 
-                autoplay loop muted playsinline 
-                class="w-full h-full object-cover">
-              </video>
-              
-              <img id="pdp-slide-sample-image" src="" alt="Sample Photo" 
-                class="w-full h-full object-cover hidden" />
-
-              <!-- Video Badge Overlay -->
-              <div id="pdp-video-badge" class="absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#FBBF24] text-xs font-black flex items-center gap-1.5 border border-[#E59819]">
-                <i class="fas fa-play text-[10px] text-red-500 animate-pulse"></i>
-                <span>4K TASTE FILM</span>
-              </div>
-
-              <!-- Sample Photo Badge Overlay -->
-              <div id="pdp-sample-badge" class="hidden absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#FBBF24] text-xs font-black flex items-center gap-1.5 border border-[#E59819]">
-                <i class="fas fa-camera text-[10px] text-amber-300"></i>
-                <span>SAMPLE SERVING VIEW</span>
-              </div>
-            </div>
-          </div>
+          <!-- Slide Track — built dynamically from the product's full photo/video gallery (see renderPDPMediaSlider in js/product-detail.js) -->
+          <div id="pdp-slides-wrapper" class="w-full h-full flex transition-transform duration-500 ease-out"></div>
 
           <!-- Left Arrow Button -->
           <button onclick="event.stopPropagation(); prevPDPSlide();" 
@@ -205,23 +176,8 @@
 
         </div>
 
-        <!-- Thumbnails Navigation Row -->
-        <div class="flex items-center gap-2.5 overflow-x-auto pb-1" id="pdp-thumbnails-row">
-          <!-- Thumbnail 0: HD Photo -->
-          <button onclick="setPDPSlide(0)" id="pdp-thumb-0"
-            class="w-16 h-16 rounded-2xl border-2 border-[#E59819] overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-[#1F0307]">
-            <img id="pdp-thumb-img-0" src="" alt="Thumbnail" class="w-full h-full object-cover" />
-          </button>
-
-          <!-- Thumbnail 1: 4K Video or Sample Photo -->
-          <button onclick="setPDPSlide(1)" id="pdp-thumb-1"
-            class="w-16 h-16 rounded-2xl border-2 border-amber-300/60 opacity-60 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center">
-            <img id="pdp-thumb-img-1" src="" alt="Media Thumbnail" class="w-full h-full object-cover" />
-            <div id="pdp-thumb-overlay" class="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <i id="pdp-thumb-icon" class="fas fa-play text-[#FBBF24] text-xs"></i>
-            </div>
-          </button>
-        </div>
+        <!-- Thumbnails Navigation Row — built dynamically, one per gallery photo/video -->
+        <div class="flex items-center gap-2.5 overflow-x-auto pb-1" id="pdp-thumbnails-row"></div>
 
         <!-- Trust Mini Cards -->
         <div class="grid grid-cols-3 gap-2.5 text-center text-xs pt-1">
