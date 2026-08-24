@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEERAV - Multi-Page Admin Operations Command Portal</title>
+  <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,7 +56,7 @@
       </form>
 
       <div class="mt-6 pt-4 border-t border-gray-100 text-center">
-        <a href="index.html" class="text-xs font-bold text-gray-500 hover:text-[#4A0713] transition flex items-center justify-center gap-1.5">
+        <a href="index" class="text-xs font-bold text-gray-500 hover:text-[#4A0713] transition flex items-center justify-center gap-1.5">
           <i class="fas fa-arrow-left text-xs"></i> Return to Customer Storefront
         </a>
       </div>
@@ -150,6 +151,10 @@
             <i class="fab fa-whatsapp w-5 text-emerald-400"></i>
             <span>Notification Hub</span>
           </button>
+          <button onclick="showAdminPage('settings')" data-page="settings" class="admin-nav-item w-full text-left">
+            <i class="fas fa-palette w-5 text-pink-400"></i>
+            <span>Store Settings</span>
+          </button>
           <button id="admin-nav-admins-btn" onclick="showAdminPage('admins')" data-page="admins" class="admin-nav-item w-full text-left hidden">
             <i class="fas fa-user-shield w-5 text-[#FBBF24]"></i>
             <span>Admin Accounts</span>
@@ -160,7 +165,7 @@
       <!-- Sidebar Footer Actions -->
       <div class="pt-5 border-t border-gray-800 space-y-2">
         <div id="admin-identity-badge" class="px-3 py-2 text-[11px] text-gray-400"></div>
-        <a href="index.html" class="flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
+        <a href="index" class="flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
           <i class="fas fa-store"></i>
           <span>View Customer Store</span>
         </a>
@@ -194,7 +199,7 @@
           <button onclick="openAddProductModal()" class="px-4 py-2.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
             <i class="fas fa-plus"></i> Add Product
           </button>
-          <a href="category.html" class="px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
+          <a href="category" class="px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
             <i class="fas fa-shopping-bag"></i> View Shop
           </a>
         </div>
@@ -219,6 +224,9 @@
         </button>
         <button onclick="showAdminPage('notifications')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
           <i class="fab fa-whatsapp mr-1 text-emerald-600"></i> Alerts
+        </button>
+        <button onclick="showAdminPage('settings')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
+          <i class="fas fa-palette mr-1 text-pink-500"></i> Settings
         </button>
         <button id="admin-mobile-admins-btn" onclick="showAdminPage('admins')" class="hidden px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
           <i class="fas fa-user-shield mr-1"></i> Admins
@@ -596,7 +604,330 @@
       </div>
 
       <!-- ===================================================================== -->
-      <!-- PAGE 7: ADMIN ACCOUNTS (root can register / remove admins)            -->
+      <!-- PAGE 7: STORE SETTINGS (branding, theme, payment gateway — stored in  -->
+      <!-- the `site_settings` Supabase table and applied live storefront-wide) -->
+      <!-- ===================================================================== -->
+      <div id="view-settings" class="admin-page-view hidden space-y-8">
+        <form id="settings-form" onsubmit="saveSiteSettingsForm(event)" class="space-y-8">
+
+          <!-- Brand Identity -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-store text-[#E59819]"></i> Brand Identity</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Site / Brand Name</label>
+                <input type="text" id="settings-site-name" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" required />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Tagline</label>
+                <input type="text" id="settings-tagline" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Logo</label>
+                <div class="flex items-center gap-3">
+                  <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1" />
+                  <div class="flex-1">
+                    <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="text-xs" />
+                    <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1"></p>
+                  </div>
+                  <button type="button" onclick="removeSettingsImage('logo')" title="Remove — reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    <i class="fas fa-trash-alt text-xs"></i>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
+                <div class="flex items-center gap-3">
+                  <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1" />
+                  <div class="flex-1">
+                    <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="text-xs" />
+                    <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1"></p>
+                  </div>
+                  <button type="button" onclick="removeSettingsImage('favicon')" title="Remove — reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    <i class="fas fa-trash-alt text-xs"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Theme Presets -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-4">
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-wand-magic-sparkles text-purple-500"></i> Theme Presets</h3>
+            <p class="text-[11px] text-gray-500">One click applies a full brand kit (colors, fonts, background) live to the whole website immediately — no need to hit Save separately.</p>
+            <div id="theme-presets-gallery" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+          </div>
+
+          <!-- Theme -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-palette text-pink-500"></i> Theme — Colors & Font</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Primary</label>
+                <input type="color" id="settings-color-primary" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Secondary</label>
+                <input type="color" id="settings-color-secondary" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent</label>
+                <input type="color" id="settings-color-accent" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent Light</label>
+                <input type="color" id="settings-color-accent-light" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Heading Color</label>
+                <input type="color" id="settings-color-heading" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Body Text Color</label>
+                <input type="color" id="settings-color-text" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+            </div>
+            <div class="space-y-3">
+              <label class="block text-xs font-bold text-gray-600">Admin Panel Background (this dashboard's own sidebar &amp; login screen)</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="setAdminPanelType('solid')" data-admin-bg-type-btn="solid" class="admin-bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
+                <button type="button" onclick="setAdminPanelType('gradient')" data-admin-bg-type-btn="gradient" class="admin-bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Gradient</button>
+              </div>
+              <div id="admin-bg-solid-fields" class="hidden">
+                <input type="color" id="settings-color-admin-panel" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div id="admin-bg-gradient-fields" class="hidden space-y-2">
+                <div class="grid grid-cols-3 gap-2">
+                  <input type="color" id="settings-admin-gradient-1" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-admin-gradient-2" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-admin-gradient-3" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                </div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Heading / Display Font</label>
+                <select id="settings-heading-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Body Font</label>
+                <select id="settings-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Text Size</label>
+              <select id="settings-base-font-size" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
+                <option value="14px">Small</option>
+                <option value="16px">Default</option>
+                <option value="18px">Large</option>
+                <option value="20px">Extra Large</option>
+              </select>
+            </div>
+            <p class="text-[10px] text-gray-400">Headings (titles) and body text can use different fonts/colors — a classic "display font + body font" brand kit.</p>
+
+            <div class="pt-4 border-t border-gray-100 space-y-4">
+              <label class="block text-xs font-bold text-gray-600">Page Background</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="setBackgroundType('solid')" data-bg-type-btn="solid" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
+                <button type="button" onclick="setBackgroundType('gradient')" data-bg-type-btn="gradient" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Gradient</button>
+                <button type="button" onclick="setBackgroundType('image')" data-bg-type-btn="image" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Image</button>
+              </div>
+
+              <div id="bg-solid-fields" class="hidden">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Color</label>
+                <input type="color" id="settings-color-background" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+
+              <div id="bg-gradient-fields" class="hidden space-y-2">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Gradient Colors (2–4 stops — e.g. tri-colour)</label>
+                <div class="grid grid-cols-4 gap-2">
+                  <input type="color" id="settings-gradient-1" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-2" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-3" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-4" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                </div>
+                <p class="text-[10px] text-gray-400">Leave stop 4 as-is to use only 3 colors.</p>
+              </div>
+
+              <div id="bg-image-fields" class="hidden">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Image</label>
+                <div class="flex items-center gap-3">
+                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden" />
+                  <div class="flex-1">
+                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="text-xs" />
+                    <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1"></p>
+                  </div>
+                  <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    <i class="fas fa-trash-alt text-xs"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Decorative Background Pattern</label>
+                <div id="pattern-style-buttons" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+                <div id="pattern-custom-fields" class="hidden mt-3">
+                  <label class="block text-xs font-bold text-gray-600 mb-1.5">Custom Pattern Image (tiled)</label>
+                  <div class="flex items-center gap-3">
+                    <img id="settings-pattern-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden" />
+                    <div class="flex-1">
+                      <input type="file" accept="image/*" id="settings-pattern-image-upload" onchange="handleSettingsPatternImageUpload(event)" class="text-xs" />
+                      <p id="settings-pattern-image-status" class="text-[10px] text-gray-400 mt-1"></p>
+                    </div>
+                    <button type="button" onclick="removeSettingsImage('pattern-image')" title="Remove pattern image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                      <i class="fas fa-trash-alt text-xs"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="text-[10px] text-gray-400">Everything on this page applies live across the storefront and this admin portal the moment you save — and is stored in Supabase, so it survives redeploys.</p>
+          </div>
+
+          <!-- Payment Gateway -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-credit-card text-emerald-600"></i> Payment Gateway</h3>
+
+            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+              <div>
+                <div class="text-xs font-bold text-gray-800">UPI QR Payment</div>
+                <input type="text" id="settings-upi-id" placeholder="yourstore@upi" class="mt-1.5 w-56 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="settings-upi-enabled" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+              <div class="text-xs font-bold text-gray-800">Credit / Debit Card</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="settings-card-enabled" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+              <div class="text-xs font-bold text-gray-800">NetBanking</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="settings-netbanking-enabled" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+              </label>
+            </div>
+
+            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+              <div class="text-xs font-bold text-gray-800">Cash on Delivery (COD)</div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" id="settings-cod-enabled" class="sr-only peer" />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+              </label>
+            </div>
+
+            <div class="pt-2 border-t border-gray-100 space-y-4">
+              <p class="text-[10px] text-gray-400">Live gateway credentials — stored securely, only used once real Razorpay/Stripe checkout is wired in.</p>
+              <div class="flex items-center justify-between p-3.5 bg-blue-50/50 rounded-xl border border-blue-100">
+                <div class="flex-1 mr-3">
+                  <div class="text-xs font-bold text-gray-800">Razorpay</div>
+                  <input type="text" id="settings-razorpay-key" placeholder="Razorpay Key ID" class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" id="settings-razorpay-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+              <div class="flex items-center justify-between p-3.5 bg-blue-50/50 rounded-xl border border-blue-100">
+                <div class="flex-1 mr-3">
+                  <div class="text-xs font-bold text-gray-800">Stripe</div>
+                  <input type="text" id="settings-stripe-key" placeholder="Stripe Publishable Key" class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" id="settings-stripe-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact & Social -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-address-book text-blue-600"></i> Contact & Social</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">WhatsApp Number</label>
+                <input type="text" id="settings-whatsapp" placeholder="+919876543210" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Contact Email</label>
+                <input type="email" id="settings-contact-email" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Contact Phone</label>
+                <input type="text" id="settings-contact-phone" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Address</label>
+                <input type="text" id="settings-contact-address" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Instagram URL</label>
+                <input type="text" id="settings-instagram" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Facebook URL</label>
+                <input type="text" id="settings-facebook" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Storefront Copy -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-bullhorn text-amber-600"></i> Storefront Copy</h3>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Top Announcement Bar</label>
+              <input type="text" id="settings-announcement" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Footer Text</label>
+              <input type="text" id="settings-footer-text" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button type="submit" id="settings-save-btn" class="px-6 py-3 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-md transition flex items-center gap-2">
+              <i class="fas fa-floppy-disk"></i> Save Store Settings
+            </button>
+          </div>
+
+        </form>
+
+        <!-- Website Text Content — headings/subheadings/descriptions, editable per element -->
+        <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5 mt-8">
+          <div>
+            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-heading text-indigo-500"></i> Website Text Content</h3>
+            <p class="text-[11px] text-gray-500 mt-1">Edit any heading, subheading, or description on the site. Changes apply live everywhere the moment you save.</p>
+          </div>
+          <div id="page-content-fields" class="space-y-4"></div>
+          <div class="flex justify-end pt-2">
+            <button type="submit" id="page-content-save-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-2xl shadow-md transition flex items-center gap-2">
+              <i class="fas fa-floppy-disk"></i> Save Text Content
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 8: ADMIN ACCOUNTS (root can register / remove admins)            -->
       <!-- ===================================================================== -->
       <div id="view-admins" class="admin-page-view hidden space-y-6">
 
@@ -1046,6 +1377,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
   <script type="module" src="js/supabase-client.js"></script>
+  <script defer src="js/theme.js"></script>
   <script defer src="js/data.js"></script>
   <script defer src="js/admin.js"></script>
 </body>

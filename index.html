@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEERAV - An Authentic Bikaneri Taste • Namkeens & Sweets</title>
-  
+  <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,15 +51,15 @@
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
       <div class="flex items-center gap-2 font-medium">
         <span class="bg-[#E59819] text-[#32040C] font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Bikaner Special</span>
-        <span>✨ Prepared in Pure & Clean Oil • Use coupon <strong class="text-[#FBBF24] font-black">MEERAV10</strong> for 10% Off!</span>
+        <span id="announcement-bar-text">✨ Prepared in Pure & Clean Oil • Use coupon <strong class="text-[#FBBF24] font-black">MEERAV10</strong> for 10% Off!</span>
       </div>
       <div class="flex items-center gap-4 text-amber-200 text-[11px]">
-        <a href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-1.5 hover:text-white transition">
+        <a id="whatsapp-header-link" href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-1.5 hover:text-white transition">
           <i class="fab fa-whatsapp text-emerald-400"></i>
-          <span>Order on WhatsApp: +91 98765 43210</span>
+          <span id="whatsapp-header-number">Order on WhatsApp: +91 98765 43210</span>
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
-        <a href="admin.html" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
+        <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
           <i class="fas fa-shield-halved text-[#E59819]"></i> Admin Portal
         </a>
       </div>
@@ -139,21 +140,21 @@
           <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4A0713] border border-[#E59819] text-[#FBBF24] text-xs font-black shadow-md">
               <i class="fas fa-landmark text-[#E59819]"></i>
-              <span>FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE</span>
+              <span data-ck="home.hero.badge">FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE</span>
             </div>
 
             <h1 class="text-4xl sm:text-6xl font-black text-[#32040C] tracking-tight leading-tight">
-              Royal Bikaneri <br/>
-              <span class="text-[#E59819] underline decoration-[#4A0713] decoration-wavy decoration-2">Namkeens & Sev</span>
+              <span data-ck="home.hero.title_line1">Royal Bikaneri</span> <br/>
+              <span data-ck="home.hero.title_highlight" class="text-[#E59819] underline decoration-[#4A0713] decoration-wavy decoration-2">Namkeens & Sev</span>
             </h1>
 
-            <p class="text-gray-700 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+            <p data-ck="home.hero.subtitle" class="text-gray-700 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
               Made with finest ingredients and authentic Bikaneri recipes. Prepared fresh daily in <strong>100% pure & clean oil</strong> with zero palm oil.
             </p>
 
             <!-- CTA Buttons -->
             <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
-              <a href="category.html?cat=all" 
+              <a href="category?cat=all" 
                 class="px-7 py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black rounded-2xl shadow-xl shadow-[#4A0713]/30 transition transform hover:-translate-y-0.5 border border-[#E59819] inline-flex items-center gap-2">
                 <i class="fas fa-cookie-bite text-[#E59819]"></i>
                 <span>Explore Category Collections</span>
@@ -168,7 +169,7 @@
                 <span>🎬 Watch All-Products Film</span>
               </button>
 
-              <a href="category.html?cat=sweets-combos" 
+              <a href="category?cat=sweets-combos" 
                 class="px-6 py-3.5 bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-sm font-black rounded-2xl shadow-md transition flex items-center gap-2 border border-amber-300">
                 <i class="fas fa-gift text-[#E59819]"></i> Festive Hampers
               </a>
@@ -242,8 +243,8 @@
         <span class="px-4 py-1.5 bg-amber-100 text-[#4A0713] text-xs font-black rounded-full uppercase tracking-wider border border-amber-300 shadow-xs">
           Royal Bikaner Specialties
         </span>
-        <h2 class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3">Select a Category to Explore Snacks</h2>
-        <p class="text-xs sm:text-sm text-gray-600 mt-2 font-medium">Click any traditional category below to view its handcrafted snacks, live prices & pack sizes</p>
+        <h2 data-ck="home.showcase.heading" class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3">Select a Category to Explore Snacks</h2>
+        <p data-ck="home.showcase.subheading" class="text-xs sm:text-sm text-gray-600 mt-2 font-medium">Click any traditional category below to view its handcrafted snacks, live prices & pack sizes</p>
       </div>
 
       <!-- Dynamic Category Cards Container (Auto-Calculates Product Numbers from Database) -->
@@ -259,7 +260,7 @@
           <p class="text-xs text-amber-200/80">Filter by pure ingredients, spice levels, and order directly with live GPS tracking.</p>
         </div>
 
-        <a href="category.html?cat=all" 
+        <a href="category?cat=all" 
           class="px-8 py-4 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 shrink-0 flex items-center gap-2 border border-white/20">
           <span id="home-total-products-btn">Explore All Products</span>
           <i class="fas fa-arrow-right"></i>
@@ -276,32 +277,32 @@
             <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
               <i class="fas fa-droplet"></i>
             </div>
-            <h4 class="font-black text-base text-[#FBBF24]">Pure & Clean Oil</h4>
-            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.</p>
+            <h4 data-ck="home.trust.item1.title" class="font-black text-base text-[#FBBF24]">Pure & Clean Oil</h4>
+            <p data-ck="home.trust.item1.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.</p>
           </div>
 
           <div class="space-y-2">
             <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
               <i class="fas fa-landmark"></i>
             </div>
-            <h4 class="font-black text-base text-[#FBBF24]">Bikaneri Heritage</h4>
-            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.</p>
+            <h4 data-ck="home.trust.item2.title" class="font-black text-base text-[#FBBF24]">Bikaneri Heritage</h4>
+            <p data-ck="home.trust.item2.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.</p>
           </div>
 
           <div class="space-y-2">
             <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
               <i class="fas fa-box-open"></i>
             </div>
-            <h4 class="font-black text-base text-[#FBBF24]">Multi-Layer Airtight Pack</h4>
-            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.</p>
+            <h4 data-ck="home.trust.item3.title" class="font-black text-base text-[#FBBF24]">Multi-Layer Airtight Pack</h4>
+            <p data-ck="home.trust.item3.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.</p>
           </div>
 
           <div class="space-y-2">
             <div class="w-12 h-12 rounded-2xl bg-[#E59819] text-[#32040C] flex items-center justify-center text-xl mx-auto md:mx-0 shadow-lg font-black">
               <i class="fab fa-whatsapp"></i>
             </div>
-            <h4 class="font-black text-base text-[#FBBF24]">Live WhatsApp Alerts</h4>
-            <p class="text-xs text-amber-100/80 leading-relaxed font-medium">Instant WhatsApp notifications with courier tracking and live GPS route maps.</p>
+            <h4 data-ck="home.trust.item4.title" class="font-black text-base text-[#FBBF24]">Live WhatsApp Alerts</h4>
+            <p data-ck="home.trust.item4.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Instant WhatsApp notifications with courier tracking and live GPS route maps.</p>
           </div>
 
         </div>
@@ -313,13 +314,13 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-3">
           <img src="assets/images/meerav_logo.png" alt="Meerav Logo" class="h-10 w-auto object-contain" />
-          <span class="font-bold text-gray-200 text-sm">MEERAV Namkeens & Sweets</span>
-          <span>&copy; 2026 All Rights Reserved.</span>
+          <span id="footer-brand-name" class="font-bold text-gray-200 text-sm">MEERAV Namkeens & Sweets</span>
+          <span id="footer-copyright">&copy; 2026 All Rights Reserved.</span>
         </div>
         <div class="flex items-center gap-6 text-gray-400">
           <a href="#" class="hover:text-[#FBBF24] transition">Privacy Policy</a>
           <a href="#" class="hover:text-[#FBBF24] transition">FSSAI Certified</a>
-          <a href="admin.html" class="hover:text-[#FBBF24] transition font-bold text-[#E59819]">
+          <a href="admin" class="hover:text-[#FBBF24] transition font-bold text-[#E59819]">
             <i class="fas fa-lock text-xs mr-1"></i> Admin Portal
           </a>
         </div>
@@ -647,7 +648,7 @@
             <svg class="w-36 h-36" viewBox="0 0 100 100" fill="currentColor">
               <path d="M0,0 h30 v30 h-30 z M10,10 h10 v10 h-10 z M70,0 h30 v30 h-30 z M80,10 h10 v10 h-10 z M0,70 h30 v30 h-30 z M10,80 h10 v10 h-10 z M40,10 h10 v10 h-10 z M60,10 h10 v10 h-10 z M40,40 h20 v20 h-20 z M70,40 h10 v10 h-10 z M80,50 h20 v20 h-20 z M40,70 h10 v30 h-10 z M60,80 h30 v10 h-30 z" fill="#4A0713"/>
             </svg>
-            <span class="text-[9px] font-bold text-gray-500 mt-1">UPI: meeravnamkeens@upi</span>
+            <span id="upi-id-display" class="text-[9px] font-bold text-gray-500 mt-1">UPI: meeravnamkeens@upi</span>
           </div>
 
           <div>
@@ -809,7 +810,7 @@
           <span>✨ <strong>100% Pure Oil & Authentic Recipe</strong> — Delivered direct from Bikaner Hub.</span>
         </div>
         <div class="flex items-center gap-3">
-          <a href="category.html?cat=all" class="px-6 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
+          <a href="category?cat=all" class="px-6 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
             Shop All Delicacies →
           </a>
         </div>
@@ -920,11 +921,11 @@
   <!-- 11. MOBILE STICKY BOTTOM NAVIGATION BAR                                   -->
   <!-- ========================================================================= -->
   <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
+    <a href="index" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
       <i class="fas fa-home text-base"></i>
       <span class="text-[10px] font-black">Home</span>
     </a>
-    <a href="category.html" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+    <a href="category" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
       <i class="fas fa-cookie-bite text-base text-[#E59819]"></i>
       <span class="text-[10px] font-bold">Categories</span>
     </a>
@@ -976,7 +977,7 @@
           ✨ <strong>100% Pure & Clean Oil</strong> — Prepared daily in Bikaner with zero palm oil.
         </span>
         <div class="flex items-center gap-2">
-          <a href="category.html?cat=all" class="px-5 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
+          <a href="category?cat=all" class="px-5 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
             Shop All Snacks &rarr;
           </a>
           <button onclick="closeBrandFilmModal()" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl transition">
@@ -995,6 +996,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
   <script type="module" src="js/supabase-client.js"></script>
+  <script defer src="js/theme.js"></script>
   <script defer src="js/data.js"></script>
   <script defer src="js/auth.js"></script>
   <script defer src="js/map.js"></script>

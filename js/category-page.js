@@ -4,7 +4,8 @@
  */
 
 const categoryPageState = {
-  selectedCategory: 'all',
+  // null = nothing picked yet — only the category cards show, no products.
+  selectedCategory: null,
   selectedDietary: 'all',
   searchQuery: '',
   categories: [],
@@ -24,10 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initCategoryPage() {
   const urlParams = new URLSearchParams(window.location.search);
-  const rawCat = urlParams.get('cat') || 'all';
-  const initialCat = normalizeCategoryId(rawCat);
-
-  categoryPageState.selectedCategory = initialCat;
+  const rawCat = urlParams.get('cat');
+  // A direct link to a specific category (e.g. the homepage's "Festive
+  // Hampers" shortcut) already counts as picking one — go straight to its
+  // products. Arriving with no ?cat= (or ?cat=all, which no longer has a
+  // card) leaves nothing picked, so only the category cards show.
+  categoryPageState.selectedCategory = (rawCat && rawCat !== 'all') ? normalizeCategoryId(rawCat) : null;
 
   // 1. Instant Synchronous Load from MIRA_DATA / LocalStorage (0 ms delay)
   categoryPageState.categories = [...MIRA_DATA.categories];
@@ -43,44 +46,77 @@ async function initCategoryPage() {
   }
 
   renderCategoryHeader();
-  renderCategoryTabs();
+  renderCategoryPickerCards();
   renderCategoryDietaryFilters();
   renderCategoryProducts();
 
-  // 2. Asynchronous Cloud Sync from Supabase
+  // 2. Asynchronous Cloud Sync from Supabase — this is the real source of
+  // truth (a newly admin-added category/product only exists here); the
+  // static MIRA_DATA above is only an instant-paint placeholder until this lands.
   try {
-    if (typeof MeeravSupabase !== 'undefined') {
-      const [cloudCats, cloudProds] = await Promise.all([
-        MeeravSupabase.getCategories(),
-        MeeravSupabase.getProducts('all')
-      ]);
+    const [cloudCats, cloudProds] = await Promise.all([
+      fetchCategories(),
+      fetchProducts()
+    ]);
 
-      if (cloudCats && cloudCats.length > 0) categoryPageState.categories = cloudCats;
-      if (cloudProds && cloudProds.length > 0) categoryPageState.products = cloudProds;
+    if (cloudCats && cloudCats.length > 0) categoryPageState.categories = cloudCats;
+    if (cloudProds && cloudProds.length > 0) categoryPageState.products = cloudProds;
 
-      if (typeof storeState !== 'undefined') {
-        storeState.categories = categoryPageState.categories;
-        storeState.products = categoryPageState.products;
-      }
-
-      renderCategoryHeader();
-      renderCategoryTabs();
-      renderCategoryProducts();
+    if (typeof storeState !== 'undefined') {
+      storeState.categories = categoryPageState.categories;
+      storeState.products = categoryPageState.products;
     }
+
+    renderCategoryHeader();
+    renderCategoryPickerCards();
+    renderCategoryProducts();
   } catch (err) {
     console.warn('Category cloud sync fallback to local data:', err.message);
   }
+
+  // 3. Stay live — reflect admin catalog changes without a reload.
+  setupCategoryPageRealtime();
+}
+
+function setupCategoryPageRealtime() {
+  MiraDB.subscribeTable('categories', async () => {
+    categoryPageState.categories = await fetchCategories();
+    if (typeof storeState !== 'undefined') storeState.categories = categoryPageState.categories;
+    renderCategoryHeader();
+    renderCategoryPickerCards();
+  });
+
+  MiraDB.subscribeTable('products', (payload) => {
+    if (payload.eventType === 'DELETE') {
+      categoryPageState.products = categoryPageState.products.filter(p => p.id !== payload.old.id);
+    } else {
+      const updated = MiraDB.mappers.dbProductToApp(payload.new);
+      const idx = categoryPageState.products.findIndex(p => p.id === updated.id);
+      if (idx === -1) categoryPageState.products.unshift(updated); else categoryPageState.products[idx] = updated;
+    }
+    if (typeof storeState !== 'undefined') storeState.products = categoryPageState.products;
+    renderCategoryPickerCards();
+    renderCategoryProducts();
+  });
 }
 
 function renderCategoryHeader() {
-  const normCat = normalizeCategoryId(categoryPageState.selectedCategory);
-  const cat = categoryPageState.categories.find(c => c.id === normCat || c.id === categoryPageState.selectedCategory);
-
   const titleEl = document.getElementById('current-category-title');
   const descEl = document.getElementById('current-category-desc');
   const breadcrumbEl = document.getElementById('current-category-breadcrumb');
 
-  if (normCat === 'all' || !cat) {
+  if (categoryPageState.selectedCategory === null) {
+    if (titleEl) titleEl.textContent = 'Choose a Category';
+    if (descEl) descEl.textContent = 'Pick one of our authentic Bikaneri categories below to see its handcrafted snacks.';
+    if (breadcrumbEl) breadcrumbEl.textContent = 'Categories';
+    document.title = 'Bikaneri Namkeens & Snacks - MEERAV';
+    return;
+  }
+
+  const normCat = normalizeCategoryId(categoryPageState.selectedCategory);
+  const cat = categoryPageState.categories.find(c => c.id === normCat || c.id === categoryPageState.selectedCategory);
+
+  if (!cat) {
     if (titleEl) titleEl.textContent = 'All Authentic Bikaneri Delicacies';
     if (descEl) descEl.textContent = 'Explore our complete heritage collection of crispy Bhujia, Sev, Mathri, and Royal Gift Hampers.';
     if (breadcrumbEl) breadcrumbEl.textContent = 'All Categories';
@@ -93,45 +129,51 @@ function renderCategoryHeader() {
   }
 }
 
-function renderCategoryTabs() {
-  const container = document.getElementById('category-tabs-container');
+// Same squircle-icon card design used on the homepage's category showcase —
+// the only way to switch categories on this page (no small pill tabs).
+const CATEGORY_PICKER_ICONS = {
+  'bhujia-sev': 'fas fa-fire',
+  'mixture-farsan': 'fas fa-bowl-rice',
+  'mathri': 'fas fa-sun',
+  'papad-mathri': 'fas fa-sun',
+  'roasted-diet': 'fas fa-seedling',
+  'healthy-roasted': 'fas fa-seedling',
+  'sweets-combos': 'fas fa-gift'
+};
+
+function renderCategoryPickerCards() {
+  const container = document.getElementById('category-picker-cards-grid');
   if (!container) return;
 
   const validCategories = categoryPageState.categories.filter(c => c.id !== 'all');
   const currentNorm = normalizeCategoryId(categoryPageState.selectedCategory);
 
-  const tabsHtml = [
-    `
-      <button onclick="selectCategory('all')" 
-        class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
-          currentNorm === 'all' 
-            ? 'bg-[#4A0713] text-[#FBBF24] shadow-md border border-[#E59819] transform scale-102' 
-            : 'bg-white text-gray-800 hover:bg-amber-50 border border-amber-200'
-        }">
-        <i class="fas fa-border-all text-[#E59819]"></i>
-        <span>✨ All Delicacies (${categoryPageState.products.length})</span>
-      </button>
-    `,
+  const cardHtml = (id, icon, name, count, isActive) => `
+    <button type="button" onclick="selectCategory('${id}')"
+      class="p-4 sm:p-6 bg-white rounded-3xl border-2 hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 active:scale-98 ${
+        isActive ? 'border-[#E59819] shadow-xl' : 'border-amber-200/80 hover:border-[#E59819]'
+      }">
+      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-2xl sm:rounded-3xl bg-[#520914] group-hover:bg-[#3B040D] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-lg group-hover:scale-110 transition-all duration-300 border border-[#E59819]/40">
+        <i class="${icon}"></i>
+      </div>
+      <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${name}</h4>
+      <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
+      <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#4A0713] group-hover:underline">
+        Explore &rarr;
+      </span>
+    </button>
+  `;
+
+  const cards = [
     ...validCategories.map(cat => {
       const normId = normalizeCategoryId(cat.id);
       const count = categoryPageState.products.filter(p => p.category === normId || p.category === cat.id).length;
       const isActive = currentNorm === normId || currentNorm === cat.id;
-
-      return `
-        <button onclick="selectCategory('${cat.id}')" 
-          class="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 ${
-            isActive 
-              ? 'bg-[#4A0713] text-[#FBBF24] shadow-md border border-[#E59819] transform scale-102' 
-              : 'bg-white text-gray-800 hover:bg-amber-50 border border-amber-200'
-          }">
-          <i class="${cat.icon || 'fas fa-cookie'} text-[#E59819]"></i>
-          <span>${cat.name} (${count})</span>
-        </button>
-      `;
+      return cardHtml(cat.id, CATEGORY_PICKER_ICONS[cat.id] || cat.icon || 'fas fa-cookie-bite', cat.name, count, isActive);
     })
-  ].join('');
+  ];
 
-  container.innerHTML = tabsHtml;
+  container.innerHTML = cards.join('');
 }
 
 function renderCategoryDietaryFilters() {
@@ -153,13 +195,22 @@ function renderCategoryDietaryFilters() {
 
 function selectCategory(catId) {
   categoryPageState.selectedCategory = normalizeCategoryId(catId);
-  
+
   // Update URL state without page reload
-  const newUrl = categoryPageState.selectedCategory === 'all' ? 'category.html?cat=all' : `category.html?cat=${categoryPageState.selectedCategory}`;
+  const newUrl = `category?cat=${categoryPageState.selectedCategory}`;
   window.history.pushState({ path: newUrl }, '', newUrl);
 
   renderCategoryHeader();
-  renderCategoryTabs();
+  renderCategoryPickerCards();
+  renderCategoryProducts();
+}
+
+/** Takes the user back from a category's product list to the plain category picker. */
+function clearCategorySelection() {
+  categoryPageState.selectedCategory = null;
+  window.history.pushState({ path: 'category' }, '', 'category');
+  renderCategoryHeader();
+  renderCategoryPickerCards();
   renderCategoryProducts();
 }
 
@@ -178,16 +229,31 @@ function renderCategoryProducts() {
   const grid = document.getElementById('category-products-grid');
   const emptyState = document.getElementById('category-empty-state');
   const countBadge = document.getElementById('category-items-count');
+  const dietaryContainer = document.getElementById('category-dietary-container');
+  const pickerSection = document.getElementById('category-picker-section');
+  const backRow = document.getElementById('category-back-row');
 
   if (!grid) return;
+
+  const isPicked = categoryPageState.selectedCategory !== null;
+  if (pickerSection) pickerSection.classList.toggle('hidden', isPicked);
+  if (backRow) backRow.classList.toggle('hidden', !isPicked);
+  if (backRow) backRow.classList.toggle('flex', isPicked);
+
+  if (!isPicked) {
+    grid.innerHTML = '';
+    if (emptyState) emptyState.classList.add('hidden');
+    if (dietaryContainer) dietaryContainer.classList.add('hidden');
+    if (countBadge) countBadge.textContent = '';
+    return;
+  }
+  if (dietaryContainer) dietaryContainer.classList.remove('hidden');
 
   // Filter products by category, dietary, and search query
   let filtered = categoryPageState.products;
   const currentNorm = normalizeCategoryId(categoryPageState.selectedCategory);
 
-  if (currentNorm !== 'all') {
-    filtered = filtered.filter(p => p.category === currentNorm || p.category === categoryPageState.selectedCategory);
-  }
+  filtered = filtered.filter(p => p.category === currentNorm || p.category === categoryPageState.selectedCategory);
 
   if (categoryPageState.selectedDietary !== 'all') {
     filtered = filtered.filter(p => p.dietary && p.dietary.includes(categoryPageState.selectedDietary));
@@ -225,7 +291,7 @@ function renderCategoryProducts() {
     return `
       <div class="product-card overflow-hidden flex flex-col justify-between relative group">
         <!-- Packaging Visual Frame with Video Hover Preview -->
-        <a href="product.html?id=${p.id}" class="product-pack-frame cursor-pointer block relative" 
+        <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block relative" 
           onmouseenter="const v=this.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}"
           onmouseleave="const v=this.querySelector('video'); if(v){v.pause();}">
           
@@ -284,7 +350,7 @@ function renderCategoryProducts() {
             </div>
 
             <!-- Product Title & Description -->
-            <a href="product.html?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
+            <a href="product?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
               ${p.name}
             </a>
             <p class="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed font-medium">
@@ -317,7 +383,7 @@ function renderCategoryProducts() {
                 <span class="text-xs text-gray-400 line-through">₹${selectedVar.originalPrice}</span>
                 <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
               </div>
-              <a href="product.html?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
+              <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
                 <span>View Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
               </a>
             </div>

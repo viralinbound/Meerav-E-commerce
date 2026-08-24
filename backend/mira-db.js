@@ -7,7 +7,8 @@ import {
   dbCategoryToApp,
   dbCustomerToApp, appCustomerToDb,
   dbOrderToApp, appOrderToDb,
-  dbNotifToApp
+  dbNotifToApp,
+  dbSettingsToApp, appSettingsToDb
 } from './mappers.js';
 
 export const MEDIA_BUCKET = 'meerav-media';
@@ -98,6 +99,33 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   async function dbUpsertCustomer(customer) {
     const { error } = await supabaseClient.from('customers').upsert(appCustomerToDb(customer));
     if (error) console.error('dbUpsertCustomer', error);
+    return !error;
+  }
+
+  async function fetchSiteSettings() {
+    const { data, error } = await supabaseClient.from('site_settings').select('*').eq('id', 'default').maybeSingle();
+    if (error) { console.error('fetchSiteSettings', error); return null; }
+    return data ? dbSettingsToApp(data) : null;
+  }
+
+  async function dbUpsertSiteSettings(settings, client = supabaseClient) {
+    const { error } = await client.from('site_settings').upsert(appSettingsToDb(settings));
+    if (error) console.error('dbUpsertSiteSettings', error);
+    return !error;
+  }
+
+  async function fetchPageContent() {
+    const { data, error } = await supabaseClient.from('page_content').select('*').order('sort_order');
+    if (error) { console.error('fetchPageContent', error); return { map: {}, rows: [] }; }
+    const map = {};
+    (data || []).forEach(row => { map[row.key] = row.value; });
+    return { map, rows: data || [] };
+  }
+
+  async function dbUpsertPageContent(entries, client = supabaseClient) {
+    const rows = entries.map(e => ({ key: e.key, value: e.value, label: e.label, page: e.page, sort_order: e.sortOrder }));
+    const { error } = await client.from('page_content').upsert(rows, { onConflict: 'key' });
+    if (error) console.error('dbUpsertPageContent', error);
     return !error;
   }
 
@@ -322,6 +350,8 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     dbInsertOrder, dbUpdateOrderStatus,
     dbUpsertCustomer,
     dbInsertNotification,
+    fetchSiteSettings, dbUpsertSiteSettings,
+    fetchPageContent, dbUpsertPageContent,
     subscribeTable,
     uploadMedia,
     signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange,
@@ -331,6 +361,6 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     resetAdminPassword, changeOwnPassword, banAdmin, unbanAdmin, warnAdmin,
     fetchMyWarnings, fetchWarningsForAdmin, acknowledgeWarning,
     logAdminActivity, fetchActivityLog, fetchActivityForAdmin, markActivityUndone,
-    mappers: { dbProductToApp, dbCategoryToApp, dbCustomerToApp, dbOrderToApp, dbNotifToApp }
+    mappers: { dbProductToApp, dbCategoryToApp, dbCustomerToApp, dbOrderToApp, dbNotifToApp, dbSettingsToApp }
   };
 }

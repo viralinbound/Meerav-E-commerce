@@ -65,27 +65,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (found) storeState.activeTrackingOrder = found;
   }
 
-  // 2. Asynchronous Cloud Sync from Supabase
+  // 2. Asynchronous Cloud Sync from Supabase — this is the real source of
+  // truth (admin-added/edited categories & products live here); the static
+  // MIRA_DATA above is only an instant-paint placeholder until this lands.
   try {
-    if (typeof MeeravSupabase !== 'undefined') {
-      const [categories, products, orders] = await Promise.all([
-        MeeravSupabase.getCategories(),
-        MeeravSupabase.getProducts('all'),
-        fetchOrders()
-      ]);
+    const [categories, products, orders] = await Promise.all([
+      fetchCategories(),
+      fetchProducts(),
+      fetchOrders()
+    ]);
 
-      if (categories && categories.length > 0) storeState.categories = categories;
-      if (products && products.length > 0) storeState.products = products;
-      if (orders) storeState.orders = orders;
+    if (categories && categories.length > 0) storeState.categories = categories;
+    if (products && products.length > 0) storeState.products = products;
+    if (orders) storeState.orders = orders;
 
-      initProductVariants();
-      renderHomeCategoryCards();
-      renderStoreCategories();
-      renderStoreProducts();
-    }
+    initProductVariants();
+    renderHomeCategoryCards();
+    renderStoreCategories();
+    renderStoreProducts();
   } catch (err) {
     console.warn('Storefront cloud sync fallback:', err.message);
   }
+
+  // 3. Stay live — reflect admin catalog/order changes without a reload.
+  setupStoreRealtime();
 });
 
 /**
@@ -168,7 +171,7 @@ function renderHomeCategoryCards() {
     const catStyle = categoryIcons[cat.id] || { icon: cat.icon || 'fas fa-cookie-bite', name: cat.name };
 
     return `
-      <a href="category.html?cat=${cat.id}" 
+      <a href="category?cat=${cat.id}" 
         class="p-4 sm:p-6 bg-white rounded-3xl border-2 border-amber-200/80 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block active:scale-98">
         
         <!-- Royal Deep Maroon Squircle Container with Gold Icon (Matching User Image) -->
@@ -231,7 +234,7 @@ function renderCinematicVideoReels() {
           </div>
 
           <!-- Click to Watch Fullscreen -->
-          <a href="product.html?id=${p.id}" class="absolute inset-0 z-0"></a>
+          <a href="product?id=${p.id}" class="absolute inset-0 z-0"></a>
 
           <!-- Floating Sound/Play Indicator -->
           <div class="absolute bottom-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-black/70 text-[#FBBF24] flex items-center justify-center text-[10px] backdrop-blur-md border border-[#E59819]/40">
@@ -252,7 +255,7 @@ function renderCinematicVideoReels() {
               </span>
             </div>
 
-            <a href="product.html?id=${p.id}" class="font-black text-white text-xs hover:text-[#FBBF24] line-clamp-1 block mb-1">
+            <a href="product?id=${p.id}" class="font-black text-white text-xs hover:text-[#FBBF24] line-clamp-1 block mb-1">
               ${p.name}
             </a>
           </div>
@@ -432,7 +435,7 @@ function renderStoreProducts() {
     return `
       <div class="product-card overflow-hidden flex flex-col justify-between relative group">
         <!-- Packaging Visual Frame with Video Hover Preview -->
-        <a href="product.html?id=${p.id}" class="product-pack-frame cursor-pointer block relative"
+        <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block relative"
           onmouseenter="const v=this.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}"
           onmouseleave="const v=this.querySelector('video'); if(v){v.pause();}">
           
@@ -491,7 +494,7 @@ function renderStoreProducts() {
             </div>
 
             <!-- Product Title & Description -->
-            <a href="product.html?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
+            <a href="product?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
               ${p.name}
             </a>
             <p class="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed font-medium">
@@ -524,7 +527,7 @@ function renderStoreProducts() {
                 <span class="text-xs text-gray-400 line-through">₹${selectedVar.originalPrice}</span>
                 <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
               </div>
-              <a href="product.html?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
+              <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
                 <span>View Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
               </a>
             </div>
@@ -861,7 +864,13 @@ function openPaymentGatewayModal(amount) {
 
   document.getElementById('payment-amount-display').textContent = `₹${amount}`;
   modal.classList.remove('hidden');
-  selectPaymentTab('upi');
+
+  const s = window.SITE_SETTINGS || {};
+  const defaultTab = s.paymentUpiEnabled !== false ? 'upi'
+    : s.paymentCardEnabled !== false ? 'card'
+    : s.paymentNetbankingEnabled !== false ? 'netbanking'
+    : 'cod';
+  selectPaymentTab(defaultTab);
 }
 
 function closePaymentGatewayModal() {

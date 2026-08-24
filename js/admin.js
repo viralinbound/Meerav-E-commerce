@@ -15,6 +15,15 @@ const adminState = {
   notifications: [],
   admins: [],
   myWarnings: [],
+  siteSettings: null,
+  pageContentRows: [],
+  pendingLogoUrl: null,
+  pendingFaviconUrl: null,
+  pendingBgImageUrl: null,
+  pendingPatternImageUrl: null,
+  selectedBackgroundType: 'solid',
+  selectedAdminPanelType: 'solid',
+  selectedBackgroundPattern: 'none',
   viewingAdminId: null, // set while the per-admin detail modal is open
   editingProductId: null,
   editingCategoryId: null,
@@ -53,29 +62,24 @@ async function loadAdminData() {
   adminState.orders = orders;
   adminState.customers = customers.length ? customers : [...MIRA_DATA.customers];
   adminState.notifications = notifications;
+  adminState.siteSettings = window.SITE_SETTINGS || (await MiraDB.fetchSiteSettings());
+  adminState.pageContentRows = (await MiraDB.fetchPageContent()).rows;
   recomputeCustomerStats();
 }
 
 /**
- * Real auto-login: if this browser already has a valid admin session
- * (Supabase Auth, isolated from the customer session), skip the login form.
- *
- * Waits for the INITIAL_SESSION event rather than calling getSession() once
- * on DOMContentLoaded — a one-shot check can race ahead of the client's own
- * async session hydration on a fresh page load and wrongly report "signed
- * out" even though a valid session is sitting right there in storage.
+ * No auto-login by design: every visit to admin.html (including right after
+ * a logout) must go through the login form again, even if a still-valid
+ * Supabase session token is sitting in storage. On INITIAL_SESSION, any
+ * lingering session is force-signed-out rather than silently entering the
+ * dashboard.
  */
 let adminAuthBootstrapped = false;
 
 MiraDB.onAdminAuthChange(async (event, session) => {
   if (event === 'INITIAL_SESSION') {
     if (session) {
-      const profile = await MiraDB.getCurrentAdminProfile();
-      if (profile && !profile.banned) {
-        await enterAdminDashboard(profile);
-      } else {
-        await MiraDB.signOutAdmin();
-      }
+      await MiraDB.signOutAdmin();
     }
     adminAuthBootstrapped = true;
     checkAdminAuth();
@@ -332,6 +336,9 @@ function showAdminPage(pageId) {
     renderAdminCustomers();
   } else if (pageId === 'notifications') {
     renderAdminNotificationLogs();
+  } else if (pageId === 'settings') {
+    renderSettingsForm();
+    renderPageContentForm();
   } else if (pageId === 'admins') {
     renderAdminAccounts();
   }
@@ -1045,7 +1052,416 @@ async function triggerCustomNotification(event) {
 }
 
 /**
- * 9. ADMIN ACCOUNTS (register / reset password / ban / warn / remove —
+ * 9. STORE SETTINGS — branding, theme, payment gateway. Backed by the
+ * single-row `site_settings` table; MiraDB.dbUpsertSiteSettings writes it
+ * with the admin client (RLS requires is_admin()), and js/theme.js on every
+ * page re-fetches + re-applies it live via a realtime subscription.
+ */
+function renderSettingsForm() {
+  const s = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
+  adminState.pendingLogoUrl = null;
+  adminState.pendingFaviconUrl = null;
+  adminState.pendingBgImageUrl = null;
+  adminState.pendingPatternImageUrl = null;
+
+  document.getElementById('settings-site-name').value = s.siteName || '';
+  document.getElementById('settings-tagline').value = s.tagline || '';
+  document.getElementById('settings-logo-preview').src = s.logoUrl || 'assets/images/meerav_logo.png';
+  document.getElementById('settings-favicon-preview').src = s.faviconUrl || s.logoUrl || 'assets/images/meerav_logo.png';
+  document.getElementById('settings-logo-status').textContent = '';
+  document.getElementById('settings-favicon-status').textContent = '';
+
+  document.getElementById('settings-color-primary').value = s.primaryColor || '#4A0713';
+  document.getElementById('settings-color-secondary').value = s.secondaryColor || '#32040C';
+  document.getElementById('settings-color-accent').value = s.accentColor || '#E59819';
+  document.getElementById('settings-color-accent-light').value = s.accentLightColor || '#FBBF24';
+  document.getElementById('settings-color-heading').value = s.headingColor || '#32040C';
+  document.getElementById('settings-color-text').value = s.textColor || '#1F1517';
+  document.getElementById('settings-color-admin-panel').value = s.adminPanelColor || '#1F0307';
+  const adminGradient = (s.adminPanelGradient && s.adminPanelGradient.length ? s.adminPanelGradient : ['#32040C', '#1F0307', '#030712']);
+  document.getElementById('settings-admin-gradient-1').value = adminGradient[0] || '#32040C';
+  document.getElementById('settings-admin-gradient-2').value = adminGradient[1] || '#1F0307';
+  document.getElementById('settings-admin-gradient-3').value = adminGradient[2] || '#030712';
+  setAdminPanelType(s.adminPanelType || 'solid');
+
+  populateFontSelects();
+  document.getElementById('settings-font-family').value = s.fontFamily || 'Outfit';
+  document.getElementById('settings-heading-font-family').value = s.headingFontFamily || s.fontFamily || 'Outfit';
+  document.getElementById('settings-base-font-size').value = s.baseFontSize || '16px';
+
+  document.getElementById('settings-color-background').value = s.backgroundColor || '#FFF9ED';
+  const gradient = (s.backgroundGradient && s.backgroundGradient.length ? s.backgroundGradient : ['#FFF9ED', '#FDF1D0', '#E59819']);
+  document.getElementById('settings-gradient-1').value = gradient[0] || '#FFF9ED';
+  document.getElementById('settings-gradient-2').value = gradient[1] || '#FDF1D0';
+  document.getElementById('settings-gradient-3').value = gradient[2] || '#E59819';
+  document.getElementById('settings-gradient-4').value = gradient[3] || gradient[2] || '#E59819';
+  const bgPreview = document.getElementById('settings-bg-image-preview');
+  if (s.backgroundImageUrl) { bgPreview.src = s.backgroundImageUrl; bgPreview.classList.remove('hidden'); } else { bgPreview.classList.add('hidden'); }
+  document.getElementById('settings-bg-image-status').textContent = '';
+
+  const patternPreview = document.getElementById('settings-pattern-image-preview');
+  if (s.backgroundPatternImageUrl) { patternPreview.src = s.backgroundPatternImageUrl; patternPreview.classList.remove('hidden'); } else { patternPreview.classList.add('hidden'); }
+  document.getElementById('settings-pattern-image-status').textContent = '';
+
+  renderPatternStyleButtons();
+  setBackgroundPattern(s.backgroundPattern || 'none');
+  setBackgroundType(s.backgroundType || 'solid');
+  renderThemePresetsGallery();
+
+  document.getElementById('settings-upi-id').value = s.paymentUpiId || '';
+  document.getElementById('settings-upi-enabled').checked = !!s.paymentUpiEnabled;
+  document.getElementById('settings-card-enabled').checked = !!s.paymentCardEnabled;
+  document.getElementById('settings-netbanking-enabled').checked = !!s.paymentNetbankingEnabled;
+  document.getElementById('settings-cod-enabled').checked = !!s.paymentCodEnabled;
+  document.getElementById('settings-razorpay-key').value = s.paymentRazorpayKeyId || '';
+  document.getElementById('settings-razorpay-enabled').checked = !!s.paymentRazorpayEnabled;
+  document.getElementById('settings-stripe-key').value = s.paymentStripePublishableKey || '';
+  document.getElementById('settings-stripe-enabled').checked = !!s.paymentStripeEnabled;
+
+  document.getElementById('settings-whatsapp').value = s.whatsappNumber || '';
+  document.getElementById('settings-contact-email').value = s.contactEmail || '';
+  document.getElementById('settings-contact-phone').value = s.contactPhone || '';
+  document.getElementById('settings-contact-address').value = s.contactAddress || '';
+  document.getElementById('settings-instagram').value = s.instagramUrl || '';
+  document.getElementById('settings-facebook').value = s.facebookUrl || '';
+
+  document.getElementById('settings-announcement').value = s.announcementText || '';
+  document.getElementById('settings-footer-text').value = s.footerText || '';
+}
+
+/** Font <select>s are populated from theme.js's GOOGLE_FONT_STACKS so the admin list and the live-apply list never drift apart. */
+function populateFontSelects() {
+  const optionsHtml = Object.keys(GOOGLE_FONT_STACKS).map(name => `<option value="${name}">${name}</option>`).join('');
+  document.querySelectorAll('.settings-font-select').forEach(select => { select.innerHTML = optionsHtml; });
+}
+
+function setBackgroundType(type) {
+  adminState.selectedBackgroundType = type;
+  document.querySelectorAll('.bg-type-btn').forEach(btn => {
+    const active = btn.dataset.bgTypeBtn === type;
+    btn.classList.toggle('bg-[#4A0713]', active);
+    btn.classList.toggle('text-[#FBBF24]', active);
+    btn.classList.toggle('border-[#E59819]', active);
+    btn.classList.toggle('bg-gray-50', !active);
+    btn.classList.toggle('text-gray-700', !active);
+    btn.classList.toggle('border-gray-200', !active);
+  });
+  document.getElementById('bg-solid-fields').classList.toggle('hidden', type !== 'solid');
+  document.getElementById('bg-gradient-fields').classList.toggle('hidden', type !== 'gradient');
+  document.getElementById('bg-image-fields').classList.toggle('hidden', type !== 'image');
+}
+
+function setAdminPanelType(type) {
+  adminState.selectedAdminPanelType = type;
+  document.querySelectorAll('.admin-bg-type-btn').forEach(btn => {
+    const active = btn.dataset.adminBgTypeBtn === type;
+    btn.classList.toggle('bg-[#4A0713]', active);
+    btn.classList.toggle('text-[#FBBF24]', active);
+    btn.classList.toggle('border-[#E59819]', active);
+    btn.classList.toggle('bg-gray-50', !active);
+    btn.classList.toggle('text-gray-700', !active);
+    btn.classList.toggle('border-gray-200', !active);
+  });
+  document.getElementById('admin-bg-solid-fields').classList.toggle('hidden', type !== 'solid');
+  document.getElementById('admin-bg-gradient-fields').classList.toggle('hidden', type !== 'gradient');
+}
+
+const PATTERN_STYLE_OPTIONS = [
+  { value: 'none', label: 'None', icon: 'fa-ban' },
+  { value: 'dots', label: 'Dots', icon: 'fa-circle-dot' },
+  { value: 'grid', label: 'Grid', icon: 'fa-table-cells' },
+  { value: 'stripes', label: 'Stripes', icon: 'fa-bars-staggered' },
+  { value: 'waves', label: 'Waves', icon: 'fa-water' },
+  { value: 'custom-image', label: 'Custom', icon: 'fa-image' }
+];
+
+function renderPatternStyleButtons() {
+  const container = document.getElementById('pattern-style-buttons');
+  if (!container) return;
+  container.innerHTML = PATTERN_STYLE_OPTIONS.map(opt => `
+    <button type="button" onclick="setBackgroundPattern('${opt.value}')" data-pattern-btn="${opt.value}"
+      class="pattern-style-btn py-2.5 rounded-xl text-[10px] font-bold border transition flex flex-col items-center gap-1">
+      <i class="fas ${opt.icon} text-sm"></i>
+      <span>${opt.label}</span>
+    </button>
+  `).join('');
+}
+
+function setBackgroundPattern(pattern) {
+  adminState.selectedBackgroundPattern = pattern;
+  document.querySelectorAll('.pattern-style-btn').forEach(btn => {
+    const active = btn.dataset.patternBtn === pattern;
+    btn.classList.toggle('bg-[#4A0713]', active);
+    btn.classList.toggle('text-[#FBBF24]', active);
+    btn.classList.toggle('border-[#E59819]', active);
+    btn.classList.toggle('bg-gray-50', !active);
+    btn.classList.toggle('text-gray-700', !active);
+    btn.classList.toggle('border-gray-200', !active);
+  });
+  document.getElementById('pattern-custom-fields').classList.toggle('hidden', pattern !== 'custom-image');
+}
+
+async function handleSettingsPatternImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-pattern-image-status');
+  if (status) status.textContent = 'Uploading...';
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    adminState.pendingPatternImageUrl = url;
+    const preview = document.getElementById('settings-pattern-image-preview');
+    preview.src = url;
+    preview.classList.remove('hidden');
+    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+/** Clears an uploaded image back to its default (logo/favicon) or to none (bg-image/pattern-image). Takes effect on Save. */
+function removeSettingsImage(which) {
+  const map = {
+    logo: { pendingKey: 'pendingLogoUrl', previewId: 'settings-logo-preview', statusId: 'settings-logo-status', defaultSrc: 'assets/images/meerav_logo.png' },
+    favicon: { pendingKey: 'pendingFaviconUrl', previewId: 'settings-favicon-preview', statusId: 'settings-favicon-status', defaultSrc: 'assets/images/meerav_logo.png' },
+    'bg-image': { pendingKey: 'pendingBgImageUrl', previewId: 'settings-bg-image-preview', statusId: 'settings-bg-image-status', defaultSrc: '' },
+    'pattern-image': { pendingKey: 'pendingPatternImageUrl', previewId: 'settings-pattern-image-preview', statusId: 'settings-pattern-image-status', defaultSrc: '' }
+  };
+  const cfg = map[which];
+  if (!cfg) return;
+
+  adminState[cfg.pendingKey] = ''; // explicit clear — distinct from `null` ("no change")
+  const preview = document.getElementById(cfg.previewId);
+  if (cfg.defaultSrc) {
+    preview.src = cfg.defaultSrc;
+  } else {
+    preview.src = '';
+    preview.classList.add('hidden');
+  }
+  const status = document.getElementById(cfg.statusId);
+  if (status) status.textContent = 'Removed — click Save to apply';
+}
+
+async function handleSettingsBgImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-bg-image-status');
+  if (status) status.textContent = 'Uploading...';
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    adminState.pendingBgImageUrl = url;
+    const preview = document.getElementById('settings-bg-image-preview');
+    preview.src = url;
+    preview.classList.remove('hidden');
+    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+async function handleSettingsLogoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-logo-status');
+  if (status) status.textContent = 'Uploading...';
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    adminState.pendingLogoUrl = url;
+    document.getElementById('settings-logo-preview').src = url;
+    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+async function handleSettingsFaviconUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-favicon-status');
+  if (status) status.textContent = 'Uploading...';
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    adminState.pendingFaviconUrl = url;
+    document.getElementById('settings-favicon-preview').src = url;
+    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+function collectSiteSettingsFromForm() {
+  const current = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
+  return {
+    ...current,
+    siteName: document.getElementById('settings-site-name').value.trim() || current.siteName,
+    tagline: document.getElementById('settings-tagline').value.trim(),
+    logoUrl: adminState.pendingLogoUrl !== null ? adminState.pendingLogoUrl : current.logoUrl,
+    faviconUrl: adminState.pendingFaviconUrl !== null ? adminState.pendingFaviconUrl : current.faviconUrl,
+    primaryColor: document.getElementById('settings-color-primary').value,
+    secondaryColor: document.getElementById('settings-color-secondary').value,
+    accentColor: document.getElementById('settings-color-accent').value,
+    accentLightColor: document.getElementById('settings-color-accent-light').value,
+    headingColor: document.getElementById('settings-color-heading').value,
+    textColor: document.getElementById('settings-color-text').value,
+    adminPanelColor: document.getElementById('settings-color-admin-panel').value,
+    adminPanelType: adminState.selectedAdminPanelType,
+    adminPanelGradient: [
+      document.getElementById('settings-admin-gradient-1').value,
+      document.getElementById('settings-admin-gradient-2').value,
+      document.getElementById('settings-admin-gradient-3').value
+    ],
+    fontFamily: document.getElementById('settings-font-family').value,
+    headingFontFamily: document.getElementById('settings-heading-font-family').value,
+    baseFontSize: document.getElementById('settings-base-font-size').value,
+    backgroundType: adminState.selectedBackgroundType,
+    backgroundColor: document.getElementById('settings-color-background').value,
+    backgroundGradient: [
+      document.getElementById('settings-gradient-1').value,
+      document.getElementById('settings-gradient-2').value,
+      document.getElementById('settings-gradient-3').value,
+      document.getElementById('settings-gradient-4').value
+    ],
+    backgroundImageUrl: adminState.pendingBgImageUrl !== null ? adminState.pendingBgImageUrl : current.backgroundImageUrl,
+    backgroundPattern: adminState.selectedBackgroundPattern,
+    backgroundPatternImageUrl: adminState.pendingPatternImageUrl !== null ? adminState.pendingPatternImageUrl : current.backgroundPatternImageUrl,
+    paymentUpiId: document.getElementById('settings-upi-id').value.trim(),
+    paymentUpiEnabled: document.getElementById('settings-upi-enabled').checked,
+    paymentCardEnabled: document.getElementById('settings-card-enabled').checked,
+    paymentNetbankingEnabled: document.getElementById('settings-netbanking-enabled').checked,
+    paymentCodEnabled: document.getElementById('settings-cod-enabled').checked,
+    paymentRazorpayKeyId: document.getElementById('settings-razorpay-key').value.trim(),
+    paymentRazorpayEnabled: document.getElementById('settings-razorpay-enabled').checked,
+    paymentStripePublishableKey: document.getElementById('settings-stripe-key').value.trim(),
+    paymentStripeEnabled: document.getElementById('settings-stripe-enabled').checked,
+    whatsappNumber: document.getElementById('settings-whatsapp').value.trim(),
+    contactEmail: document.getElementById('settings-contact-email').value.trim(),
+    contactPhone: document.getElementById('settings-contact-phone').value.trim(),
+    contactAddress: document.getElementById('settings-contact-address').value.trim(),
+    instagramUrl: document.getElementById('settings-instagram').value.trim(),
+    facebookUrl: document.getElementById('settings-facebook').value.trim(),
+    announcementText: document.getElementById('settings-announcement').value.trim(),
+    footerText: document.getElementById('settings-footer-text').value.trim()
+  };
+}
+
+/** Shared by the Save button and one-click theme presets: write to Supabase, update local/live state, log it. */
+async function persistSiteSettings(updated, activityLabel) {
+  const ok = await MiraDB.dbUpsertSiteSettings(updated, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not save store settings — please retry', 'error');
+    return false;
+  }
+  adminState.siteSettings = updated;
+  window.SITE_SETTINGS = updated;
+  if (typeof applySiteTheme === 'function') applySiteTheme(updated);
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.update', activityLabel || 'Store Settings', {});
+  return true;
+}
+
+async function saveSiteSettingsForm(event) {
+  event.preventDefault();
+  const submitBtn = document.getElementById('settings-save-btn');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+  const updated = collectSiteSettingsFromForm();
+  const ok = await persistSiteSettings(updated, 'Store Settings');
+
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Store Settings'; }
+  if (ok) showToast('Store settings saved & applied live! 🎨', 'success');
+}
+
+function renderThemePresetsGallery() {
+  const gallery = document.getElementById('theme-presets-gallery');
+  if (!gallery || typeof THEME_PRESETS === 'undefined') return;
+  gallery.innerHTML = THEME_PRESETS.map(preset => `
+    <button type="button" onclick="applyThemePreset('${preset.key}')"
+      class="p-3 rounded-2xl border-2 border-gray-200 hover:border-purple-400 transition text-left group">
+      <div class="flex gap-1 mb-2">
+        ${preset.swatches.map(hex => `<span class="w-6 h-6 rounded-lg border border-black/10" style="background:${hex}"></span>`).join('')}
+      </div>
+      <div class="text-xs font-black text-gray-800 group-hover:text-purple-600">${preset.name}</div>
+    </button>
+  `).join('');
+}
+
+async function applyThemePreset(presetKey) {
+  const preset = THEME_PRESETS.find(p => p.key === presetKey);
+  if (!preset) return;
+
+  const current = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
+  const updated = { ...current, ...preset.values };
+
+  showToast(`Applying "${preset.name}" theme...`, 'info');
+  const ok = await persistSiteSettings(updated, `Theme Preset: ${preset.name}`);
+  if (ok) {
+    renderSettingsForm();
+    showToast(`"${preset.name}" theme is now live across the whole website! ✨`, 'success');
+  }
+}
+
+/**
+ * Website Text Content — generic key/value editor for every heading,
+ * subheading, and description tagged `data-ck="..."` in the storefront
+ * HTML. Backed by `page_content`; js/theme.js applies it live on every page.
+ */
+function renderPageContentForm() {
+  const container = document.getElementById('page-content-fields');
+  if (!container) return;
+
+  const rows = adminState.pageContentRows;
+  if (!rows.length) {
+    container.innerHTML = '<p class="text-xs text-gray-400">No editable text blocks found yet.</p>';
+    return;
+  }
+
+  const grouped = {};
+  rows.forEach(row => {
+    if (!grouped[row.page]) grouped[row.page] = [];
+    grouped[row.page].push(row);
+  });
+
+  container.innerHTML = Object.entries(grouped).map(([page, pageRows]) => `
+    <div class="space-y-3">
+      <div class="text-[10px] font-black text-indigo-600 uppercase tracking-wider">${page} page</div>
+      ${pageRows.map(row => `
+        <div>
+          <label class="block text-xs font-bold text-gray-600 mb-1.5">${row.label}</label>
+          <textarea data-content-key="${row.key}" rows="${row.value.length > 80 ? 2 : 1}" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">${row.value}</textarea>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+async function savePageContentForm(event) {
+  event.preventDefault();
+  const submitBtn = document.getElementById('page-content-save-btn');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+
+  const entries = adminState.pageContentRows.map(row => {
+    const el = document.querySelector(`[data-content-key="${row.key}"]`);
+    return { key: row.key, value: el ? el.value : row.value, label: row.label, page: row.page, sortOrder: row.sort_order };
+  });
+
+  const ok = await MiraDB.dbUpsertPageContent(entries, MiraDB.adminClient);
+
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Text Content'; }
+
+  if (!ok) {
+    showToast('Could not save text content — please retry', 'error');
+    return;
+  }
+
+  adminState.pageContentRows = entries.map(e => ({ key: e.key, value: e.value, label: e.label, page: e.page, sort_order: e.sortOrder }));
+  const map = {};
+  entries.forEach(e => { map[e.key] = e.value; });
+  window.SITE_PAGE_CONTENT = map;
+  if (typeof applyPageContent === 'function') applyPageContent(map);
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.content_update', 'Website Text Content', {});
+  showToast('Text content saved & applied live! 📝', 'success');
+}
+
+/**
+ * 10. ADMIN ACCOUNTS (register / reset password / ban / warn / remove —
  * backed by real Supabase Auth via the "admin-manage" Edge Function; see
  * js/supabase-client.js) plus the per-admin activity drill-down with undo.
  */

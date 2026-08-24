@@ -251,11 +251,11 @@ function renderChatMessages() {
                 
                 <!-- Compact Product Thumbnail & Details -->
                 <div class="flex items-center gap-2 min-w-0 flex-1">
-                  <a href="product.html?id=${p.id}" class="shrink-0 block">
+                  <a href="product?id=${p.id}" class="shrink-0 block">
                     <img src="${p.image}" alt="${p.name}" class="w-11 h-11 object-cover rounded-xl border border-amber-200 shadow-2xs group-hover:scale-105 transition-transform" />
                   </a>
                   <div class="min-w-0 flex-1">
-                    <a href="product.html?id=${p.id}" class="font-black text-[11px] text-[#4A0713] truncate block hover:underline leading-tight">${p.name}</a>
+                    <a href="product?id=${p.id}" class="font-black text-[11px] text-[#4A0713] truncate block hover:underline leading-tight">${p.name}</a>
                     <div class="text-[9px] text-amber-800 font-bold truncate mt-0.5">🌶️ ${p.spiceLevel}</div>
                     <div class="text-[11px] font-black text-gray-900 mt-0.5">₹${v.price} <span class="text-[9px] text-gray-400 line-through">₹${v.originalPrice}</span></div>
                   </div>

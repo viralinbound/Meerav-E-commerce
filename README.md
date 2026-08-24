@@ -77,7 +77,15 @@ The complete database schema with Row Level Security (RLS) policies and all 75 p
 * `payment_method` (TEXT): *UPI (QR Auto-Verified)*, *Credit/Debit Card*, *COD*
 * `order_status` (TEXT): *Order Placed*, *Processing*, *Dispatched*, *Delivered*
 
-### 4. Storage Bucket Structure (`product-media`)
+### 4. Site Settings (`public.site_settings`)
+Single row (`id = 'default'`), public-read / admin-write, editable from the Admin Portal's **Store Settings** page and applied live storefront-wide via [`js/theme.js`](js/theme.js):
+* Brand identity: `site_name`, `tagline`, `logo_url`, `favicon_url`
+* Theme: `primary_color`, `secondary_color`, `accent_color`, `accent_light_color`, `font_family`
+* Payment gateway: `payment_upi_enabled`/`payment_upi_id`, `payment_cod_enabled`, `payment_card_enabled`, `payment_netbanking_enabled`, `payment_razorpay_enabled`/`payment_razorpay_key_id`, `payment_stripe_enabled`/`payment_stripe_publishable_key`
+* Contact & social: `whatsapp_number`, `contact_email`, `contact_phone`, `contact_address`, `instagram_url`, `facebook_url`
+* Storefront copy: `announcement_text`, `footer_text`
+
+### 5. Storage Bucket Structure (`product-media`)
 Systematic hierarchical folder layout:
 ```
 product-media/

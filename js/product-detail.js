@@ -34,12 +34,14 @@ async function initProductDetailPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id') || 'p1';
 
-  let allProducts = await fetchProducts();
+  const [fetchedProducts, fetchedCategories] = await Promise.all([fetchProducts(), fetchCategories()]);
+  let allProducts = fetchedProducts;
   if (!allProducts.length) allProducts = MIRA_DATA.products;
+  const categories = fetchedCategories.length ? fetchedCategories : MIRA_DATA.categories;
   const product = allProducts.find(p => p.id === productId) || allProducts[0];
 
   if (!product) {
-    window.location.href = 'index.html';
+    window.location.href = 'index';
     return;
   }
 
@@ -59,6 +61,7 @@ async function initProductDetailPage() {
 
   renderPDPDetails();
   renderPDPRelatedProducts(allProducts);
+  renderPDPCategorySwitcher(categories);
 
   MiraDB.subscribeTable('products', (payload) => {
     if (payload.eventType === 'DELETE' || payload.new.id !== productId) return;
@@ -73,8 +76,13 @@ function renderPDPDetails() {
   const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
 
   // Breadcrumbs & Title
-  document.getElementById('breadcrumb-category').textContent = p.category.replace('-', ' & ');
+  const breadcrumbCatEl = document.getElementById('breadcrumb-category');
+  breadcrumbCatEl.textContent = p.category.replace('-', ' & ');
+  breadcrumbCatEl.href = `category?cat=${p.category}`;
   document.getElementById('breadcrumb-product-name').textContent = p.name;
+
+  const viewAllEl = document.getElementById('pdp-related-view-all');
+  if (viewAllEl) viewAllEl.href = `category?cat=${p.category}`;
   document.getElementById('pdp-title').textContent = p.name;
   document.getElementById('pdp-description').textContent = p.description;
   document.getElementById('pdp-tag-badge').textContent = p.tag;
@@ -411,14 +419,21 @@ function renderPDPRelatedProducts(allProducts) {
   const container = document.getElementById('pdp-related-grid');
   if (!container) return;
 
-  const related = allProducts.filter(item => item.id !== pdpState.currentProduct.id).slice(0, 4);
+  // Same category as the product being viewed, pulled live from the DB-backed product list.
+  let related = allProducts.filter(item => item.id !== pdpState.currentProduct.id && item.category === pdpState.currentProduct.category);
+  if (related.length < 4) {
+    // Not enough in this category — top up with other products rather than showing a sparse row.
+    const fillers = allProducts.filter(item => item.id !== pdpState.currentProduct.id && item.category !== pdpState.currentProduct.category);
+    related = related.concat(fillers.slice(0, 4 - related.length));
+  }
+  related = related.slice(0, 4);
 
   container.innerHTML = related.map(p => {
     const v = p.variants[0];
 
     return `
       <div class="product-card overflow-hidden flex flex-col justify-between relative group">
-        <a href="product.html?id=${p.id}" class="product-pack-frame cursor-pointer block">
+        <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block">
           <img src="${p.image}" alt="${p.name}" class="group-hover:scale-108 transition-transform duration-500" />
           <div class="absolute top-3 left-3 flex items-center gap-1.5">
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819]">
@@ -432,7 +447,7 @@ function renderPDPRelatedProducts(allProducts) {
 
         <div class="p-4 flex-1 flex flex-col justify-between">
           <div>
-            <a href="product.html?id=${p.id}" class="font-black text-gray-900 text-sm hover:text-[#4A0713] transition line-clamp-1 block mb-1">
+            <a href="product?id=${p.id}" class="font-black text-gray-900 text-sm hover:text-[#4A0713] transition line-clamp-1 block mb-1">
               ${p.name}
             </a>
             <div class="text-[11px] text-gray-500 line-clamp-1 mb-2 font-medium">${p.description}</div>
@@ -443,7 +458,7 @@ function renderPDPRelatedProducts(allProducts) {
               <span class="text-base font-black text-[#4A0713]">₹${v.price}</span>
               <span class="text-[10px] text-gray-400 line-through ml-1">₹${v.originalPrice}</span>
             </div>
-            <a href="product.html?id=${p.id}" class="px-3 py-1.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819]">
+            <a href="product?id=${p.id}" class="px-3 py-1.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819]">
               View Details &rarr;
             </a>
           </div>

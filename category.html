@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEERAV - Bikaneri Categories & Snack Collection</title>
+  <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,14 +33,14 @@
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
       <div class="flex items-center gap-2 font-medium">
         <span class="bg-[#E59819] text-[#32040C] font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Bikaner Kitchen</span>
-        <span>✨ Prepared in Pure & Clean Oil • Use coupon <strong class="text-[#FBBF24] font-black">MEERAV10</strong> for 10% Off!</span>
+        <span id="announcement-bar-text">✨ Prepared in Pure & Clean Oil • Use coupon <strong class="text-[#FBBF24] font-black">MEERAV10</strong> for 10% Off!</span>
       </div>
       <div class="flex items-center gap-4 text-amber-200 text-[11px]">
-        <a href="index.html" class="hover:text-white transition flex items-center gap-1 font-bold">
+        <a href="index" class="hover:text-white transition flex items-center gap-1 font-bold">
           <i class="fas fa-home text-[#E59819]"></i> Home
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
-        <a href="admin.html" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
+        <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
           <i class="fas fa-shield-halved text-[#E59819]"></i> Admin Operations
         </a>
       </div>
@@ -54,7 +55,7 @@
       <div class="flex items-center justify-between h-20 gap-4">
         
         <!-- Logo -->
-        <a href="index.html" class="flex items-center gap-3">
+        <a href="index" class="flex items-center gap-3">
           <img src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="h-14 sm:h-16 w-auto object-contain filter drop-shadow-sm hover:scale-105 transition-transform duration-300" />
           <div class="hidden sm:block border-l border-amber-300 pl-3">
             <span class="text-[11px] font-black tracking-wider uppercase text-[#4A0713] block">From the Heart of Bikaner</span>
@@ -73,7 +74,7 @@
 
         <!-- Right Navigation Links & Cart -->
         <div class="flex items-center gap-3">
-          <a href="index.html" class="hidden sm:inline text-xs font-black text-gray-700 hover:text-[#4A0713] transition">
+          <a href="index" class="hidden sm:inline text-xs font-black text-gray-700 hover:text-[#4A0713] transition">
             Home
           </a>
 
@@ -105,7 +106,7 @@
       <div>
         <!-- Breadcrumbs -->
         <nav class="flex items-center gap-2 text-xs text-amber-200/80 mb-2 font-medium">
-          <a href="index.html" class="hover:text-white transition">Home</a>
+          <a href="index" class="hover:text-white transition">Home</a>
           <i class="fas fa-chevron-right text-[9px] text-amber-400"></i>
           <span class="text-white font-black">Categories & Products</span>
           <i class="fas fa-chevron-right text-[9px] text-amber-400"></i>
@@ -134,22 +135,28 @@
   <!-- ========================================================================= -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-fade-in space-y-8">
     
-    <!-- Category Tabs Navigation -->
-    <div class="space-y-3">
-      <div class="flex items-center justify-between">
-        <span class="text-xs font-black text-gray-500 uppercase tracking-wider">Browse by Category:</span>
-        <span id="category-items-count" class="text-xs text-[#4A0713] font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-          Showing 8 Items
-        </span>
-      </div>
-
-      <div id="category-tabs-container" class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+    <!-- Category Picker Cards — the only way to pick a category. Hidden once
+         one is chosen, so the product list opens as its own clean page. -->
+    <div id="category-picker-section" class="space-y-5">
+      <h3 class="text-lg sm:text-xl font-black text-gray-900">Choose a Category to Explore Snacks</h3>
+      <div id="category-picker-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
         <!-- Populated via category-page.js -->
       </div>
     </div>
 
+    <!-- Shown once a category is picked: quick way back + item count -->
+    <div id="category-back-row" class="hidden items-center justify-between gap-4">
+      <button type="button" id="category-back-btn" onclick="clearCategorySelection()"
+        class="flex items-center gap-2 text-xs font-black text-[#4A0713] hover:underline">
+        <i class="fas fa-arrow-left text-[10px]"></i> Change Category
+      </button>
+      <span id="category-items-count" class="shrink-0 text-xs text-[#4A0713] font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+        Showing 8 Items
+      </span>
+    </div>
+
     <!-- Dietary Filter Pills -->
-    <div id="category-dietary-container" class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+    <div id="category-dietary-container" class="hidden flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
       <!-- Populated via category-page.js -->
     </div>
 
@@ -271,11 +278,11 @@
 
   <!-- Mobile Bottom Sticky Navigation Bar -->
   <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
-    <a href="index.html" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+    <a href="index" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
       <i class="fas fa-home text-base"></i>
       <span class="text-[10px] font-bold">Home</span>
     </a>
-    <a href="category.html" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
+    <a href="category" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
       <i class="fas fa-cookie-bite text-base text-[#E59819]"></i>
       <span class="text-[10px] font-black">Categories</span>
     </a>
@@ -297,6 +304,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
   <script type="module" src="js/supabase-client.js"></script>
+  <script defer src="js/theme.js"></script>
   <script defer src="js/data.js"></script>
   <script defer src="js/auth.js"></script>
   <script defer src="js/map.js"></script>

@@ -1,7 +1,35 @@
 -- =============================================================================
 -- MEERAV NAMKEENS & SWEETS - SUPABASE DATABASE SCHEMA & INITIAL DATA SEED
 -- Systematic Cloud Architecture: Categories -> Products -> Media Storage
+--
+-- This file mirrors the hardened production schema running on the live
+-- project (RLS is admin-gated everywhere it needs to be — not just
+-- public-read — and every auth-checking policy wraps auth.uid()/is_admin()
+-- in `(select ...)` so Postgres evaluates it once per statement, not once
+-- per row). Running this end-to-end sets up a fresh project identically.
 -- =============================================================================
+
+-- 0. is_admin() — SECURITY DEFINER helper used throughout RLS below. Only
+-- `authenticated` gets EXECUTE (real admin sessions are always authenticated
+-- Supabase Auth users) so it can't be probed anonymously as a public RPC.
+CREATE OR REPLACE FUNCTION public.is_admin(uid uuid)
+RETURNS boolean
+LANGUAGE sql
+STABLE SECURITY DEFINER
+SET search_path = 'public'
+AS $$
+  select exists(select 1 from public.admins where id = uid);
+$$;
+
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$;
 
 -- 1. CATEGORIES TABLE
 CREATE TABLE IF NOT EXISTS public.categories (
@@ -9,6 +37,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
     name TEXT NOT NULL,
     icon TEXT NOT NULL,
     description TEXT,
+    sort_order INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -22,71 +51,300 @@ CREATE TABLE IF NOT EXISTS public.products (
     reviews_count INTEGER DEFAULT 100,
     spice_level TEXT DEFAULT 'Classic Bikaneri',
     dietary JSONB DEFAULT '["100% Veg", "Pure Oil", "No Palm Oil"]'::jsonb,
-    image TEXT NOT NULL,
+    image TEXT,
     video TEXT,
     sample_image TEXT,
+    photos JSONB NOT NULL DEFAULT '[]'::jsonb,
+    videos JSONB NOT NULL DEFAULT '[]'::jsonb,
     description TEXT NOT NULL,
     ingredients TEXT,
     nutrition JSONB DEFAULT '{"energy": "520 kcal", "fat": "30g", "carbs": "50g", "protein": "12g"}'::jsonb,
     in_stock BOOLEAN DEFAULT TRUE,
     variants JSONB NOT NULL DEFAULT '[]'::jsonb,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+CREATE TRIGGER trg_products_updated_at BEFORE UPDATE ON public.products
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 -- 3. ORDERS TABLE
 CREATE TABLE IF NOT EXISTS public.orders (
     id TEXT PRIMARY KEY,
     customer JSONB NOT NULL,
-    items JSONB NOT NULL,
-    total_amount NUMERIC(10,2) NOT NULL,
-    discount_amount NUMERIC(10,2) DEFAULT 0,
-    shipping_charge NUMERIC(10,2) DEFAULT 0,
-    payment_method TEXT NOT NULL,
+    items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    total_amount NUMERIC(10,2) NOT NULL DEFAULT 0,
+    payment_method TEXT,
     payment_status TEXT DEFAULT 'Completed',
-    order_status TEXT DEFAULT 'Order Placed',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    order_status TEXT NOT NULL DEFAULT 'Pending',
+    order_date TEXT,
+    tracking_number TEXT,
+    driver JSONB DEFAULT '{}'::jsonb,
+    notifications JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 4. CUSTOMERS TABLE
+CREATE TRIGGER trg_orders_updated_at BEFORE UPDATE ON public.orders
+    FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- 4. SITE SETTINGS TABLE (single row, id='default') — admin-editable branding,
+--    theme, and payment gateway configuration for the storefront.
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    id TEXT PRIMARY KEY DEFAULT 'default',
+    site_name TEXT NOT NULL DEFAULT 'MEERAV Namkeens & Sweets',
+    tagline TEXT DEFAULT 'From the Heart of Bikaner',
+    logo_url TEXT,
+    favicon_url TEXT,
+    primary_color TEXT NOT NULL DEFAULT '#4A0713',
+    secondary_color TEXT NOT NULL DEFAULT '#32040C',
+    accent_color TEXT NOT NULL DEFAULT '#E59819',
+    accent_light_color TEXT NOT NULL DEFAULT '#FBBF24',
+    background_type TEXT NOT NULL DEFAULT 'solid', -- 'solid' | 'gradient' | 'image'
+    background_color TEXT NOT NULL DEFAULT '#FFF9ED',
+    background_gradient JSONB NOT NULL DEFAULT '["#FFF9ED","#FDF1D0","#E59819"]'::jsonb,
+    background_image_url TEXT,
+    background_pattern_overlay BOOLEAN NOT NULL DEFAULT FALSE, -- deprecated, superseded by background_pattern
+    background_pattern TEXT NOT NULL DEFAULT 'none', -- 'none' | 'dots' | 'grid' | 'stripes' | 'waves' | 'custom-image'
+    background_pattern_image_url TEXT, -- used when background_pattern = 'custom-image': an admin-uploaded tileable texture
+    admin_panel_color TEXT NOT NULL DEFAULT '#1F0307', -- the admin ops sidebar/login-gate's own dark background, separate from the storefront theme
+    admin_panel_type TEXT NOT NULL DEFAULT 'solid', -- 'solid' | 'gradient'
+    admin_panel_gradient JSONB NOT NULL DEFAULT '["#32040C","#1F0307","#030712"]'::jsonb,
+    text_color TEXT NOT NULL DEFAULT '#1F2937',
+    heading_color TEXT NOT NULL DEFAULT '#32040C',
+    font_family TEXT NOT NULL DEFAULT 'Outfit',
+    heading_font_family TEXT NOT NULL DEFAULT 'Outfit',
+    base_font_size TEXT NOT NULL DEFAULT '16px',
+    announcement_text TEXT DEFAULT '✨ Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
+    whatsapp_number TEXT DEFAULT '+919876543210',
+    contact_email TEXT DEFAULT 'hello@meeravnamkeens.com',
+    contact_phone TEXT DEFAULT '+91 98765 43210',
+    contact_address TEXT DEFAULT 'Bikaner, Rajasthan, India',
+    footer_text TEXT DEFAULT '© 2026 All Rights Reserved.',
+    instagram_url TEXT,
+    facebook_url TEXT,
+    payment_upi_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    payment_upi_id TEXT DEFAULT 'meeravnamkeens@upi',
+    payment_cod_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    payment_card_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    payment_netbanking_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    payment_razorpay_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    payment_razorpay_key_id TEXT,
+    payment_stripe_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    payment_stripe_publishable_key TEXT,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.site_settings (id) VALUES ('default') ON CONFLICT (id) DO NOTHING;
+
+-- 4b. PAGE CONTENT TABLE — admin-editable copy for headings/subheadings/
+-- descriptions across the site (a generic key/value store so new editable
+-- text blocks can be added without a schema change).
+CREATE TABLE IF NOT EXISTS public.page_content (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    label TEXT NOT NULL,
+    page TEXT NOT NULL DEFAULT 'home',
+    sort_order INTEGER NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.page_content (key, value, label, page, sort_order) VALUES
+('home.hero.badge', 'FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE', 'Hero Badge Text', 'home', 1),
+('home.hero.title_line1', 'Royal Bikaneri', 'Hero Title (Line 1)', 'home', 2),
+('home.hero.title_highlight', 'Namkeens & Sev', 'Hero Title (Highlighted Word)', 'home', 3),
+('home.hero.subtitle', 'Made with finest ingredients and authentic Bikaneri recipes. Prepared fresh daily in <strong>100% pure & clean oil</strong> with zero palm oil.', 'Hero Subtitle', 'home', 4),
+('home.showcase.heading', 'Select a Category to Explore Snacks', 'Category Showcase Heading', 'home', 5),
+('home.showcase.subheading', 'Click any traditional category below to view its handcrafted snacks, live prices & pack sizes', 'Category Showcase Subheading', 'home', 6),
+('home.trust.item1.title', 'Pure & Clean Oil', 'Trust Badge 1 - Title', 'home', 7),
+('home.trust.item1.desc', 'Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.', 'Trust Badge 1 - Description', 'home', 8),
+('home.trust.item2.title', 'Bikaneri Heritage', 'Trust Badge 2 - Title', 'home', 9),
+('home.trust.item2.desc', 'Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.', 'Trust Badge 2 - Description', 'home', 10),
+('home.trust.item3.title', 'Multi-Layer Airtight Pack', 'Trust Badge 3 - Title', 'home', 11),
+('home.trust.item3.desc', 'Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.', 'Trust Badge 3 - Description', 'home', 12),
+('home.trust.item4.title', 'Live WhatsApp Alerts', 'Trust Badge 4 - Title', 'home', 13),
+('home.trust.item4.desc', 'Instant WhatsApp notifications with courier tracking and live GPS route maps.', 'Trust Badge 4 - Description', 'home', 14)
+ON CONFLICT (key) DO NOTHING;
+
+-- 5. CUSTOMERS TABLE
 CREATE TABLE IF NOT EXISTS public.customers (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
-    phone TEXT NOT NULL,
+    phone TEXT,
     email TEXT,
     address TEXT,
     pincode TEXT,
+    lat NUMERIC,
+    lng NUMERIC,
     avatar TEXT,
+    wishlist TEXT[] DEFAULT '{}',
+    saved_addresses JSONB DEFAULT '[]'::jsonb,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 5. ENABLE ROW LEVEL SECURITY (RLS)
+CREATE INDEX IF NOT EXISTS idx_customers_phone ON public.customers(phone);
+
+-- 6. NOTIFICATIONS TABLE (WhatsApp/Email log shown in the admin Notification Hub)
+CREATE TABLE IF NOT EXISTS public.notifications (
+    id TEXT PRIMARY KEY,
+    type TEXT,
+    recipient TEXT,
+    template TEXT,
+    notif_time TEXT,
+    status TEXT,
+    status_color TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 7. ADMINS TABLE — gates every admin-only RLS policy via is_admin() above.
+-- Rows are created by the "admin-manage" Edge Function (service_role), which
+-- also creates the matching Supabase Auth user; this table is never
+-- self-service INSERTable by anyone, including other admins.
+CREATE TABLE IF NOT EXISTS public.admins (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    email TEXT NOT NULL,
+    name TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'admin', -- 'root' or 'admin'
+    created_by UUID REFERENCES public.admins(id),
+    must_change_password BOOLEAN NOT NULL DEFAULT TRUE,
+    banned BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_admins_created_by ON public.admins(created_by);
+
+-- 8. ADMIN ACTIVITY LOG — every catalog/order/notification/settings change a
+-- signed-in admin makes; only the root admin can read it.
+CREATE TABLE IF NOT EXISTS public.admin_activity_log (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    admin_id UUID REFERENCES public.admins(id),
+    admin_name TEXT NOT NULL,
+    admin_role TEXT NOT NULL,
+    action TEXT NOT NULL,
+    target TEXT,
+    details JSONB DEFAULT '{}'::jsonb,
+    undone BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_activity_log_admin_id ON public.admin_activity_log(admin_id);
+CREATE INDEX IF NOT EXISTS idx_admin_activity_log_created_at ON public.admin_activity_log(created_at DESC);
+
+-- 9. ADMIN WARNINGS — root can flag a sub-admin; they see it until acknowledged.
+CREATE TABLE IF NOT EXISTS public.admin_warnings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    admin_id UUID NOT NULL REFERENCES public.admins(id),
+    message TEXT NOT NULL,
+    issued_by UUID REFERENCES public.admins(id),
+    issued_by_name TEXT NOT NULL,
+    acknowledged BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_warnings_admin_id ON public.admin_warnings(admin_id);
+CREATE INDEX IF NOT EXISTS idx_admin_warnings_issued_by ON public.admin_warnings(issued_by);
+
+-- Useful lookup indexes for admin dashboard queries.
+CREATE INDEX IF NOT EXISTS idx_products_category ON public.products(category);
+CREATE INDEX IF NOT EXISTS idx_orders_order_status ON public.orders(order_status);
+CREATE INDEX IF NOT EXISTS idx_orders_created_at ON public.orders(created_at DESC);
+
+-- 10. ENABLE ROW LEVEL SECURITY (RLS) EVERYWHERE
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.page_content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_activity_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_warnings ENABLE ROW LEVEL SECURITY;
 
--- 6. RLS POLICIES (Public Read for Storefront, Public Insert for Checkout & Registration)
--- Categories: Anyone can read
-CREATE POLICY "Public categories read" ON public.categories FOR SELECT USING (true);
-CREATE POLICY "Service manage categories" ON public.categories FOR ALL USING (true);
+-- 11. RLS POLICIES — public can only ever read the catalog + create
+-- orders/customer accounts; every write to products/categories/orders'
+-- status/settings/admin data requires is_admin(). auth.uid()/is_admin() are
+-- wrapped in `(select ...)` so Postgres caches the check once per statement
+-- instead of re-running it per row (Supabase perf-linter best practice).
 
--- Products: Anyone can read
-CREATE POLICY "Public products read" ON public.products FOR SELECT USING (true);
-CREATE POLICY "Service manage products" ON public.products FOR ALL USING (true);
+-- Categories: public read, admin write
+CREATE POLICY "public read categories" ON public.categories FOR SELECT USING (true);
+CREATE POLICY "admins write categories" ON public.categories FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update categories" ON public.categories FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete categories" ON public.categories FOR DELETE USING (is_admin((select auth.uid())));
 
--- Orders: Anyone can create orders, read their own order
-CREATE POLICY "Public insert orders" ON public.orders FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public read orders" ON public.orders FOR SELECT USING (true);
-CREATE POLICY "Service manage orders" ON public.orders FOR ALL USING (true);
+-- Products: public read, admin write
+CREATE POLICY "public read products" ON public.products FOR SELECT USING (true);
+CREATE POLICY "admins write products" ON public.products FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update products" ON public.products FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete products" ON public.products FOR DELETE USING (is_admin((select auth.uid())));
 
--- Customers: Anyone can register/login
-CREATE POLICY "Public insert customers" ON public.customers FOR INSERT WITH CHECK (true);
-CREATE POLICY "Public read customers" ON public.customers FOR SELECT USING (true);
-CREATE POLICY "Public update customers" ON public.customers FOR UPDATE USING (true);
+-- Orders: anyone can place an order (checkout is guest-friendly); only admins read/update status
+CREATE POLICY "public write orders" ON public.orders FOR INSERT WITH CHECK (true);
+CREATE POLICY "admins read orders" ON public.orders FOR SELECT USING (is_admin((select auth.uid())));
+CREATE POLICY "admins update orders" ON public.orders FOR UPDATE USING (is_admin((select auth.uid())));
 
--- 7. STORAGE BUCKET (meerav-media)
+-- Site settings: public read (storefront theming), admin write
+CREATE POLICY "Public settings read" ON public.site_settings FOR SELECT USING (true);
+CREATE POLICY "admins insert settings" ON public.site_settings FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update settings" ON public.site_settings FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete settings" ON public.site_settings FOR DELETE USING (is_admin((select auth.uid())));
+
+-- Page content: public read (storefront copy), admin write
+CREATE POLICY "public read page content" ON public.page_content FOR SELECT USING (true);
+CREATE POLICY "admins write page content" ON public.page_content FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update page content" ON public.page_content FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete page content" ON public.page_content FOR DELETE USING (is_admin((select auth.uid())));
+
+-- Customers: guests/self can register & update their own profile; admins (or the owner) can read it
+CREATE POLICY "customers insert own or guest" ON public.customers FOR INSERT
+    WITH CHECK ((select auth.uid()) IS NULL OR (select auth.uid())::text = id);
+CREATE POLICY "customers update own or guest" ON public.customers FOR UPDATE
+    USING ((select auth.uid()) IS NULL OR (select auth.uid())::text = id);
+CREATE POLICY "own or admin read customers" ON public.customers FOR SELECT
+    USING ((select auth.uid())::text = id OR is_admin((select auth.uid())));
+
+-- Notifications: anyone can log one (storefront + admin broadcast), only admins read the log
+CREATE POLICY "public write notifications" ON public.notifications FOR INSERT WITH CHECK (true);
+CREATE POLICY "admins read notifications" ON public.notifications FOR SELECT USING (is_admin((select auth.uid())));
+
+-- Admins: any signed-in admin can see the admin roster (needed for the Admin Accounts page)
+CREATE POLICY "admins can view admin list" ON public.admins FOR SELECT USING (is_admin((select auth.uid())));
+
+-- Admin activity log: any admin can log their own actions; only root reads/undoes
+CREATE POLICY "admins can log their own activity" ON public.admin_activity_log FOR INSERT
+    WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "only root can read activity log" ON public.admin_activity_log FOR SELECT
+    USING (EXISTS (SELECT 1 FROM public.admins WHERE admins.id = (select auth.uid()) AND admins.role = 'root'));
+CREATE POLICY "root can mark activity undone" ON public.admin_activity_log FOR UPDATE
+    USING (EXISTS (SELECT 1 FROM public.admins WHERE admins.id = (select auth.uid()) AND admins.role = 'root'));
+
+-- Admin warnings: the targeted admin or root can read; only the targeted admin can acknowledge
+CREATE POLICY "own or root read warnings" ON public.admin_warnings FOR SELECT
+    USING ((select auth.uid()) = admin_id OR EXISTS (SELECT 1 FROM public.admins WHERE admins.id = (select auth.uid()) AND admins.role = 'root'));
+CREATE POLICY "own admin can acknowledge warning" ON public.admin_warnings FOR UPDATE
+    USING ((select auth.uid()) = admin_id) WITH CHECK ((select auth.uid()) = admin_id);
+
+-- Both `anon` and `authenticated` need EXECUTE here — RLS evaluates
+-- is_admin(auth.uid()) under the connecting role for every policy above,
+-- including ones anonymous storefront visitors hit (e.g. orders/customers
+-- SELECT), so anon must be able to call it and get back `false`, not a hard
+-- permission error. (This does mean it's technically probeable as a public
+-- RPC returning true/false for a given UUID — a known, accepted tradeoff.)
+GRANT EXECUTE ON FUNCTION public.is_admin(uuid) TO anon, authenticated;
+
+-- 12. REALTIME — storefront + admin portal subscribe to live changes on these tables.
+ALTER PUBLICATION supabase_realtime ADD TABLE public.categories;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.products;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.orders;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.admin_activity_log;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.page_content;
+
+-- 13. STORAGE BUCKET (meerav-media)
 -- Systematic folder layout: meerav-media/categories/{category_id}/products/{product_id}/{photos|videos}/{filename}
-INSERT INTO storage.buckets (id, name, public) 
+INSERT INTO storage.buckets (id, name, public)
 VALUES ('meerav-media', 'meerav-media', true)
 ON CONFLICT (id) DO UPDATE SET public = true;
 
@@ -94,7 +352,16 @@ CREATE POLICY "Public storage read" ON storage.objects FOR SELECT USING (bucket_
 CREATE POLICY "Public storage insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'meerav-media');
 CREATE POLICY "Public storage update" ON storage.objects FOR UPDATE USING (bucket_id = 'meerav-media');
 
--- 8. SEED CATEGORIES DATA
+-- 14. BOOTSTRAP THE FIRST ROOT ADMIN
+-- Sign up a real Supabase Auth user first (Dashboard → Authentication →
+-- Add User, or via admin.html once one root exists), then run:
+--   INSERT INTO public.admins (id, email, name, role, must_change_password)
+--   VALUES ('<the auth user''s UUID>', 'you@example.com', 'Your Name', 'root', false);
+-- After that, use the Admin Portal's "Admin Accounts" page to register
+-- sub-admins — it creates their Auth user + admins row together via the
+-- "admin-manage" Edge Function.
+
+-- 15. SEED CATEGORIES DATA
 INSERT INTO public.categories (id, name, icon, description) VALUES
 ('all', 'All Delicacies', 'fas fa-border-all', 'Complete Bikaner royal heritage snack collection'),
 ('bhujia-sev', 'Bhujia & Sev', 'fas fa-fire', 'Thin, crispy golden sev & authentic Bikaneri bhujia prepared in pure oil'),
