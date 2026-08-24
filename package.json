@@ -5,6 +5,11 @@
   "description": "MEERAV Namkeens & Sweets - Bikaneri e-commerce storefront with a real-time Supabase backend",
   "scripts": {
     "build": "node scripts/generate-env.js",
-    "dev": "node scripts/generate-env.js && npx --yes serve -l 8080 ."
+    "dev": "node scripts/generate-env.js && node scripts/dev-server.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }
