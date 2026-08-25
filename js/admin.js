@@ -609,13 +609,10 @@ function renderAdminProducts() {
             ${p.inStock ? 'In Stock' : 'Out of Stock'}
           </button>
         </td>
+        <td>
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-              ✎ Edit
-            </button>
-            <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-              ✕ Delete
-            </button>
+            <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+            <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
           </div>
         </td>
       </tr>
@@ -914,13 +911,10 @@ function renderAdminCategories() {
             ${count} Products
           </span>
         </td>
+        <td>
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-              ✎ Edit
-            </button>
-            <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-              ✕ Delete
-            </button>
+            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+            <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
           </div>
         </td>
       </tr>
@@ -1097,13 +1091,10 @@ function renderAdminCustomers() {
         </span>
       </td>
       <td class="text-xs font-black text-emerald-700">${formatPrice(c.totalSpent)}</td>
+      <td>
         <div class="flex items-center justify-end gap-1.5">
-          <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold transition border border-emerald-300 flex items-center gap-1">
-            💬 Chat
-          </a>
-          <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition flex items-center gap-1">
-            👁 History
-          </button>
+          <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold transition border border-emerald-300 flex items-center gap-1 whitespace-nowrap"><i class="fab fa-whatsapp"></i> Chat</a>
+          <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap"><i class="fas fa-clock-rotate-left"></i> History</button>
         </div>
       </td>
     </tr>
@@ -1918,8 +1909,8 @@ function renderAdminCoupons() {
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">✎ Edit</button>
-        <button onclick="deleteCoupon('${c.id}')" title="Delete Coupon" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">✕ Delete</button>
+        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteCoupon('${c.id}')" title="Delete Coupon" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
   `).join('');
@@ -2156,12 +2147,12 @@ function renderAdminFaqs() {
       <td class="p-3 text-xs text-gray-500 font-mono">${f.sortOrder || 1}</td>
       <td class="p-3">
         <button onclick="toggleFaqVisible('${f.id}')" title="${f.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${f.isVisible !== false ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
-          ${f.isVisible !== false ? '● Visible' : '○ Hidden'}
+          <i class="fas ${f.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${f.isVisible !== false ? 'Visible' : 'Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">✎ Edit</button>
-        <button onclick="deleteFaq('${f.id}')" title="Delete FAQ" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">✕ Delete</button>
+        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteFaq('${f.id}')" title="Delete FAQ" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
   `).join('');
@@ -2492,8 +2483,8 @@ async function renderAdminAccounts() {
         ${a.role === 'root' || a.id === meId ? `
           <span class="text-[10px] text-gray-300 font-bold">—</span>
         ` : `
-          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition flex items-center gap-1 ml-auto">
-            👁 View
+          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition flex items-center gap-1 ml-auto whitespace-nowrap">
+            <i class="fas fa-eye"></i> View
           </button>
         `}
       </td>
@@ -2881,12 +2872,12 @@ function renderAdminTrustBadges() {
       <td class="p-3 text-xs font-bold text-gray-700">#${b.sortOrder || 1}</td>
       <td class="p-3">
         <button onclick="toggleTrustBadgeVisible('${b.id}')" title="${b.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${b.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
-${b.isVisible !== false ? 'Visible' : 'Hidden'}
+<i class="fas ${b.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${b.isVisible !== false ? 'Visible' : 'Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">Edit</button>
-        <button onclick="deleteTrustBadge('${b.id}')" title="Delete Badge" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">Delete</button>
+        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteTrustBadge('${b.id}')" title="Delete Badge" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
   `).join('');
