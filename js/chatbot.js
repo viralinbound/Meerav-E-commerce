@@ -131,6 +131,10 @@ function dismissChatbotPeekBubble() {
   if (bubble) bubble.remove();
 }
 
+// Auto-collapse the peek bubble so it doesn't sit indefinitely on top of
+// page content (most noticeable on small mobile viewports).
+setTimeout(() => dismissChatbotPeekBubble(), 8000);
+
 /**
  * REAL PER-ACCOUNT CHAT PERSISTENCE
  * Logged-in customers: chat is saved to Supabase against their account, so it
@@ -244,15 +248,21 @@ function renderChatbotWidget() {
         { label: 'Track Van', prompt: 'Where is my order delivery van right now?' }
       ];
 
+  // Product pages add an extra sticky mobile purchase bar above the bottom
+  // nav; the launcher needs to clear that too or it sits on top of the
+  // Add/Buy buttons.
+  const hasPdpStickyBar = !!document.getElementById('pdp-mobile-sticky-bar');
+  const launcherBottomClass = hasPdpStickyBar ? 'bottom-36 md:bottom-6' : 'bottom-20 md:bottom-6';
+
   host.innerHTML = `
     <!-- Floating Chatbot Launcher Button -->
-    <div class="fixed bottom-20 sm:bottom-6 right-5 z-50 flex flex-col items-end">
+    <div class="fixed ${launcherBottomClass} right-5 z-50 flex flex-col items-end">
 
       <!-- Peek Bubble -->
       <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce">
         <span class="cursor-pointer" onclick="toggleChatbot()">Order & Taste Assistant</span>
         
-        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition"></button>
+        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition"><i class="fas fa-xmark text-[9px]"></i></button>
       </div>
 
       <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80 overflow-hidden">

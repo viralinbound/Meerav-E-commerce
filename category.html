@@ -72,6 +72,11 @@ Admin Operations
 
         <!-- Right Navigation Links & Cart -->
         <div class="flex items-center gap-3">
+          <!-- Mobile Search Toggle -->
+          <button onclick="toggleMobileSearch()" class="md:hidden p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
+            <i class="fas fa-magnifying-glass"></i>
+          </button>
+
           <a href="index" class="hidden sm:inline text-xs font-black text-gray-700 hover:text-[#4A0713] transition">
             Home
           </a>
@@ -85,12 +90,21 @@ Admin Operations
           <!-- Cart Button -->
           <button onclick="openCartDrawer()"
             class="relative flex items-center gap-2 px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-2xl font-black text-xs shadow-lg shadow-[#4A0713]/30 transition transform active:scale-95 border border-[#E59819]/40">
-
+            <i class="fas fa-bag-shopping"></i>
             <span class="hidden sm:inline">Cart</span>
             <span class="cart-badge-count hidden px-2 py-0.5 bg-[#E59819] text-[#32040C] text-[11px] font-black rounded-full shadow-inner">0</span>
           </button>
         </div>
 
+      </div>
+
+      <!-- Mobile Search Row (toggled via the search icon above) -->
+      <div id="mobile-search-row" class="hidden md:hidden pb-3">
+        <div class="relative">
+          <svg class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M16.5 16.5L21 21"></path></svg>
+          <input type="text" id="category-page-search-mobile" oninput="handleCategorySearch(this.value)" placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri..."
+            class="w-full pl-11 pr-4 py-2.5 bg-amber-50/50 border border-amber-200 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white transition shadow-inner" />
+        </div>
       </div>
     </div>
   </nav>
@@ -275,17 +289,21 @@ Same-Day Dispatch from Bikaner
   <!-- Mobile Bottom Sticky Navigation Bar -->
   <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
     <a href="index" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      
+      <i class="fas fa-house text-base"></i>
       <span class="text-[10px] font-bold">Home</span>
     </a>
     <a href="category" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
-
+      <i class="fas fa-layer-group text-base"></i>
       <span class="text-[10px] font-black">Categories</span>
     </a>
     <button onclick="openCartDrawer()" class="relative flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-
+      <i class="fas fa-bag-shopping text-base"></i>
       <span class="cart-badge-count hidden absolute -top-1 right-2 w-4 h-4 bg-[#4A0713] text-[#FBBF24] text-[9px] font-black rounded-full flex items-center justify-center">0</span>
       <span class="text-[10px] font-bold">Cart</span>
+    </button>
+    <button onclick="openOrderTrackingView()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
+      <i class="fas fa-location-crosshairs text-base"></i>
+      <span class="text-[10px] font-bold">Tracking</span>
     </button>
     <button onclick="openCustomerAuthModal()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
       <img src="assets/images/default_avatar.jpg" alt="Profile" class="w-5 h-5 rounded-full object-cover border border-[#E59819]" />

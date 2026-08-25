@@ -642,6 +642,16 @@ function applySiteTheme(settings) {
   applyBranding(s);
 }
 
+function toggleMobileSearch() {
+  const row = document.getElementById('mobile-search-row');
+  if (!row) return;
+  row.classList.toggle('hidden');
+  if (!row.classList.contains('hidden')) {
+    const input = row.querySelector('input');
+    if (input) input.focus();
+  }
+}
+
 function applyPageContent(map) {
   window.SITE_PAGE_CONTENT = map;
   try { localStorage.setItem('mira_page_content', JSON.stringify(map)); } catch(e) {}

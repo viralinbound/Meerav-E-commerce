@@ -326,7 +326,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   scrollbar-width: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .mobile-bottom-nav {
     display: flex !important;
   }
@@ -364,7 +364,7 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .mobile-bottom-nav {
     display: none !important;
   }

@@ -457,13 +457,14 @@ function filterDietary(tag) {
 }
 
 function setupStoreSearch() {
-  const searchInput = document.getElementById('store-search-input');
-  if (searchInput) {
+  ['store-search-input', 'store-search-input-mobile'].forEach(id => {
+    const searchInput = document.getElementById(id);
+    if (!searchInput) return;
     searchInput.addEventListener('input', (e) => {
       storeState.searchQuery = e.target.value.toLowerCase().trim();
       renderStoreProducts();
     });
-  }
+  });
 }
 
 /**
