@@ -652,31 +652,6 @@
             </div>
           </div>
 
-          <!-- 3. Master Hero & Media Studio -->
-          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-              <i class="fas fa-film text-[#E59819]"></i> Hero Buttons
-            </h3>
-            <p class="text-xs text-gray-500 -mt-2">The hero video/photo is now managed as slide #1 in <strong>Broadcast Stories & 4K Video Reels</strong> below — click its pencil icon to change it. These two buttons are the only other hero-section content.</p>
-            <input type="hidden" id="settings-hero-video-url" />
-            <input type="hidden" id="settings-hero-image-url" />
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Button Text</label>
-                <input type="text" id="settings-hero-cta-text" placeholder="Order Online Now" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Link</label>
-                <input type="text" id="settings-hero-cta-link" placeholder="category" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Secondary CTA Button Text</label>
-                <input type="text" id="settings-hero-secondary-cta-text" placeholder="Watch All-Products Film" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
-              </div>
-            </div>
-          </div>
-
           <!-- 4. Theme — Colors, Typography & UI Border Radius -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
@@ -1215,6 +1190,26 @@
           <p class="text-[10px] text-gray-400">Numbered in play order — set a lower "Sort Order" in the editor to push a story earlier; everything after it shifts down automatically.</p>
           <div id="admin-stories-table-body" class="space-y-2">
             <!-- Populated via admin.js -->
+          </div>
+
+          <div class="pt-4 mt-1 border-t border-amber-100">
+            <h4 class="text-xs font-black text-gray-700 mb-3 flex items-center gap-1.5"><i class="fas fa-arrow-pointer text-[#E59819]"></i> Hero Buttons (beside the video/photo)</h4>
+            <input type="hidden" id="settings-hero-video-url" />
+            <input type="hidden" id="settings-hero-image-url" />
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Button Text</label>
+                <input type="text" id="settings-hero-cta-text" placeholder="Order Online Now" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Link</label>
+                <input type="text" id="settings-hero-cta-link" placeholder="category" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Secondary CTA Button Text</label>
+                <input type="text" id="settings-hero-secondary-cta-text" placeholder="Watch All-Products Film" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
           </div>
         </div>
 
