@@ -138,6 +138,18 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     footer_text TEXT DEFAULT '© 2026 All Rights Reserved.',
     instagram_url TEXT,
     facebook_url TEXT,
+    chatbot_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    chatbot_name TEXT DEFAULT 'Meerav AI Sommelier',
+    chatbot_subtitle TEXT DEFAULT 'Order Assistant & Personalization',
+    chatbot_avatar_icon TEXT DEFAULT 'fa-robot',
+    chatbot_color TEXT DEFAULT '#E59819',
+    chatbot_greeting TEXT,
+    chatbot_quick_prompts JSONB NOT NULL DEFAULT '[
+        {"label":"Order Spicy","prompt":"Help me order spicy snacks for today"},
+        {"label":"Diet & Roasted","prompt":"Show me roasted diet snacks with zero palm oil"},
+        {"label":"Gift Boxes","prompt":"I want gift boxes and sweets for celebration"},
+        {"label":"Track Van","prompt":"Where is my order delivery van right now?"}
+    ]'::jsonb,
     payment_upi_enabled BOOLEAN NOT NULL DEFAULT TRUE,
     payment_upi_id TEXT DEFAULT 'meeravnamkeens@upi',
     payment_cod_enabled BOOLEAN NOT NULL DEFAULT TRUE,
@@ -274,6 +286,14 @@ CREATE TABLE IF NOT EXISTS public.customers (
 );
 
 CREATE INDEX IF NOT EXISTS idx_customers_phone ON public.customers(phone);
+
+-- 5b. CHATBOT HISTORY TABLE — one row per logged-in customer, holding their full
+-- conversation so it survives logout/relogin across devices.
+CREATE TABLE IF NOT EXISTS public.chatbot_history (
+    customer_id TEXT PRIMARY KEY REFERENCES public.customers(id) ON DELETE CASCADE,
+    messages JSONB NOT NULL DEFAULT '[]'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
 
 -- 6. NOTIFICATIONS TABLE (WhatsApp/Email log shown in the admin Notification Hub)
 CREATE TABLE IF NOT EXISTS public.notifications (
@@ -415,6 +435,17 @@ CREATE POLICY "customers update own or guest" ON public.customers FOR UPDATE
     USING ((select auth.uid()) IS NULL OR (select auth.uid())::text = id);
 CREATE POLICY "own or admin read customers" ON public.customers FOR SELECT
     USING ((select auth.uid())::text = id OR is_admin((select auth.uid())));
+
+-- Chatbot history: a customer can only ever read/write/delete their own conversation
+ALTER TABLE public.chatbot_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "own chat history read" ON public.chatbot_history FOR SELECT
+    USING ((select auth.uid())::text = customer_id);
+CREATE POLICY "own chat history insert" ON public.chatbot_history FOR INSERT
+    WITH CHECK ((select auth.uid())::text = customer_id);
+CREATE POLICY "own chat history update" ON public.chatbot_history FOR UPDATE
+    USING ((select auth.uid())::text = customer_id);
+CREATE POLICY "own chat history delete" ON public.chatbot_history FOR DELETE
+    USING ((select auth.uid())::text = customer_id);
 
 -- Notifications: anyone can log one (storefront + admin broadcast), only admins read the log
 CREATE POLICY "public write notifications" ON public.notifications FOR INSERT WITH CHECK (true);

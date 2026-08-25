@@ -1278,7 +1278,28 @@ function renderSettingsForm() {
 
   document.getElementById('settings-announcement').value = s.announcementText || '';
   document.getElementById('settings-footer-text').value = s.footerText || '';
+
+  // AI Chatbot Customization
+  document.getElementById('settings-chatbot-enabled').checked = s.chatbotEnabled !== false;
+  document.getElementById('settings-chatbot-name').value = s.chatbotName || 'Meerav AI Sommelier';
+  document.getElementById('settings-chatbot-subtitle').value = s.chatbotSubtitle || 'Order Assistant & Personalization';
+  document.getElementById('settings-chatbot-avatar-icon').value = s.chatbotAvatarIcon || 'fa-robot';
+  document.getElementById('settings-chatbot-color').value = s.chatbotColor || s.accentColor || '#E59819';
+  document.getElementById('settings-chatbot-greeting').value = s.chatbotGreeting || '';
+  const quickPrompts = (s.chatbotQuickPrompts && s.chatbotQuickPrompts.length ? s.chatbotQuickPrompts : DEFAULT_CHATBOT_QUICK_PROMPTS);
+  for (let i = 0; i < 4; i++) {
+    const qp = quickPrompts[i] || { label: '', prompt: '' };
+    document.getElementById(`settings-chatbot-qp-label-${i}`).value = qp.label || '';
+    document.getElementById(`settings-chatbot-qp-prompt-${i}`).value = qp.prompt || '';
+  }
 }
+
+const DEFAULT_CHATBOT_QUICK_PROMPTS = [
+  { label: 'Order Spicy', prompt: 'Help me order spicy snacks for today' },
+  { label: 'Diet & Roasted', prompt: 'Show me roasted diet snacks with zero palm oil' },
+  { label: 'Gift Boxes', prompt: 'I want gift boxes and sweets for celebration' },
+  { label: 'Track Van', prompt: 'Where is my order delivery van right now?' }
+];
 
 /** Font <select>s are populated from theme.js's GOOGLE_FONT_STACKS so the admin list and the live-apply list never drift apart. */
 function populateFontSelects() {
@@ -1482,7 +1503,17 @@ function collectSiteSettingsFromForm() {
     instagramUrl: document.getElementById('settings-instagram').value.trim(),
     facebookUrl: document.getElementById('settings-facebook').value.trim(),
     announcementText: document.getElementById('settings-announcement').value.trim(),
-    footerText: document.getElementById('settings-footer-text').value.trim()
+    footerText: document.getElementById('settings-footer-text').value.trim(),
+    chatbotEnabled: document.getElementById('settings-chatbot-enabled').checked,
+    chatbotName: document.getElementById('settings-chatbot-name').value.trim(),
+    chatbotSubtitle: document.getElementById('settings-chatbot-subtitle').value.trim(),
+    chatbotAvatarIcon: document.getElementById('settings-chatbot-avatar-icon').value,
+    chatbotColor: document.getElementById('settings-chatbot-color').value,
+    chatbotGreeting: document.getElementById('settings-chatbot-greeting').value.trim(),
+    chatbotQuickPrompts: [0, 1, 2, 3].map(i => ({
+      label: document.getElementById(`settings-chatbot-qp-label-${i}`).value.trim(),
+      prompt: document.getElementById(`settings-chatbot-qp-prompt-${i}`).value.trim()
+    })).filter(qp => qp.label && qp.prompt)
   };
 }
 

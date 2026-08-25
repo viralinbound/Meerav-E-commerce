@@ -978,6 +978,70 @@
             </div>
           </div>
 
+          <!-- 8b. AI Chatbot Customization -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <i class="fas fa-robot text-[#E59819]"></i> AI Chatbot Customization
+              </h3>
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                <input type="checkbox" id="settings-chatbot-enabled" class="sr-only peer" checked />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+              </label>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Display Name</label>
+                <input type="text" id="settings-chatbot-name" placeholder="Meerav AI Sommelier" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Subtitle</label>
+                <input type="text" id="settings-chatbot-subtitle" placeholder="Order Assistant & Personalization" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Avatar Icon</label>
+                <select id="settings-chatbot-avatar-icon" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
+                  <option value="fa-robot">Robot</option>
+                  <option value="fa-comment-dots">Chat Bubble</option>
+                  <option value="fa-headset">Headset</option>
+                  <option value="fa-wand-magic-sparkles">Magic Wand</option>
+                  <option value="fa-user-tie">Concierge</option>
+                  <option value="fa-mug-hot">Mug</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Accent Color</label>
+                <input type="color" id="settings-chatbot-color" class="w-full h-10 border border-gray-200 rounded-xl cursor-pointer" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Custom Greeting Line (leave blank to use the default personalized greeting)</label>
+              <textarea id="settings-chatbot-greeting" rows="2" placeholder="Namaste! Welcome to our store..." class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs"></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-2">Quick Prompt Buttons</label>
+              <div class="space-y-2" id="settings-chatbot-quick-prompts">
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" id="settings-chatbot-qp-label-0" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
+                  <input type="text" id="settings-chatbot-qp-prompt-0" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" id="settings-chatbot-qp-label-1" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
+                  <input type="text" id="settings-chatbot-qp-prompt-1" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" id="settings-chatbot-qp-label-2" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
+                  <input type="text" id="settings-chatbot-qp-prompt-2" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input type="text" id="settings-chatbot-qp-label-3" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
+                  <input type="text" id="settings-chatbot-qp-prompt-3" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Bottom Save Button -->
           <div class="flex items-center justify-end gap-3 pt-2">
             <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-6 py-3.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer">

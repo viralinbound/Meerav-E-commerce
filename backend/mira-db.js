@@ -105,6 +105,36 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return !error;
   }
 
+  async function fetchChatHistory(customerId) {
+    if (!customerId) return [];
+    try {
+      const { data, error } = await supabaseClient.from('chatbot_history').select('messages').eq('customer_id', customerId).maybeSingle();
+      if (error) { console.warn('fetchChatHistory', error); return []; }
+      return (data && Array.isArray(data.messages)) ? data.messages : [];
+    } catch (e) {
+      console.warn('fetchChatHistory note:', e);
+      return [];
+    }
+  }
+
+  async function saveChatHistory(customerId, messages) {
+    if (!customerId) return false;
+    const { error } = await supabaseClient.from('chatbot_history').upsert({
+      customer_id: customerId,
+      messages,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'customer_id' });
+    if (error) console.error('saveChatHistory', error);
+    return !error;
+  }
+
+  async function deleteChatHistory(customerId) {
+    if (!customerId) return true;
+    const { error } = await supabaseClient.from('chatbot_history').delete().eq('customer_id', customerId);
+    if (error) console.error('deleteChatHistory', error);
+    return !error;
+  }
+
   async function fetchSiteSettings() {
     try {
       const { data, error } = await supabaseClient.from('site_settings').select('*').eq('id', 'default').maybeSingle();
@@ -522,6 +552,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus,
     dbUpsertCustomer,
+    fetchChatHistory, saveChatHistory, deleteChatHistory,
     dbInsertNotification,
     fetchSiteSettings, dbUpsertSiteSettings,
     fetchPageContent, dbUpsertPageContent,

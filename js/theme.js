@@ -52,6 +52,18 @@ const DEFAULT_SITE_SETTINGS = {
   footerText: '© 2026 All Rights Reserved.',
   instagramUrl: '',
   facebookUrl: '',
+  chatbotEnabled: true,
+  chatbotName: 'Meerav AI Sommelier',
+  chatbotSubtitle: 'Order Assistant & Personalization',
+  chatbotAvatarIcon: 'fa-robot',
+  chatbotColor: '#E59819',
+  chatbotGreeting: '',
+  chatbotQuickPrompts: [
+    { label: 'Order Spicy', prompt: 'Help me order spicy snacks for today' },
+    { label: 'Diet & Roasted', prompt: 'Show me roasted diet snacks with zero palm oil' },
+    { label: 'Gift Boxes', prompt: 'I want gift boxes and sweets for celebration' },
+    { label: 'Track Van', prompt: 'Where is my order delivery van right now?' }
+  ],
   paymentUpiEnabled: true,
   paymentUpiId: 'meeravnamkeens@upi',
   paymentCodEnabled: true,

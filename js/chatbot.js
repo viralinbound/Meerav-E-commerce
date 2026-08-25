@@ -58,28 +58,59 @@ function saveUserPersonalization(profile) {
   }
 }
 
-function initChatbot() {
-  const profile = getUserPersonalization();
-  const session = JSON.parse(localStorage.getItem('mira_customer_session'));
-  const customerName = session ? session.name : 'Foodie';
-
-  let initialGreeting = `Namaste ${customerName}! Welcome to **MEERAV Namkeens**.\n\nI am your personal **Snack Sommelier & Ordering Assistant**!\n\nI can help you discover and order authentic Bikaneri snacks directly in chat!`;
-
-  if (profile.favoriteCategories.length > 0 || profile.orderedSnacks.length > 0) {
-    initialGreeting += `\n\n*Saved Preferences: **${profile.preferredSpice}** & **${profile.favoriteCategories.join(' & ')}**!*`;
+async function initChatbot() {
+  const settings = getChatbotSettings();
+  if (settings.chatbotEnabled === false) {
+    const host = document.getElementById('meerav-chatbot-root');
+    if (host) host.innerHTML = '';
+    return;
   }
 
-  chatbotState.messages = [
-    {
-      sender: 'bot',
-      text: initialGreeting,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      recommendations: getPersonalizedRecommendations(),
-      isOrderHelp: false
+  const profile = getUserPersonalization();
+  const customer = getLoggedInCustomer();
+  const customerName = customer ? (customer.name || 'Foodie') : 'Foodie';
+
+  let history = [];
+  if (customer && customer.id && typeof MiraDB !== 'undefined') {
+    history = await MiraDB.fetchChatHistory(customer.id);
+  } else {
+    try { history = JSON.parse(localStorage.getItem('mira_guest_chat_history')) || []; } catch (e) { history = []; }
+  }
+
+  if (history.length > 0) {
+    chatbotState.messages = history;
+  } else {
+    let initialGreeting = (settings.chatbotGreeting && settings.chatbotGreeting.trim())
+      ? settings.chatbotGreeting.trim()
+      : `Namaste ${customerName}! Welcome to **${settings.siteName || 'MEERAV Namkeens'}**.\n\nI am your personal **Snack Sommelier & Ordering Assistant**!\n\nI can help you discover and order authentic Bikaneri snacks directly in chat!`;
+
+    if (profile.favoriteCategories.length > 0 || profile.orderedSnacks.length > 0) {
+      initialGreeting += `\n\n*Saved Preferences: **${profile.preferredSpice}** & **${profile.favoriteCategories.join(' & ')}**!*`;
     }
-  ];
+
+    chatbotState.messages = [
+      {
+        sender: 'bot',
+        text: initialGreeting,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        recommendations: getPersonalizedRecommendations(),
+        isOrderHelp: false
+      }
+    ];
+    persistChatHistory();
+  }
 
   renderChatbotWidget();
+}
+
+// Reload the right conversation the instant a customer signs in or out —
+// otherwise the chat window would keep showing whoever was logged in before.
+if (typeof MiraDB !== 'undefined' && MiraDB.onAuthChange) {
+  MiraDB.onAuthChange((event) => {
+    if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'INITIAL_SESSION') {
+      setTimeout(() => initChatbot(), 300);
+    }
+  });
 }
 
 function getPersonalizedRecommendations() {
@@ -98,6 +129,49 @@ function getPersonalizedRecommendations() {
 function dismissChatbotPeekBubble() {
   const bubble = document.getElementById('chatbot-peek-bubble');
   if (bubble) bubble.remove();
+}
+
+/**
+ * REAL PER-ACCOUNT CHAT PERSISTENCE
+ * Logged-in customers: chat is saved to Supabase against their account, so it
+ * survives logout/relogin on any device. Guests: chat is kept in this browser's
+ * localStorage only, until they sign in.
+ */
+function getChatbotSettings() {
+  return (typeof window !== 'undefined' && window.SITE_SETTINGS) || {};
+}
+
+function escapeHtmlAttr(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function getLoggedInCustomer() {
+  return (typeof authState !== 'undefined' && authState.customer) || null;
+}
+
+let chatHistorySaveTimer = null;
+function persistChatHistory() {
+  const customer = getLoggedInCustomer();
+  if (customer && customer.id && typeof MiraDB !== 'undefined') {
+    clearTimeout(chatHistorySaveTimer);
+    chatHistorySaveTimer = setTimeout(() => {
+      MiraDB.saveChatHistory(customer.id, chatbotState.messages);
+    }, 700);
+  } else {
+    try { localStorage.setItem('mira_guest_chat_history', JSON.stringify(chatbotState.messages)); } catch (e) {}
+  }
+}
+
+function confirmDeleteChatHistory() {
+  if (!confirm('Delete this entire chat conversation? This cannot be undone.')) return;
+  const customer = getLoggedInCustomer();
+  if (customer && customer.id && typeof MiraDB !== 'undefined') {
+    MiraDB.deleteChatHistory(customer.id);
+  } else {
+    try { localStorage.removeItem('mira_guest_chat_history'); } catch (e) {}
+  }
+  resetChatbot();
+  if (typeof showToast === 'function') showToast('Chat history deleted', 'success');
 }
 
 function toggleChatbot(forceOpen = null) {
@@ -143,6 +217,7 @@ function openOrderHelpBot(orderId) {
   });
 
   renderChatMessages();
+  persistChatHistory();
 }
 
 function renderChatbotWidget() {
@@ -153,10 +228,24 @@ function renderChatbotWidget() {
     document.body.appendChild(host);
   }
 
+  const settings = getChatbotSettings();
+  const botName = settings.chatbotName || 'Meerav AI Sommelier';
+  const botSubtitle = settings.chatbotSubtitle || 'Order Assistant & Personalization';
+  const avatarIcon = settings.chatbotAvatarIcon || 'fa-robot';
+  const accent = settings.chatbotColor || settings.accentColor || '#E59819';
+  const quickPrompts = (settings.chatbotQuickPrompts && settings.chatbotQuickPrompts.length)
+    ? settings.chatbotQuickPrompts
+    : [
+        { label: 'Order Spicy', prompt: 'Help me order spicy snacks for today' },
+        { label: 'Diet & Roasted', prompt: 'Show me roasted diet snacks with zero palm oil' },
+        { label: 'Gift Boxes', prompt: 'I want gift boxes and sweets for celebration' },
+        { label: 'Track Van', prompt: 'Where is my order delivery van right now?' }
+      ];
+
   host.innerHTML = `
     <!-- Floating Chatbot Launcher Button -->
     <div class="fixed bottom-20 sm:bottom-6 right-5 z-50 flex flex-col items-end">
-      
+
       <!-- Peek Bubble -->
       <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce">
         <span class="cursor-pointer" onclick="toggleChatbot()">Order & Taste Assistant</span>
@@ -167,37 +256,37 @@ function renderChatbotWidget() {
         </button>
       </div>
 
-      <button onclick="toggleChatbot()" 
-        class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[#E59819] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80">
-        <i class="fas fa-robot"></i>
+      <button onclick="toggleChatbot()"
+        class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80">
+        <i class="fas ${avatarIcon}"></i>
         <span id="chatbot-unread-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></span>
       </button>
 
       <!-- Chatbot Popup Window Frame -->
-      <div id="meerav-chatbot-window" 
+      <div id="meerav-chatbot-window"
         class="hidden fixed bottom-24 sm:bottom-24 right-4 sm:right-6 w-[94vw] sm:w-[400px] max-w-sm h-[540px] max-h-[86vh] bg-white rounded-3xl shadow-2xl border-2 border-[#E59819]/60 flex flex-col overflow-hidden transition-all duration-300 z-50">
-        
+
         <!-- Header -->
         <div class="p-3.5 bg-gradient-to-r from-[#4A0713] to-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E59819] to-[#FBBF24] flex items-center justify-center shadow-md shrink-0">
-              <i class="fas fa-robot text-[#32040C] text-base"></i>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[${accent}] to-[#FBBF24] flex items-center justify-center shadow-md shrink-0">
+              <i class="fas ${avatarIcon} text-[#32040C] text-base"></i>
             </div>
             <div>
               <div class="font-black text-xs text-[#FBBF24] flex items-center gap-1">
-                <span>Meerav AI Sommelier</span>
+                <span>${botName}</span>
                 <i class="fas fa-circle-check text-emerald-400 text-[10px]"></i>
               </div>
-              <span class="text-[10px] text-amber-200/80">Order Assistant & Personalization</span>
+              <span class="text-[10px] text-amber-200/80">${botSubtitle}</span>
             </div>
           </div>
 
-          <div class="flex items-center gap-1">
-            <button onclick="resetChatbot()" title="Clear Chat" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-gray-300 flex items-center justify-center text-xs">
-              <i class="fas fa-rotate-right"></i>
+          <div class="flex items-center gap-1.5">
+            <button onclick="confirmDeleteChatHistory()" title="Delete Chat History" class="w-7 h-7 rounded-full bg-white/10 hover:bg-red-500/80 text-[#FBBF24] hover:text-white flex items-center justify-center text-sm transition">
+              <i class="fas fa-trash-can"></i>
             </button>
-            <button onclick="toggleChatbot()" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center text-xs">
-              <i class="fas fa-times"></i>
+            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#FBBF24] flex items-center justify-center text-sm transition">
+              <i class="fas fa-xmark"></i>
             </button>
           </div>
         </div>
@@ -205,10 +294,7 @@ function renderChatbotWidget() {
         <!-- Quick Action Suggestion Chips — scrollable, with a fade hint so the cut-off edge doesn't look like the last button -->
         <div class="relative bg-amber-50/80 border-b border-amber-200/60">
           <div id="chatbot-quick-pills" class="p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold text-[#4A0713]">
-            <button onclick="sendQuickPrompt('Help me order spicy snacks for today')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Order Spicy</button>
-            <button onclick="sendQuickPrompt('Show me roasted diet snacks with zero palm oil')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Diet & Roasted</button>
-            <button onclick="sendQuickPrompt('I want gift boxes and sweets for celebration')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Gift Boxes</button>
-            <button onclick="sendQuickPrompt('Where is my order delivery van right now?')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Track Van</button>
+            ${quickPrompts.map(qp => `<button data-quick-prompt="${escapeHtmlAttr(qp.prompt)}" class="chatbot-quick-pill-btn px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">${escapeHtmlAttr(qp.label)}</button>`).join('')}
           </div>
           <div class="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-amber-50/90 to-transparent"></div>
         </div>
@@ -230,6 +316,10 @@ function renderChatbotWidget() {
       </div>
     </div>
   `;
+
+  document.getElementById('chatbot-quick-pills')?.querySelectorAll('.chatbot-quick-pill-btn').forEach(btn => {
+    btn.addEventListener('click', () => sendQuickPrompt(btn.dataset.quickPrompt));
+  });
 
   renderChatMessages();
 }
@@ -437,6 +527,7 @@ function handleChatbotSubmit(event) {
       recommendations: matchedProducts
     });
     renderChatMessages();
+    persistChatHistory();
   }, 600);
 }
 
@@ -528,6 +619,7 @@ function resetChatbot() {
     }
   ];
   renderChatMessages();
+  persistChatHistory();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
