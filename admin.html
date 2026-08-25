@@ -655,17 +655,28 @@
           <!-- 3. Master Hero & Media Studio -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-               Hero Section & Master Brand Film
+              <i class="fas fa-film text-[#E59819]"></i> Hero Section & Master Brand Film
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Cinematic Video URL / Path</label>
-                <input type="text" id="settings-hero-video-url" placeholder="assets/videos/meerav_brand_film.mp4" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs font-mono" />
-                <p class="text-[10px] text-gray-400 mt-1">Direct MP4 URL or local path for the 4K hero video player.</p>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Cinematic Video</label>
+                <label class="w-full py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer text-xs">
+                  <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="settings-hero-video-status">Upload Hero Video</span>
+                  <input type="file" accept="video/*" onchange="handleSettingsHeroVideoUpload(event)" class="hidden" />
+                </label>
+                <input type="hidden" id="settings-hero-video-url" />
+                <p class="text-[10px] text-gray-400 mt-1">Uploads directly to cloud storage for the 4K hero video player.</p>
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Fallback / Poster Image URL</label>
-                <input type="text" id="settings-hero-image-url" placeholder="assets/images/commercial_scene_1.jpg" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs font-mono" />
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Fallback / Poster Image</label>
+                <div class="flex items-center gap-3">
+                  <img id="settings-hero-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-12 h-12 rounded-xl object-cover border border-amber-200 shrink-0" />
+                  <label class="flex-1 py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer text-xs">
+                    <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="settings-hero-image-status">Upload Image</span>
+                    <input type="file" accept="image/*" onchange="handleSettingsHeroImageUpload(event)" class="hidden" />
+                  </label>
+                </div>
+                <input type="hidden" id="settings-hero-image-url" />
               </div>
             </div>
 
@@ -1591,7 +1602,7 @@
           <div class="flex items-center gap-3 mb-2">
             <div class="relative shrink-0">
               <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
-              <button type="button" onclick="removeCategoryImage()" title="Remove Image" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md font-bold text-xs">✕</button>
+              <button type="button" onclick="removeCategoryImage()" title="Remove Image" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
             </div>
             <div class="flex-1 space-y-1.5">
               <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="text-xs w-full" />
@@ -1876,7 +1887,7 @@
           <h3 id="trust-badge-modal-title" class="font-black text-sm text-[#FBBF24]">Feature Badge Editor</h3>
           <span class="text-[10px] text-amber-200">Real-Time Image & Guarantee Card</span>
         </div>
-        <button onclick="closeTrustBadgeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close">✕</button>
+        <button onclick="closeTrustBadgeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close"><i class="fas fa-xmark"></i></button>
       </div>
       <form onsubmit="saveTrustBadgeForm(event)" class="p-6 space-y-4 text-xs">
         <input type="hidden" id="trust-badge-form-id" />
@@ -1889,14 +1900,17 @@
           <textarea id="trust-badge-form-desc" required rows="2" placeholder="Prepared exclusively in pure cold-pressed oil..." class="w-full px-3 py-2 border rounded-xl"></textarea>
         </div>
         <div>
-          <label class="block text-gray-700 font-bold mb-1">Real Feature Image URL / Path *</label>
-          <input type="text" id="trust-badge-form-image" required placeholder="assets/images/feature_oil.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_oil.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Pure Oil</button>
-            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_heritage.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Heritage</button>
-            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_packaging.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Airtight Pack</button>
-            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_whatsapp.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">WhatsApp Alert</button>
+          <label class="block text-gray-700 font-bold mb-1">Feature Image *</label>
+          <div class="flex items-center gap-3">
+            <img id="trust-badge-form-preview" src="assets/images/feature_oil.jpg" class="w-14 h-14 rounded-xl object-cover border border-amber-200 shrink-0" />
+            <div class="flex-1">
+              <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
+                <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="trust-badge-form-image-status">Upload Image</span>
+                <input type="file" accept="image/*" onchange="handleTrustBadgeImageUpload(event)" class="hidden" />
+              </label>
+            </div>
           </div>
+          <input type="hidden" id="trust-badge-form-image" required />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -1910,7 +1924,7 @@
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeTrustBadgeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">✓ Save Feature Badge</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]"><i class="fas fa-check"></i> Save Feature Badge</button>
         </div>
       </form>
     </div>
@@ -1925,7 +1939,7 @@
           <h3 id="story-modal-title" class="font-black text-sm text-[#FBBF24]">Video Story & Reel Editor</h3>
           <span class="text-[10px] text-amber-200">Watch & Shop Broadcast Carousel</span>
         </div>
-        <button onclick="closeStoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close">✕</button>
+        <button onclick="closeStoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close"><i class="fas fa-xmark"></i></button>
       </div>
       <form onsubmit="saveStoryForm(event)" class="p-6 space-y-4 text-xs">
         <input type="hidden" id="story-form-id" />
@@ -1947,18 +1961,23 @@
           </div>
         </div>
         <div>
-          <label class="block text-gray-700 font-bold mb-1">Video / Photo Media URL *</label>
-          <input type="text" id="story-form-media-url" required placeholder="assets/videos/clip_bhujia.mp4" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
-          <div class="flex flex-wrap gap-1.5 mt-2">
-            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/clip_bhujia.mp4'; document.getElementById('story-form-poster-url').value='assets/images/cinematic_bhujia.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Bhujia Reel</button>
-            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/clip_papad.mp4'; document.getElementById('story-form-poster-url').value='assets/images/cinematic_papad.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Papad Reel</button>
-            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/clip_moong_dal.mp4'; document.getElementById('story-form-poster-url').value='assets/images/cinematic_moong_dal.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Moong Dal Reel</button>
-            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/meerav_brand_film.mp4'; document.getElementById('story-form-poster-url').value='assets/images/commercial_scene_1.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Brand Film</button>
-          </div>
+          <label class="block text-gray-700 font-bold mb-1">Video / Photo Upload *</label>
+          <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
+            <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="story-form-media-status">Upload Video / Photo</span>
+            <input type="file" accept="video/*,image/*" onchange="handleStoryMediaUpload(event)" class="hidden" />
+          </label>
+          <input type="hidden" id="story-form-media-url" required />
         </div>
         <div>
-          <label class="block text-gray-700 font-bold mb-1">Poster Thumbnail Image URL</label>
-          <input type="text" id="story-form-poster-url" placeholder="assets/images/cinematic_bhujia.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
+          <label class="block text-gray-700 font-bold mb-1">Poster Thumbnail Image</label>
+          <div class="flex items-center gap-3">
+            <img id="story-form-poster-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-xl object-cover border border-amber-200 shrink-0" />
+            <label class="flex-1 py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
+              <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="story-form-poster-status">Upload Thumbnail</span>
+              <input type="file" accept="image/*" onchange="handleStoryPosterUpload(event)" class="hidden" />
+            </label>
+          </div>
+          <input type="hidden" id="story-form-poster-url" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -1982,7 +2001,7 @@
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeStoryModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">✓ Save Story Reel</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]"><i class="fas fa-check"></i> Save Story Reel</button>
         </div>
       </form>
     </div>

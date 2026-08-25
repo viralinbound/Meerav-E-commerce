@@ -1215,8 +1215,14 @@ function renderSettingsForm() {
   // Hero Media & CTAs
   const heroVideoInput = document.getElementById('settings-hero-video-url');
   if (heroVideoInput) heroVideoInput.value = s.heroVideoUrl || '';
+  const heroVideoStatus = document.getElementById('settings-hero-video-status');
+  if (heroVideoStatus) heroVideoStatus.textContent = 'Upload Hero Video';
   const heroImgInput = document.getElementById('settings-hero-image-url');
   if (heroImgInput) heroImgInput.value = s.heroImageUrl || '';
+  const heroImgPreview = document.getElementById('settings-hero-image-preview');
+  if (heroImgPreview) heroImgPreview.src = s.heroImageUrl || 'assets/images/commercial_scene_1.jpg';
+  const heroImgStatus = document.getElementById('settings-hero-image-status');
+  if (heroImgStatus) heroImgStatus.textContent = 'Upload Image';
   const heroCtaInput = document.getElementById('settings-hero-cta-text');
   if (heroCtaInput) heroCtaInput.value = s.heroCtaText || '';
   const heroCtaLinkInput = document.getElementById('settings-hero-cta-link');
@@ -1443,6 +1449,41 @@ async function handleSettingsBgImageUpload(event) {
     preview.src = url;
     preview.classList.remove('hidden');
     if (status) status.textContent = 'Uploaded — click Save to apply';
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+async function handleSettingsHeroVideoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-hero-video-status');
+  const previousUrl = document.getElementById('settings-hero-video-url').value.trim();
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    document.getElementById('settings-hero-video-url').value = url;
+    if (status) status.textContent = 'Uploaded — click Save to apply';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+async function handleSettingsHeroImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-hero-image-status');
+  const previousUrl = document.getElementById('settings-hero-image-url').value.trim();
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    document.getElementById('settings-hero-image-url').value = url;
+    document.getElementById('settings-hero-image-preview').src = url;
+    if (status) status.textContent = 'Uploaded — click Save to apply';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
   } else if (status) {
     status.textContent = 'Upload failed — please retry';
   }
@@ -1879,7 +1920,6 @@ function renderAdminTestimonials() {
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openTestimonialModal('${t.id}')" title="Edit Review" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition"><i class="fas fa-pen"></i> Edit</button>
         <button onclick="deleteTestimonial('${t.id}')" title="Delete Review" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
@@ -2611,6 +2651,10 @@ function openTrustBadgeModal(id = null) {
   const sortInput = document.getElementById('trust-badge-form-sort');
   const visibleCheckbox = document.getElementById('trust-badge-form-visible');
 
+  const previewImg = document.getElementById('trust-badge-form-preview');
+  const statusEl = document.getElementById('trust-badge-form-image-status');
+  if (statusEl) statusEl.textContent = 'Upload Image';
+
   if (id) {
     const b = (adminState.trustBadges || []).find(item => item.id === id);
     if (b) {
@@ -2619,6 +2663,7 @@ function openTrustBadgeModal(id = null) {
       titleInput.value = b.title;
       descInput.value = b.description;
       imageInput.value = b.image;
+      if (previewImg) previewImg.src = b.image;
       sortInput.value = b.sortOrder || 1;
       visibleCheckbox.checked = b.isVisible !== false;
     }
@@ -2628,10 +2673,29 @@ function openTrustBadgeModal(id = null) {
     titleInput.value = '';
     descInput.value = '';
     imageInput.value = 'assets/images/feature_oil.jpg';
+    if (previewImg) previewImg.src = 'assets/images/feature_oil.jpg';
     sortInput.value = (adminState.trustBadges ? adminState.trustBadges.length + 1 : 1);
     visibleCheckbox.checked = true;
   }
   modal.classList.remove('hidden');
+}
+
+async function handleTrustBadgeImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('trust-badge-form-image-status');
+  const previousUrl = document.getElementById('trust-badge-form-image').value.trim();
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'trust-badges');
+  if (url) {
+    document.getElementById('trust-badge-form-image').value = url;
+    document.getElementById('trust-badge-form-preview').src = url;
+    if (status) status.textContent = 'Uploaded';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
 }
 
 function closeTrustBadgeModal() {
@@ -2767,6 +2831,12 @@ function openStoryModal(id = null) {
   const sortInput = document.getElementById('story-form-sort');
   const visibleCheckbox = document.getElementById('story-form-visible');
 
+  const posterPreview = document.getElementById('story-form-poster-preview');
+  const mediaStatus = document.getElementById('story-form-media-status');
+  const posterStatus = document.getElementById('story-form-poster-status');
+  if (mediaStatus) mediaStatus.textContent = 'Upload Video / Photo';
+  if (posterStatus) posterStatus.textContent = 'Upload Thumbnail';
+
   if (id) {
     const s = (adminState.broadcastStories || []).find(item => item.id === id);
     if (s) {
@@ -2777,6 +2847,7 @@ function openStoryModal(id = null) {
       tagInput.value = s.tag || '';
       mediaInput.value = s.mediaUrl;
       posterInput.value = s.posterUrl || '';
+      if (posterPreview) posterPreview.src = s.posterUrl || s.mediaUrl;
       productInput.value = s.productId || 'p1';
       priceInput.value = s.price || 99;
       sortInput.value = s.sortOrder || 1;
@@ -2788,14 +2859,50 @@ function openStoryModal(id = null) {
     titleInput.value = '';
     typeSelect.value = 'video';
     tagInput.value = '4K Reel';
-    mediaInput.value = 'assets/videos/clip_bhujia.mp4';
-    posterInput.value = 'assets/images/cinematic_bhujia.jpg';
+    mediaInput.value = '';
+    posterInput.value = '';
+    if (posterPreview) posterPreview.src = 'assets/images/cinematic_bhujia.jpg';
     productInput.value = 'p1';
     priceInput.value = 99;
     sortInput.value = (adminState.broadcastStories ? adminState.broadcastStories.length + 1 : 1);
     visibleCheckbox.checked = true;
   }
   modal.classList.remove('hidden');
+}
+
+async function handleStoryMediaUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('story-form-media-status');
+  const previousUrl = document.getElementById('story-form-media-url').value.trim();
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'stories');
+  if (url) {
+    document.getElementById('story-form-media-url').value = url;
+    if (status) status.textContent = 'Uploaded';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+async function handleStoryPosterUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('story-form-poster-status');
+  const previousUrl = document.getElementById('story-form-poster-url').value.trim();
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'stories');
+  if (url) {
+    document.getElementById('story-form-poster-url').value = url;
+    document.getElementById('story-form-poster-preview').src = url;
+    if (status) status.textContent = 'Uploaded';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
 }
 
 function closeStoryModal() {
