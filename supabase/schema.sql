@@ -259,9 +259,9 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
 CREATE INDEX IF NOT EXISTS idx_testimonials_customer_id ON public.testimonials(customer_id);
 
 INSERT INTO public.testimonials (name, city, rating, review_text, avatar, sort_order) VALUES
-('Pooja Sharma', 'Mumbai, Maharashtra', 5.0, 'The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.', 'assets/images/drive_1.jpg', 1),
-('Vikramaditya Rathore', 'Jaipur, Rajasthan', 5.0, 'Finally a brand that uses 100% pure groundnut oil without sneaky palm oil. The Kasuri Methi Mathri with morning chai is pure bliss!', 'assets/images/drive_2.jpg', 2),
-('Ananya Deshmukh', 'Bengaluru, Karnataka', 5.0, 'Super fast courier delivery and the nitrogen packaging kept the sev absolutely fresh for weeks. 10/10 recommend!', 'assets/images/drive_3.jpg', 3)
+('Pooja Sharma', 'Mumbai, Maharashtra', 5.0, 'The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.', 'assets/images/avatar_pooja.jpg', 1),
+('Vikramaditya Rathore', 'Jaipur, Rajasthan', 5.0, 'Finally a brand that uses 100% pure groundnut oil without sneaky palm oil. The Kasuri Methi Mathri with morning chai is pure bliss!', 'assets/images/avatar_vikram.jpg', 2),
+('Ananya Deshmukh', 'Bengaluru, Karnataka', 5.0, 'Super fast courier delivery and the nitrogen packaging kept the sev absolutely fresh for weeks. 10/10 recommend!', 'assets/images/avatar_ananya.jpg', 3)
 ON CONFLICT (id) DO NOTHING;
 
 -- 4e. FAQS TABLE
@@ -280,6 +280,48 @@ INSERT INTO public.faqs (question, answer, category, sort_order) VALUES
 ('How long does the crunch stay fresh in airtight packaging?', 'Our multi-layer food-grade packaging is flushed with food-grade nitrogen, guaranteeing factory-fresh crispiness and authentic aroma for 6+ months from manufacturing.', 'quality', 2),
 ('What are the delivery charges and shipping times?', 'We offer FREE Shipping on all orders above our threshold! Standard shipping takes 2-4 business days across metro cities with live WhatsApp courier tracking.', 'shipping', 3),
 ('Are these snacks 100% Vegetarian & Jain-friendly?', 'Yes! All our delicacies are 100% Pure Vegetarian. Many signature items like our Hing Sev, Moong Dal, and Roasted Makhana are also Jain-friendly with zero onion and garlic.', 'dietary', 4)
+ON CONFLICT (id) DO NOTHING;
+
+-- 9b. TRUST BADGES TABLE — admin-editable homepage "why trust us" feature cards
+CREATE TABLE IF NOT EXISTS public.trust_badges (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    image TEXT NOT NULL,
+    sort_order INTEGER DEFAULT 1,
+    is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.trust_badges (id, title, description, image, sort_order, is_visible) VALUES
+('tb-1', 'Pure & Clean Oil', 'Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.', 'assets/images/feature_oil.jpg', 1, true),
+('tb-2', 'Bikaneri Heritage', 'Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.', 'assets/images/feature_heritage.jpg', 2, true),
+('tb-3', 'Multi-Layer Airtight Pack', 'Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.', 'assets/images/feature_packaging.jpg', 3, true),
+('tb-4', 'Live WhatsApp Alerts', 'Instant WhatsApp notifications with courier tracking and live GPS route maps.', 'assets/images/feature_whatsapp.jpg', 4, true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 9c. BROADCAST STORIES TABLE — admin-editable 4K reels/photo stories carousel
+CREATE TABLE IF NOT EXISTS public.broadcast_stories (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    title TEXT NOT NULL,
+    tag TEXT DEFAULT '4K Reel',
+    media_type TEXT NOT NULL DEFAULT 'video', -- 'video' | 'photo'
+    media_url TEXT NOT NULL,
+    poster_url TEXT,
+    product_id TEXT,
+    price NUMERIC(10,2) DEFAULT 99.00,
+    original_price NUMERIC(10,2) DEFAULT 120.00,
+    sort_order INTEGER DEFAULT 1,
+    is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.broadcast_stories (id, title, tag, media_type, media_url, poster_url, product_id, price, original_price, sort_order, is_visible) VALUES
+('story-1', 'Royal Aloo Bhujia Slow Crunch', '4K Signature Reel', 'video', 'assets/videos/clip_bhujia.mp4', 'assets/images/cinematic_bhujia.jpg', 'p1', 99.00, 120.00, 1, true),
+('story-2', 'Bikaneri Papad Handcrafting', 'Heritage Kitchen', 'video', 'assets/videos/clip_papad.mp4', 'assets/images/cinematic_papad.jpg', 'p2', 249.00, 280.00, 2, true),
+('story-3', 'Crispy Moong Dal Live Fry', 'Pure Oil Story', 'video', 'assets/videos/clip_moong_dal.mp4', 'assets/images/cinematic_moong_dal.jpg', 'p12', 89.00, 110.00, 3, true),
+('story-4', 'Royal Cashew Mixture Blend', 'Fresh Roasted', 'video', 'assets/videos/clip_mixture.mp4', 'assets/images/cinematic_mixture.jpg', 'p4', 489.00, 549.00, 4, true),
+('story-5', 'Masala Peanuts Crafting', 'Crunch Story', 'video', 'assets/videos/clip_masala_peanuts.mp4', 'assets/images/cinematic_masala_peanuts.jpg', 'p14', 99.00, 119.00, 5, true)
 ON CONFLICT (id) DO NOTHING;
 
 -- 5. CUSTOMERS TABLE
@@ -448,6 +490,20 @@ CREATE POLICY "admins write faqs" ON public.faqs FOR INSERT WITH CHECK (is_admin
 CREATE POLICY "admins update faqs" ON public.faqs FOR UPDATE USING (is_admin((select auth.uid())));
 CREATE POLICY "admins delete faqs" ON public.faqs FOR DELETE USING (is_admin((select auth.uid())));
 
+-- Trust badges: public read, admin write
+ALTER TABLE public.trust_badges ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public read trust_badges" ON public.trust_badges FOR SELECT USING (true);
+CREATE POLICY "admins write trust_badges" ON public.trust_badges FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update trust_badges" ON public.trust_badges FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete trust_badges" ON public.trust_badges FOR DELETE USING (is_admin((select auth.uid())));
+
+-- Broadcast stories: public read, admin write
+ALTER TABLE public.broadcast_stories ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public read broadcast_stories" ON public.broadcast_stories FOR SELECT USING (true);
+CREATE POLICY "admins write broadcast_stories" ON public.broadcast_stories FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update broadcast_stories" ON public.broadcast_stories FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete broadcast_stories" ON public.broadcast_stories FOR DELETE USING (is_admin((select auth.uid())));
+
 -- Customers: guests/self can register & update their own profile; admins (or the owner) can read it
 CREATE POLICY "customers insert own or guest" ON public.customers FOR INSERT
     WITH CHECK ((select auth.uid()) IS NULL OR (select auth.uid())::text = id);
@@ -507,6 +563,8 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.page_content;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.coupons;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.faqs;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.trust_badges;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.broadcast_stories;
 
 -- 13. STORAGE BUCKET (meerav-media)
 -- Systematic folder layout: meerav-media/categories/{category_id}/products/{product_id}/{photos|videos}/{filename}

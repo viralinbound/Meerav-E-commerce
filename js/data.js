@@ -38,10 +38,114 @@ const MIRA_DATA = {
     { id: "c3", code: "ROYAL50", discountType: "flat", discountVal: 50, minOrderAmount: 499, isActive: true, description: "Flat ₹50 Off on orders above ₹499" }
   ],
 
+  
+  broadcastStories: [
+    {
+      id: "story-1",
+      title: "Royal Aloo Bhujia Slow Crunch",
+      tag: "4K Signature Reel",
+      mediaType: "video",
+      mediaUrl: "assets/videos/clip_bhujia.mp4",
+      posterUrl: "assets/images/cinematic_bhujia.jpg",
+      productId: "p1",
+      price: 99,
+      originalPrice: 120,
+      sortOrder: 1,
+      isVisible: true
+    },
+    {
+      id: "story-2",
+      title: "Bikaneri Papad Handcrafting",
+      tag: "Heritage Kitchen",
+      mediaType: "video",
+      mediaUrl: "assets/videos/clip_papad.mp4",
+      posterUrl: "assets/images/cinematic_papad.jpg",
+      productId: "p2",
+      price: 249,
+      originalPrice: 280,
+      sortOrder: 2,
+      isVisible: true
+    },
+    {
+      id: "story-3",
+      title: "Crispy Moong Dal Live Fry",
+      tag: "Pure Oil Story",
+      mediaType: "video",
+      mediaUrl: "assets/videos/clip_moong_dal.mp4",
+      posterUrl: "assets/images/cinematic_moong_dal.jpg",
+      productId: "p12",
+      price: 89,
+      originalPrice: 110,
+      sortOrder: 3,
+      isVisible: true
+    },
+    {
+      id: "story-4",
+      title: "Royal Cashew Mixture Blend",
+      tag: "Fresh Roasted",
+      mediaType: "video",
+      mediaUrl: "assets/videos/clip_mixture.mp4",
+      posterUrl: "assets/images/cinematic_mixture.jpg",
+      productId: "p4",
+      price: 489,
+      originalPrice: 549,
+      sortOrder: 4,
+      isVisible: true
+    },
+    {
+      id: "story-5",
+      title: "Masala Peanuts Crafting",
+      tag: "Crunch Story",
+      mediaType: "video",
+      mediaUrl: "assets/videos/clip_masala_peanuts.mp4",
+      posterUrl: "assets/images/cinematic_masala_peanuts.jpg",
+      productId: "p14",
+      price: 99,
+      originalPrice: 119,
+      sortOrder: 5,
+      isVisible: true
+    }
+  ],
+
+  trustBadges: [
+    {
+      id: "tb-1",
+      title: "Pure & Clean Oil",
+      description: "Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.",
+      image: "assets/images/feature_oil.jpg",
+      sortOrder: 1,
+      isVisible: true
+    },
+    {
+      id: "tb-2",
+      title: "Bikaneri Heritage",
+      description: "Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.",
+      image: "assets/images/feature_heritage.jpg",
+      sortOrder: 2,
+      isVisible: true
+    },
+    {
+      id: "tb-3",
+      title: "Multi-Layer Airtight Pack",
+      description: "Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.",
+      image: "assets/images/feature_packaging.jpg",
+      sortOrder: 3,
+      isVisible: true
+    },
+    {
+      id: "tb-4",
+      title: "Live WhatsApp Alerts",
+      description: "Instant WhatsApp notifications with courier tracking and live GPS route maps.",
+      image: "assets/images/feature_whatsapp.jpg",
+      sortOrder: 4,
+      isVisible: true
+    }
+  ],
+
   testimonials: [
-    { id: "t1", name: "Pooja Sharma", city: "Mumbai, Maharashtra", rating: 5, reviewText: "The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.", avatar: "assets/images/drive_1.jpg", sortOrder: 1, isVisible: true },
-    { id: "t2", name: "Vikramaditya Rathore", city: "Jaipur, Rajasthan", rating: 5, reviewText: "Finally a brand that uses 100% pure groundnut oil without sneaky palm oil. The Kasuri Methi Mathri with morning chai is pure bliss!", avatar: "assets/images/drive_2.jpg", sortOrder: 2, isVisible: true },
-    { id: "t3", name: "Ananya Deshmukh", city: "Bengaluru, Karnataka", rating: 5, reviewText: "Super fast courier delivery and the nitrogen packaging kept the sev absolutely fresh for weeks. 10/10 recommend!", avatar: "assets/images/drive_3.jpg", sortOrder: 3, isVisible: true }
+    { id: "t1", name: "Pooja Sharma", city: "Mumbai, Maharashtra", rating: 5, reviewText: "The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.", avatar: "assets/images/avatar_pooja.jpg", sortOrder: 1, isVisible: true },
+    { id: "t2", name: "Vikramaditya Rathore", city: "Jaipur, Rajasthan", rating: 5, reviewText: "Finally a brand that uses 100% pure groundnut oil without sneaky palm oil. The Kasuri Methi Mathri with morning chai is pure bliss!", avatar: "assets/images/avatar_vikram.jpg", sortOrder: 2, isVisible: true },
+    { id: "t3", name: "Ananya Deshmukh", city: "Bengaluru, Karnataka", rating: 5, reviewText: "Super fast courier delivery and the nitrogen packaging kept the sev absolutely fresh for weeks. 10/10 recommend!", avatar: "assets/images/avatar_ananya.jpg", sortOrder: 3, isVisible: true }
   ],
 
   faqs: [
@@ -1649,6 +1753,7 @@ const MIRA_DATA = {
       phone: "+91 98201 44521",
       email: "pooja.sharma@example.com",
       address: "Flat 402, Sea Breeze Apts, Bandra West, Mumbai, MH",
+      avatar: "assets/images/avatar_pooja.jpg",
       ordersCount: 4,
       totalSpent: 2840
     },
@@ -1658,6 +1763,7 @@ const MIRA_DATA = {
       phone: "+91 94140 88219",
       email: "vikram.rathore@example.com",
       address: "12, Sadul Colony, Bikaner, Rajasthan",
+      avatar: "assets/images/avatar_vikram.jpg",
       ordersCount: 7,
       totalSpent: 6420
     },
@@ -1667,6 +1773,7 @@ const MIRA_DATA = {
       phone: "+91 98110 33412",
       email: "amit.singhal@delhifood.com",
       address: "B-44, Greater Kailash 1, New Delhi",
+      avatar: "assets/images/avatar_amit.jpg",
       ordersCount: 3,
       totalSpent: 2190
     },
@@ -1676,6 +1783,7 @@ const MIRA_DATA = {
       phone: "+91 98980 12345",
       email: "sneha.patel@ahmedabad.com",
       address: "301, Shivalik Apts, Satellite, Ahmedabad",
+      avatar: "assets/images/avatar_sneha.jpg",
       ordersCount: 5,
       totalSpent: 3950
     }

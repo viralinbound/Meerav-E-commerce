@@ -1169,6 +1169,73 @@
           </div>
         </div>
 
+        <!-- 12. Trust & Guarantee Feature Badges CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#E59819]"></span> Trust & Guarantee Feature Badges (Homepage Banner)
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Customize the 4 horizontal guarantee badges with real-time images, titles, descriptions, and section colors.</p>
+            </div>
+            <button type="button" onclick="openTrustBadgeModal()" class="px-4 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5 border border-[#E59819]">
+              + Add Feature Badge
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-amber-50/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Real Image</th>
+                  <th class="p-3">Feature Title</th>
+                  <th class="p-3">Description</th>
+                  <th class="p-3">Order</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-trust-badges-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 13. Broadcast Stories & 4K Video Reels CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Broadcast Stories & 4K Video Reels (Watch & Shop)
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Add as many videos or photos to the horizontal auto-scrolling reels showcase with live product buy buttons.</p>
+            </div>
+            <button type="button" onclick="openStoryModal()" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+              + Add Video / Photo Story
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-amber-50/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Media Preview</th>
+                  <th class="p-3">Story Title</th>
+                  <th class="p-3">Type & Tag</th>
+                  <th class="p-3">Linked Snack / Price</th>
+                  <th class="p-3">Order</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-stories-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+
         <!-- 12. Full Website Text Content CMS (Grouped by section) -->
         <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
           <div>
@@ -1196,7 +1263,7 @@
             <p class="text-xs text-gray-500">Everyone with access to this portal. Backed by real Supabase Auth accounts — not a shared password.</p>
           </div>
           <button onclick="openAddAdminModal()" class="px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 border border-[#E59819]">
-             Register New Admin
+            <i class="fas fa-user-plus"></i> Register New Admin
           </button>
         </div>
 
@@ -1524,10 +1591,7 @@
           <div class="flex items-center gap-3 mb-2">
             <div class="relative shrink-0">
               <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
-              <button type="button" onclick="removeCategoryImage()" title="Remove image"
-                class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-                <i class="fas fa-times"></i>
-              </button>
+              <button type="button" onclick="removeCategoryImage()" title="Remove Image" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md font-bold text-xs">✕</button>
             </div>
             <div class="flex-1 space-y-1.5">
               <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="text-xs w-full" />
@@ -1798,6 +1862,127 @@
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeFaqModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
           <button type="submit" class="px-6 py-2 bg-blue-800 hover:bg-blue-900 text-white font-black rounded-xl shadow-md">Save FAQ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Trust / Feature Badge Modal -->
+  <div id="trust-badge-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-amber-200">
+      <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div>
+          <h3 id="trust-badge-modal-title" class="font-black text-sm text-[#FBBF24]">Feature Badge Editor</h3>
+          <span class="text-[10px] text-amber-200">Real-Time Image & Guarantee Card</span>
+        </div>
+        <button onclick="closeTrustBadgeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close">✕</button>
+      </div>
+      <form onsubmit="saveTrustBadgeForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="trust-badge-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Feature Title *</label>
+          <input type="text" id="trust-badge-form-title" required placeholder="e.g. Pure & Clean Oil" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Description *</label>
+          <textarea id="trust-badge-form-desc" required rows="2" placeholder="Prepared exclusively in pure cold-pressed oil..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Real Feature Image URL / Path *</label>
+          <input type="text" id="trust-badge-form-image" required placeholder="assets/images/feature_oil.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_oil.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Pure Oil</button>
+            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_heritage.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Heritage</button>
+            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_packaging.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Airtight Pack</button>
+            <button type="button" onclick="document.getElementById('trust-badge-form-image').value='assets/images/feature_whatsapp.jpg'" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">WhatsApp Alert</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Sort Order</label>
+            <input type="number" id="trust-badge-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+          <div class="flex items-center gap-2 pt-5">
+            <input type="checkbox" id="trust-badge-form-visible" checked class="w-4 h-4 text-amber-600 rounded" />
+            <label for="trust-badge-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+          </div>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeTrustBadgeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">✓ Save Feature Badge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Broadcast Story & Video Reel Modal -->
+  <div id="story-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-red-200">
+      <div class="p-4 bg-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div>
+          <h3 id="story-modal-title" class="font-black text-sm text-[#FBBF24]">Video Story & Reel Editor</h3>
+          <span class="text-[10px] text-amber-200">Watch & Shop Broadcast Carousel</span>
+        </div>
+        <button onclick="closeStoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close">✕</button>
+      </div>
+      <form onsubmit="saveStoryForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="story-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Story Title *</label>
+          <input type="text" id="story-form-title" required placeholder="e.g. Royal Aloo Bhujia Slow Crunch" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Media Type</label>
+            <select id="story-form-media-type" class="w-full px-3 py-2 border rounded-xl font-bold">
+              <option value="video">4K Video (.mp4)</option>
+              <option value="photo">High-Res Photo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Badge Tag</label>
+            <input type="text" id="story-form-tag" placeholder="e.g. 4K Signature Reel" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Video / Photo Media URL *</label>
+          <input type="text" id="story-form-media-url" required placeholder="assets/videos/clip_bhujia.mp4" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/clip_bhujia.mp4'; document.getElementById('story-form-poster-url').value='assets/images/cinematic_bhujia.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Bhujia Reel</button>
+            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/clip_papad.mp4'; document.getElementById('story-form-poster-url').value='assets/images/cinematic_papad.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Papad Reel</button>
+            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/clip_moong_dal.mp4'; document.getElementById('story-form-poster-url').value='assets/images/cinematic_moong_dal.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Moong Dal Reel</button>
+            <button type="button" onclick="document.getElementById('story-form-media-url').value='assets/videos/meerav_brand_film.mp4'; document.getElementById('story-form-poster-url').value='assets/images/commercial_scene_1.jpg';" class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-[#4A0713] rounded-lg text-[10px] font-bold border border-amber-200">Brand Film</button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Poster Thumbnail Image URL</label>
+          <input type="text" id="story-form-poster-url" placeholder="assets/images/cinematic_bhujia.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Linked Product ID</label>
+            <input type="text" id="story-form-product-id" placeholder="p1" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Selling Price (₹)</label>
+            <input type="number" id="story-form-price" placeholder="99" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Sort Order</label>
+            <input type="number" id="story-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+          <div class="flex items-center gap-2 pt-5">
+            <input type="checkbox" id="story-form-visible" checked class="w-4 h-4 text-red-600 rounded" />
+            <label for="story-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+          </div>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeStoryModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">✓ Save Story Reel</button>
         </div>
       </form>
     </div>

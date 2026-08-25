@@ -11,7 +11,9 @@ import {
   dbSettingsToApp, appSettingsToDb,
   dbCouponToApp, appCouponToDb,
   dbTestimonialToApp, appTestimonialToDb,
-  dbFaqToApp, appFaqToDb
+  dbFaqToApp, appFaqToDb,
+  dbTrustBadgeToApp, appTrustBadgeToDb,
+  dbBroadcastStoryToApp, appBroadcastStoryToDb
 } from './mappers.js';
 
 export const MEDIA_BUCKET = 'meerav-media';
@@ -323,6 +325,82 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return true;
   }
 
+  async function fetchTrustBadges(client = supabaseClient) {
+    try {
+      const { data, error } = await client.from('trust_badges').select('*').order('sort_order', { ascending: true });
+      if (!error && data && data.length) {
+        const list = data.map(dbTrustBadgeToApp);
+        try { localStorage.setItem('mira_trust_badges_db', JSON.stringify(list)); } catch(e) {}
+        return list;
+      }
+    } catch(e) {}
+    try {
+      const cached = localStorage.getItem('mira_trust_badges_db');
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    return [];
+  }
+
+  async function dbUpsertTrustBadge(badge, client = supabaseClient) {
+    const { error } = await client.from('trust_badges').upsert(appTrustBadgeToDb(badge));
+    if (error) { console.error('dbUpsertTrustBadge', error); return false; }
+    try {
+      const list = await fetchTrustBadges(client);
+      const idx = list.findIndex(b => b.id === badge.id);
+      if (idx !== -1) list[idx] = badge; else list.push(badge);
+      localStorage.setItem('mira_trust_badges_db', JSON.stringify(list));
+    } catch(e) {}
+    return true;
+  }
+
+  async function dbDeleteTrustBadge(badgeId, client = supabaseClient) {
+    const { error } = await client.from('trust_badges').delete().eq('id', badgeId);
+    if (error) { console.error('dbDeleteTrustBadge', error); return false; }
+    try {
+      const list = (await fetchTrustBadges(client)).filter(b => b.id !== badgeId);
+      localStorage.setItem('mira_trust_badges_db', JSON.stringify(list));
+    } catch(e) {}
+    return true;
+  }
+
+  async function fetchBroadcastStories(client = supabaseClient) {
+    try {
+      const { data, error } = await client.from('broadcast_stories').select('*').order('sort_order', { ascending: true });
+      if (!error && data && data.length) {
+        const list = data.map(dbBroadcastStoryToApp);
+        try { localStorage.setItem('mira_broadcast_stories_db', JSON.stringify(list)); } catch(e) {}
+        return list;
+      }
+    } catch(e) {}
+    try {
+      const cached = localStorage.getItem('mira_broadcast_stories_db');
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    return [];
+  }
+
+  async function dbUpsertStory(story, client = supabaseClient) {
+    const { error } = await client.from('broadcast_stories').upsert(appBroadcastStoryToDb(story));
+    if (error) { console.error('dbUpsertStory', error); return false; }
+    try {
+      const list = await fetchBroadcastStories(client);
+      const idx = list.findIndex(s => s.id === story.id);
+      if (idx !== -1) list[idx] = story; else list.push(story);
+      localStorage.setItem('mira_broadcast_stories_db', JSON.stringify(list));
+    } catch(e) {}
+    return true;
+  }
+
+  async function dbDeleteStory(storyId, client = supabaseClient) {
+    const { error } = await client.from('broadcast_stories').delete().eq('id', storyId);
+    if (error) { console.error('dbDeleteStory', error); return false; }
+    try {
+      const list = (await fetchBroadcastStories(client)).filter(s => s.id !== storyId);
+      localStorage.setItem('mira_broadcast_stories_db', JSON.stringify(list));
+    } catch(e) {}
+    return true;
+  }
+
   async function dbInsertNotification(notif, client = supabaseClient) {
     const { error } = await client.from('notifications').insert({
       id: notif.id, type: notif.type, recipient: notif.recipient, template: notif.template,
@@ -568,6 +646,8 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchCoupons, dbUpsertCoupon, dbDeleteCoupon,
     fetchTestimonials, dbUpsertTestimonial, dbDeleteTestimonial,
     fetchFaqs, dbUpsertFaq, dbDeleteFaq,
+    fetchTrustBadges, dbUpsertTrustBadge, dbDeleteTrustBadge,
+    fetchBroadcastStories, dbUpsertStory, dbDeleteStory,
     subscribeTable,
     uploadMedia, deleteMedia,
     signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange,

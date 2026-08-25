@@ -5,6 +5,8 @@
  */
 
 const adminState = {
+  broadcastStories: JSON.parse(localStorage.getItem('mira_broadcast_stories_db')) || [...MIRA_DATA.broadcastStories],
+  trustBadges: JSON.parse(localStorage.getItem('mira_trust_badges_db')) || [...MIRA_DATA.trustBadges],
   isAuthenticated: false,
   currentAdmin: null, // { id, name, email, role } — set once signed in as a real admin
   currentPage: 'overview',
@@ -60,15 +62,17 @@ function recomputeCustomerStats() {
 
 async function loadAdminData() {
   const adminClient = MiraDB.adminClient;
-  const [categories, products, orders, customers, notifications, coupons, testimonials, faqs] = await Promise.all([
-    fetchCategories(), 
-    fetchProducts(), 
-    fetchOrders(), 
-    fetchCustomers(adminClient), 
+  const [categories, products, orders, customers, notifications, coupons, testimonials, faqs, trustBadges, broadcastStories] = await Promise.all([
+    fetchCategories(),
+    fetchProducts(),
+    fetchOrders(),
+    fetchCustomers(adminClient),
     fetchNotifications(adminClient),
     typeof fetchCoupons === 'function' ? fetchCoupons() : Promise.resolve([]),
     typeof fetchTestimonials === 'function' ? fetchTestimonials() : Promise.resolve([]),
-    typeof fetchFaqs === 'function' ? fetchFaqs() : Promise.resolve([])
+    typeof fetchFaqs === 'function' ? fetchFaqs() : Promise.resolve([]),
+    typeof fetchTrustBadges === 'function' ? fetchTrustBadges() : Promise.resolve([]),
+    typeof fetchBroadcastStories === 'function' ? fetchBroadcastStories() : Promise.resolve([])
   ]);
   adminState.categories = categories.length ? categories : [...MIRA_DATA.categories];
   adminState.products = products.length ? products : [...MIRA_DATA.products];
@@ -78,6 +82,8 @@ async function loadAdminData() {
   adminState.coupons = coupons.length ? coupons : [...(MIRA_DATA.coupons || [])];
   adminState.testimonials = testimonials.length ? testimonials : [...(MIRA_DATA.testimonials || [])];
   adminState.faqs = faqs.length ? faqs : [...(MIRA_DATA.faqs || [])];
+  adminState.trustBadges = trustBadges.length ? trustBadges : [...(MIRA_DATA.trustBadges || [])];
+  adminState.broadcastStories = broadcastStories.length ? broadcastStories : [...(MIRA_DATA.broadcastStories || [])];
   adminState.siteSettings = window.SITE_SETTINGS || (await MiraDB.fetchSiteSettings());
   const fetchedContent = await MiraDB.fetchPageContent();
   
@@ -222,6 +228,18 @@ function setupAdminRealtime() {
     if (adminState.currentPage === 'settings') renderAdminFaqs();
   });
 
+  MiraDB.subscribeTable('trust_badges', async () => {
+    adminState.trustBadges = await fetchTrustBadges();
+    if (adminState.currentPage === 'settings' && typeof renderAdminTrustBadges === 'function') renderAdminTrustBadges();
+    if (typeof renderStoreTrustBadges === 'function') renderStoreTrustBadges();
+  });
+
+  MiraDB.subscribeTable('broadcast_stories', async () => {
+    adminState.broadcastStories = await fetchBroadcastStories();
+    if (adminState.currentPage === 'settings' && typeof renderAdminStories === 'function') renderAdminStories();
+    if (typeof renderCinematicVideoReels === 'function') renderCinematicVideoReels();
+  });
+
   // Root sees sub-admin activity live (RLS hides this entirely for non-root sessions).
   MiraDB.subscribeTable('admin_activity_log', () => {
     if (adminState.currentPage === 'admins') renderAdminAccounts();
@@ -287,13 +305,18 @@ async function acknowledgeMyWarning(warningId) {
   renderWarningBanner();
 }
 
+/** The account that creates every other admin is the store Owner; everyone they create is an Admin. */
+function roleDisplayName(role) {
+  return role === 'root' ? 'Owner' : 'Admin';
+}
+
 function renderAdminIdentityBadge() {
   const badge = document.getElementById('admin-identity-badge');
   if (!badge || !adminState.currentAdmin) return;
   const a = adminState.currentAdmin;
   badge.innerHTML = `
     <div class="font-bold text-white truncate">${a.name}</div>
-    <div class="truncate">${a.email} &bull; <span class="text-[#FBBF24] font-bold uppercase">${a.role}</span></div>
+    <div class="truncate">${a.email} &bull; <span class="text-[#FBBF24] font-bold uppercase">${roleDisplayName(a.role)}</span></div>
   `;
 
   // Admin account management (register/remove/activity log) is root-only.
@@ -367,7 +390,7 @@ async function logoutAdmin() {
  */
 function showAdminPage(pageId) {
   if (pageId === 'admins' && adminState.currentAdmin?.role !== 'root') {
-    showToast('Only the root admin can manage admin accounts', 'error');
+    showToast('Only the Owner account can manage admin accounts', 'error');
     pageId = 'overview';
   }
   adminState.currentPage = pageId;
@@ -502,12 +525,12 @@ function renderAdminOrders() {
       </td>
       <td>
         <div class="flex items-center gap-1.5">
-          <button onclick="previewWhatsAppNotification('${order.id}')" title="WhatsApp Alert" class="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs transition">
-            <i class="fab fa-whatsapp"></i>
-          </button>
-          <button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="p-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs transition">
-            <i class="fas fa-envelope"></i>
-          </button>
+          <button onclick="previewWhatsAppNotification('${order.id}')" title="WhatsApp Alert" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition">
+  💬 WhatsApp
+</button>
+<button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs font-bold transition">
+  📄 Receipt
+</button>
         </div>
       </td>
     </tr>
@@ -596,12 +619,12 @@ function renderAdminProducts() {
         </td>
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition flex items-center gap-1">
-              <i class="fas fa-pen"></i> Edit / Image
-            </button>
-            <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs transition">
-              <i class="fas fa-trash-can"></i>
-            </button>
+            <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
+  ✎ Edit
+</button>
+<button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+  ✕ Delete
+</button>
           </div>
         </td>
       </tr>
@@ -676,9 +699,7 @@ function renderProductPhotosGrid() {
     <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-white shrink-0">
       <img src="${url}" class="w-full h-full object-contain" />
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
-      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-        <i class="fas fa-xmark"></i>
-      </button>
+      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[11px] font-black shadow-md">✕</button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
 }
@@ -690,9 +711,7 @@ function renderProductVideosGrid() {
     <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-black shrink-0">
       <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
-      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-        <i class="fas fa-xmark"></i>
-      </button>
+      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[11px] font-black shadow-md">✕</button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
 }
@@ -906,12 +925,12 @@ function renderAdminCategories() {
         </td>
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition flex items-center gap-1">
-              <i class="fas fa-pen"></i> Edit
-            </button>
-            <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs transition">
-              <i class="fas fa-trash-can"></i>
-            </button>
+            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
+  ✎ Edit
+</button>
+<button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+  ✕ Delete
+</button>
           </div>
         </td>
       </tr>
@@ -1065,16 +1084,19 @@ function renderAdminCustomers() {
     );
   }
 
-  tbody.innerHTML = filtered.map(c => `
+  tbody.innerHTML = filtered.map(c => {
+    const avatar = (!c.avatar || c.avatar.includes('drive_'))
+      ? (c.name.includes('Vikram') ? 'assets/images/avatar_vikram.jpg' : c.name.includes('Ananya') ? 'assets/images/avatar_ananya.jpg' : c.name.includes('Singhal') ? 'assets/images/avatar_amit.jpg' : c.name.includes('Sneha') ? 'assets/images/avatar_sneha.jpg' : 'assets/images/avatar_pooja.jpg')
+      : c.avatar;
+
+    return `
     <tr class="hover:bg-amber-50/40 transition">
       <td>
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-[#4A0713] text-[#FBBF24] flex items-center justify-center font-black text-xs shadow-xs">
-            ${c.name.charAt(0)}
-          </div>
+          <img src="${avatar}" alt="${c.name}" class="w-9 h-9 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0" />
           <div>
             <div class="font-black text-xs text-gray-900">${c.name}</div>
-            <div class="text-[10px] text-gray-400">${c.email || 'customer@mira.com'}</div>
+            <div class="text-[10px] text-gray-400">${c.email || 'customer@meerav.com'}</div>
           </div>
         </div>
       </td>
@@ -1088,7 +1110,7 @@ function renderAdminCustomers() {
       <td class="text-right">
         <div class="flex items-center justify-end gap-1.5">
           <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs transition border border-emerald-300">
-            <i class="fab fa-whatsapp"></i>
+            💬
           </a>
           <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition">
             View History
@@ -1096,7 +1118,8 @@ function renderAdminCustomers() {
         </div>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 }
 
 function viewCustomerDetails(customerId) {
@@ -1837,27 +1860,31 @@ function renderAdminTestimonials() {
     return;
   }
 
-  tbody.innerHTML = items.map(t => `
+  tbody.innerHTML = items.map(t => {
+    return `
     <tr class="border-b hover:bg-amber-50/40 transition">
-      <td class="p-3 flex items-center gap-2">
-        <img src="${t.avatar || 'assets/images/default_avatar.jpg'}" class="w-7 h-7 rounded-full object-cover border border-amber-300" />
-        <span class="font-bold text-xs text-gray-900">${t.name}</span>
+      <td class="p-3 flex items-center gap-3">
+        <img src="${t.avatar || 'assets/images/avatar_default.jpg'}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0" />
+        <div>
+          <span class="font-bold text-xs text-gray-900 block">${t.name}</span>
+          <span class="text-[10px] text-gray-400 font-medium">${t.city || 'Verified Customer'}</span>
+        </div>
       </td>
       <td class="p-3 text-xs text-gray-600">${t.city || '—'}</td>
-      <td class="p-3 text-xs text-amber-500 font-bold">${'<i class="fas fa-star"></i>'.repeat(Math.round(t.rating || 5))}</td>
+      <td class="p-3 text-xs text-amber-500 font-black tracking-wider">${'<i class="fas fa-star"></i>'.repeat(Math.round(t.rating || 5))}</td>
       <td class="p-3 text-xs text-gray-600 truncate max-w-xs">${t.reviewText}</td>
       <td class="p-3">
         <button onclick="toggleTestimonialVisible('${t.id}')" title="${t.isVisible !== false ? 'Click to hide from homepage' : 'Click to show on homepage'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${t.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
-          <i class="fas ${t.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i>
-          ${t.isVisible !== false ? 'Visible' : 'Hidden'}
+          <i class="fas ${t.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${t.isVisible !== false ? 'Visible' : 'Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openTestimonialModal('${t.id}')" title="Edit Review" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
-        <button onclick="deleteTestimonial('${t.id}')" title="Delete Review" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
+        <button onclick="openTestimonialModal('${t.id}')" title="Edit Review" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteTestimonial('${t.id}')" title="Delete Review" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function openTestimonialModal(id = null) {
@@ -1879,19 +1906,19 @@ function openTestimonialModal(id = null) {
       idInput.value = t.id;
       nameInput.value = t.name;
       cityInput.value = t.city || '';
-      ratingSelect.value = String(t.rating || 5);
+      ratingSelect.value = t.rating || 5;
       reviewInput.value = t.reviewText;
       avatarInput.value = t.avatar || '';
       visibleCheckbox.checked = t.isVisible !== false;
     }
   } else {
-    title.textContent = 'Add Customer Review';
+    title.textContent = 'Add Review';
     idInput.value = '';
     nameInput.value = '';
     cityInput.value = '';
-    ratingSelect.value = '5';
+    ratingSelect.value = 5;
     reviewInput.value = '';
-    avatarInput.value = 'assets/images/drive_1.jpg';
+    avatarInput.value = '';
     visibleCheckbox.checked = true;
   }
   modal.classList.remove('hidden');
@@ -2165,7 +2192,7 @@ async function renderAdminAccounts() {
       <td class="text-xs text-gray-600">${a.email}</td>
       <td>
         <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#4A0713] text-[#FBBF24]' : 'bg-amber-100 text-amber-800'}">
-          ${a.role.toUpperCase()}
+          ${roleDisplayName(a.role).toUpperCase()}
         </span>
       </td>
       <td class="text-xs text-gray-400">${new Date(a.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
@@ -2289,17 +2316,17 @@ async function openAdminDetailModal(adminId) {
   document.getElementById('admin-detail-name').textContent = a.name;
   document.getElementById('admin-detail-meta').textContent = `${a.email} · joined ${new Date(a.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
   document.getElementById('admin-detail-badge').innerHTML = `
-    <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#4A0713] text-[#FBBF24]' : 'bg-amber-100 text-amber-800'}">${a.role.toUpperCase()}</span>
+    <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#4A0713] text-[#FBBF24]' : 'bg-amber-100 text-amber-800'}">${roleDisplayName(a.role).toUpperCase()}</span>
     ${a.banned ? '<span class="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-red-100 text-red-700">BANNED</span>' : ''}
   `;
 
   const actionsBox = document.getElementById('admin-detail-actions');
   if (a.role === 'root') {
-    actionsBox.innerHTML = `<p class="text-xs text-gray-400">The root admin manages itself.</p>`;
+    actionsBox.innerHTML = `<p class="text-xs text-gray-400">The Owner account manages itself.</p>`;
   } else {
     actionsBox.innerHTML = `
       <button onclick="resetAdminPasswordAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', '${a.email}')" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition">
-         Reset Password
+        <i class="fas fa-key"></i> Reset Password
       </button>
       <button onclick="toggleBanAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', ${a.banned})" class="px-3 py-2 ${a.banned ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200'} border rounded-xl text-xs font-bold transition">
          ${a.banned ? 'Unban' : 'Ban'}
@@ -2534,4 +2561,310 @@ function showToast(message, type = 'info') {
     toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 300);
   }, 3000);
+}
+
+
+/**
+ * 9E. TRUST & GUARANTEE FEATURE BADGES CMS CRUD
+ */
+function renderAdminTrustBadges() {
+  const tbody = document.getElementById('admin-trust-badges-table-body');
+  if (!tbody) return;
+
+  const items = adminState.trustBadges || [];
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 text-xs">No feature badges configured. Click "+ Add Feature Badge" to create one.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(b => `
+    <tr class="border-b hover:bg-amber-50/40 transition">
+      <td class="p-3">
+        <div class="w-11 h-11 rounded-xl bg-[#E59819] overflow-hidden p-0.5 border border-amber-300 shadow-sm shrink-0">
+          <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" class="w-full h-full object-cover rounded-lg" onerror="this.src='assets/images/feature_oil.jpg'" />
+        </div>
+      </td>
+      <td class="p-3 font-black text-gray-900 text-xs">${b.title}</td>
+      <td class="p-3 text-xs text-gray-600 truncate max-w-xs">${b.description}</td>
+      <td class="p-3 text-xs font-bold text-gray-700">#${b.sortOrder || 1}</td>
+      <td class="p-3">
+        <button onclick="toggleTrustBadgeVisible('${b.id}')" title="${b.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${b.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+          <i class="fas ${b.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${b.isVisible !== false ? 'Visible' : 'Hidden'}
+        </button>
+      </td>
+      <td class="p-3 text-right space-x-1">
+        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteTrustBadge('${b.id}')" title="Delete Badge" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition"><i class="fas fa-trash-can"></i> Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openTrustBadgeModal(id = null) {
+  adminState.editingTrustBadgeId = id;
+  const modal = document.getElementById('trust-badge-modal');
+  const title = document.getElementById('trust-badge-modal-title');
+  const idInput = document.getElementById('trust-badge-form-id');
+  const titleInput = document.getElementById('trust-badge-form-title');
+  const descInput = document.getElementById('trust-badge-form-desc');
+  const imageInput = document.getElementById('trust-badge-form-image');
+  const sortInput = document.getElementById('trust-badge-form-sort');
+  const visibleCheckbox = document.getElementById('trust-badge-form-visible');
+
+  if (id) {
+    const b = (adminState.trustBadges || []).find(item => item.id === id);
+    if (b) {
+      title.textContent = `Edit Feature: ${b.title}`;
+      idInput.value = b.id;
+      titleInput.value = b.title;
+      descInput.value = b.description;
+      imageInput.value = b.image;
+      sortInput.value = b.sortOrder || 1;
+      visibleCheckbox.checked = b.isVisible !== false;
+    }
+  } else {
+    title.textContent = 'Add Feature Badge';
+    idInput.value = '';
+    titleInput.value = '';
+    descInput.value = '';
+    imageInput.value = 'assets/images/feature_oil.jpg';
+    sortInput.value = (adminState.trustBadges ? adminState.trustBadges.length + 1 : 1);
+    visibleCheckbox.checked = true;
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeTrustBadgeModal() {
+  document.getElementById('trust-badge-modal').classList.add('hidden');
+  adminState.editingTrustBadgeId = null;
+}
+
+async function saveTrustBadgeForm(event) {
+  event.preventDefault();
+  const id = document.getElementById('trust-badge-form-id').value || `tb-${Date.now()}`;
+  const title = document.getElementById('trust-badge-form-title').value.trim();
+  const description = document.getElementById('trust-badge-form-desc').value.trim();
+  const image = document.getElementById('trust-badge-form-image').value.trim() || 'assets/images/feature_oil.jpg';
+  const sortOrder = Number(document.getElementById('trust-badge-form-sort').value) || 1;
+  const isVisible = document.getElementById('trust-badge-form-visible').checked;
+
+  const badgeObj = { id, title, description, image, sortOrder, isVisible };
+
+  const ok = await MiraDB.dbUpsertTrustBadge(badgeObj, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not save — the change did not reach the cloud. Please retry.', 'error');
+    return;
+  }
+
+  let badges = adminState.trustBadges || [];
+  const idx = badges.findIndex(b => b.id === id);
+  if (idx !== -1) badges[idx] = badgeObj; else badges.push(badgeObj);
+  badges.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  adminState.trustBadges = badges;
+
+  showToast(`Feature Badge "${title}" saved & live on the storefront!`, 'success');
+  closeTrustBadgeModal();
+  renderAdminTrustBadges();
+}
+
+async function toggleTrustBadgeVisible(id) {
+  let badges = adminState.trustBadges || [];
+  const b = badges.find(item => item.id === id);
+  if (!b) return;
+  const updated = { ...b, isVisible: !b.isVisible };
+
+  const ok = await MiraDB.dbUpsertTrustBadge(updated, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not update — the change did not reach the cloud.', 'error');
+    return;
+  }
+
+  b.isVisible = updated.isVisible;
+  showToast(`"${b.title}" is now ${b.isVisible ? 'Visible' : 'Hidden'}`, 'info');
+  renderAdminTrustBadges();
+}
+
+async function deleteTrustBadge(id) {
+  let badges = adminState.trustBadges || [];
+  const b = badges.find(item => item.id === id);
+  if (!b) return;
+  if (!confirm(`Delete feature badge "${b.title}"?`)) return;
+
+  const ok = await MiraDB.dbDeleteTrustBadge(id, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not delete — the change did not reach the cloud.', 'error');
+    return;
+  }
+
+  adminState.trustBadges = badges.filter(item => item.id !== id);
+  showToast(`Feature badge deleted`, 'info');
+  renderAdminTrustBadges();
+}
+
+
+/**
+ * 9F. BROADCAST STORIES & 4K REELS CMS CRUD
+ */
+function renderAdminStories() {
+  const tbody = document.getElementById('admin-stories-table-body');
+  if (!tbody) return;
+
+  const items = adminState.broadcastStories || [];
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400 text-xs">No broadcast stories added yet. Click "+ Add Video / Photo Story" to add videos.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(s => `
+    <tr class="border-b hover:bg-amber-50/40 transition">
+      <td class="p-3">
+        <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
+          ${s.mediaType === 'video' ? `
+            <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted class="w-full h-full object-cover"></video>
+            <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs"><i class="fas fa-play"></i></span>
+          ` : `
+            <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" class="w-full h-full object-cover" />
+          `}
+        </div>
+      </td>
+      <td class="p-3 font-black text-gray-900 text-xs">${s.title}</td>
+      <td class="p-3 text-xs">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 w-fit ${s.mediaType === 'video' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}">
+          <i class="fas ${s.mediaType === 'video' ? 'fa-video' : 'fa-image'}"></i> ${s.mediaType === 'video' ? '4K Video' : 'Photo'}
+        </span>
+        <div class="text-[10px] text-gray-500 mt-1 font-bold">${s.tag || '—'}</div>
+      </td>
+      <td class="p-3 text-xs font-bold text-gray-700">
+        <span class="text-emerald-700 font-black">₹${s.price || 99}</span>
+        <div class="text-[10px] text-gray-400">ID: ${s.productId || 'p1'}</div>
+      </td>
+      <td class="p-3 text-xs font-bold text-gray-700">#${s.sortOrder || 1}</td>
+      <td class="p-3">
+        <button onclick="toggleStoryVisible('${s.id}')" title="${s.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${s.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+          <i class="fas ${s.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${s.isVisible !== false ? 'Visible' : 'Hidden'}
+        </button>
+      </td>
+      <td class="p-3 text-right space-x-1">
+        <button onclick="openStoryModal('${s.id}')" title="Edit Story" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="deleteStory('${s.id}')" title="Delete Story" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition"><i class="fas fa-trash-can"></i> Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openStoryModal(id = null) {
+  adminState.editingStoryId = id;
+  const modal = document.getElementById('story-modal');
+  const title = document.getElementById('story-modal-title');
+  const idInput = document.getElementById('story-form-id');
+  const titleInput = document.getElementById('story-form-title');
+  const typeSelect = document.getElementById('story-form-media-type');
+  const tagInput = document.getElementById('story-form-tag');
+  const mediaInput = document.getElementById('story-form-media-url');
+  const posterInput = document.getElementById('story-form-poster-url');
+  const productInput = document.getElementById('story-form-product-id');
+  const priceInput = document.getElementById('story-form-price');
+  const sortInput = document.getElementById('story-form-sort');
+  const visibleCheckbox = document.getElementById('story-form-visible');
+
+  if (id) {
+    const s = (adminState.broadcastStories || []).find(item => item.id === id);
+    if (s) {
+      title.textContent = `Edit Story: ${s.title}`;
+      idInput.value = s.id;
+      titleInput.value = s.title;
+      typeSelect.value = s.mediaType || 'video';
+      tagInput.value = s.tag || '';
+      mediaInput.value = s.mediaUrl;
+      posterInput.value = s.posterUrl || '';
+      productInput.value = s.productId || 'p1';
+      priceInput.value = s.price || 99;
+      sortInput.value = s.sortOrder || 1;
+      visibleCheckbox.checked = s.isVisible !== false;
+    }
+  } else {
+    title.textContent = 'Add Video / Photo Story';
+    idInput.value = '';
+    titleInput.value = '';
+    typeSelect.value = 'video';
+    tagInput.value = '4K Reel';
+    mediaInput.value = 'assets/videos/clip_bhujia.mp4';
+    posterInput.value = 'assets/images/cinematic_bhujia.jpg';
+    productInput.value = 'p1';
+    priceInput.value = 99;
+    sortInput.value = (adminState.broadcastStories ? adminState.broadcastStories.length + 1 : 1);
+    visibleCheckbox.checked = true;
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeStoryModal() {
+  document.getElementById('story-modal').classList.add('hidden');
+  adminState.editingStoryId = null;
+}
+
+async function saveStoryForm(event) {
+  event.preventDefault();
+  const id = document.getElementById('story-form-id').value || `story-${Date.now()}`;
+  const title = document.getElementById('story-form-title').value.trim();
+  const mediaType = document.getElementById('story-form-media-type').value;
+  const tag = document.getElementById('story-form-tag').value.trim() || '4K Reel';
+  const mediaUrl = document.getElementById('story-form-media-url').value.trim();
+  const posterUrl = document.getElementById('story-form-poster-url').value.trim();
+  const productId = document.getElementById('story-form-product-id').value.trim() || 'p1';
+  const price = Number(document.getElementById('story-form-price').value) || 99;
+  const sortOrder = Number(document.getElementById('story-form-sort').value) || 1;
+  const isVisible = document.getElementById('story-form-visible').checked;
+
+  const storyObj = { id, title, mediaType, tag, mediaUrl, posterUrl, productId, price, sortOrder, isVisible };
+
+  const ok = await MiraDB.dbUpsertStory(storyObj, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not save — the change did not reach the cloud. Please retry.', 'error');
+    return;
+  }
+
+  let stories = adminState.broadcastStories || [];
+  const idx = stories.findIndex(s => s.id === id);
+  if (idx !== -1) stories[idx] = storyObj; else stories.push(storyObj);
+  stories.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  adminState.broadcastStories = stories;
+
+  showToast(`Story "${title}" saved & live on the storefront!`, 'success');
+  closeStoryModal();
+  renderAdminStories();
+}
+
+async function toggleStoryVisible(id) {
+  let stories = adminState.broadcastStories || [];
+  const s = stories.find(item => item.id === id);
+  if (!s) return;
+  const updated = { ...s, isVisible: !s.isVisible };
+
+  const ok = await MiraDB.dbUpsertStory(updated, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not update — the change did not reach the cloud.', 'error');
+    return;
+  }
+
+  s.isVisible = updated.isVisible;
+  showToast(`"${s.title}" is now ${s.isVisible ? 'Visible' : 'Hidden'}`, 'info');
+  renderAdminStories();
+}
+
+async function deleteStory(id) {
+  let stories = adminState.broadcastStories || [];
+  const s = stories.find(item => item.id === id);
+  if (!s) return;
+  if (!confirm(`Delete story "${s.title}"?`)) return;
+
+  const ok = await MiraDB.dbDeleteStory(id, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not delete — the change did not reach the cloud.', 'error');
+    return;
+  }
+
+  adminState.broadcastStories = stories.filter(item => item.id !== id);
+  showToast(`Story deleted`, 'info');
+  renderAdminStories();
 }

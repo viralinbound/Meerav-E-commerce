@@ -250,15 +250,10 @@ function renderChatbotWidget() {
       <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce">
         <span class="cursor-pointer" onclick="toggleChatbot()">Order & Taste Assistant</span>
         <i class="fas fa-sparkles text-[#FBBF24] cursor-pointer" onclick="toggleChatbot()"></i>
-        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss"
-          class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition">
-          <i class="fas fa-times text-[9px]"></i>
-        </button>
+        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 text-[10px] font-bold transition">✕</button>
       </div>
 
-      <button onclick="toggleChatbot()"
-        class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80">
-        <i class="fas ${avatarIcon}"></i>
+      <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80 font-black text-xl">💬
         <span id="chatbot-unread-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></span>
       </button>
 
@@ -282,12 +277,8 @@ function renderChatbotWidget() {
           </div>
 
           <div class="flex items-center gap-1.5">
-            <button onclick="confirmDeleteChatHistory()" title="Delete Chat History" class="w-7 h-7 rounded-full bg-white/10 hover:bg-red-500/80 text-[#FBBF24] hover:text-white flex items-center justify-center text-sm transition">
-              <i class="fas fa-trash-can"></i>
-            </button>
-            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#FBBF24] flex items-center justify-center text-sm transition">
-              <i class="fas fa-xmark"></i>
-            </button>
+            <button onclick="confirmDeleteChatHistory()" title="Restart Conversation" class="w-7 h-7 rounded-full bg-white/10 hover:bg-amber-500 text-amber-200 hover:text-[#32040C] flex items-center justify-center text-xs font-bold transition">↻</button>
+            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#FBBF24] flex items-center justify-center text-xs font-bold transition">✕</button>
           </div>
         </div>
 
@@ -308,9 +299,7 @@ function renderChatbotWidget() {
         <form onsubmit="handleChatbotSubmit(event)" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
           <input type="text" id="chatbot-user-input" placeholder="Ask to order (e.g. 'Order Bikaneri Bhujia')..." 
             class="flex-1 px-3.5 py-2 bg-amber-50/50 border border-amber-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white" />
-          <button type="submit" class="w-9 h-9 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#E59819]">
-            <i class="fas fa-paper-plane text-xs"></i>
-          </button>
+          <button type="submit" class="w-9 h-9 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#E59819] font-bold text-xs">➤</button>
         </form>
 
       </div>

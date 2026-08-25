@@ -184,9 +184,7 @@
         <i class="fas fa-shopping-bag"></i>
         <h3 class="font-black text-[#FBBF24] text-base">Your Bikaneri Cart</h3>
       </div>
-      <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-        <i class="fas fa-xmark"></i>
-      </button>
+      <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition" title="Close">✕</button>
     </div>
     <div class="px-4 py-2.5 bg-amber-100/70 text-[#4A0713] text-xs flex items-center gap-2 border-b border-amber-200">
       <i class="fas fa-truck-fast"></i>
@@ -270,7 +268,7 @@
   <!-- Customer Auth Modal -->
   <div id="customer-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
-      <div class="flex justify-end mb-1"><button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-xmark"></i></button></div>
+      <div class="flex justify-end mb-1"><button onclick="closeCustomerAuthModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition" title="Close">✕</button></div>
       <div id="customer-auth-content"></div>
     </div>
   </div>

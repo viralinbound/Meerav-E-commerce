@@ -55,7 +55,7 @@
       <div class="flex items-center gap-4 text-amber-200 text-[11px]">
         <a id="whatsapp-header-link" href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-1.5 hover:text-white transition">
           <i class="fab fa-whatsapp"></i>
-          <span id="whatsapp-header-number">Order on WhatsApp: +91 98765 43210</span>
+          <span>💬 </span><span id="whatsapp-header-number">Order on WhatsApp: +91 98765 43210</span>
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
         <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
@@ -153,24 +153,23 @@
 
             <!-- CTA Buttons -->
             <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
+              
               <a href="category?cat=all"
                 class="px-7 py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black rounded-2xl shadow-xl shadow-[#4A0713]/30 transition transform hover:-translate-y-0.5 border border-[#E59819] inline-flex items-center gap-2">
-                <i class="fas fa-bowl-food"></i>
-                <span>Explore Category Collections</span>
-                <i class="fas fa-arrow-right text-xs"></i>
+                <span>Explore Category Collections →</span>
               </a>
 
+              
               <button onclick="openBrandFilmModal()"
-                class="px-6 py-3.5 bg-gradient-to-r from-[#E59819] to-amber-500 hover:from-amber-600 hover:to-[#E59819] text-[#32040C] text-sm font-black rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5 border border-white/40">
-                <span class="w-6 h-6 rounded-full bg-[#32040C] text-[#FBBF24] flex items-center justify-center text-[10px] shadow-sm animate-pulse">
-                  <i class="fas fa-play"></i>
-                </span>
+                class="px-6 py-3.5 bg-gradient-to-r from-[#E59819] to-amber-500 hover:from-amber-600 hover:to-[#E59819] text-[#32040C] text-sm font-black rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2 border border-white/40 cursor-pointer">
+                <span class="font-black text-xs">▶</span>
                 <span>Watch All-Products Film</span>
               </button>
 
+              
               <a href="category?cat=sweets-combos"
                 class="px-6 py-3.5 bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-sm font-black rounded-2xl shadow-md transition flex items-center gap-2 border border-amber-300">
-                <i class="fas fa-gift"></i> Festive Hampers
+                <span>🎁 Festive Hampers</span>
               </a>
             </div>
 
@@ -236,6 +235,31 @@
       </div>
     </section>
 
+    
+    <!-- 4K Video Reels & Cinematic Stories (Watch & Shop Broadcast) -->
+    <section id="home-broadcast-reels-section" class="py-12 bg-gradient-to-b from-amber-50/60 to-white border-b border-amber-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-600 text-white rounded-full text-[10px] font-black uppercase tracking-wider mb-2 animate-pulse">
+              <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+              <span>Live Broadcast & Video Stories</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-[#32040C]">Watch Authentic Kitchen Stories</h2>
+            <p class="text-xs text-gray-600 font-medium mt-1">Tap any story or video card to watch preparation reels & shop directly from the kitchen</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="scrollReelsLeft()" class="w-9 h-9 rounded-xl bg-white hover:bg-amber-100 text-[#4A0713] border border-amber-200 flex items-center justify-center font-black text-sm shadow-xs transition" title="Scroll Left">←</button>
+            <button onclick="scrollReelsRight()" class="w-9 h-9 rounded-xl bg-white hover:bg-amber-100 text-[#4A0713] border border-amber-200 flex items-center justify-center font-black text-sm shadow-xs transition" title="Scroll Right">→</button>
+          </div>
+        </div>
+
+        <div id="reels-scroll-track" class="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-4">
+          <!-- Populated dynamically from database by renderCinematicVideoReels() in store.js -->
+        </div>
+      </div>
+    </section>
+
     <!-- Visual Category Showcase Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
       <div class="text-center max-w-2xl mx-auto mb-10">
@@ -267,47 +291,11 @@
       </div>
     </section>
 
-    <!-- Royal Trust Section with Real Image Badges -->
-    <section class="meerav-maroon-bg text-white py-16 mt-12 border-t-2 border-[#E59819]">
+    <!-- Royal Trust Section with Real Image Badges (Full Dynamic CMS) -->
+    <section id="home-trust-section" class="meerav-maroon-bg text-white py-16 mt-12 border-t-2 border-[#E59819] transition-all">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
-          
-          <div class="space-y-2.5 group">
-            <div class="w-14 h-14 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-105 transition-transform duration-300">
-              <img data-ck="home.trust.item1.image" src="assets/images/drive_4.jpg" alt="Pure Oil" class="w-full h-full object-cover rounded-xl" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
-              
-            </div>
-            <h4 data-ck="home.trust.item1.title" class="font-black text-base text-[#FBBF24]">Pure & Clean Oil</h4>
-            <p data-ck="home.trust.item1.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.</p>
-          </div>
-
-          <div class="space-y-2.5 group">
-            <div class="w-14 h-14 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-105 transition-transform duration-300">
-              <img data-ck="home.trust.item2.image" src="assets/images/drive_5.jpg" alt="Bikaneri Heritage" class="w-full h-full object-cover rounded-xl" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
-              
-            </div>
-            <h4 data-ck="home.trust.item2.title" class="font-black text-base text-[#FBBF24]">Bikaneri Heritage</h4>
-            <p data-ck="home.trust.item2.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.</p>
-          </div>
-
-          <div class="space-y-2.5 group">
-            <div class="w-14 h-14 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-105 transition-transform duration-300">
-              <img data-ck="home.trust.item3.image" src="assets/images/meerav_aloo_bhujia_pack.png" alt="Airtight Pack" class="w-full h-full object-cover rounded-xl" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
-              
-            </div>
-            <h4 data-ck="home.trust.item3.title" class="font-black text-base text-[#FBBF24]">Multi-Layer Airtight Pack</h4>
-            <p data-ck="home.trust.item3.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.</p>
-          </div>
-
-          <div class="space-y-2.5 group">
-            <div class="w-14 h-14 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-105 transition-transform duration-300">
-              <img data-ck="home.trust.item4.image" src="assets/images/drive_3.jpg" alt="WhatsApp Alerts" class="w-full h-full object-cover rounded-xl" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
-              
-            </div>
-            <h4 data-ck="home.trust.item4.title" class="font-black text-base text-[#FBBF24]">Live WhatsApp Alerts</h4>
-            <p data-ck="home.trust.item4.desc" class="text-xs text-amber-100/80 leading-relaxed font-medium">Instant WhatsApp notifications with courier tracking and live GPS route maps.</p>
-          </div>
-
+        <div id="home-trust-badges-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center md:text-left">
+          <!-- Populated dynamically by store.js -->
         </div>
       </div>
     </section>
@@ -490,9 +478,7 @@
         <p class="text-xs text-gray-600 font-medium">Live GPS tracking of your Meerav fresh namkeens delivery van en route to your address</p>
       </div>
 
-      <button onclick="returnToStorefront()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
-         Return to Storefront
-      </button>
+      <button onclick="returnToStorefront()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">← Return to Storefront</button>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
@@ -591,9 +577,7 @@
           <img src="assets/images/meerav_logo.png" alt="Logo" class="h-8 w-auto object-contain" />
           <span class="text-xs font-black text-[#FBBF24]">Bikaneri Recipe & Ingredients</span>
         </div>
-        <button onclick="closeProductDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          <i class="fas fa-xmark"></i>
-        </button>
+        <button onclick="closeProductDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition" title="Close">✕</button>
       </div>
 
       <div class="p-6 overflow-y-auto space-y-5 text-xs">
@@ -670,9 +654,7 @@
           <h3 class="font-black text-lg text-[#FBBF24]">Delivery & Location Checkout</h3>
           <p class="text-xs text-amber-200/80">Pin your exact address on the map for direct dispatch from Bikaner</p>
         </div>
-        <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          <i class="fas fa-xmark"></i>
-        </button>
+        <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition" title="Close">✕</button>
       </div>
 
       <form onsubmit="proceedToPaymentGateway(event)" class="p-6 overflow-y-auto space-y-4 text-xs">
@@ -875,9 +857,7 @@
         <i class="fas fa-shopping-bag"></i>
         <h3 class="font-black text-[#FBBF24] text-base">Your Bikaneri Cart</h3>
       </div>
-      <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-        <i class="fas fa-xmark"></i>
-      </button>
+      <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white text-base font-bold transition" title="Close">✕</button>
     </div>
 
     <div class="px-4 py-2.5 bg-amber-100/70 text-[#4A0713] text-xs flex items-center gap-2 border-b border-amber-200">
@@ -938,9 +918,7 @@
             <p class="text-[11px] text-amber-200/70">Heritage Craftsmanship & Pure Delicacies</p>
           </div>
         </div>
-        <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center transition">
-          <i class="fas fa-xmark"></i>
-        </button>
+        <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center text-base font-bold transition" title="Close">✕</button>
       </div>
 
       <!-- Video Player Container -->
@@ -973,7 +951,7 @@
   <div id="customer-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
       <div class="flex justify-end mb-1">
-        <button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-xmark"></i></button>
+        <button onclick="closeCustomerAuthModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-bold text-sm transition" title="Close">✕</button>
       </div>
       <div id="customer-auth-content"></div>
     </div>
@@ -1105,9 +1083,7 @@
             <p class="text-[11px] text-amber-200/70">From the Heart of Bikaner • 100% Pure Oil</p>
           </div>
         </div>
-        <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center transition">
-          <i class="fas fa-xmark"></i>
-        </button>
+        <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center text-base font-bold transition" title="Close">✕</button>
       </div>
 
       <!-- Video Player -->
@@ -1128,9 +1104,7 @@
           <a href="category?cat=all" class="px-5 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition">
             Shop All Snacks &rarr;
           </a>
-          <button onclick="closeBrandFilmModal()" class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl transition">
-            Close
-          </button>
+          <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center text-base font-bold transition" title="Close">✕</button>
         </div>
       </div>
 

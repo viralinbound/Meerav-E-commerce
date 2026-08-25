@@ -683,6 +683,24 @@ window.addEventListener('storage', (e) => {
       applyPageContent(c);
     } catch(err) {}
   }
+  if (e.key === 'mira_trust_badges_db' && e.newValue) {
+    try {
+      const tb = JSON.parse(e.newValue);
+      if (typeof storeState !== 'undefined') storeState.trustBadges = tb;
+      if (typeof renderStoreTrustBadges === 'function') renderStoreTrustBadges();
+      if (typeof adminState !== 'undefined') adminState.trustBadges = tb;
+      if (typeof renderAdminTrustBadges === 'function') renderAdminTrustBadges();
+    } catch(err) {}
+  }
+  if (e.key === 'mira_broadcast_stories_db' && e.newValue) {
+    try {
+      const bs = JSON.parse(e.newValue);
+      if (typeof storeState !== 'undefined') storeState.broadcastStories = bs;
+      if (typeof renderCinematicVideoReels === 'function') renderCinematicVideoReels();
+      if (typeof adminState !== 'undefined') adminState.broadcastStories = bs;
+      if (typeof renderAdminStories === 'function') renderAdminStories();
+    } catch(err) {}
+  }
 });
 
 async function initSiteTheme() {

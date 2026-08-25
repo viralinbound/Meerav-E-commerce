@@ -265,13 +265,9 @@
           <div class="flex items-center gap-2">
             <span class="text-xs text-gray-500 font-bold hidden sm:inline">Qty:</span>
             <div class="flex items-center border-2 border-amber-200 bg-amber-50/40 rounded-xl overflow-hidden shadow-xs">
-              <button onclick="changePDPQty(-1)" class="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-amber-200 font-black transition">
-                <i class="fas fa-minus text-xs"></i>
-              </button>
-              <span id="pdp-qty-display" class="w-9 text-center font-black text-sm text-gray-900">1</span>
-              <button onclick="changePDPQty(1)" class="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-amber-200 font-black transition">
-                <i class="fas fa-plus text-xs"></i>
-              </button>
+              <button onclick="changePDPQty(-1)" class="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-amber-200 font-black text-sm transition">−</button>
+    <span id="pdp-qty-display" class="w-9 text-center font-black text-sm text-gray-900">1</span>
+    <button onclick="changePDPQty(1)" class="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-amber-200 font-black text-sm transition">+</button>
             </div>
           </div>
         </div>

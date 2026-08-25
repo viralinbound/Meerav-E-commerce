@@ -347,3 +347,57 @@ export function appFaqToDb(f) {
     is_visible: f.isVisible !== false
   };
 }
+
+export function dbTrustBadgeToApp(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description,
+    image: row.image,
+    sortOrder: Number(row.sort_order) || 1,
+    isVisible: row.is_visible !== false
+  };
+}
+
+export function appTrustBadgeToDb(b) {
+  return {
+    id: b.id,
+    title: b.title,
+    description: b.description,
+    image: b.image,
+    sort_order: Number(b.sortOrder) || 1,
+    is_visible: b.isVisible !== false
+  };
+}
+
+export function dbBroadcastStoryToApp(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    tag: row.tag || '4K Reel',
+    mediaType: row.media_type || 'video',
+    mediaUrl: row.media_url,
+    posterUrl: row.poster_url || '',
+    productId: row.product_id || 'p1',
+    price: Number(row.price) || 99,
+    originalPrice: Number(row.original_price) || 120,
+    sortOrder: Number(row.sort_order) || 1,
+    isVisible: row.is_visible !== false
+  };
+}
+
+export function appBroadcastStoryToDb(s) {
+  return {
+    id: s.id,
+    title: s.title,
+    tag: s.tag || '4K Reel',
+    media_type: s.mediaType || 'video',
+    media_url: s.mediaUrl,
+    poster_url: s.posterUrl || null,
+    product_id: s.productId || 'p1',
+    price: Number(s.price) || 99,
+    original_price: Number(s.originalPrice) || 120,
+    sort_order: Number(s.sortOrder) || 1,
+    is_visible: s.isVisible !== false
+  };
+}

@@ -51,6 +51,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   storeState.products = JSON.parse(localStorage.getItem('mira_products_db')) || [...MIRA_DATA.products];
   storeState.orders = JSON.parse(localStorage.getItem('mira_orders_db')) || [];
   storeState.coupons = MIRA_DATA.coupons || [];
+  storeState.broadcastStories = JSON.parse(localStorage.getItem('mira_broadcast_stories_db')) || [...MIRA_DATA.broadcastStories];
+  storeState.trustBadges = JSON.parse(localStorage.getItem('mira_trust_badges_db')) || [...MIRA_DATA.trustBadges];
   storeState.testimonials = MIRA_DATA.testimonials || [];
   storeState.faqs = MIRA_DATA.faqs || [];
 
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStoreCategories();
   renderStoreDietaryFilters();
   renderStoreProducts();
+  renderStoreTrustBadges();
   renderStoreCart();
   renderStoreTestimonials();
   renderStoreFaqs();
@@ -75,13 +78,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 2. Asynchronous Cloud Sync from Supabase
   try {
-    const [categories, products, orders, coupons, testimonials, faqs] = await Promise.all([
+    const [categories, products, orders, coupons, testimonials, faqs, trustBadges, broadcastStories] = await Promise.all([
       typeof fetchCategories === 'function' ? fetchCategories() : Promise.resolve([]),
       typeof fetchProducts === 'function' ? fetchProducts() : Promise.resolve([]),
       typeof fetchOrders === 'function' ? fetchOrders() : Promise.resolve([]),
       typeof fetchCoupons === 'function' ? fetchCoupons() : Promise.resolve([]),
       typeof fetchTestimonials === 'function' ? fetchTestimonials() : Promise.resolve([]),
-      typeof fetchFaqs === 'function' ? fetchFaqs() : Promise.resolve([])
+      typeof fetchFaqs === 'function' ? fetchFaqs() : Promise.resolve([]),
+      typeof fetchTrustBadges === 'function' ? fetchTrustBadges() : Promise.resolve([]),
+      typeof fetchBroadcastStories === 'function' ? fetchBroadcastStories() : Promise.resolve([])
     ]);
 
     if (categories && categories.length > 0) storeState.categories = categories;
@@ -90,6 +95,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (coupons && coupons.length > 0) storeState.coupons = coupons;
     if (testimonials && testimonials.length > 0) storeState.testimonials = testimonials;
     if (faqs && faqs.length > 0) storeState.faqs = faqs;
+    if (trustBadges && trustBadges.length > 0) storeState.trustBadges = trustBadges;
+    if (broadcastStories && broadcastStories.length > 0) storeState.broadcastStories = broadcastStories;
 
     initProductVariants();
     renderHomeCategoryCards();
@@ -97,6 +104,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderStoreProducts();
     renderStoreTestimonials();
     renderStoreFaqs();
+    renderStoreTrustBadges();
+    renderCinematicVideoReels();
   } catch (err) {
     console.warn('Storefront cloud sync fallback:', err.message);
   }
@@ -228,76 +237,80 @@ function renderCinematicVideoReels() {
   const track = document.getElementById('reels-scroll-track');
   if (!track) return;
 
-  const products = storeState.products.length ? storeState.products : [...MIRA_DATA.products];
-  const videoProducts = products.filter(p => p.video);
+  const stories = (storeState.broadcastStories && storeState.broadcastStories.length)
+    ? storeState.broadcastStories.filter(s => s.isVisible !== false)
+    : (MIRA_DATA.broadcastStories || []);
 
-  if (videoProducts.length === 0) return;
+  if (stories.length === 0) {
+    const fallbackProducts = (storeState.products && storeState.products.length) ? storeState.products.filter(p => p.video) : [];
+    if (fallbackProducts.length === 0) return;
+    stories.push(...fallbackProducts.map((p, idx) => ({
+      id: `story-auto-${idx}`,
+      title: p.name,
+      tag: p.tag || '4K Reel',
+      mediaType: 'video',
+      mediaUrl: p.video,
+      posterUrl: p.image,
+      productId: p.id,
+      price: p.variants[0]?.price || 99,
+      originalPrice: p.variants[0]?.originalPrice || 120,
+      sortOrder: idx + 1,
+      isVisible: true
+    })));
+  }
 
-  // Duplicate list to create seamless infinite auto-scroll illusion
-  const displayItems = [...videoProducts, ...videoProducts];
+  // Duplicate for seamless scroll
+  const displayItems = [...stories, ...stories];
 
-  track.innerHTML = displayItems.map((p, idx) => {
-    const v = p.variants[0];
-    const discount = Math.round(((v.originalPrice - v.price) / v.originalPrice) * 100);
+  track.innerHTML = displayItems.map(s => {
+    const isVideo = s.mediaType !== 'photo' && s.mediaUrl && s.mediaUrl.endsWith('.mp4');
+    const pid = s.productId || 'p1';
 
     return `
-      <div class="reels-card relative flex flex-col justify-between group cursor-pointer" 
+      <div class="reels-card relative flex flex-col justify-between group cursor-pointer shrink-0 w-64 bg-[#1F0307] rounded-3xl overflow-hidden shadow-xl border-2 border-[#E59819]/40 hover:border-[#E59819] transition-all duration-300" 
         onmouseenter="const vid=this.querySelector('video'); if(vid){vid.play().catch(()=>{});}" 
         onmouseleave="const vid=this.querySelector('video'); if(vid){vid.pause();}">
         
-        <!-- Video Preview Container (3:4 ratio) -->
+        <!-- Media Container (3:4 ratio) -->
         <div class="relative w-full aspect-[3/4] overflow-hidden bg-black">
-          <video src="${p.video}" muted loop playsinline preload="metadata" 
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-          </video>
+          ${isVideo ? `
+            <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted loop playsinline preload="metadata" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+            </video>
+          ` : `
+            <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+          `}
 
-          <!-- Top Pill Overlays -->
-          <div class="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between z-10">
-            <span class="px-2 py-0.5 bg-[#4A0713]/90 text-[#FBBF24] border border-[#E59819]/50 text-[9px] font-black rounded-full backdrop-blur-md shadow-xs">
-              ${p.tag}
+          <!-- Top Badges Overlay -->
+          <div class="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
+            <span class="px-2.5 py-1 bg-[#4A0713]/90 text-[#FBBF24] border border-[#E59819]/50 text-[10px] font-black rounded-full backdrop-blur-md shadow-xs">
+              ${s.tag || 'Broadcast Story'}
             </span>
             <div class="px-2 py-0.5 bg-red-600/90 text-white text-[9px] font-black rounded-full flex items-center gap-1 backdrop-blur-md animate-pulse">
               <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
-              <span>4K REEL</span>
+              <span>${isVideo ? '4K VIDEO' : 'STORY PHOTO'}</span>
             </div>
           </div>
 
-          <!-- Click to Watch Fullscreen -->
-          <a href="product?id=${p.id}" class="absolute inset-0 z-0"></a>
-
-          <!-- Floating Sound/Play Indicator -->
-          <div class="absolute bottom-2.5 right-2.5 z-10 w-7 h-7 rounded-full bg-black/70 text-[#FBBF24] flex items-center justify-center text-[10px] backdrop-blur-md border border-[#E59819]/40">
-            
-          </div>
+          <!-- Click to Open Details -->
+          <a href="product?id=${pid}" class="absolute inset-0 z-0"></a>
         </div>
 
         <!-- Card Footer (Title, Price & 1-Tap Add) -->
-        <div class="p-3.5 bg-[#1F0307] border-t border-[#E59819]/40 flex flex-col justify-between flex-1">
+        <div class="p-4 bg-gradient-to-b from-[#1F0307] to-[#120104] border-t border-[#E59819]/30 flex flex-col justify-between space-y-2.5">
           <div>
-            <div class="flex items-center justify-between mb-1">
-              <div class="flex items-center gap-1 text-amber-400 text-[10px] font-extrabold">
-                
-                <span>${p.rating}</span>
-              </div>
-              <span class="text-[9px] font-black text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-1.5 py-0.2 rounded">
-                ${discount}% OFF
-              </span>
+            <h4 class="font-black text-xs text-white truncate group-hover:text-[#FBBF24] transition">${s.title}</h4>
+            <div class="flex items-baseline gap-1.5 mt-1">
+              <span class="text-sm font-black text-[#FBBF24]">₹${s.price || 99}</span>
+              ${s.originalPrice ? `<span class="text-[10px] text-gray-400 line-through">₹${s.originalPrice}</span>` : ''}
             </div>
-
-            <a href="product?id=${p.id}" class="font-black text-white text-xs hover:text-[#FBBF24] line-clamp-1 block mb-1">
-              ${p.name}
-            </a>
           </div>
 
-          <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2 mt-2">
-            <div>
-              <span class="text-sm font-black text-[#FBBF24]">${formatPrice(v.price)}</span>
-              <span class="text-[10px] text-gray-400 line-through ml-1">${formatPrice(v.originalPrice)}</span>
-            </div>
-            
-            <button onclick="addToCart('${p.id}', 0); showToast('Added to cart!', 'success');" 
-              class="px-3 py-1.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] text-[11px] font-black rounded-xl transition shadow-md flex items-center gap-1">
-               Add
+          <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
+            <a href="product?id=${pid}" class="text-[11px] font-bold text-amber-200 hover:underline">View Snack →</a>
+            <button onclick="addToCart('${pid}', 0); showToast('Added to cart!', 'success');" 
+              class="px-3 py-1.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] text-[11px] font-black rounded-xl transition shadow-md flex items-center gap-1 cursor-pointer">
+              + Add
             </button>
           </div>
         </div>
@@ -306,7 +319,6 @@ function renderCinematicVideoReels() {
     `;
   }).join('');
 
-  // Start smooth auto-scrolling
   startReelsAutoScroll(track);
 }
 
@@ -816,19 +828,20 @@ function renderStoreCart() {
         
         <div class="flex items-center gap-2 mt-2">
           <div class="flex items-center border border-amber-200 bg-white rounded-lg overflow-hidden">
-            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
-              <i class="fas fa-minus text-[9px]"></i>
+            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs font-black text-gray-700 hover:bg-amber-100 transition">
+  −
+              −
             </button>
             <span class="w-7 text-center text-xs font-black text-gray-800">${item.qty}</span>
-            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
-              <i class="fas fa-plus text-[9px]"></i>
+            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs font-black text-gray-700 hover:bg-amber-100 transition">
+              +
             </button>
           </div>
           <span class="text-xs font-black text-[#4A0713] ml-auto">${formatPrice(item.price * item.qty)}</span>
         </div>
       </div>
-      <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="text-gray-400 hover:text-red-500 p-1.5 transition">
-        <i class="fas fa-trash-alt text-xs"></i>
+      <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg text-sm font-black transition">
+        ✕
       </button>
     </div>
   `).join('');
@@ -837,6 +850,33 @@ function renderStoreCart() {
   document.getElementById('cart-discount').textContent = discount > 0 ? `-${formatPrice(discount)}` : formatPrice(0);
   document.getElementById('cart-shipping').textContent = shipping === 0 ? 'FREE' : formatPrice(shipping);
   document.getElementById('cart-grandtotal').textContent = formatPrice(grandTotal);
+}
+
+/**
+ * 4A-2. DYNAMIC TRUST & GUARANTEE BADGES RENDERER (Full Real-Time Images & CMS)
+ */
+function renderStoreTrustBadges() {
+  const container = document.getElementById('home-trust-badges-grid');
+  if (!container) return;
+
+  const items = (storeState.trustBadges && storeState.trustBadges.length)
+    ? storeState.trustBadges.filter(b => b.isVisible !== false)
+    : (MIRA_DATA.trustBadges || []);
+
+  if (!items.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = items.map(b => `
+    <div class="space-y-3 group text-center md:text-left animate-fade-in">
+      <div class="w-16 h-16 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-110 transition-transform duration-300">
+        <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" class="w-full h-full object-cover rounded-xl" onerror="this.src='assets/images/feature_oil.jpg'" />
+      </div>
+      <h4 class="font-black text-base text-[#FBBF24]">${b.title}</h4>
+      <p class="text-xs text-amber-100/80 leading-relaxed font-medium">${b.description}</p>
+    </div>
+  `).join('');
 }
 
 /**
@@ -856,15 +896,19 @@ function renderStoreTestimonials() {
   }
 
   container.innerHTML = items.map(item => {
-    const stars = Array(Math.round(item.rating || 5)).fill('<i class="fas fa-star text-amber-400"></i>').join('');
+    const avatar = (!item.avatar || item.avatar.includes('drive_')) 
+      ? (item.name.includes('Vikram') ? 'assets/images/avatar_vikram.jpg' : item.name.includes('Ananya') ? 'assets/images/avatar_ananya.jpg' : 'assets/images/avatar_pooja.jpg') 
+      : item.avatar;
+    const stars = '★'.repeat(Math.round(item.rating || 5));
+
     return `
       <div class="p-6 bg-white rounded-3xl border border-amber-200/80 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-300">
         <div class="space-y-3">
-          <div class="flex items-center gap-1 text-xs">${stars}</div>
+          <div class="flex items-center gap-1 text-xs text-amber-500 font-black tracking-wider">${stars}</div>
           <p class="text-xs text-gray-700 leading-relaxed font-medium italic">"${item.reviewText}"</p>
         </div>
         <div class="flex items-center gap-3 pt-3 border-t border-amber-100">
-          <img src="${item.avatar || 'assets/images/default_avatar.jpg'}" alt="${item.name}" class="w-10 h-10 rounded-full object-cover border border-amber-300" />
+          <img src="${avatar}" alt="${item.name}" class="w-11 h-11 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0" />
           <div>
             <h4 class="font-black text-xs text-gray-900">${item.name}</h4>
             <span class="text-[10px] text-gray-500 font-bold">${item.city || 'Verified Buyer'}</span>
@@ -875,9 +919,6 @@ function renderStoreTestimonials() {
   }).join('');
 }
 
-/**
- * 4C. DYNAMIC FAQ ACCORDION RENDERER
- */
 function renderStoreFaqs() {
   const container = document.getElementById('home-faqs-container');
   if (!container) return;
