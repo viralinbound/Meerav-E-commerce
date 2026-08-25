@@ -13,37 +13,6 @@ const pdpState = {
   isMuted: false
 };
 
-const PDP_CATEGORY_ICONS = {
-  'bhujia-sev': 'fas fa-fire',
-  'mixture-farsan': 'fas fa-bowl-rice',
-  'mathri': 'fas fa-sun',
-  'papad-mathri': 'fas fa-sun',
-  'roasted-diet': 'fas fa-seedling',
-  'healthy-roasted': 'fas fa-seedling',
-  'sweets-combos': 'fas fa-gift'
-};
-
-/** Quick-jump pills to every category, right below the breadcrumb — highlights the current product's category. */
-function renderPDPCategorySwitcher(categories) {
-  const container = document.getElementById('pdp-category-switcher');
-  if (!container) return;
-
-  const currentCat = pdpState.currentProduct.category;
-  const validCategories = categories.filter(c => c.id !== 'all');
-
-  container.innerHTML = validCategories.map(cat => {
-    const isActive = cat.id === currentCat;
-    return `
-      <a href="category?cat=${cat.id}" class="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition-all ${
-        isActive ? 'bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shadow-md' : 'bg-white text-gray-700 hover:bg-amber-50 border border-amber-200'
-      }">
-        <i class="${PDP_CATEGORY_ICONS[cat.id] || cat.icon || 'fas fa-cookie'} text-[10px] ${isActive ? 'text-[#E59819]' : 'text-amber-600'}"></i>
-        <span>${cat.name}</span>
-      </a>
-    `;
-  }).join('');
-}
-
 /** Combines a product's photos[]/videos[] galleries into one ordered slide list (photos first, cover photo leads). */
 function buildPDPMediaList(p) {
   const photos = (p.photos && p.photos.length ? p.photos : (p.image ? [p.image] : []));
@@ -65,10 +34,8 @@ async function initProductDetailPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get('id') || 'p1';
 
-  const [fetchedProducts, fetchedCategories] = await Promise.all([fetchProducts(), fetchCategories()]);
-  let allProducts = fetchedProducts;
+  let allProducts = await fetchProducts();
   if (!allProducts.length) allProducts = MIRA_DATA.products;
-  const categories = fetchedCategories.length ? fetchedCategories : MIRA_DATA.categories;
   const product = allProducts.find(p => p.id === productId) || allProducts[0];
 
   if (!product) {
@@ -92,7 +59,6 @@ async function initProductDetailPage() {
 
   renderPDPDetails();
   renderPDPRelatedProducts(allProducts);
-  renderPDPCategorySwitcher(categories);
 
   MiraDB.subscribeTable('products', (payload) => {
     if (payload.eventType === 'DELETE' || payload.new.id !== productId) return;

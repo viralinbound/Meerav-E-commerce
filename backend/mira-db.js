@@ -75,7 +75,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
 
   async function dbUpsertCategory(category, client = supabaseClient) {
     const { error } = await client.from('categories').upsert({
-      id: category.id, name: category.name, icon: category.icon, description: category.description
+      id: category.id, name: category.name, icon: category.icon, image: category.image || null, description: category.description
     });
     if (error) console.error('dbUpsertCategory', error);
     return !error;

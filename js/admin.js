@@ -929,6 +929,21 @@ function populateCategoryDropdowns() {
   `).join('');
 }
 
+async function handleCategoryImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('cat-form-image-status');
+  if (status) status.textContent = 'Uploading...';
+  const url = await MiraDB.uploadMedia(file, 'categories');
+  if (url) {
+    document.getElementById('cat-form-image').value = url;
+    document.getElementById('cat-form-img-preview').src = url;
+    if (status) status.textContent = 'Uploaded ✓';
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
 function openAddCategoryModal() {
   adminState.editingCategoryId = null;
   adminState.uploadedCategoryImageUrl = null;
@@ -938,6 +953,7 @@ function openAddCategoryModal() {
   document.getElementById('cat-form-name').value = '';
   document.getElementById('cat-form-image').value = 'assets/images/cinematic_bhujia.jpg';
   document.getElementById('cat-form-img-preview').src = 'assets/images/cinematic_bhujia.jpg';
+  document.getElementById('cat-form-image-status').textContent = '';
   document.getElementById('cat-form-icon').value = 'fas fa-cookie';
   document.getElementById('cat-form-desc').value = '';
 
@@ -955,6 +971,7 @@ function openEditCategoryModal(catId) {
   const imgUrl = cat.image || 'assets/images/cinematic_bhujia.jpg';
   document.getElementById('cat-form-image').value = imgUrl;
   document.getElementById('cat-form-img-preview').src = imgUrl;
+  document.getElementById('cat-form-image-status').textContent = '';
   document.getElementById('cat-form-icon').value = cat.icon || 'fas fa-cookie';
   document.getElementById('cat-form-desc').value = cat.description || '';
 

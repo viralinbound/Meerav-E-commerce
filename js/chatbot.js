@@ -171,9 +171,6 @@ function renderChatbotWidget() {
         <!-- Header -->
         <div class="p-3.5 bg-gradient-to-r from-[#4A0713] to-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-amber-100 p-0.5 flex items-center justify-center shadow-xs">
-              <img src="assets/images/meerav_logo.png" alt="Logo" class="w-full h-full object-contain" />
-            </div>
             <div>
               <div class="font-black text-xs text-[#FBBF24] flex items-center gap-1">
                 <span>Meerav AI Sommelier</span>

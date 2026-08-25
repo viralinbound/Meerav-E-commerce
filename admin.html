@@ -1470,8 +1470,10 @@
           <label class="block text-gray-700 font-bold mb-1">Category Image / Photo (Real Showcase)</label>
           <div class="flex items-center gap-3 mb-2">
             <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
-            <div class="flex-1">
-              <input type="text" id="cat-form-image" placeholder="assets/images/cinematic_bhujia.jpg or https://..." 
+            <div class="flex-1 space-y-1.5">
+              <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="text-xs w-full" />
+              <p id="cat-form-image-status" class="text-[10px] text-gray-400"></p>
+              <input type="text" id="cat-form-image" placeholder="or paste an image URL: assets/images/cinematic_bhujia.jpg or https://..."
                 oninput="document.getElementById('cat-form-img-preview').src = this.value || 'assets/images/cinematic_bhujia.jpg'"
                 class="w-full px-3 py-2 border rounded-xl text-xs font-mono focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
               <div class="flex gap-1.5 mt-1.5 flex-wrap">

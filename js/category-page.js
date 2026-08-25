@@ -129,16 +129,16 @@ function renderCategoryHeader() {
   }
 }
 
-// Same squircle-icon card design used on the homepage's category showcase —
-// the only way to switch categories on this page (no small pill tabs).
-const CATEGORY_PICKER_ICONS = {
-  'bhujia-sev': 'fas fa-fire',
-  'mixture-farsan': 'fas fa-bowl-rice',
-  'mathri': 'fas fa-sun',
-  'papad-mathri': 'fas fa-sun',
-  'roasted-diet': 'fas fa-seedling',
-  'healthy-roasted': 'fas fa-seedling',
-  'sweets-combos': 'fas fa-gift'
+// Real showcase photo + fallback, matching the homepage's category cards
+// exactly — the only way to switch categories on this page (no pill tabs).
+const CATEGORY_PICKER_DEFAULTS = {
+  'bhujia-sev': { image: 'assets/images/cinematic_bhujia.jpg', icon: 'fas fa-fire' },
+  'mixture-farsan': { image: 'assets/images/cinematic_mixture.jpg', icon: 'fas fa-bowl-rice' },
+  'mathri': { image: 'assets/images/cinematic_papad.jpg', icon: 'fas fa-sun' },
+  'papad-mathri': { image: 'assets/images/cinematic_papad.jpg', icon: 'fas fa-sun' },
+  'roasted-diet': { image: 'assets/images/cinematic_moong_dal.jpg', icon: 'fas fa-seedling' },
+  'healthy-roasted': { image: 'assets/images/cinematic_moong_dal.jpg', icon: 'fas fa-seedling' },
+  'sweets-combos': { image: 'assets/images/commercial_scene_4.jpg', icon: 'fas fa-gift' }
 };
 
 function renderCategoryPickerCards() {
@@ -148,13 +148,13 @@ function renderCategoryPickerCards() {
   const validCategories = categoryPageState.categories.filter(c => c.id !== 'all');
   const currentNorm = normalizeCategoryId(categoryPageState.selectedCategory);
 
-  const cardHtml = (id, icon, name, count, isActive) => `
+  const cardHtml = (id, image, name, count, isActive) => `
     <button type="button" onclick="selectCategory('${id}')"
       class="p-4 sm:p-6 bg-white rounded-3xl border-2 hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 active:scale-98 ${
         isActive ? 'border-[#E59819] shadow-xl' : 'border-amber-200/80 hover:border-[#E59819]'
       }">
-      <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-2xl sm:rounded-3xl bg-[#520914] group-hover:bg-[#3B040D] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-lg group-hover:scale-110 transition-all duration-300 border border-[#E59819]/40">
-        <i class="${icon}"></i>
+      <div class="w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#520914] shadow-lg group-hover:scale-110 transition-all duration-500 border-2 border-[#E59819]/40">
+        <img src="${image}" alt="${name}" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
       </div>
       <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${name}</h4>
       <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
@@ -169,7 +169,9 @@ function renderCategoryPickerCards() {
       const normId = normalizeCategoryId(cat.id);
       const count = categoryPageState.products.filter(p => p.category === normId || p.category === cat.id).length;
       const isActive = currentNorm === normId || currentNorm === cat.id;
-      return cardHtml(cat.id, CATEGORY_PICKER_ICONS[cat.id] || cat.icon || 'fas fa-cookie-bite', cat.name, count, isActive);
+      const fallback = CATEGORY_PICKER_DEFAULTS[cat.id] || { image: 'assets/images/cinematic_bhujia.jpg' };
+      const image = cat.image || fallback.image;
+      return cardHtml(cat.id, image, cat.name, count, isActive);
     })
   ];
 
