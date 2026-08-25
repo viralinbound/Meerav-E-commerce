@@ -101,7 +101,7 @@ function renderCategories() {
           ? 'bg-amber-600 text-white shadow-md transform scale-105' 
           : 'bg-white text-gray-700 hover:bg-amber-50 border border-amber-200'
       }">
-      <i class="${cat.icon} text-amber-500"></i>
+      
       <span>${cat.name}</span>
     </button>
   `).join('');
@@ -159,7 +159,7 @@ function renderProducts() {
     container.innerHTML = `
       <div class="col-span-full py-16 text-center">
         <div class="w-20 h-20 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-3xl">
-          <i class="fas fa-cookie-bite"></i>
+          
         </div>
         <h3 class="text-xl font-bold text-gray-800">No Namkeens Found</h3>
         <p class="text-gray-500 text-sm mt-1">Try clearing your search query or selecting a different filter.</p>
@@ -190,7 +190,7 @@ function renderProducts() {
           </span>
 
           <button onclick="event.stopPropagation(); toggleWishlist('${p.id}');" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-gray-600 hover:text-red-500 hover:scale-110 transition">
-            <i class="${state.wishlist.includes(p.id) ? 'fas fa-heart text-red-500' : 'far fa-heart'} text-sm"></i>
+
           </button>
 
           <div class="absolute bottom-2.5 left-3 flex flex-wrap gap-1">
@@ -203,12 +203,12 @@ function renderProducts() {
           <div>
             <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-1 text-amber-500 text-xs font-bold">
-                <i class="fas fa-star text-xs"></i>
+
                 <span>${p.rating}</span>
                 <span class="text-gray-400 font-normal">(${p.reviewsCount})</span>
               </div>
               <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                <i class="fas fa-check-circle text-[10px]"></i> In Stock
+In Stock
               </span>
             </div>
 
@@ -248,13 +248,13 @@ function renderProducts() {
             <div class="grid grid-cols-2 gap-2">
               <button onclick="quickWhatsAppOrder('${p.id}', ${selectedIdx})" 
                 class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-300 text-xs font-bold transition">
-                <i class="fab fa-whatsapp text-sm"></i>
+
                 <span>WhatsApp</span>
               </button>
 
               <button onclick="addToCart('${p.id}', ${selectedIdx})" 
                 class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-sm hover:shadow-md">
-                <i class="fas fa-shopping-bag text-xs"></i>
+
                 <span>Add to Cart</span>
               </button>
             </div>
@@ -418,7 +418,7 @@ function renderCart() {
     container.innerHTML = `
       <div class="py-16 text-center text-gray-500">
         <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 text-2xl">
-          <i class="fas fa-shopping-basket"></i>
+          
         </div>
         <p class="font-bold text-gray-800 text-base">Your Cart is Empty</p>
         <p class="text-xs text-gray-400 mt-1">Discover fresh crispy Namkeens and add them to cart!</p>
@@ -446,18 +446,18 @@ function renderCart() {
         <div class="flex items-center gap-2 mt-2">
           <div class="flex items-center border border-amber-200 bg-white rounded-md overflow-hidden">
             <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
-              <i class="fas fa-minus text-[9px]"></i>
+              −
             </button>
             <span class="w-7 text-center text-xs font-bold text-gray-800">${item.qty}</span>
             <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
-              <i class="fas fa-plus text-[9px]"></i>
+              +
             </button>
           </div>
           <span class="text-xs font-extrabold text-amber-900 ml-auto">₹${item.price * item.qty}</span>
         </div>
       </div>
       <button onclick="removeFromCart('${item.id}')" class="text-gray-400 hover:text-red-500 p-1">
-        <i class="fas fa-trash-alt text-xs"></i>
+
       </button>
     </div>
   `).join('');
@@ -807,13 +807,13 @@ function renderAdminOrders() {
       <td class="py-3.5 px-4">
         <div class="flex items-center gap-1.5">
           <button onclick="openOrderTrackingView('${order.id}')" title="View Live Map" class="p-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs transition">
-            <i class="fas fa-map-location-dot"></i>
+
           </button>
           <button onclick="previewWhatsAppNotification('${order.id}')" title="Send WhatsApp Update" class="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs transition">
-            <i class="fab fa-whatsapp"></i>
+
           </button>
           <button onclick="previewEmailNotification('${order.id}')" title="Send Email Invoice" class="p-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs transition">
-            <i class="fas fa-envelope"></i>
+
           </button>
         </div>
       </td>
@@ -913,7 +913,7 @@ function renderNotificationLogs() {
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
           n.type === 'WhatsApp' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
         }">
-          <i class="${n.type === 'WhatsApp' ? 'fab fa-whatsapp' : 'fas fa-envelope'}"></i>
+
           ${n.type}
         </span>
       </td>
@@ -924,7 +924,7 @@ function renderNotificationLogs() {
         <span class="inline-flex items-center gap-1 text-[11px] font-bold ${
           n.statusColor === 'green' ? 'text-emerald-600' : 'text-blue-600'
         }">
-          <i class="fas fa-check-double text-[10px]"></i>
+
           ${n.status}
         </span>
       </td>
@@ -970,7 +970,7 @@ function showToast(message, type = 'info') {
   const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
 
   toast.className = `toast flex items-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-semibold ${bgColor}`;
-  toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+  toast.innerHTML = `<span>${message}</span>`;
 
   container.appendChild(toast);
 

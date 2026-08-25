@@ -233,7 +233,7 @@ function renderChatbotWidget() {
   const botSubtitle = settings.chatbotSubtitle || 'Order Assistant & Personalization';
   const avatarIcon = settings.chatbotAvatarIcon || 'fa-robot';
   const avatarImage = settings.chatbotAvatarImage || '';
-  const avatarHtml = avatarImage ? `<img src="${avatarImage}" class="w-full h-full object-cover rounded-full" alt="${botName}" />` : `<i class="fas ${avatarIcon}"></i>`;
+  const avatarHtml = avatarImage ? `<img src="${avatarImage}" class="w-full h-full object-cover rounded-full" alt="${botName}" />` : ``;
   const accent = settings.chatbotColor || settings.accentColor || '#E59819';
   const quickPrompts = (settings.chatbotQuickPrompts && settings.chatbotQuickPrompts.length)
     ? settings.chatbotQuickPrompts
@@ -251,8 +251,8 @@ function renderChatbotWidget() {
       <!-- Peek Bubble -->
       <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce">
         <span class="cursor-pointer" onclick="toggleChatbot()">Order & Taste Assistant</span>
-        <i class="fas fa-sparkles text-[#FBBF24] cursor-pointer" onclick="toggleChatbot()"></i>
-        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition"><i class="fas fa-xmark text-[9px]"></i></button>
+        
+        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition"></button>
       </div>
 
       <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80 overflow-hidden">
@@ -273,14 +273,14 @@ function renderChatbotWidget() {
             <div>
               <div class="font-black text-xs text-[#FBBF24] flex items-center gap-1">
                 <span>${botName}</span>
-                <i class="fas fa-circle-check text-emerald-400 text-[10px]"></i>
+
               </div>
               <span class="text-[10px] text-amber-200/80">${botSubtitle}</span>
             </div>
           </div>
 
           <div class="flex items-center gap-1.5">
-            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#FBBF24] flex items-center justify-center transition"><i class="fas fa-xmark"></i></button>
+            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#FBBF24] flex items-center justify-center transition"></button>
           </div>
         </div>
 
@@ -301,7 +301,7 @@ function renderChatbotWidget() {
         <form onsubmit="handleChatbotSubmit(event)" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
           <input type="text" id="chatbot-user-input" placeholder="Ask to order (e.g. 'Order Bikaneri Bhujia')..." 
             class="flex-1 px-3.5 py-2 bg-amber-50/50 border border-amber-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white" />
-          <button type="submit" class="w-9 h-9 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#E59819]"><i class="fas fa-paper-plane text-xs"></i></button>
+          <button type="submit" class="w-9 h-9 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#E59819]"></button>
         </form>
 
       </div>
@@ -333,7 +333,7 @@ function renderChatMessages() {
       ${msg.recommendations && msg.recommendations.length > 0 ? `
         <div class="w-full space-y-1.5 mt-1.5 pt-0.5">
           <div class="text-[10px] font-black text-[#4A0713] uppercase tracking-wider flex items-center gap-1 px-1">
-            <i class="fas fa-bag-shopping text-[#E59819]"></i>
+
             <span>Recommended for You:</span>
           </div>
 
@@ -358,11 +358,11 @@ function renderChatMessages() {
                 <div class="flex items-center gap-1 shrink-0">
                   <button onclick="handleChatAddToCart('${p.id}', 0)" 
                     class="py-1 px-2 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-amber-300" title="Add to Cart">
-                    <i class="fas fa-plus text-[8px]"></i> Add
+                    + Add
                   </button>
                   <button onclick="handleChatDirectBuy('${p.id}', 0)" 
                     class="py-1 px-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-[#E59819] shadow-2xs" title="Instant Checkout">
-                    <i class="fas fa-bolt text-[8px]"></i> Buy
+                     Buy
                   </button>
                 </div>
 
@@ -376,16 +376,16 @@ function renderChatMessages() {
       ${msg.isOrderHelp ? `
         <div class="grid grid-cols-2 gap-1.5 w-full mt-1.5">
           <button onclick="sendQuickPrompt('Where is my delivery van right now?')" class="p-2 bg-amber-50 hover:bg-amber-100 text-[#4A0713] border border-amber-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
-            <i class="fas fa-truck-fast text-[#E59819]"></i> <span>Live Van GPS</span>
+<span>Live Van GPS</span>
           </button>
           <button onclick="sendQuickPrompt('Download my tax invoice receipt')" class="p-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
-            <i class="fas fa-receipt text-blue-600"></i> <span>View Invoice</span>
+             <span>View Invoice</span>
           </button>
           <button onclick="sendQuickPrompt('I want to change my delivery address or phone number')" class="p-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
-            <i class="fas fa-pen text-emerald-600"></i> <span>Edit Address</span>
+<span>Edit Address</span>
           </button>
           <button onclick="sendQuickPrompt('I want to cancel or modify this order')" class="p-2 bg-red-50 hover:bg-red-100 text-red-900 border border-red-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
-            <i class="fas fa-ban text-red-600"></i> <span>Cancel Order</span>
+             <span>Cancel Order</span>
           </button>
         </div>
       ` : ''}
@@ -398,7 +398,7 @@ function renderChatMessages() {
   const thinkingHtml = chatbotState.isThinking ? `
     <div id="chatbot-thinking-indicator" class="flex items-center gap-2 p-3 bg-white border border-amber-200 rounded-2xl rounded-bl-none shadow-xs text-xs max-w-[85%] animate-fade-in">
       <div class="w-6 h-6 rounded-lg bg-[#4A0713] flex items-center justify-center text-[#FBBF24] text-[10px] animate-pulse shrink-0">
-        <i class="fas fa-sparkles"></i>
+        
       </div>
       <div class="flex items-center gap-1 font-bold text-gray-700 text-[11px]">
         <span>Sommelier is finding authentic snacks</span>

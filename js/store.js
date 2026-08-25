@@ -65,6 +65,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStoreDietaryFilters();
   renderStoreProducts();
   renderStoreTrustBadges();
+  renderStoreStoryParagraphs();
+  renderStoreStats();
   renderStoreCart();
   renderStoreTestimonials();
   renderStoreFaqs();
@@ -228,7 +230,7 @@ function renderHomeCategoryCards() {
         
         <!-- Real Food Showcase Image with Royal Gold Border & Hover Zoom -->
         <div class="w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#520914] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-xl group-hover:scale-110 transition-all duration-500 border-2 border-[#E59819]/50 relative">
-          <img src="${displayImg}" alt="${cat.name}" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
+          <img src="${displayImg}" alt="${cat.name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
         </div>
 
         <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${cat.name || catStyle.name}</h4>
@@ -246,6 +248,7 @@ function renderHomeCategoryCards() {
  * Auto-Scrolling Cinematic Video Reels Bar (Watch & Shop Stories)
  */
 let reelsAutoScrollTimer = null;
+let reelsAutoScrollPaused = false;
 
 function renderCinematicVideoReels() {
   const track = document.getElementById('reels-scroll-track');
@@ -292,7 +295,7 @@ function renderCinematicVideoReels() {
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
             </video>
           ` : `
-            <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+            <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
           `}
 
           <!-- Top Badges Overlay -->
@@ -321,7 +324,7 @@ function renderCinematicVideoReels() {
           </div>
 
           <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
-            <a href="product?id=${pid}" class="text-[11px] font-bold text-amber-200 hover:underline">View Snack →</a>
+            <a href="product?id=${pid}" class="text-[11px] font-bold text-amber-200 hover:underline">View Snack</a>
             <button onclick="addToCart('${pid}', 0); showToast('Added to cart!', 'success');" 
               class="px-3 py-1.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] text-[11px] font-black rounded-xl transition shadow-md flex items-center gap-1 cursor-pointer">
               + Add
@@ -339,14 +342,22 @@ function renderCinematicVideoReels() {
 function startReelsAutoScroll(track) {
   if (reelsAutoScrollTimer) clearInterval(reelsAutoScrollTimer);
 
-  let isPaused = false;
-  track.addEventListener('mouseenter', () => { isPaused = true; });
-  track.addEventListener('mouseleave', () => { isPaused = false; });
-  track.addEventListener('touchstart', () => { isPaused = true; }, { passive: true });
-  track.addEventListener('touchend', () => { isPaused = false; }, { passive: true });
+  // The track element is reused across re-renders (only its innerHTML is
+  // replaced), so hover/touch listeners must be bound once — otherwise every
+  // realtime update stacks a fresh set of listeners on top of the old ones.
+  if (!track.dataset.autoscrollBound) {
+    track.dataset.autoscrollBound = '1';
+    track.addEventListener('mouseenter', () => { reelsAutoScrollPaused = true; });
+    track.addEventListener('mouseleave', () => { reelsAutoScrollPaused = false; });
+    track.addEventListener('touchstart', () => { reelsAutoScrollPaused = true; }, { passive: true });
+    track.addEventListener('touchend', () => { reelsAutoScrollPaused = false; }, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      reelsAutoScrollPaused = document.hidden;
+    });
+  }
 
   reelsAutoScrollTimer = setInterval(() => {
-    if (!isPaused && track) {
+    if (!reelsAutoScrollPaused && track) {
       track.scrollLeft += 1.5;
       if (track.scrollLeft >= track.scrollWidth / 2) {
         track.scrollLeft = 0;
@@ -409,7 +420,7 @@ function renderStoreCategories() {
             : 'bg-white text-gray-800 hover:bg-amber-50/80 border border-amber-200/80'
         }">
         <img src="${imgUrl}" alt="" class="w-5 h-5 rounded-full object-cover border border-amber-400/60" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
-        <i class="${cat.icon || 'fas fa-bowl-food'} hidden"></i>
+
         <span>${cat.name}</span>
       </button>
     `;
@@ -500,7 +511,7 @@ function renderStoreProducts() {
           onmouseenter="const v=this.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}"
           onmouseleave="const v=this.querySelector('video'); if(v){v.pause();}">
           
-          <img src="${p.image}" alt="${p.name}" class="group-hover:scale-108 transition-transform duration-500" />
+          <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="group-hover:scale-108 transition-transform duration-500" />
           
           ${p.video ? `
             <video class="card-video-preview" src="${p.video}" muted loop playsinline preload="none"></video>
@@ -528,14 +539,14 @@ function renderStoreProducts() {
 
             <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');"
               class="w-8 h-8 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
-              <i class="${storeState.wishlist && storeState.wishlist.includes(p.id) ? 'fas fa-heart text-red-500' : 'far fa-heart'}"></i>
+
             </button>
           </div>
 
           <!-- Bottom Quality Banner -->
           <div class="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 text-[10px] text-[#FBBF24] font-bold bg-[#32040C]/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E59819]/40 shadow-md">
-            <span><i class="fas fa-droplet"></i> Pure Oil</span>
-            <span class="text-emerald-400 font-black ml-1"><i class="fas fa-check-circle text-[9px]"></i> 100% Fresh</span>
+            <span>Pure Oil</span>
+            <span class="text-emerald-400 font-black ml-1">100% Fresh</span>
           </div>
         </a>
 
@@ -545,7 +556,7 @@ function renderStoreProducts() {
             <!-- Rating & Reviews -->
             <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-1 text-amber-600 text-xs font-extrabold">
-                <i class="fas fa-star"></i>
+
                 <span>${p.rating}</span>
                 <span class="text-gray-400 font-medium text-[11px]">(${p.reviewsCount})</span>
               </div>
@@ -589,7 +600,7 @@ function renderStoreProducts() {
                 <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
               </div>
               <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
-                <span>View Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
+                <span>View Details</span> →
               </a>
             </div>
 
@@ -597,13 +608,13 @@ function renderStoreProducts() {
             <div class="grid grid-cols-2 gap-2">
               <button onclick="addToCart('${p.id}', ${selectedIdx})"
                 class="w-full py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-xl text-xs font-black transition border border-amber-300 flex items-center justify-center gap-1.5">
-                <i class="fas fa-shopping-bag text-xs"></i>
+
                 <span>Add to Cart</span>
               </button>
 
               <button onclick="quickBuy('${p.id}', ${selectedIdx})"
                 class="w-full py-2.5 px-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819] shadow-md flex items-center justify-center gap-1.5">
-                <i class="fas fa-bolt text-xs text-[#E59819]"></i>
+                
                 <span>Express Buy</span>
               </button>
             </div>
@@ -855,7 +866,7 @@ function renderStoreCart() {
         </div>
       </div>
       <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
-        <i class="fas fa-xmark"></i>
+
       </button>
     </div>
   `).join('');
@@ -885,10 +896,55 @@ function renderStoreTrustBadges() {
   container.innerHTML = items.map(b => `
     <div class="space-y-3 group text-center md:text-left animate-fade-in">
       <div class="w-16 h-16 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-110 transition-transform duration-300">
-        <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" class="w-full h-full object-cover rounded-xl" onerror="this.src='assets/images/feature_oil.jpg'" />
+        <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl" onerror="this.src='assets/images/feature_oil.jpg'" />
       </div>
       <h4 class="font-black text-base text-[#FBBF24]">${b.title}</h4>
       <p class="text-xs text-amber-100/80 leading-relaxed font-medium">${b.description}</p>
+    </div>
+  `).join('');
+}
+
+/**
+ * DYNAMIC BRAND STORY PARAGRAPHS RENDERER (admin can add/remove any number)
+ */
+function renderStoreStoryParagraphs() {
+  const container = document.getElementById('home-story-paragraphs');
+  if (!container) return;
+
+  let paragraphs = [];
+  try { paragraphs = JSON.parse((window.SITE_PAGE_CONTENT && window.SITE_PAGE_CONTENT['home.story.paragraphs']) || '[]'); } catch (e) {}
+  if (!Array.isArray(paragraphs) || !paragraphs.length) {
+    paragraphs = [
+      'Born in the royal desert city of Bikaner, our snacks carry forward generations of secret family spice formulations, handcrafted by master halwais.',
+      'We strictly refuse shortcuts: zero palm oil, zero chemical preservatives, only pure cold-pressed groundnut oil, pristine desert rock salt, and authentic Moth flour.'
+    ];
+  }
+
+  container.innerHTML = paragraphs.map(p => `<p class="text-sm text-gray-700 leading-relaxed font-medium">${p}</p>`).join('');
+}
+
+/**
+ * DYNAMIC MILESTONE STATS RENDERER (admin can add/remove any number)
+ */
+function renderStoreStats() {
+  const container = document.getElementById('home-stats-grid');
+  if (!container) return;
+
+  let stats = [];
+  try { stats = JSON.parse((window.SITE_PAGE_CONTENT && window.SITE_PAGE_CONTENT['home.stats.items']) || '[]'); } catch (e) {}
+  if (!Array.isArray(stats) || !stats.length) {
+    stats = [
+      { val: '40+', label: 'Years Heritage' },
+      { val: '75+', label: 'Delicacies' },
+      { val: '50K+', label: 'Happy Foodies' },
+      { val: '100%', label: 'Pure Oil' }
+    ];
+  }
+
+  container.innerHTML = stats.map(s => `
+    <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-center">
+      <div class="text-2xl font-black text-[#4A0713]">${s.val || ''}</div>
+      <div class="text-[10px] font-bold text-gray-600 uppercase">${s.label || ''}</div>
     </div>
   `).join('');
 }
@@ -913,7 +969,7 @@ function renderStoreTestimonials() {
     const avatar = (!item.avatar || item.avatar.includes('drive_')) 
       ? (item.name.includes('Vikram') ? 'assets/images/avatar_vikram.jpg' : item.name.includes('Ananya') ? 'assets/images/avatar_ananya.jpg' : 'assets/images/avatar_pooja.jpg') 
       : item.avatar;
-    const stars = '<i class="fas fa-star"></i>'.repeat(Math.round(item.rating || 5));
+    const stars = ''.repeat(Math.round(item.rating || 5));
 
     return `
       <div class="p-6 bg-white rounded-3xl border border-amber-200/80 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-300">
@@ -922,7 +978,7 @@ function renderStoreTestimonials() {
           <p class="text-xs text-gray-700 leading-relaxed font-medium italic">"${item.reviewText}"</p>
         </div>
         <div class="flex items-center gap-3 pt-3 border-t border-amber-100">
-          <img src="${avatar}" alt="${item.name}" class="w-11 h-11 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0" />
+          <img src="${avatar}" alt="${item.name}" loading="lazy" decoding="async" class="w-11 h-11 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0" />
           <div>
             <h4 class="font-black text-xs text-gray-900">${item.name}</h4>
             <span class="text-[10px] text-gray-500 font-bold">${item.city || 'Verified Buyer'}</span>
@@ -950,7 +1006,7 @@ function renderStoreFaqs() {
     <div class="bg-white rounded-2xl border border-amber-200/80 shadow-xs overflow-hidden">
       <button onclick="toggleStoreFaq(${idx})" class="w-full p-4 text-left flex items-center justify-between gap-3 font-black text-xs sm:text-sm text-gray-900 hover:text-[#4A0713] transition">
         <span>${item.question}</span>
-        <i id="faq-icon-${idx}" class="fas fa-chevron-down text-amber-500 text-xs shrink-0 transition-transform"></i>
+        <span id="faq-icon-${idx}" class="text-amber-500 text-xs shrink-0 transition-transform font-bold">▼</span>
       </button>
       <div id="faq-content-${idx}" class="hidden px-4 pb-4 text-xs text-gray-600 leading-relaxed font-medium border-t border-amber-50 pt-3">
         ${item.answer}
@@ -1310,15 +1366,35 @@ function renderHeroCarousel() {
   const slides = getHeroSlides();
   if (storeState.heroSlideIndex >= slides.length) storeState.heroSlideIndex = 0;
 
-  track.innerHTML = slides.map((s, idx) => `
-    <div class="w-full h-full shrink-0 relative cursor-pointer" onclick="openBrandFilmModal()">
-      ${s.mediaType === 'video' ? `
-        <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video"' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></video>
-      ` : `
-        <img src="${s.mediaUrl}" alt="${s.title || ''}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-      `}
-    </div>
-  `).join('');
+  // Only rebuild the DOM when the slide set itself changes. Previously this
+  // ran on every auto-scroll tick (every 5s), destroying and recreating
+  // every <video> — which meant ALL hero videos (not just the visible one)
+  // reloaded and restarted autoplay simultaneously, non-stop, in the
+  // background. Now a plain index change just repositions the track and
+  // plays/pauses the relevant video in place.
+  const slideKey = slides.map(s => s.mediaUrl).join('|');
+  if (track.dataset.slideKey !== slideKey) {
+    track.dataset.slideKey = slideKey;
+    track.innerHTML = slides.map((s, idx) => `
+      <div class="w-full h-full shrink-0 relative cursor-pointer" onclick="openBrandFilmModal()">
+        ${s.mediaType === 'video' ? `
+          <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video" autoplay' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" preload="${idx === storeState.heroSlideIndex ? 'auto' : 'metadata'}" loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></video>
+        ` : `
+          <img src="${s.mediaUrl}" alt="${s.title || ''}" ${idx === storeState.heroSlideIndex ? '' : 'loading="lazy" decoding="async"'} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+        `}
+      </div>
+    `).join('');
+  } else {
+    track.querySelectorAll('video').forEach((video, idx) => {
+      video.removeAttribute('id');
+      if (idx === storeState.heroSlideIndex) {
+        video.id = 'hero-active-video';
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+    });
+  }
 
   track.style.transform = `translateX(-${storeState.heroSlideIndex * 100}%)`;
 
@@ -1326,11 +1402,11 @@ function renderHeroCarousel() {
   if (badge) badge.textContent = slides[storeState.heroSlideIndex].title || '4K CINEMATIC FILM • ALL PRODUCTS';
 
   const counter = document.getElementById('hero-slide-counter');
-  if (counter) counter.innerHTML = `<i class="fas fa-images"></i> ${storeState.heroSlideIndex + 1} / ${slides.length}`;
+  if (counter) counter.innerHTML = ` ${storeState.heroSlideIndex + 1} / ${slides.length}`;
 
   const muteBtn = document.getElementById('video-mute-btn');
   if (muteBtn) {
-    muteBtn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+    muteBtn.innerHTML = '';
     muteBtn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
     muteBtn.classList.add('bg-black/70', 'text-[#FBBF24]');
   }
@@ -1410,11 +1486,11 @@ function toggleVideoMute() {
 
   video.muted = !video.muted;
   if (video.muted) {
-    btn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+    btn.innerHTML = '';
     btn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
     btn.classList.add('bg-black/70', 'text-[#FBBF24]');
   } else {
-    btn.innerHTML = '<i class="fas fa-volume-high"></i>';
+    btn.innerHTML = '';
     btn.classList.remove('bg-black/70', 'text-[#FBBF24]');
     btn.classList.add('bg-[#E59819]', 'text-[#32040C]');
   }

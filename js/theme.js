@@ -543,9 +543,10 @@ function buildPatternCss(pattern, primaryColor, accentColor, patternImageUrl) {
 }
 
 function applyBranding(s) {
-  // Logo
-  document.querySelectorAll('img[src*="meerav_logo"]').forEach(img => {
-    if (s.logoUrl) img.src = s.logoUrl;
+  // Update all logo elements across headers, footers, sidebars, modals and brand blocks
+  const logoUrl = s.logoUrl || 'assets/images/meerav_logo.png';
+  document.querySelectorAll('img[src*="logo"], img.brand-logo-img, #header-brand-logo, #footer-brand-logo, #admin-sidebar-logo').forEach(img => {
+    img.src = logoUrl;
   });
 
   // Favicon
@@ -556,7 +557,19 @@ function applyBranding(s) {
     favicon.rel = 'icon';
     document.head.appendChild(favicon);
   }
-  favicon.href = s.faviconUrl || s.logoUrl || 'assets/images/meerav_logo.png';
+  favicon.href = s.faviconUrl || logoUrl;
+
+  // Header and Footer Brand Text
+  if (s.siteName) {
+    const headerTitle = document.getElementById('header-brand-title');
+    if (headerTitle) headerTitle.textContent = s.siteName;
+    const footerName = document.getElementById('footer-brand-name');
+    if (footerName) footerName.textContent = s.siteName;
+  }
+  if (s.tagline) {
+    const headerTagline = document.getElementById('header-brand-tagline');
+    if (headerTagline) headerTagline.textContent = s.tagline;
+  }
 
   // Meta Title
   const titleText = s.metaTitle || s.siteName || 'MEERAV Authentic Bikaneri Namkeens';
@@ -646,6 +659,8 @@ function applyPageContent(map) {
       }
     }
   });
+  if (typeof renderStoreStoryParagraphs === 'function') renderStoreStoryParagraphs();
+  if (typeof renderStoreStats === 'function') renderStoreStats();
 }
 
 window.SITE_PAGE_CONTENT = {};

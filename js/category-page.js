@@ -154,7 +154,7 @@ function renderCategoryPickerCards() {
         isActive ? 'border-[#E59819] shadow-xl' : 'border-amber-200/80 hover:border-[#E59819]'
       }">
       <div class="w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#520914] shadow-lg group-hover:scale-110 transition-all duration-500 border-2 border-[#E59819]/40">
-        <img src="${image}" alt="${name}" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
+        <img src="${image}" alt="${name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
       </div>
       <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${name}</h4>
       <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
@@ -297,12 +297,12 @@ function renderCategoryProducts() {
           onmouseenter="const v=this.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}"
           onmouseleave="const v=this.querySelector('video'); if(v){v.pause();}">
           
-          <img src="${p.image}" alt="${p.name}" class="group-hover:scale-108 transition-transform duration-500" />
+          <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="group-hover:scale-108 transition-transform duration-500" />
           
           ${p.video ? `
             <video class="card-video-preview" src="${p.video}" muted loop playsinline preload="none"></video>
             <div class="absolute bottom-3 right-3 z-20 px-2.5 py-1 bg-black/75 backdrop-blur-md rounded-full text-[#FBBF24] text-[10px] font-black flex items-center gap-1 border border-[#E59819]/50 shadow-md">
-              <i class="fas fa-play text-[8px] animate-pulse"></i>
+              ▶
               <span>4K REEL</span>
             </div>
           ` : ''}
@@ -325,14 +325,14 @@ function renderCategoryProducts() {
 
             <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');" 
               class="w-8 h-8 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
-              <i class="${isWishlisted ? 'fas fa-heart text-red-500' : 'far fa-heart'} text-xs"></i>
+
             </button>
           </div>
 
           <!-- Bottom Quality Banner -->
           <div class="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 text-[10px] text-[#FBBF24] font-bold bg-[#32040C]/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E59819]/40 shadow-md">
-            <span><i class="fas fa-droplet text-[#E59819] mr-0.5"></i> Pure Oil</span>
-            <span class="text-emerald-400 font-black ml-1"><i class="fas fa-check-circle text-[9px]"></i> 100% Fresh</span>
+            <span>Pure Oil</span>
+            <span class="text-emerald-400 font-black ml-1">100% Fresh</span>
           </div>
         </a>
 
@@ -342,7 +342,7 @@ function renderCategoryProducts() {
             <!-- Rating & Reviews -->
             <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-1 text-amber-600 text-xs font-extrabold">
-                <i class="fas fa-star text-amber-500 text-xs"></i>
+
                 <span>${p.rating}</span>
                 <span class="text-gray-400 font-medium text-[11px]">(${p.reviewsCount})</span>
               </div>
@@ -386,7 +386,7 @@ function renderCategoryProducts() {
                 <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
               </div>
               <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
-                <span>View Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
+                <span>View Details</span> →
               </a>
             </div>
 
@@ -394,13 +394,13 @@ function renderCategoryProducts() {
             <div class="grid grid-cols-2 gap-2">
               <button onclick="addToCart('${p.id}', ${selectedIdx})" 
                 class="w-full py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-xl text-xs font-black transition border border-amber-300 flex items-center justify-center gap-1.5">
-                <i class="fas fa-shopping-bag text-xs"></i>
+
                 <span>Add to Cart</span>
               </button>
               
               <button onclick="quickBuy('${p.id}', ${selectedIdx})" 
                 class="w-full py-2.5 px-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819] shadow-md flex items-center justify-center gap-1.5">
-                <i class="fas fa-bolt text-xs text-[#E59819]"></i>
+                
                 <span>Express Buy</span>
               </button>
             </div>

@@ -144,7 +144,7 @@ function renderPDPMediaSlider() {
     <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-black">
       <video id="pdp-slide-video-${idx}" src="${m.url}" loop muted playsinline class="w-full h-full object-cover"></video>
       <div class="absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#FBBF24] text-xs font-black flex items-center gap-1.5 border border-[#E59819]">
-        <i class="fas fa-play text-[10px] text-red-500 animate-pulse"></i>
+        ▶
         <span>4K TASTE FILM</span>
       </div>
     </div>
@@ -158,7 +158,7 @@ function renderPDPMediaSlider() {
     <button onclick="setPDPSlide(${idx})" id="pdp-thumb-${idx}"
       class="w-16 h-16 rounded-2xl border-2 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center">
       <img src="${m.type === 'video' ? m.url : m.url}" alt="Thumbnail" class="w-full h-full object-cover" ${m.type === 'video' ? 'style="opacity:.85"' : ''} />
-      ${m.type === 'video' ? '<div class="absolute inset-0 bg-black/30 flex items-center justify-center"><i class="fas fa-play text-[#FBBF24] text-xs"></i></div>' : ''}
+      ${m.type === 'video' ? '<div class="absolute inset-0 bg-black/30 flex items-center justify-center">▶</div>' : ''}
     </button>
   `).join('');
 }
@@ -272,7 +272,7 @@ function toggleFSMute() {
   fsVideo.muted = pdpState.isMuted;
 
   if (muteIcon) {
-    muteIcon.className = pdpState.isMuted ? 'fas fa-volume-mute text-red-400' : 'fas fa-volume-up text-amber-300';
+    muteIcon.className = pdpState.isMuted ? 'fas fa-volume-xmark' : 'fas fa-volume-high';
   }
 }
 
@@ -431,7 +431,7 @@ function renderPDPRelatedProducts(allProducts) {
     return `
       <div class="product-card overflow-hidden flex flex-col justify-between relative group">
         <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block">
-          <img src="${p.image}" alt="${p.name}" class="group-hover:scale-108 transition-transform duration-500" />
+          <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="group-hover:scale-108 transition-transform duration-500" />
           <div class="absolute top-3 left-3 flex items-center gap-1.5">
             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819]">
               ${p.tag}

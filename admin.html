@@ -52,13 +52,13 @@
 
         <button type="submit" class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-lg shadow-[#4A0713]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#E59819]">
           <span>Authorize & Enter Portal</span>
-          <i class="fas fa-arrow-right"></i>
+          →
         </button>
       </form>
 
       <div class="mt-6 pt-4 border-t border-gray-100 text-center">
         <a href="index" class="text-xs font-bold text-gray-500 hover:text-[#4A0713] transition flex items-center justify-center gap-1.5">
-          <i class="fas fa-arrow-left"></i> Return to Customer Storefront
+          ← Return to Customer Storefront
         </a>
       </div>
 
@@ -74,7 +74,7 @@
 
       <div class="text-center space-y-2 mb-6">
         <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-100 text-[#4A0713] flex items-center justify-center text-2xl">
-          <i class="fas fa-key"></i>
+          
         </div>
         <h2 class="text-xl font-black text-gray-900 tracking-tight">Set Your Password</h2>
         <p class="text-xs text-gray-500 font-medium">You're using a temporary password. Choose a new one to continue — you'll use it every time from now on.</p>
@@ -119,38 +119,38 @@
         
         <!-- Admin Header -->
         <div class="flex items-center gap-3 pb-5 border-b border-gray-800">
-          <img src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="h-10 w-auto object-contain bg-white rounded-lg p-1" />
+          <img id="admin-sidebar-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-11 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm border border-amber-200" />
           <div>
             <span class="font-black text-sm text-white tracking-wider block">MEERAV OPS</span>
             <span class="text-[10px] text-[#FBBF24] font-bold block">Bikaner Dispatch Hub</span>
           </div>
         </div>
 
-        <!-- Multi-Page Navigation Menu (Clean Typography Without Icons) -->
+        <!-- Multi-Page Navigation Menu with Required Symbols -->
         <nav class="space-y-1.5">
-          <button onclick="showAdminPage('overview')" data-page="overview" class="admin-nav-item w-full text-left active">
-            <span>Overview & KPIs</span>
+          <button onclick="showAdminPage('overview')" data-page="overview" class="admin-nav-item w-full text-left active flex items-center gap-2.5">
+            <i class="fas fa-gauge-high"></i> <span>Overview & KPIs</span>
           </button>
-          <button onclick="showAdminPage('orders')" data-page="orders" class="admin-nav-item w-full text-left">
-            <span>Orders & Dispatch</span>
+          <button onclick="showAdminPage('orders')" data-page="orders" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-box"></i> <span>Orders & Dispatch</span>
           </button>
-          <button onclick="showAdminPage('catalog')" data-page="catalog" class="admin-nav-item w-full text-left">
-            <span>Product Catalog CRUD</span>
+          <button onclick="showAdminPage('catalog')" data-page="catalog" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-bag-shopping"></i> <span>Product Catalog</span>
           </button>
-          <button onclick="showAdminPage('categories')" data-page="categories" class="admin-nav-item w-full text-left">
-            <span>Category Management</span>
+          <button onclick="showAdminPage('categories')" data-page="categories" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-layer-group"></i> <span>Categories</span>
           </button>
-          <button onclick="showAdminPage('customers')" data-page="customers" class="admin-nav-item w-full text-left">
-            <span>Customer CRM</span>
+          <button onclick="showAdminPage('customers')" data-page="customers" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-users"></i> <span>Customer CRM</span>
           </button>
-          <button onclick="showAdminPage('notifications')" data-page="notifications" class="admin-nav-item w-full text-left">
-            <span>Notification Hub</span>
+          <button onclick="showAdminPage('notifications')" data-page="notifications" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-bell"></i> <span>Notification Hub</span>
           </button>
-          <button onclick="showAdminPage('settings')" data-page="settings" class="admin-nav-item w-full text-left">
-            <span>Store Settings</span>
+          <button onclick="showAdminPage('settings')" data-page="settings" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-gear"></i> <span>Store Settings & CMS</span>
           </button>
-          <button id="admin-nav-admins-btn" onclick="showAdminPage('admins')" data-page="admins" class="admin-nav-item w-full text-left hidden">
-            <span>Admin Accounts</span>
+          <button id="admin-nav-admins-btn" onclick="showAdminPage('admins')" data-page="admins" class="admin-nav-item w-full text-left hidden flex items-center gap-2.5">
+            <i class="fas fa-shield-halved"></i> <span>Admin Accounts</span>
           </button>
         </nav>
       </div>
@@ -159,10 +159,10 @@
       <div class="pt-5 border-t border-gray-800 space-y-2">
         <div id="admin-identity-badge" class="px-3 py-2 text-[11px] text-gray-400"></div>
         <a href="index" class="flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
-          <span>View Customer Store &rarr;</span>
+          <i class="fas fa-eye"></i> <span>View Storefront</span> <i class="fas fa-arrow-right text-[10px]"></i>
         </a>
-        <button onclick="logoutAdmin()" class="w-full py-2.5 bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/60 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
-          <span>Logout Admin</span>
+        <button onclick="logoutAdmin()" class="w-full py-2.5 bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/60 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fas fa-right-from-bracket"></i> <span>Logout Admin</span>
         </button>
       </div>
     </aside>
@@ -185,28 +185,28 @@
       <!-- Mobile Horizontal Tab Bar (Visible on phones & tablets) -->
       <div class="flex md:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-amber-200/80">
         <button onclick="showAdminPage('overview')" class="px-3.5 py-2 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shrink-0">
-           Overview
+          📊 Overview
         </button>
         <button onclick="showAdminPage('orders')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           Orders
+          📦 Orders
         </button>
         <button onclick="showAdminPage('catalog')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           Products
+          🛍️ Products
         </button>
         <button onclick="showAdminPage('categories')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           Categories
+          🗂️ Categories
         </button>
         <button onclick="showAdminPage('customers')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           CRM
+          👥 CRM
         </button>
         <button onclick="showAdminPage('notifications')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           Alerts
+          🔔 Alerts
         </button>
         <button onclick="showAdminPage('settings')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           Settings
+          ⚙️ Settings
         </button>
         <button id="admin-mobile-admins-btn" onclick="showAdminPage('admins')" class="hidden px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-           Admins
+          🛡️ Admins
         </button>
       </div>
 
@@ -336,7 +336,7 @@
               <input type="text" oninput="searchAdminProducts(this.value)" placeholder="Search products..." 
                 class="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
               <button onclick="openAddProductModal()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819] shrink-0">
-                 Add Product
+                <i class="fas fa-plus"></i> Add Product
               </button>
             </div>
           </div>
@@ -371,7 +371,7 @@
             </div>
 
             <button onclick="openAddCategoryModal()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
-               Add New Category
+              <i class="fas fa-plus"></i> Add New Category
             </button>
           </div>
 
@@ -445,7 +445,7 @@
           <div class="lg:col-span-6 flex flex-col items-center">
             <div class="text-center mb-3">
               <span class="font-bold text-xs text-gray-800 flex items-center justify-center gap-1.5">
-                 WhatsApp Customer Preview
+                <i class="fab fa-whatsapp text-emerald-600"></i> WhatsApp Customer Preview
               </span>
             </div>
 
@@ -481,7 +481,7 @@
           <div class="lg:col-span-6 flex flex-col">
             <div class="text-center mb-3">
               <span class="font-bold text-xs text-gray-800 flex items-center justify-center gap-1.5">
-                 Email Invoice Layout
+                <i class="fas fa-envelope text-blue-600"></i> Email Invoice Layout
               </span>
             </div>
 
@@ -549,7 +549,7 @@
                 <input type="text" id="custom-notif-msg" placeholder="e.g. 10% discount on Bikaneri Aloo Bhujia!" required 
                   class="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none" />
                 <button type="submit" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shrink-0 transition">
-                   Send
+                  <i class="fas fa-paper-plane"></i> Send
                 </button>
               </div>
             </div>
@@ -594,11 +594,57 @@
           <h2 class="font-black text-gray-900 text-base">Store Settings</h2>
           <div class="flex items-center gap-3">
             <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-4 py-2.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer">
-              <i class="fas fa-rotate-left"></i> Reset to Default Brand (MEERAV)
+              ↻ Reset to Default Brand (MEERAV)
             </button>
             <button type="button" onclick="document.getElementById('settings-form').requestSubmit();" id="settings-save-btn" class="px-6 py-2.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
               <i class="fas fa-check"></i> Save All Store Settings
             </button>
+          </div>
+        </div>
+
+        <!-- 2. Brand Identity & Logo -->
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+          <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+            <i class="fas fa-crown text-[#E59819]"></i> Brand Identity & Logos
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Site / Brand Name *</label>
+              <input type="text" id="settings-site-name" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" required />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Tagline</label>
+              <input type="text" id="settings-tagline" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Logo (PNG/SVG with transparency)</label>
+              <div class="flex items-center gap-3">
+                <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
+                <div class="flex-1">
+                  <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="text-xs" />
+                  <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1"></p>
+                </div>
+                <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
+              <div class="flex items-center gap-3">
+                <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
+                <div class="flex-1">
+                  <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="text-xs" />
+                  <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1"></p>
+                </div>
+                <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -640,52 +686,6 @@
         <!-- Main Form -->
         <form id="settings-form" onsubmit="saveSiteSettingsForm(event)" class="space-y-8">
 
-          <!-- 2. Brand Identity & Logo -->
-          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-              <i class="fas fa-crown text-[#E59819]"></i> Brand Identity & Logos
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Site / Brand Name *</label>
-                <input type="text" id="settings-site-name" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" required />
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Tagline</label>
-                <input type="text" id="settings-tagline" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Logo (PNG/SVG with transparency)</label>
-                <div class="flex items-center gap-3">
-                  <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
-                  <div class="flex-1">
-                    <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="text-xs" />
-                    <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1"></p>
-                  </div>
-                  <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    <i class="fas fa-trash-can"></i>
-                  </button>
-                </div>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
-                <div class="flex items-center gap-3">
-                  <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
-                  <div class="flex-1">
-                    <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="text-xs" />
-                    <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1"></p>
-                  </div>
-                  <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    <i class="fas fa-trash-can"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- 1. 1-Click Brand Transformation Kits -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-4">
             <div class="flex items-center justify-between">
@@ -703,7 +703,7 @@
           <!-- 4. Theme — Colors, Typography & UI Border Radius -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-               Theme — Colors, Typography & UI Border Radius
+              <i class="fas fa-palette text-[#E59819]"></i> Theme — Colors, Typography & UI Border Radius
             </h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
               <div>
@@ -833,7 +833,7 @@
           <!-- 5. Commercials, Currency & Shipping Rules -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-               Global Currency & Shipping Rules
+              <i class="fas fa-coins text-[#E59819]"></i> Global Currency & Shipping Rules
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <div>
@@ -955,7 +955,7 @@
           <!-- 8. Contact & Social Channels -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-               Contact & Social Channels
+              <i class="fas fa-address-book text-[#E59819]"></i> Contact & Social Channels
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
@@ -1020,7 +1020,7 @@
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <div class="flex items-center justify-between">
               <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-                <i class="fas fa-robot text-[#E59819]"></i> AI Chatbot Customization
+                 AI Chatbot Customization
               </h3>
               <label class="relative inline-flex items-center cursor-pointer shrink-0">
                 <input type="checkbox" id="settings-chatbot-enabled" class="sr-only peer" checked />
@@ -1059,7 +1059,7 @@
                     <img id="settings-chatbot-avatar-preview" class="w-12 h-12 rounded-full object-cover border border-amber-200 shrink-0" />
                   </div>
                   <label class="flex-1 py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer text-xs">
-                    <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="settings-chatbot-avatar-status">Upload Custom Avatar</span>
+                     <span id="settings-chatbot-avatar-status">Upload Custom Avatar</span>
                     <input type="file" accept="image/*" onchange="handleChatbotAvatarUpload(event)" class="hidden" />
                   </label>
                   <button type="button" onclick="removeChatbotAvatarImage()" class="px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
@@ -1077,7 +1077,7 @@
               <div class="flex items-center justify-between mb-2">
                 <label class="block text-xs font-bold text-gray-600">Quick Prompt Buttons</label>
                 <button type="button" onclick="addChatbotQuickPromptRow()" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1">
-                  <i class="fas fa-plus"></i> Add Quick Prompt
+                  + Add Quick Prompt
                 </button>
               </div>
               <div class="space-y-2" id="settings-chatbot-quick-prompts">
@@ -1093,12 +1093,12 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-                 Promotional Discount Coupons
+                <i class="fas fa-tags text-[#E59819]"></i> Promotional Discount Coupons
               </h3>
               <p class="text-xs text-gray-500 mt-0.5">Create and manage coupon codes with percentage or flat discounts.</p>
             </div>
             <button type="button" onclick="openCouponModal()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
-               Add Coupon
+              <i class="fas fa-plus"></i> Add Coupon
             </button>
           </div>
           <div class="overflow-x-auto">
@@ -1154,12 +1154,12 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-                 Frequently Asked Questions (FAQs)
+                <i class="fas fa-circle-question text-[#E59819]"></i> Frequently Asked Questions (FAQs)
               </h3>
               <p class="text-xs text-gray-500 mt-0.5">Manage questions and answers displayed in the help center accordion.</p>
             </div>
             <button type="button" onclick="openFaqModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
-               Add FAQ
+              <i class="fas fa-plus"></i> Add FAQ
             </button>
           </div>
           <div class="overflow-x-auto">
@@ -1215,13 +1215,13 @@
         <!-- 12. Full Website Text Content CMS (Grouped by section) -->
         <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
           <div>
-            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base"><i class="fas fa-pen-to-square text-indigo-600"></i> Storefront Section Text CMS</h3>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">Storefront Section Text CMS</h3>
             <p class="text-xs text-gray-500 mt-1">Edit every heading, subheading, badge, and paragraph across all storefront sections.</p>
           </div>
           <div id="page-content-fields" class="space-y-4"></div>
           <div class="flex justify-end pt-2">
             <button type="submit" id="page-content-save-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-2xl shadow-md transition flex items-center gap-2">
-              <i class="fas fa-check"></i> Save Section Text
+Save Section Text
             </button>
           </div>
         </form>
@@ -1239,7 +1239,7 @@
             <p class="text-xs text-gray-500">Everyone with access to this portal. Backed by real Supabase Auth accounts — not a shared password.</p>
           </div>
           <button onclick="openAddAdminModal()" class="px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 border border-[#E59819]">
-            <i class="fas fa-user-plus"></i> Register New Admin
+Register New Admin
           </button>
         </div>
 
@@ -1647,7 +1647,7 @@
   <div id="email-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
       <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
-        <h4 class="font-bold text-xs"> Email Invoice Simulator</h4>
+        <h4 class="font-bold text-xs"><i class="fas fa-envelope"></i> Email Invoice Simulator</h4>
         <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-xmark"></i></button>
       </div>
 
@@ -1752,7 +1752,7 @@
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-amber-200">
       <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
         <div class="flex items-center gap-2">
-          <i class="fas fa-star text-[#FBBF24]"></i>
+
           <h3 id="testimonial-modal-title" class="font-black text-sm text-[#FBBF24]">Review Editor</h3>
         </div>
         <button onclick="closeTestimonialModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
@@ -1852,7 +1852,7 @@
           <h3 id="trust-badge-modal-title" class="font-black text-sm text-[#FBBF24]">Feature Badge Editor</h3>
           <span class="text-[10px] text-amber-200">Real-Time Image & Guarantee Card</span>
         </div>
-        <button onclick="closeTrustBadgeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close"><i class="fas fa-xmark"></i></button>
+        <button onclick="closeTrustBadgeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white" title="Close"><i class="fas fa-xmark"></i></button>
       </div>
       <form onsubmit="saveTrustBadgeForm(event)" class="p-6 space-y-4 text-xs">
         <input type="hidden" id="trust-badge-form-id" />
@@ -1870,7 +1870,7 @@
             <img id="trust-badge-form-preview" src="assets/images/feature_oil.jpg" class="w-14 h-14 rounded-xl object-cover border border-amber-200 shrink-0" />
             <div class="flex-1">
               <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
-                <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="trust-badge-form-image-status">Upload Image</span>
+                 <span id="trust-badge-form-image-status">Upload Image</span>
                 <input type="file" accept="image/*" onchange="handleTrustBadgeImageUpload(event)" class="hidden" />
               </label>
             </div>
@@ -1889,7 +1889,7 @@
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeTrustBadgeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]"><i class="fas fa-check"></i> Save Feature Badge</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">Save Feature Badge</button>
         </div>
       </form>
     </div>
@@ -1904,7 +1904,7 @@
           <h3 id="story-modal-title" class="font-black text-sm text-[#FBBF24]">Video Story & Reel Editor</h3>
           <span class="text-[10px] text-amber-200">Watch & Shop Broadcast Carousel</span>
         </div>
-        <button onclick="closeStoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white font-bold text-sm" title="Close"><i class="fas fa-xmark"></i></button>
+        <button onclick="closeStoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white" title="Close"><i class="fas fa-xmark"></i></button>
       </div>
       <form onsubmit="saveStoryForm(event)" class="p-6 space-y-4 text-xs">
         <input type="hidden" id="story-form-id" />
@@ -1928,7 +1928,7 @@
         <div>
           <label class="block text-gray-700 font-bold mb-1">Video / Photo Upload *</label>
           <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
-            <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="story-form-media-status">Upload Video / Photo</span>
+             <span id="story-form-media-status">Upload Video / Photo</span>
             <input type="file" accept="video/*,image/*" onchange="handleStoryMediaUpload(event)" class="hidden" />
           </label>
           <input type="hidden" id="story-form-media-url" required />
@@ -1938,7 +1938,7 @@
           <div class="flex items-center gap-3">
             <img id="story-form-poster-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-xl object-cover border border-amber-200 shrink-0" />
             <label class="flex-1 py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
-              <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="story-form-poster-status">Upload Thumbnail</span>
+               <span id="story-form-poster-status">Upload Thumbnail</span>
               <input type="file" accept="image/*" onchange="handleStoryPosterUpload(event)" class="hidden" />
             </label>
           </div>
@@ -1966,7 +1966,7 @@
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeStoryModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]"><i class="fas fa-check"></i> Save Story Reel</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">Save Story Reel</button>
         </div>
       </form>
     </div>
@@ -1986,7 +1986,7 @@
         <div>
           <label class="block text-gray-700 font-bold mb-1">Hero Cinematic Video</label>
           <label class="w-full py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
-            <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="master-film-video-status">Upload Video</span>
+             <span id="master-film-video-status">Upload Video</span>
             <input type="file" accept="video/*" onchange="handleMasterFilmVideoUpload(event)" class="hidden" />
           </label>
         </div>
@@ -1995,7 +1995,7 @@
           <div class="flex items-center gap-3">
             <img id="master-film-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-14 h-14 rounded-xl object-cover border border-amber-200 shrink-0" />
             <label class="flex-1 py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
-              <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="master-film-image-status">Upload Image</span>
+               <span id="master-film-image-status">Upload Image</span>
               <input type="file" accept="image/*" onchange="handleMasterFilmImageUpload(event)" class="hidden" />
             </label>
           </div>

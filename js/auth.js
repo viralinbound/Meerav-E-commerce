@@ -45,7 +45,7 @@ function showToast(message, type = 'info') {
   const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
 
   toast.className = `toast flex items-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-semibold ${bgColor} shadow-lg`;
-  toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+  toast.innerHTML = `<span>${message}</span>`;
 
   container.appendChild(toast);
 
@@ -94,7 +94,7 @@ function renderCustomerAuthUI() {
             <img src="${avatarSrc}" alt="${authState.customer.name}" 
               class="w-14 h-14 rounded-2xl object-cover border-2 border-[#E59819] shadow-md" />
             <label class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#4A0713] text-[#FBBF24] hover:bg-[#32040C] rounded-full flex items-center justify-center cursor-pointer shadow-md border border-white text-[10px]" title="Change Photo">
-              <i class="fas fa-camera"></i>
+              
               <input type="file" accept="image/*" onchange="handleUserAvatarUpload(event)" class="hidden" />
             </label>
           </div>
@@ -102,19 +102,19 @@ function renderCustomerAuthUI() {
             <h3 class="text-base font-black text-gray-900 truncate">${authState.customer.name}</h3>
             <p class="text-xs text-gray-500 truncate">${authState.customer.phone} &bull; ${authState.customer.email || 'customer@meerav.com'}</p>
             <label class="inline-flex items-center gap-1 text-[10px] font-black text-[#4A0713] hover:underline cursor-pointer mt-0.5">
-              <i class="fas fa-upload text-[9px] text-[#E59819]"></i> Upload New Photo
+Upload New Photo
               <input type="file" accept="image/*" onchange="handleUserAvatarUpload(event)" class="hidden" />
             </label>
           </div>
           <button onclick="logoutCustomer()" title="Logout" class="p-2 text-gray-400 hover:text-red-600 transition">
-            <i class="fas fa-sign-out-alt text-sm"></i>
+            
           </button>
         </div>
 
         <!-- Saved Address Box -->
         <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs space-y-1">
           <div class="font-bold text-gray-800 flex items-center gap-1.5">
-            <i class="fas fa-location-dot text-amber-600"></i> Saved Delivery Address:
+Saved Delivery Address:
           </div>
           <p class="text-gray-600 text-[11px] leading-relaxed">${authState.customer.address} (PIN: ${authState.customer.pincode})</p>
         </div>
@@ -123,7 +123,7 @@ function renderCustomerAuthUI() {
         <div class="p-3.5 bg-gradient-to-r from-[#4A0713]/5 via-amber-50 to-amber-100/40 rounded-2xl border border-[#E59819]/50 text-xs space-y-2">
           <div class="flex items-center justify-between">
             <div class="font-black text-[#4A0713] flex items-center gap-1.5 text-xs">
-              <i class="fas fa-sparkles text-[#E59819]"></i> AI Taste Profile & Preferences
+               AI Taste Profile & Preferences
             </div>
             <button onclick="closeCustomerAuthModal(); toggleChatbot(true);" class="text-[10px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
               <span>Ask Sommelier</span> &rarr;
@@ -149,7 +149,7 @@ function renderCustomerAuthUI() {
         <div class="space-y-2 pt-2 border-t border-gray-100">
           <div class="flex items-center justify-between">
             <h4 class="font-black text-xs text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fas fa-clock-rotate-left text-amber-600"></i> My Order History (${customerOrders.length})
+              ⏱ My Order History (${customerOrders.length})
             </h4>
             <span class="text-[10px] text-gray-400 font-medium">Real-time status</span>
           </div>
@@ -174,17 +174,17 @@ function renderCustomerAuthUI() {
                   <span class="font-black text-gray-900">₹${order.totalAmount} &bull; ${order.paymentMethod}</span>
                   <div class="flex items-center gap-1.5">
                     <button onclick="closeCustomerAuthModal(); openOrderTrackingView('${order.id}');" class="px-2 py-1 bg-amber-50 text-amber-900 font-bold rounded-lg hover:bg-amber-100 transition text-[10px] flex items-center gap-1 border border-amber-200">
-                      <i class="fas fa-map-location-dot text-[#E59819]"></i> Track Map
+Track Map
                     </button>
                     <button onclick="closeCustomerAuthModal(); openOrderHelpBot('${order.id}');" class="px-2 py-1 bg-[#4A0713] text-[#FBBF24] font-black rounded-lg hover:bg-[#32040C] transition text-[10px] flex items-center gap-1 shadow-2xs border border-[#E59819]" title="Ask Order Help Bot">
-                      <i class="fas fa-robot text-[#E59819]"></i> Help Bot
+                       Help Bot
                     </button>
                   </div>
                 </div>
               </div>
             `).join('') : `
               <div class="py-6 text-center text-gray-400 text-xs">
-                <i class="fas fa-box-open text-2xl mb-1 text-gray-300 block"></i>
+
                 No previous orders yet. Add your favorite crispy namkeens to cart!
               </div>
             `}
@@ -194,7 +194,7 @@ function renderCustomerAuthUI() {
         <!-- Write a Review — always uses this account's real name & photo, never editable here -->
         <div class="space-y-2 pt-2 border-t border-gray-100">
           <h4 class="font-black text-xs text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fas fa-star text-amber-500"></i> ${authState.myReviewId ? 'Your Review' : 'Write a Review'}
+${authState.myReviewId ? 'Your Review' : 'Write a Review'}
           </h4>
           <form onsubmit="submitCustomerReview(event)" class="p-3 bg-white rounded-xl border border-gray-200/80 space-y-2 text-xs">
             <div class="flex items-center gap-2">
@@ -202,13 +202,13 @@ function renderCustomerAuthUI() {
               <span class="font-bold text-gray-800">${authState.customer.name}</span>
             </div>
             <div id="review-star-picker" class="flex items-center gap-1 text-lg text-amber-400">
-              ${[1,2,3,4,5].map(n => `<i class="fas fa-star cursor-pointer" data-star="${n}" onclick="setReviewStarRating(${n})"></i>`).join('')}
+              ${[1,2,3,4,5].map(n => ``).join('')}
             </div>
             <input type="hidden" id="review-rating-input" value="5" />
             <textarea id="review-text-input" rows="2" required placeholder="Tell other customers what you thought..."
               class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
             <button type="submit" class="w-full py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5">
-              <i class="fas fa-paper-plane text-[10px]"></i> Submit Review
+Submit Review
             </button>
           </form>
         </div>
@@ -234,7 +234,7 @@ function renderCustomerAuthUI() {
           <div class="w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden border-2 border-[#E59819] shadow-md bg-amber-100 relative group">
             <img id="login-preview-avatar" src="${defaultAvatar}" alt="Human Profile" class="w-full h-full object-cover" />
             <label class="absolute inset-0 bg-black/40 hover:bg-black/60 text-white flex flex-col items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition cursor-pointer">
-              <i class="fas fa-camera mb-0.5"></i> Photo
+               Photo
               <input type="file" accept="image/*" onchange="handlePreviewAvatar(event)" class="hidden" />
             </label>
           </div>
@@ -288,13 +288,13 @@ function renderCustomerAuthUI() {
             <div>
               <label class="block text-gray-600 font-semibold mb-1">Photo Upload</label>
               <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer truncate">
-                <i class="fas fa-camera text-[#E59819] mr-1"></i> <span id="photo-upload-label">Choose Photo</span>
+                 <span id="photo-upload-label">Choose Photo</span>
                 <input type="file" id="cust-login-photo" accept="image/*" onchange="handlePreviewAvatar(event)" class="hidden" />
               </label>
             </div>
           </div>
           <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
-            Create Account & Sign In <i class="fas fa-arrow-right ml-1"></i>
+            Create Account & Sign In →
           </button>
         </form>
         ` : `
@@ -310,7 +310,7 @@ function renderCustomerAuthUI() {
               class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
           </div>
           <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
-            Sign In <i class="fas fa-arrow-right ml-1"></i>
+            Sign In →
           </button>
           <p class="text-center text-[11px] text-gray-400">New here? <button type="button" onclick="switchCustomerAuthView('signup')" class="text-[#4A0713] font-bold hover:underline">Create an account</button></p>
         </form>
@@ -363,7 +363,7 @@ async function submitCustomerReview(event) {
   if (!reviewText) return;
 
   const submitBtn = event.target.querySelector('button[type="submit"]');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Submitting...'; }
 
   const testimonial = {
     id: authState.myReviewId || `t-${authState.customer.id}`,
@@ -379,7 +379,7 @@ async function submitCustomerReview(event) {
 
   const ok = await MiraDB.dbUpsertTestimonial(testimonial);
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane text-[10px]"></i> Submit Review'; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Submit Review'; }
 
   if (ok) {
     authState.myReviewId = testimonial.id;
@@ -446,7 +446,7 @@ async function handleCustomerSignUp(e) {
 
   if (result.error) {
     showToast(result.error.message || 'Could not create account', 'error');
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Create Account & Sign In <i class="fas fa-arrow-right ml-1"></i>'; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Create Account & Sign In →'; }
     return;
   }
 
@@ -483,7 +483,7 @@ async function handleCustomerSignIn(e) {
 
   if (result.error) {
     showToast(result.error.message || 'Invalid email or password', 'error');
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Sign In <i class="fas fa-arrow-right ml-1"></i>'; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Sign In →'; }
     return;
   }
 

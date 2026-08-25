@@ -7,13 +7,41 @@ let addressPickerMap = null;
 let addressMarker = null;
 let liveTrackingMap = null;
 let trackingInterval = null;
+let leafletLoadPromise = null;
+
+/**
+ * Leaflet (~150KB) is only needed on the checkout address picker and the
+ * live order tracking view, so it's loaded on demand instead of blocking
+ * every page's initial parse.
+ */
+function ensureLeaflet(callback) {
+  if (typeof L !== 'undefined') { callback(); return; }
+  if (!leafletLoadPromise) {
+    leafletLoadPromise = new Promise((resolve, reject) => {
+      const cssLink = document.createElement('link');
+      cssLink.rel = 'stylesheet';
+      cssLink.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(cssLink);
+
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+  leafletLoadPromise.then(callback).catch(() => {
+    if (typeof showToast === 'function') showToast('Map failed to load — please retry', 'error');
+  });
+}
 
 /**
  * 1. ADDRESS PICKER MAP INITIALIZATION
  */
 function initAddressPickerMap(defaultLat = 19.0760, defaultLng = 72.8777) {
   const mapContainer = document.getElementById('checkout-map-picker');
-  if (!mapContainer || typeof L === 'undefined') return;
+  if (!mapContainer) return;
+  if (typeof L === 'undefined') { ensureLeaflet(() => initAddressPickerMap(defaultLat, defaultLng)); return; }
 
   // Destroy previous instance if any
   if (addressPickerMap) {
@@ -30,7 +58,7 @@ function initAddressPickerMap(defaultLat = 19.0760, defaultLng = 72.8777) {
   // Custom Delivery Pin
   const pinIcon = L.divIcon({
     className: 'custom-map-pin',
-    html: `<div style="background:#D97706; color:white; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3); border:2px solid white;"><i class="fas fa-location-dot"></i></div>`,
+    html: `<div style="background:#D97706; color:white; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.3); border:2px solid white;"></div>`,
     iconSize: [34, 34],
     iconAnchor: [17, 34]
   });
@@ -95,7 +123,8 @@ function updateCheckoutCoordinates(lat, lng) {
  */
 function initLiveOrderTrackingMap(order) {
   const container = document.getElementById('live-tracking-map-container');
-  if (!container || typeof L === 'undefined') return;
+  if (!container) return;
+  if (typeof L === 'undefined') { ensureLeaflet(() => initLiveOrderTrackingMap(order)); return; }
 
   if (liveTrackingMap) {
     liveTrackingMap.remove();
@@ -123,7 +152,7 @@ function initLiveOrderTrackingMap(order) {
 
   // Warehouse Marker
   const warehouseIcon = L.divIcon({
-    html: `<div style="background:#78350F; color:white; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 8px rgba(0,0,0,0.3);"><i class="fas fa-store"></i></div>`,
+    html: `<div style="background:#78350F; color:white; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 8px rgba(0,0,0,0.3);"></div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 18]
   });
@@ -133,7 +162,7 @@ function initLiveOrderTrackingMap(order) {
 
   // Customer Destination Marker
   const destIcon = L.divIcon({
-    html: `<div style="background:#16A34A; color:white; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 8px rgba(0,0,0,0.3);"><i class="fas fa-house"></i></div>`,
+    html: `<div style="background:#16A34A; color:white; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 3px 8px rgba(0,0,0,0.3);"></div>`,
     iconSize: [36, 36],
     iconAnchor: [18, 18]
   });
@@ -152,7 +181,7 @@ function initLiveOrderTrackingMap(order) {
 
   // Moving Driver Marker
   const driverIcon = L.divIcon({
-    html: `<div class="pulse-badge" style="background:#2563EB; color:white; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid white; box-shadow:0 4px 12px rgba(37,99,235,0.5);"><i class="fas fa-motorcycle text-sm"></i></div>`,
+    html: `<div class="pulse-badge" style="background:#2563EB; color:white; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:3px solid white; box-shadow:0 4px 12px rgba(37,99,235,0.5);"></div>`,
     iconSize: [38, 38],
     iconAnchor: [19, 19]
   });

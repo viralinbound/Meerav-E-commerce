@@ -22,6 +22,8 @@ const adminState = {
   faqs: [],
   editingCouponId: null,
   chatbotQuickPromptsDraft: [],
+  storyParagraphsDraft: [],
+  statsItemsDraft: [],
   editingTestimonialId: null,
   editingFaqId: null,
   siteSettings: null,
@@ -94,30 +96,18 @@ async function loadAdminData() {
     { key: 'hero.subtitle', value: 'Handcrafted namkeens, golden bhujia, crispy mathri and royal sweets prepared fresh in pure oil.', label: 'Hero Subtitle', page: 'hero', sort_order: 3 },
     { key: 'home.showcase.heading', value: 'Select a Category to Explore Snacks', label: 'Category Showcase Heading', page: 'categories', sort_order: 4 },
     { key: 'home.showcase.subheading', value: 'Click any traditional category below to view its handcrafted snacks, live prices & pack sizes', label: 'Category Showcase Subheading', page: 'categories', sort_order: 5 },
-    { key: 'home.trust.item1.image', value: 'assets/images/drive_4.jpg', label: 'Trust Item 1 (Image URL)', page: 'trust_badges', sort_order: 6 },
-    { key: 'home.trust.item1.title', value: 'Pure & Clean Oil', label: 'Trust Item 1 (Title)', page: 'trust_badges', sort_order: 7 },
-    { key: 'home.trust.item1.desc', value: 'Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.', label: 'Trust Item 1 (Description)', page: 'trust_badges', sort_order: 8 },
-    { key: 'home.trust.item2.image', value: 'assets/images/drive_5.jpg', label: 'Trust Item 2 (Image URL)', page: 'trust_badges', sort_order: 9 },
-    { key: 'home.trust.item2.title', value: 'Bikaneri Heritage', label: 'Trust Item 2 (Title)', page: 'trust_badges', sort_order: 10 },
-    { key: 'home.trust.item2.desc', value: 'Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.', label: 'Trust Item 2 (Description)', page: 'trust_badges', sort_order: 11 },
-    { key: 'home.trust.item3.image', value: 'assets/images/meerav_aloo_bhujia_pack.png', label: 'Trust Item 3 (Image URL)', page: 'trust_badges', sort_order: 12 },
-    { key: 'home.trust.item3.title', value: 'Multi-Layer Airtight Pack', label: 'Trust Item 3 (Title)', page: 'trust_badges', sort_order: 13 },
-    { key: 'home.trust.item3.desc', value: 'Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.', label: 'Trust Item 3 (Description)', page: 'trust_badges', sort_order: 14 },
-    { key: 'home.trust.item4.image', value: 'assets/images/drive_3.jpg', label: 'Trust Item 4 (Image URL)', page: 'trust_badges', sort_order: 15 },
-    { key: 'home.trust.item4.title', value: 'Live WhatsApp Alerts', label: 'Trust Item 4 (Title)', page: 'trust_badges', sort_order: 16 },
-    { key: 'home.trust.item4.desc', value: 'Instant WhatsApp notifications with courier tracking and live GPS route maps.', label: 'Trust Item 4 (Description)', page: 'trust_badges', sort_order: 17 },
     { key: 'home.story.heading', value: 'Heritage of Bikaner in Every Crunch', label: 'Story Main Heading', page: 'story', sort_order: 18 },
     { key: 'home.story.subheading', value: 'Four Decades of Culinary Mastery & Pure Taste', label: 'Story Subheading', page: 'story', sort_order: 19 },
-    { key: 'home.story.p1', value: 'Born in the royal desert city of Bikaner, our snacks carry forward generations of secret family spice formulations, handcrafted by master halwais.', label: 'Story Paragraph 1', page: 'story', sort_order: 20 },
-    { key: 'home.story.p2', value: 'We strictly refuse shortcuts: zero palm oil, zero chemical preservatives, only pure cold-pressed groundnut oil, pristine desert rock salt, and authentic Moth flour.', label: 'Story Paragraph 2', page: 'story', sort_order: 21 },
-    { key: 'home.stats.item1.val', value: '40+', label: 'Stat 1 Value', page: 'story', sort_order: 22 },
-    { key: 'home.stats.item1.label', value: 'Years Heritage', label: 'Stat 1 Label', page: 'story', sort_order: 23 },
-    { key: 'home.stats.item2.val', value: '75+', label: 'Stat 2 Value', page: 'story', sort_order: 24 },
-    { key: 'home.stats.item2.label', value: 'Delicacies', label: 'Stat 2 Label', page: 'story', sort_order: 25 },
-    { key: 'home.stats.item3.val', value: '50K+', label: 'Stat 3 Value', page: 'story', sort_order: 26 },
-    { key: 'home.stats.item3.label', value: 'Happy Foodies', label: 'Stat 3 Label', page: 'story', sort_order: 27 },
-    { key: 'home.stats.item4.val', value: '100%', label: 'Stat 4 Value', page: 'story', sort_order: 28 },
-    { key: 'home.stats.item4.label', value: 'Pure Oil', label: 'Stat 4 Label', page: 'story', sort_order: 29 },
+    { key: 'home.story.paragraphs', value: JSON.stringify([
+        'Born in the royal desert city of Bikaner, our snacks carry forward generations of secret family spice formulations, handcrafted by master halwais.',
+        'We strictly refuse shortcuts: zero palm oil, zero chemical preservatives, only pure cold-pressed groundnut oil, pristine desert rock salt, and authentic Moth flour.'
+      ]), label: 'Story Paragraphs (add/remove as needed)', page: 'story', sort_order: 20 },
+    { key: 'home.stats.items', value: JSON.stringify([
+        { val: '40+', label: 'Years Heritage' },
+        { val: '75+', label: 'Delicacies' },
+        { val: '50K+', label: 'Happy Foodies' },
+        { val: '100%', label: 'Pure Oil' }
+      ]), label: 'Milestone Stats (add/remove as needed)', page: 'story', sort_order: 22 },
     { key: 'reviews.title', value: 'Loved by Over 50,000+ Snack Connoisseurs', label: 'Reviews Section Title', page: 'reviews', sort_order: 30 },
     { key: 'faq.title', value: 'Frequently Asked Questions', label: 'FAQ Section Title', page: 'faq', sort_order: 31 },
     { key: 'footer.bio', value: 'Authentic royal Bikaneri namkeens, bhujia and sweets crafted in pure oil with heritage recipes.', label: 'Footer Bio', page: 'footer', sort_order: 32 }
@@ -340,7 +330,7 @@ async function handleAdminLogin(event) {
 
   if (result.error) {
     if (errorBox) { errorBox.textContent = result.error.message || 'Invalid credentials'; errorBox.classList.remove('hidden'); }
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> <i class="fas fa-arrow-right"></i>'; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> →'; }
     return;
   }
 
@@ -526,14 +516,13 @@ function renderAdminOrders() {
           <option value="Delivered" ${order.orderStatus === 'Delivered' ? 'selected' : ''}>Delivered</option>
         </select>
       </td>
-      <td>
         <div class="flex items-center gap-1.5">
           <button onclick="previewWhatsAppNotification('${order.id}')" title="WhatsApp Alert" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition">
-  <i class="fab fa-whatsapp"></i> WhatsApp
-</button>
-<button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs font-bold transition">
-  <i class="fas fa-file-invoice"></i> Receipt
-</button>
+            💬 WhatsApp
+          </button>
+          <button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs font-bold transition">
+            📄 Receipt
+          </button>
         </div>
       </td>
     </tr>
@@ -616,18 +605,17 @@ function renderAdminProducts() {
           <button onclick="toggleProductStock('${p.id}')" class="px-2.5 py-1 text-[10px] font-black rounded-full transition flex items-center gap-1 ${
             p.inStock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200'
           }">
-            <i class="fas ${p.inStock ? 'fa-circle-check' : 'fa-circle-xmark'} text-[9px]"></i>
+
             ${p.inStock ? 'In Stock' : 'Out of Stock'}
           </button>
         </td>
-        <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-  <i class="fas fa-pen"></i> Edit
-</button>
-<button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-  <i class="fas fa-trash-can"></i> Delete
-</button>
+              ✎ Edit
+            </button>
+            <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+              ✕ Delete
+            </button>
           </div>
         </td>
       </tr>
@@ -702,7 +690,7 @@ function renderProductPhotosGrid() {
     <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-white shrink-0">
       <img src="${url}" class="w-full h-full object-contain" />
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
-      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
+      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"></button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
 }
@@ -714,7 +702,7 @@ function renderProductVideosGrid() {
     <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-black shrink-0">
       <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
-      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
+      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"></button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
 }
@@ -926,14 +914,13 @@ function renderAdminCategories() {
             ${count} Products
           </span>
         </td>
-        <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-  <i class="fas fa-pen"></i> Edit
-</button>
-<button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-  <i class="fas fa-trash-can"></i> Delete
-</button>
+              ✎ Edit
+            </button>
+            <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+              ✕ Delete
+            </button>
           </div>
         </td>
       </tr>
@@ -1110,13 +1097,12 @@ function renderAdminCustomers() {
         </span>
       </td>
       <td class="text-xs font-black text-emerald-700">${formatPrice(c.totalSpent)}</td>
-      <td class="text-right">
         <div class="flex items-center justify-end gap-1.5">
-          <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs transition border border-emerald-300">
-            <i class="fab fa-whatsapp"></i>
+          <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold transition border border-emerald-300 flex items-center gap-1">
+            💬 Chat
           </a>
-          <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition">
-            View History
+          <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition flex items-center gap-1">
+            👁 History
           </button>
         </div>
       </td>
@@ -1147,7 +1133,7 @@ function renderAdminNotificationLogs() {
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
           n.type === 'WhatsApp' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
         }">
-          <i class="${n.type === 'WhatsApp' ? 'fab fa-whatsapp' : 'fas fa-envelope'}"></i>
+
           ${n.type}
         </span>
       </td>
@@ -1350,7 +1336,7 @@ function renderChatbotQuickPromptRows() {
     <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
       <input type="text" data-qp-label="${i}" value="${escapeAttr(qp.label || '')}" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" oninput="updateChatbotQuickPromptDraft(${i}, 'label', this.value)" />
       <input type="text" data-qp-prompt="${i}" value="${escapeAttr(qp.prompt || '')}" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" oninput="updateChatbotQuickPromptDraft(${i}, 'prompt', this.value)" />
-      <button type="button" onclick="removeChatbotQuickPromptRow(${i})" title="Remove" class="p-2 text-red-500 hover:bg-red-50 rounded-lg"><i class="fas fa-trash-can"></i></button>
+      <button type="button" onclick="removeChatbotQuickPromptRow(${i})" title="Remove" class="p-2 text-red-500 hover:bg-red-50 rounded-lg"></button>
     </div>
   `).join('') || `<p class="text-[11px] text-gray-400">No quick prompts yet — click "Add Quick Prompt" above.</p>`;
 }
@@ -1470,7 +1456,7 @@ function renderPatternStyleButtons() {
   container.innerHTML = PATTERN_STYLE_OPTIONS.map(opt => `
     <button type="button" onclick="setBackgroundPattern('${opt.value}')" data-pattern-btn="${opt.value}"
       class="pattern-style-btn py-2.5 rounded-xl text-[10px] font-bold border transition flex flex-col items-center gap-1">
-      <i class="fas ${opt.icon} text-sm"></i>
+      
       <span>${opt.label}</span>
     </button>
   `).join('');
@@ -1760,12 +1746,12 @@ async function persistSiteSettings(updated, activityLabel) {
 async function saveSiteSettingsForm(event) {
   event.preventDefault();
   const submitBtn = document.getElementById('settings-save-btn');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
 
   const updated = collectSiteSettingsFromForm();
   const ok = await persistSiteSettings(updated, 'Store Settings');
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-check"></i> Save All Store Settings'; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Save All Store Settings'; }
   if (ok) showToast('Store settings saved & applied live across website!', 'success');
 }
 
@@ -1927,13 +1913,13 @@ function renderAdminCoupons() {
       <td class="p-3 text-xs text-gray-500 truncate max-w-xs">${c.description || '—'}</td>
       <td class="p-3">
         <button onclick="toggleCouponActive('${c.id}')" title="${c.isActive ? 'Click to deactivate' : 'Click to activate'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${c.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
-          <i class="fas ${c.isActive ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+
           ${c.isActive ? 'Active' : 'Inactive'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
-        <button onclick="deleteCoupon('${c.id}')" title="Delete Coupon" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
+        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">✎ Edit</button>
+        <button onclick="deleteCoupon('${c.id}')" title="Delete Coupon" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">✕ Delete</button>
       </td>
     </tr>
   `).join('');
@@ -2170,13 +2156,12 @@ function renderAdminFaqs() {
       <td class="p-3 text-xs text-gray-500 font-mono">${f.sortOrder || 1}</td>
       <td class="p-3">
         <button onclick="toggleFaqVisible('${f.id}')" title="${f.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${f.isVisible !== false ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
-          <i class="fas ${f.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i>
-          ${f.isVisible !== false ? 'Visible' : 'Hidden'}
+          ${f.isVisible !== false ? '● Visible' : '○ Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
-        <button onclick="deleteFaq('${f.id}')" title="Delete FAQ" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
+        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">✎ Edit</button>
+        <button onclick="deleteFaq('${f.id}')" title="Delete FAQ" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">✕ Delete</button>
       </td>
     </tr>
   `).join('');
@@ -2291,31 +2276,161 @@ function renderPageContentForm() {
         <span>${page.toUpperCase()} SECTION TEXT</span>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        ${pageRows.map(row => `
+        ${pageRows.map(row => {
+          const isImage = row.key.endsWith('.image');
+          if (row.key === 'home.story.paragraphs') {
+            if (!(adminState.storyParagraphsDraft && adminState.storyParagraphsDraft.length)) {
+              try { adminState.storyParagraphsDraft = JSON.parse(row.value || '[]'); } catch (e) { adminState.storyParagraphsDraft = []; }
+            }
+            return `
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-gray-700 mb-1">${row.label} <code class="text-[10px] text-gray-400 font-normal">(${row.key})</code></label>
+                <div id="story-paragraphs-rows" class="space-y-2"></div>
+                <button type="button" onclick="addStoryParagraphRow()" class="mt-2 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold flex items-center gap-1.5"><i class="fas fa-plus"></i> Add Paragraph</button>
+              </div>
+            `;
+          }
+          if (row.key === 'home.stats.items') {
+            if (!(adminState.statsItemsDraft && adminState.statsItemsDraft.length)) {
+              try { adminState.statsItemsDraft = JSON.parse(row.value || '[]'); } catch (e) { adminState.statsItemsDraft = []; }
+            }
+            return `
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-gray-700 mb-1">${row.label} <code class="text-[10px] text-gray-400 font-normal">(${row.key})</code></label>
+                <div id="stats-items-rows" class="space-y-2"></div>
+                <button type="button" onclick="addStatsItemRow()" class="mt-2 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-[11px] font-bold flex items-center gap-1.5"><i class="fas fa-plus"></i> Add Stat</button>
+              </div>
+            `;
+          }
+          if (isImage) {
+            return `
+              <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">${row.label} <code class="text-[10px] text-gray-400 font-normal">(${row.key})</code></label>
+                <div class="flex items-center gap-3">
+                  <img src="${row.value || 'assets/images/feature_oil.jpg'}" class="w-12 h-12 rounded-xl object-cover border border-amber-200 shrink-0" data-content-image-preview="${row.key}" />
+                  <label class="flex-1 py-2 px-3 bg-white hover:bg-amber-50 text-amber-900 font-bold border border-gray-200 rounded-xl text-center block cursor-pointer text-[11px]">
+                     <span data-content-image-status="${row.key}">Upload Image</span>
+                    <input type="file" accept="image/*" onchange="handlePageContentImageUpload(event, '${row.key}')" class="hidden" />
+                  </label>
+                </div>
+                <input type="hidden" data-content-key="${row.key}" value="${escapeAttr(row.value || '')}" />
+              </div>
+            `;
+          }
+          return `
           <div class="${row.value && row.value.length > 80 ? 'sm:col-span-2' : ''}">
             <label class="block text-xs font-bold text-gray-700 mb-1">${row.label} <code class="text-[10px] text-gray-400 font-normal">(${row.key})</code></label>
             <textarea data-content-key="${row.key}" rows="${row.value && row.value.length > 80 ? 3 : 1}" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400">${row.value || ''}</textarea>
           </div>
-        `).join('')}
+        `;
+        }).join('')}
       </div>
     </div>
   `).join('');
+
+  renderStoryParagraphRows();
+  renderStatsItemRows();
+}
+
+function renderStoryParagraphRows() {
+  const container = document.getElementById('story-paragraphs-rows');
+  if (!container) return;
+  const rows = adminState.storyParagraphsDraft || [];
+  container.innerHTML = rows.map((p, idx) => `
+    <div class="flex items-start gap-2">
+      <textarea rows="2" placeholder="Paragraph ${idx + 1} text..." class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400" onchange="updateStoryParagraphDraft(${idx}, this.value)">${p || ''}</textarea>
+      <button type="button" onclick="removeStoryParagraphRow(${idx})" title="Delete Paragraph" class="mt-1 w-8 h-8 shrink-0 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg"><i class="fas fa-trash-can"></i></button>
+    </div>
+  `).join('') || '<p class="text-xs text-gray-400">No paragraphs yet — click Add Paragraph.</p>';
+}
+
+function updateStoryParagraphDraft(idx, value) {
+  if (!adminState.storyParagraphsDraft || adminState.storyParagraphsDraft[idx] === undefined) return;
+  adminState.storyParagraphsDraft[idx] = value;
+}
+
+function addStoryParagraphRow() {
+  adminState.storyParagraphsDraft = adminState.storyParagraphsDraft || [];
+  adminState.storyParagraphsDraft.push('');
+  renderStoryParagraphRows();
+}
+
+function removeStoryParagraphRow(idx) {
+  adminState.storyParagraphsDraft.splice(idx, 1);
+  renderStoryParagraphRows();
+}
+
+function renderStatsItemRows() {
+  const container = document.getElementById('stats-items-rows');
+  if (!container) return;
+  const rows = adminState.statsItemsDraft || [];
+  container.innerHTML = rows.map((s, idx) => `
+    <div class="flex items-center gap-2">
+      <input type="text" value="${escapeAttr(s.val || '')}" placeholder="Value e.g. 40+" class="w-28 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-400" onchange="updateStatsItemDraft(${idx}, 'val', this.value)" />
+      <input type="text" value="${escapeAttr(s.label || '')}" placeholder="Label e.g. Years Heritage" class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400" onchange="updateStatsItemDraft(${idx}, 'label', this.value)" />
+      <button type="button" onclick="removeStatsItemRow(${idx})" title="Delete Stat" class="w-8 h-8 shrink-0 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg"><i class="fas fa-trash-can"></i></button>
+    </div>
+  `).join('') || '<p class="text-xs text-gray-400">No stats yet — click Add Stat.</p>';
+}
+
+function updateStatsItemDraft(idx, field, value) {
+  if (!adminState.statsItemsDraft || !adminState.statsItemsDraft[idx]) return;
+  adminState.statsItemsDraft[idx][field] = value;
+}
+
+function addStatsItemRow() {
+  adminState.statsItemsDraft = adminState.statsItemsDraft || [];
+  adminState.statsItemsDraft.push({ val: '', label: '' });
+  renderStatsItemRows();
+}
+
+function removeStatsItemRow(idx) {
+  adminState.statsItemsDraft.splice(idx, 1);
+  renderStatsItemRows();
+}
+
+async function handlePageContentImageUpload(event, key) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.querySelector(`[data-content-image-status="${key}"]`);
+  const hiddenInput = document.querySelector(`[data-content-key="${key}"]`);
+  const previousUrl = hiddenInput ? hiddenInput.value.trim() : '';
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'trust-badges');
+  if (url) {
+    if (hiddenInput) hiddenInput.value = url;
+    const preview = document.querySelector(`[data-content-image-preview="${key}"]`);
+    if (preview) preview.src = url;
+    if (status) status.textContent = 'Uploaded — click Save to apply';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
 }
 
 async function savePageContentForm(event) {
   event.preventDefault();
   const submitBtn = document.getElementById('page-content-save-btn');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
 
   const before = adminState.pageContentRows.map(row => ({ key: row.key, value: row.value, label: row.label, page: row.page, sortOrder: row.sort_order }));
   const entries = adminState.pageContentRows.map(row => {
+    if (row.key === 'home.story.paragraphs') {
+      const cleaned = (adminState.storyParagraphsDraft || []).filter(p => p && p.trim());
+      return { key: row.key, value: JSON.stringify(cleaned), label: row.label, page: row.page, sortOrder: row.sort_order };
+    }
+    if (row.key === 'home.stats.items') {
+      const cleaned = (adminState.statsItemsDraft || []).filter(s => s && ((s.val || '').trim() || (s.label || '').trim()));
+      return { key: row.key, value: JSON.stringify(cleaned), label: row.label, page: row.page, sortOrder: row.sort_order };
+    }
     const el = document.querySelector(`[data-content-key="${row.key}"]`);
     return { key: row.key, value: el ? el.value : row.value, label: row.label, page: row.page, sortOrder: row.sort_order };
   });
 
   const ok = await MiraDB.dbUpsertPageContent(entries, MiraDB.adminClient);
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-check"></i> Save Text Content'; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Save Text Content'; }
 
   if (!ok) {
     showToast('Could not save text content — please retry', 'error');
@@ -2377,8 +2492,8 @@ async function renderAdminAccounts() {
         ${a.role === 'root' || a.id === meId ? `
           <span class="text-[10px] text-gray-300 font-bold">—</span>
         ` : `
-          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">
-             View
+          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition flex items-center gap-1 ml-auto">
+            👁 View
           </button>
         `}
       </td>
@@ -2503,7 +2618,7 @@ async function openAdminDetailModal(adminId) {
   } else {
     actionsBox.innerHTML = `
       <button onclick="resetAdminPasswordAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', '${a.email}')" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition">
-        <i class="fas fa-key"></i> Reset Password
+         Reset Password
       </button>
       <button onclick="toggleBanAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', ${a.banned})" class="px-3 py-2 ${a.banned ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200'} border rounded-xl text-xs font-bold transition">
          ${a.banned ? 'Unban' : 'Ban'}
@@ -2766,12 +2881,12 @@ function renderAdminTrustBadges() {
       <td class="p-3 text-xs font-bold text-gray-700">#${b.sortOrder || 1}</td>
       <td class="p-3">
         <button onclick="toggleTrustBadgeVisible('${b.id}')" title="${b.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${b.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
-          <i class="fas ${b.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${b.isVisible !== false ? 'Visible' : 'Hidden'}
+${b.isVisible !== false ? 'Visible' : 'Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition"><i class="fas fa-pen"></i> Edit</button>
-        <button onclick="deleteTrustBadge('${b.id}')" title="Delete Badge" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition"><i class="fas fa-trash-can"></i> Delete</button>
+        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">Edit</button>
+        <button onclick="deleteTrustBadge('${b.id}')" title="Delete Badge" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition">Delete</button>
       </td>
     </tr>
   `).join('');
@@ -2913,16 +3028,16 @@ function renderAdminStories() {
   const s = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
   const masterFilmRow = `
     <div class="flex items-center gap-3 p-3 bg-[#4A0713]/5 border-2 border-[#4A0713]/20 rounded-2xl">
-      <div class="w-8 h-8 rounded-full bg-[#4A0713] text-[#FBBF24] flex items-center justify-center shrink-0" title="Always plays first"><i class="fas fa-thumbtack text-[10px]"></i></div>
+      <div class="w-8 h-8 rounded-full bg-[#4A0713] text-[#FBBF24] flex items-center justify-center shrink-0" title="Always plays first"></div>
       <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
         <video src="${s.heroVideoUrl || 'assets/videos/meerav_brand_film.mp4'}" poster="${s.heroImageUrl || ''}" muted class="w-full h-full object-cover"></video>
-        <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs"><i class="fas fa-play"></i></span>
+        <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs">▶</span>
       </div>
       <div class="flex-1 min-w-0">
         <div class="font-black text-gray-900 text-xs truncate">Master Brand Film</div>
         <div class="text-[10px] text-gray-500 mt-1">Always plays first, on every page load</div>
       </div>
-      <button onclick="openMasterFilmModal()" title="Edit Master Film" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg shrink-0"><i class="fas fa-pen"></i></button>
+      <button onclick="openMasterFilmModal()" title="Edit Master Film" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg shrink-0"></button>
     </div>
   `;
 
@@ -2934,7 +3049,7 @@ function renderAdminStories() {
       <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
         ${s.mediaType === 'video' ? `
           <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted class="w-full h-full object-cover"></video>
-          <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs"><i class="fas fa-play"></i></span>
+          <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs">▶</span>
         ` : `
           <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" class="w-full h-full object-cover" />
         `}
@@ -2943,18 +3058,18 @@ function renderAdminStories() {
         <div class="font-black text-gray-900 text-xs truncate">${s.title}</div>
         <div class="text-[10px] text-gray-500 mt-1 flex flex-wrap items-center gap-1.5">
           <span class="px-1.5 py-0.5 rounded-full font-black flex items-center gap-1 ${s.mediaType === 'video' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}">
-            <i class="fas ${s.mediaType === 'video' ? 'fa-video' : 'fa-image'}"></i> ${s.mediaType === 'video' ? '4K Video' : 'Photo'}
+            ▶ ${s.mediaType === 'video' ? '4K Video' : 'Photo'}
           </span>
           <span>${s.tag || '—'}</span>
           <span class="text-emerald-700 font-bold">₹${s.price || 99}</span>
         </div>
       </div>
       <button onclick="toggleStoryVisible('${s.id}')" title="${s.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-1 rounded-full text-[10px] font-black flex items-center gap-1 shrink-0 ${s.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
-        <i class="fas ${s.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i>
+
       </button>
       <div class="flex items-center gap-1 shrink-0">
-        <button onclick="openStoryModal('${s.id}')" title="Edit Story" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
-        <button onclick="deleteStory('${s.id}')" title="Delete Story" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
+        <button onclick="openStoryModal('${s.id}')" title="Edit Story" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
+        <button onclick="deleteStory('${s.id}')" title="Delete Story" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"></button>
       </div>
     </div>
   `).join('');

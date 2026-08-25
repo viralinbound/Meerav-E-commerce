@@ -32,11 +32,10 @@
     }
   </script>
 
-  <!-- Leaflet OpenStreetMap CDN -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet OpenStreetMap is loaded on demand by js/map.js (checkout/tracking only) -->
 
   <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <!-- Custom Royal Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
   
@@ -59,7 +58,7 @@
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
         <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
-          <i class="fas fa-user-shield"></i> Admin Portal
+Admin Portal
         </a>
       </div>
     </div>
@@ -73,18 +72,18 @@
       <div class="flex items-center justify-between h-20 gap-4">
         
         <!-- Official Brand Logo -->
-        <div class="flex items-center gap-3 cursor-pointer" onclick="returnToStorefront()">
-          <img src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="h-14 sm:h-16 w-auto object-contain filter drop-shadow-sm hover:scale-105 transition-transform duration-300" />
+        <a href="index" class="flex items-center gap-3 cursor-pointer group">
+          <img id="header-brand-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-12 sm:h-14 w-auto object-contain filter drop-shadow-sm group-hover:scale-105 transition-transform duration-300" />
           <div class="hidden sm:block border-l border-amber-300 pl-3">
-            <span class="text-[11px] font-black tracking-wider uppercase text-[#4A0713] block">From the Heart of Bikaner</span>
-            <span class="text-[9px] font-bold text-amber-700 block">An Authentic Bikaneri Taste</span>
+            <span id="header-brand-title" class="text-xs font-black tracking-wider uppercase text-[#4A0713] block leading-tight">MEERAV</span>
+            <span id="header-brand-tagline" class="text-[10px] font-bold text-amber-700 block leading-tight">From the Heart of Bikaner</span>
           </div>
-        </div>
+        </a>
 
         <!-- Search Bar -->
         <div class="flex-1 max-w-md hidden md:block">
           <div class="relative">
-            <i class="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <svg class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M16.5 16.5L21 21"></path></svg>
             <input type="text" id="store-search-input" placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri, Makhana..."
               class="w-full pl-11 pr-4 py-2.5 bg-amber-50/50 border border-amber-200 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white transition shadow-inner" />
           </div>
@@ -156,13 +155,11 @@
 
               <a href="category?cat=all" id="hero-cta-btn"
                 class="px-7 py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black rounded-2xl shadow-xl shadow-[#4A0713]/30 transition transform hover:-translate-y-0.5 border border-[#E59819] inline-flex items-center gap-2">
-                <span id="hero-cta-text">Order Online Now</span>
-                <i class="fas fa-arrow-right text-xs"></i>
+                <span id="hero-cta-text">Explore Category Collections</span>
               </a>
 
               <button onclick="openBrandFilmModal()"
                 class="px-6 py-3.5 bg-gradient-to-r from-[#E59819] to-amber-500 hover:from-amber-600 hover:to-[#E59819] text-[#32040C] text-sm font-black rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2 border border-white/40 cursor-pointer">
-                <i class="fas fa-play text-xs"></i>
                 <span id="hero-secondary-cta-text">Explore Categories</span>
               </button>
             </div>
@@ -170,15 +167,15 @@
             <!-- Authentic Trust Badges -->
             <div class="grid grid-cols-3 gap-3 pt-6 border-t border-amber-300/60 max-w-lg mx-auto lg:mx-0">
               <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-droplet text-xs"></i> Pure & Clean</div>
+                <div class="text-sm font-black text-[#4A0713]">Pure & Clean</div>
                 <div class="text-[11px] text-gray-600 font-medium">Cold-Pressed Oil</div>
               </div>
               <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-leaf text-xs"></i> 100% Veg</div>
+                <div class="text-sm font-black text-[#4A0713]">100% Veg</div>
                 <div class="text-[11px] text-gray-600 font-medium">Certified Recipe</div>
               </div>
               <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-location-dot text-xs"></i> Bikaner Hub</div>
+                <div class="text-sm font-black text-[#4A0713]">Bikaner Hub</div>
                 <div class="text-[11px] text-gray-600 font-medium">Same-Day Dispatch</div>
               </div>
             </div>
@@ -283,7 +280,6 @@
         <a href="category?cat=all"
           class="px-8 py-4 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 shrink-0 flex items-center gap-2 border border-white/20">
           <span id="home-total-products-btn">Explore All Products</span>
-          <i class="fas fa-arrow-right text-xs"></i>
         </a>
       </div>
     </section>
@@ -311,31 +307,13 @@
           <p data-ck="home.story.subheading" class="text-sm font-bold text-[#E59819] uppercase tracking-wider">
             Four Decades of Culinary Mastery & Pure Taste
           </p>
-          <p data-ck="home.story.p1" class="text-sm text-gray-700 leading-relaxed font-medium">
-            Born in the royal desert city of Bikaner, our snacks carry forward generations of secret family spice formulations, handcrafted by master halwais.
-          </p>
-          <p data-ck="home.story.p2" class="text-sm text-gray-700 leading-relaxed font-medium">
-            We strictly refuse shortcuts: zero palm oil, zero chemical preservatives, only pure cold-pressed groundnut oil, pristine desert rock salt, and authentic Moth flour.
-          </p>
+          <div id="home-story-paragraphs" class="space-y-3">
+            <!-- Populated dynamically by store.js -->
+          </div>
 
-          <!-- 4 Milestone Stats Counters -->
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-amber-200">
-            <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-center">
-              <div data-ck="home.stats.item1.val" class="text-2xl font-black text-[#4A0713]">40+</div>
-              <div data-ck="home.stats.item1.label" class="text-[10px] font-bold text-gray-600 uppercase">Years Heritage</div>
-            </div>
-            <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-center">
-              <div data-ck="home.stats.item2.val" class="text-2xl font-black text-[#4A0713]">75+</div>
-              <div data-ck="home.stats.item2.label" class="text-[10px] font-bold text-gray-600 uppercase">Delicacies</div>
-            </div>
-            <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-center">
-              <div data-ck="home.stats.item3.val" class="text-2xl font-black text-[#4A0713]">50K+</div>
-              <div data-ck="home.stats.item3.label" class="text-[10px] font-bold text-gray-600 uppercase">Happy Foodies</div>
-            </div>
-            <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-center">
-              <div data-ck="home.stats.item4.val" class="text-2xl font-black text-[#4A0713]">100%</div>
-              <div data-ck="home.stats.item4.label" class="text-[10px] font-bold text-gray-600 uppercase">Pure Oil</div>
-            </div>
+          <!-- Milestone Stats Counters (Full Dynamic CMS) -->
+          <div id="home-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-amber-200">
+            <!-- Populated dynamically by store.js -->
           </div>
         </div>
 
@@ -391,7 +369,7 @@
           <!-- Column 1: Brand Bio -->
           <div class="space-y-4">
             <div class="flex items-center gap-3">
-              <img src="assets/images/meerav_logo.png" alt="Brand Logo" class="h-12 w-auto object-contain bg-white rounded-xl p-1" />
+              <img id="footer-brand-logo" src="assets/images/meerav_logo.png" alt="Brand Logo" class="brand-logo-img h-12 w-auto object-contain bg-white rounded-2xl p-1.5 shadow-md border border-amber-200" />
               <div>
                 <span id="footer-brand-name" class="font-black text-white text-base block">MEERAV</span>
                 <span class="text-[10px] text-[#FBBF24] font-bold block">Authentic Bikaneri Snacks</span>
@@ -475,7 +453,7 @@
         <p class="text-xs text-gray-600 font-medium">Live GPS tracking of your Meerav fresh namkeens delivery van en route to your address</p>
       </div>
 
-      <button onclick="returnToStorefront()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">← Return to Storefront</button>
+      <button onclick="returnToStorefront()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-bold rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">Return to Storefront</button>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
@@ -895,7 +873,6 @@
       <button onclick="openCheckoutModal()"
         class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-sm rounded-2xl shadow-lg shadow-[#4A0713]/30 flex items-center justify-center gap-2 transition transform active:scale-98 border border-[#E59819]">
         <span>Proceed to Checkout</span>
-        <i class="fas fa-arrow-right text-xs"></i>
       </button>
     </div>
   </div>
@@ -924,10 +901,10 @@
         <img id="modal-brand-image" class="w-full h-full object-contain hidden" alt="" />
 
         <button onclick="prevHeroSlide()" class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center shadow-2xl transition border border-white/20 z-20" title="Previous">
-          <i class="fas fa-chevron-left"></i>
+          ←
         </button>
         <button onclick="nextHeroSlide()" class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center shadow-2xl transition border border-white/20 z-20" title="Next">
-          <i class="fas fa-chevron-right"></i>
+          →
         </button>
       </div>
 
@@ -938,7 +915,7 @@
         </div>
         <div class="flex items-center gap-3">
           <a href="category?cat=all" class="px-6 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
-            Shop All Delicacies <i class="fas fa-arrow-right text-[10px]"></i>
+            Shop All Delicacies →
           </a>
         </div>
       </div>
@@ -952,7 +929,7 @@
   <div id="customer-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
       <div class="flex justify-end mb-1">
-        <button onclick="closeCustomerAuthModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition" title="Close"><i class="fas fa-xmark"></i></button>
+        <button onclick="closeCustomerAuthModal()" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition" title="Close"></button>
       </div>
       <div id="customer-auth-content"></div>
     </div>
@@ -971,7 +948,7 @@
             <div class="text-[10px] text-emerald-200">Customer: <span id="wa-preview-name"></span></div>
           </div>
         </div>
-        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"><i class="fas fa-xmark"></i></button>
+        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"></button>
       </div>
 
       <div class="whatsapp-chat-pattern p-4 min-h-[300px] flex flex-col justify-end">
@@ -996,7 +973,7 @@
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
       <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
         <h4 class="font-bold text-xs"> Tax Invoice & Receipt</h4>
-        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-xmark"></i></button>
+        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"></button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-3 text-xs flex-1">
@@ -1049,20 +1026,20 @@
   <!-- ========================================================================= -->
   <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
     <a href="index" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
-      <i class="fas fa-house"></i>
+      
       <span class="text-[10px] font-black">Home</span>
     </a>
     <a href="category" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      <i class="fas fa-bowl-food"></i>
+
       <span class="text-[10px] font-bold">Categories</span>
     </a>
     <button onclick="openCartDrawer()" class="relative flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      <i class="fas fa-shopping-bag"></i>
+
       <span class="cart-badge-count hidden absolute -top-1 right-2 w-4 h-4 bg-[#4A0713] text-[#FBBF24] text-[9px] font-black rounded-full flex items-center justify-center">0</span>
       <span class="text-[10px] font-bold">Cart</span>
     </button>
     <button onclick="openOrderTrackingView()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      <i class="fas fa-location-crosshairs"></i>
+
       <span class="text-[10px] font-bold">Tracking</span>
     </button>
     <button onclick="openCustomerAuthModal()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
