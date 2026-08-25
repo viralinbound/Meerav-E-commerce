@@ -1228,8 +1228,6 @@ function renderSettingsForm() {
   if (heroImgStatus) heroImgStatus.textContent = 'Upload Image';
   const heroCtaInput = document.getElementById('settings-hero-cta-text');
   if (heroCtaInput) heroCtaInput.value = s.heroCtaText || '';
-  const heroCtaLinkInput = document.getElementById('settings-hero-cta-link');
-  if (heroCtaLinkInput) heroCtaLinkInput.value = s.heroCtaLink || '';
   const heroSecCtaInput = document.getElementById('settings-hero-secondary-cta-text');
   if (heroSecCtaInput) heroSecCtaInput.value = s.heroSecondaryCtaText || '';
 
