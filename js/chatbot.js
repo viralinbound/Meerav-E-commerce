@@ -63,10 +63,10 @@ function initChatbot() {
   const session = JSON.parse(localStorage.getItem('mira_customer_session'));
   const customerName = session ? session.name : 'Foodie';
 
-  let initialGreeting = `Namaste ${customerName}! 🙏 Welcome to **MEERAV Namkeens**.\n\nI am your personal **Snack Sommelier & Ordering Assistant**! 🍿✨\n\nI can help you discover and order authentic Bikaneri snacks directly in chat!`;
+  let initialGreeting = `Namaste ${customerName}! Welcome to **MEERAV Namkeens**.\n\nI am your personal **Snack Sommelier & Ordering Assistant**!\n\nI can help you discover and order authentic Bikaneri snacks directly in chat!`;
 
   if (profile.favoriteCategories.length > 0 || profile.orderedSnacks.length > 0) {
-    initialGreeting += `\n\n🌟 *Saved Preferences: **${profile.preferredSpice}** & **${profile.favoriteCategories.join(' & ')}**!*`;
+    initialGreeting += `\n\n*Saved Preferences: **${profile.preferredSpice}** & **${profile.favoriteCategories.join(' & ')}**!*`;
   }
 
   chatbotState.messages = [
@@ -93,6 +93,11 @@ function getPersonalizedRecommendations() {
 
   // Default flagship top sellers
   return allProducts.filter(p => ['p1', 'p4'].includes(p.id)).slice(0, 2);
+}
+
+function dismissChatbotPeekBubble() {
+  const bubble = document.getElementById('chatbot-peek-bubble');
+  if (bubble) bubble.remove();
 }
 
 function toggleChatbot(forceOpen = null) {
@@ -130,7 +135,7 @@ function openOrderHelpBot(orderId) {
 
   chatbotState.messages.push({
     sender: 'bot',
-    text: `🤖 **Order Help Specialist for #${order.id}**\n\nNamaste **${order.customer?.name || 'Customer'}**! I have loaded your order details:\n• **Status:** ${order.orderStatus} 🚚\n• **Amount:** ₹${order.totalAmount} (${order.paymentStatus})\n• **Items:** ${itemsText}\n• **Delivery Address:** ${order.customer?.address || 'Bikaner'}\n\nHow can I assist you with this order?`,
+    text: `**Order Help Specialist for #${order.id}**\n\nNamaste **${order.customer?.name || 'Customer'}**! I have loaded your order details:\n• **Status:** ${order.orderStatus}\n• **Amount:** ₹${order.totalAmount} (${order.paymentStatus})\n• **Items:** ${itemsText}\n• **Delivery Address:** ${order.customer?.address || 'Bikaner'}\n\nHow can I assist you with this order?`,
     time: timeStr,
     recommendations: [],
     isOrderHelp: true,
@@ -153,9 +158,13 @@ function renderChatbotWidget() {
     <div class="fixed bottom-20 sm:bottom-6 right-5 z-50 flex flex-col items-end">
       
       <!-- Peek Bubble -->
-      <div id="chatbot-peek-bubble" class="mb-2 px-3.5 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce cursor-pointer" onclick="toggleChatbot()">
-        <span>🍿 Order & Taste Assistant</span>
-        <i class="fas fa-sparkles text-[#FBBF24]"></i>
+      <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce">
+        <span class="cursor-pointer" onclick="toggleChatbot()">Order & Taste Assistant</span>
+        <i class="fas fa-sparkles text-[#FBBF24] cursor-pointer" onclick="toggleChatbot()"></i>
+        <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss"
+          class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition">
+          <i class="fas fa-times text-[9px]"></i>
+        </button>
       </div>
 
       <button onclick="toggleChatbot()" 
@@ -171,6 +180,9 @@ function renderChatbotWidget() {
         <!-- Header -->
         <div class="p-3.5 bg-gradient-to-r from-[#4A0713] to-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
           <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E59819] to-[#FBBF24] flex items-center justify-center shadow-md shrink-0">
+              <i class="fas fa-robot text-[#32040C] text-base"></i>
+            </div>
             <div>
               <div class="font-black text-xs text-[#FBBF24] flex items-center gap-1">
                 <span>Meerav AI Sommelier</span>
@@ -190,12 +202,15 @@ function renderChatbotWidget() {
           </div>
         </div>
 
-        <!-- Quick Action Suggestion Chips -->
-        <div id="chatbot-quick-pills" class="p-2 bg-amber-50/80 border-b border-amber-200/60 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold text-[#4A0713]">
-          <button onclick="sendQuickPrompt('Help me order spicy snacks for today')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🌶️ Order Spicy</button>
-          <button onclick="sendQuickPrompt('Show me roasted diet snacks with zero palm oil')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🌱 Diet & Roasted</button>
-          <button onclick="sendQuickPrompt('I want gift boxes and sweets for celebration')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🎁 Gift Boxes</button>
-          <button onclick="sendQuickPrompt('Where is my order delivery van right now?')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">🚚 Track Van</button>
+        <!-- Quick Action Suggestion Chips — scrollable, with a fade hint so the cut-off edge doesn't look like the last button -->
+        <div class="relative bg-amber-50/80 border-b border-amber-200/60">
+          <div id="chatbot-quick-pills" class="p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold text-[#4A0713]">
+            <button onclick="sendQuickPrompt('Help me order spicy snacks for today')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Order Spicy</button>
+            <button onclick="sendQuickPrompt('Show me roasted diet snacks with zero palm oil')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Diet & Roasted</button>
+            <button onclick="sendQuickPrompt('I want gift boxes and sweets for celebration')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Gift Boxes</button>
+            <button onclick="sendQuickPrompt('Where is my order delivery van right now?')" class="px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">Track Van</button>
+          </div>
+          <div class="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-amber-50/90 to-transparent"></div>
         </div>
 
         <!-- Chat Messages Container -->
@@ -253,7 +268,7 @@ function renderChatMessages() {
                   </a>
                   <div class="min-w-0 flex-1">
                     <a href="product?id=${p.id}" class="font-black text-[11px] text-[#4A0713] truncate block hover:underline leading-tight">${p.name}</a>
-                    <div class="text-[9px] text-amber-800 font-bold truncate mt-0.5">🌶️ ${p.spiceLevel}</div>
+                    <div class="text-[9px] text-amber-800 font-bold truncate mt-0.5">${p.spiceLevel}</div>
                     <div class="text-[11px] font-black text-gray-900 mt-0.5">₹${v.price} <span class="text-[9px] text-gray-400 line-through">₹${v.originalPrice}</span></div>
                   </div>
                 </div>
@@ -358,7 +373,7 @@ function handleChatAddToCart(productId, variantIdx = 0) {
   profile.lastInteraction = new Date().toISOString();
   saveUserPersonalization(profile);
 
-  showToast(`Added ${p.name} to Cart & Saved to Taste Profile! 🍿❤️`, 'success');
+  showToast(`Added ${p.name} to Cart & Saved to Taste Profile!`, 'success');
 }
 
 function handleChatDirectBuy(productId, variantIdx = 0) {
@@ -451,23 +466,23 @@ function analyzeQueryAndRecommend(query) {
 
     if (matched.length === 0) matched = allProducts.slice(0, 2);
 
-    responseText = `🛒 **Instant Order Assistance**\n\nI have matched the best snack for your craving! You can **Add to Cart** or click **Buy** directly below. Your preference is also saved for future visits! ✨`;
+    responseText = `**Instant Order Assistance**\n\nI have matched the best snack for your craving! You can **Add to Cart** or click **Buy** directly below. Your preference is also saved for future visits!`;
     learnedPreference = { category: matched[0]?.category, spice: matched[0]?.spiceLevel };
   }
   // 2. LIVE TRACKING & SUPPORT INTENTS
   else if (q.includes('where') || q.includes('track') || q.includes('van') || q.includes('driver') || q.includes('eta') || q.includes('delivery')) {
     if (currentOrder) {
-      responseText = `🚚 **Live Tracking for Order #${currentOrder.id}**:\n\n• **Status:** ${currentOrder.orderStatus}\n• **Courier AWB:** ${currentOrder.trackingNumber || 'DTDC-88210-EXP'}\n• **Driver:** ${currentOrder.driver?.name || 'Ramesh Bishnoi'} (${currentOrder.driver?.vehicle || 'Electric Delivery Van'})\n• **Estimated Arrival:** ~18 mins en route to your address.\n\nClick **"Track Map"** in your order history to view the moving GPS van on OpenStreetMap!`;
+      responseText = `**Live Tracking for Order #${currentOrder.id}**:\n\n• **Status:** ${currentOrder.orderStatus}\n• **Courier AWB:** ${currentOrder.trackingNumber || 'DTDC-88210-EXP'}\n• **Driver:** ${currentOrder.driver?.name || 'Ramesh Bishnoi'} (${currentOrder.driver?.vehicle || 'Electric Delivery Van'})\n• **Estimated Arrival:** ~18 mins en route to your address.\n\nClick **"Track Map"** in your order history to view the moving GPS van on OpenStreetMap!`;
     } else {
       responseText = `Your orders are dispatched directly from our Central Bikaner Kitchen Hub. You can track any active order live on the map!`;
     }
   } else if (q.includes('address') || q.includes('change') || q.includes('phone') || q.includes('location')) {
-    responseText = `📍 **Delivery Address Update**:\n\nI have logged your request to update address/contact details for **Order #${currentOrder?.id || 'MEERAV-8801'}**. Our Bikaner dispatch team will prioritize the updated drop instructions!`;
-    showToast('Address update note dispatched to kitchen! 📝', 'success');
+    responseText = `**Delivery Address Update**:\n\nI have logged your request to update address/contact details for **Order #${currentOrder?.id || 'MEERAV-8801'}**. Our Bikaner dispatch team will prioritize the updated drop instructions!`;
+    showToast('Address update note dispatched to kitchen!', 'success');
   } else if (q.includes('cancel') || q.includes('refund')) {
-    responseText = `❌ **Cancellation / Modification**:\n\nIf your order is in *Processing* state, we can modify or cancel it. Please confirm if you would like us to cancel **Order #${currentOrder?.id || 'MEERAV-8801'}** for an instant UPI refund.`;
+    responseText = `**Cancellation / Modification**:\n\nIf your order is in *Processing* state, we can modify or cancel it. Please confirm if you would like us to cancel **Order #${currentOrder?.id || 'MEERAV-8801'}** for an instant UPI refund.`;
   } else if (q.includes('invoice') || q.includes('bill') || q.includes('receipt')) {
-    responseText = `🧾 **Tax Invoice Generated!**\n\nI have generated the official tax invoice for **Order #${currentOrder?.id || 'MEERAV-8801'}**. Click below to inspect your printable receipt.`;
+    responseText = `**Tax Invoice Generated!**\n\nI have generated the official tax invoice for **Order #${currentOrder?.id || 'MEERAV-8801'}**. Click below to inspect your printable receipt.`;
     if (currentOrder && typeof previewEmailNotification === 'function') {
       setTimeout(() => previewEmailNotification(currentOrder.id), 800);
     }
@@ -475,23 +490,23 @@ function analyzeQueryAndRecommend(query) {
   // 3. TASTE & CRAVING RECOMMENDATION INTENTS
   else if (q.includes('spicy') || q.includes('hot') || q.includes('ratlami') || q.includes('clove') || q.includes('teekha')) {
     matched = allProducts.filter(p => p.category === 'bhujia-sev');
-    responseText = "🌶️ For that fiery authentic punch, I highly recommend our **Royal Ratlami Laung Sev** and **Authentic Aloo Bhujia**! Both are fried in 100% pure clean oil with zero palm oil.";
+    responseText = "For that fiery authentic punch, I highly recommend our **Royal Ratlami Laung Sev** and **Authentic Aloo Bhujia**! Both are fried in 100% pure clean oil with zero palm oil.";
     learnedPreference = { category: 'bhujia-sev', spice: 'Fiery Royal Clove' };
   } else if (q.includes('diet') || q.includes('healthy') || q.includes('zero oil') || q.includes('makhana') || q.includes('roasted')) {
     matched = allProducts.filter(p => p.category === 'roasted-diet');
-    responseText = "🥗 For a healthy, guilt-free crunch, try our **Roasted Himalayan Pink Salt Makhana** and **Roasted Moong Dal** slow-roasted with zero palm oil!";
+    responseText = "For a healthy, guilt-free crunch, try our **Roasted Himalayan Pink Salt Makhana** and **Roasted Moong Dal** slow-roasted with zero palm oil!";
     learnedPreference = { category: 'roasted-diet', dietary: 'Roasted' };
   } else if (q.includes('tea') || q.includes('chai') || q.includes('mathri') || q.includes('evening')) {
     matched = allProducts.filter(p => p.category === 'mathri');
-    responseText = "☕ Nothing pairs better with cutting chai than our flaky **Kasuri Methi Mathri** and **Masala Khakhra**! Perfectly crispy and handcrafted.";
+    responseText = "Nothing pairs better with cutting chai than our flaky **Kasuri Methi Mathri** and **Masala Khakhra**! Perfectly crispy and handcrafted.";
     learnedPreference = { category: 'mathri', spice: 'Mild Ajwain & Methi' };
   } else if (q.includes('gift') || q.includes('box') || q.includes('hamper') || q.includes('sweet')) {
     matched = allProducts.filter(p => p.category === 'sweets-combos');
-    responseText = "🎁 Our **Grand Celebration Bikaneri Gift Box** contains an assortment of signature namkeens and sweets in a luxury keepsake box!";
+    responseText = "Our **Grand Celebration Bikaneri Gift Box** contains an assortment of signature namkeens and sweets in a luxury keepsake box!";
     learnedPreference = { category: 'sweets-combos' };
   } else {
     matched = allProducts.slice(0, 2);
-    responseText = `I can help you place an order right now! Tell me your favorite snack or craving (e.g. *"Order spicy sev"*, *"Healthy snacks for tea-time"*), and I'll tailor it for you! 🍿`;
+    responseText = `I can help you place an order right now! Tell me your favorite snack or craving (e.g. *"Order spicy sev"*, *"Healthy snacks for tea-time"*), and I'll tailor it for you!`;
   }
 
   return {
@@ -507,7 +522,7 @@ function resetChatbot() {
   chatbotState.messages = [
     {
       sender: 'bot',
-      text: `Chat refreshed! 🍿 I still remember your saved taste profile: **${profile.preferredSpice}** snacks & **${profile.favoriteCategories.join(', ') || 'Bikaneri Delicacies'}**. What would you like to order today?`,
+      text: `Chat refreshed! I still remember your saved taste profile: **${profile.preferredSpice}** snacks & **${profile.favoriteCategories.join(', ') || 'Bikaneri Delicacies'}**. What would you like to order today?`,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       recommendations: getPersonalizedRecommendations()
     }

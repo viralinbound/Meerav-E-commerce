@@ -356,7 +356,7 @@ function addCurrentProductToCart() {
     });
   }
 
-  showToast(`Added ${pdpState.quantity}x ${p.name} (${variant.weight}) to Cart! 🍿`, 'success');
+  showToast(`Added ${pdpState.quantity}x ${p.name} (${variant.weight}) to Cart!`, 'success');
   renderStoreCart();
   updateStoreBadgeCounts();
   openCartDrawer();
@@ -403,7 +403,7 @@ function togglePDPWishlist() {
   if (index === -1) {
     storeState.wishlist.push(p.id);
     if (icon) icon.className = 'fas fa-heart text-red-600 text-sm';
-    showToast('Saved to your favorites! ❤️', 'success');
+    showToast('Saved to your favorites!', 'success');
   } else {
     storeState.wishlist.splice(index, 1);
     if (icon) icon.className = 'far fa-heart text-sm';

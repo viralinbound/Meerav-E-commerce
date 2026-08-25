@@ -190,7 +190,7 @@ function renderCategoryDietaryFilters() {
           ? 'bg-[#4A0713] text-[#FBBF24] shadow-xs' 
           : 'bg-amber-100/50 text-[#4A0713] hover:bg-amber-100 border border-amber-300/60'
       }">
-      ${tag === 'all' ? '🌱 All Dietary Tags' : tag}
+      ${tag === 'all' ? 'All Dietary Tags' : tag}
     </button>
   `).join('');
 }

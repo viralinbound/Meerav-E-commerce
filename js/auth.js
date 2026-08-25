@@ -132,15 +132,15 @@ function renderCustomerAuthUI() {
 
           <div class="flex flex-wrap gap-1.5 text-[10px]">
             <span class="px-2 py-0.5 bg-[#4A0713] text-[#FBBF24] rounded-lg font-black border border-[#E59819]">
-              🌶️ ${getUserPersonalization().preferredSpice || 'Classic Bikaneri'}
+ ${getUserPersonalization().preferredSpice || 'Classic Bikaneri'}
             </span>
             ${getUserPersonalization().favoriteCategories.map(cat => `
               <span class="px-2 py-0.5 bg-white text-gray-800 rounded-lg font-bold border border-amber-200 shadow-2xs">
-                🍿 ${cat.replace('-', ' & ')}
+ ${cat.replace('-', ' & ')}
               </span>
             `).join('')}
             <span class="px-2 py-0.5 bg-emerald-100 text-emerald-900 rounded-lg font-bold">
-              🤖 ${getUserPersonalization().chatOrderCount || 0} Chat Orders
+ ${getUserPersonalization().chatOrderCount || 0} Chat Orders
             </span>
           </div>
         </div>
@@ -323,7 +323,7 @@ async function handlePreviewAvatar(e) {
   }
 
   tempAvatarData = publicUrl;
-  if (label) label.textContent = 'Photo Added ✓';
+  if (label) label.textContent = 'Photo Added';
   showToast('Photo uploaded! Click Sign In to save.', 'success');
 }
 
@@ -338,7 +338,7 @@ async function handleUserAvatarUpload(e) {
   }
 
   authState.customer.avatar = publicUrl;
-  showToast('Profile photo updated & saved permanently! 📸', 'success');
+  showToast('Profile photo updated & saved permanently!', 'success');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();
   MiraDB.dbUpsertCustomer(authState.customer);
@@ -370,7 +370,7 @@ async function handleCustomerSignUp(e) {
   }
 
   if (result.needsConfirmation) {
-    showToast('Account created! Check your email to confirm, then sign in. 📧', 'success');
+    showToast('Account created! Check your email to confirm, then sign in.', 'success');
     authState.authView = 'signin';
     renderCustomerAuthUI();
     return;
@@ -378,7 +378,7 @@ async function handleCustomerSignUp(e) {
 
   // Session came back immediately — customer is auto-logged-in right now.
   authState.customer = result.profile;
-  showToast(`Welcome to MEERAV Namkeens, ${name}! 🎉 You're signed in.`, 'success');
+  showToast(`Welcome to MEERAV Namkeens, ${name}! You're signed in.`, 'success');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();
   fillCheckoutFormIfLoggedIn();
@@ -402,7 +402,7 @@ async function handleCustomerSignIn(e) {
   }
 
   authState.customer = result.profile;
-  showToast(`Welcome back, ${result.profile.name}! 👋`, 'success');
+  showToast(`Welcome back, ${result.profile.name}!`, 'success');
   renderCustomerAuthUI();
   updateCustomerHeaderBadge();
   fillCheckoutFormIfLoggedIn();

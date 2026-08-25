@@ -44,7 +44,7 @@ const DEFAULT_SITE_SETTINGS = {
   metaDescription: 'Handcrafted authentic Bikaneri namkeens, sweets and royal delicacies prepared in 100% pure oil.',
   metaKeywords: 'namkeen, bikaneri bhujia, sweets, snacks, pure oil',
   ogImageUrl: '',
-  announcementText: '✨ Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
+  announcementText: 'Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
   whatsappNumber: '+919876543210',
   contactEmail: 'hello@meeravnamkeens.com',
   contactPhone: '+91 98765 43210',
@@ -115,7 +115,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'MEERAV Namkeens & Sweets',
       tagline: 'From the Heart of Bikaner',
-      announcementText: '✨ Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
+      announcementText: 'Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
       heroCtaText: 'Order Fresh Namkeen',
       heroSecondaryCtaText: 'Explore Categories',
       heroCtaLink: 'category.html',
@@ -127,7 +127,7 @@ const THEME_PRESETS = [
       metaDescription: 'Handcrafted authentic Bikaneri namkeens, sweets and royal delicacies prepared in 100% pure oil.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '👑 100% Pure Oil & Authentic Bikaneri Spices' },
+      { key: 'hero.badge', value: '100% Pure Oil & Authentic Bikaneri Spices' },
       { key: 'hero.title', value: 'Royal Taste of Authentic Bikaner' },
       { key: 'hero.subtitle', value: 'Handcrafted namkeens, golden bhujia, crispy mathri and royal sweets prepared fresh in pure oil.' },
       { key: 'story.title', value: 'Four Decades of Royal Bikaneri Craftsmanship' },
@@ -145,7 +145,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'AURELIA Gourmet Delicacies',
       tagline: 'Handcrafted Single-Origin Luxury Confectionery',
-      announcementText: '💎 Complimentary Luxury Velvet Gift Packaging on All Orders • Code: LUXE20',
+      announcementText: 'Complimentary Luxury Velvet Gift Packaging on All Orders • Code: LUXE20',
       heroCtaText: 'Explore Luxury Reserve',
       heroSecondaryCtaText: 'View Tasting Menu',
       heroCtaLink: 'category.html',
@@ -157,7 +157,7 @@ const THEME_PRESETS = [
       metaDescription: 'Artisanal single-origin cocoa truffles, gold-dusted pralines, and gourmet confections.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '✨ Handcrafted by Master Confectioners' },
+      { key: 'hero.badge', value: 'Handcrafted by Master Confectioners' },
       { key: 'hero.title', value: 'The Pinnacle of Luxury Confectionery' },
       { key: 'hero.subtitle', value: 'Artisanal single-origin cocoa truffles, velvety pralines, and gold-dusted treats crafted for true connoisseurs.' },
       { key: 'story.title', value: 'The Art of Haute Gastronomy' },
@@ -175,7 +175,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'VEDA Pure Organics',
       tagline: 'Rooted in Nature • 100% Certified Organic Superfoods',
-      announcementText: '🌿 Harvested from Wild Organic Valley Farms • Zero Chemicals Guaranteed',
+      announcementText: 'Harvested from Wild Organic Valley Farms • Zero Chemicals Guaranteed',
       heroCtaText: 'Shop Organic Harvest',
       heroSecondaryCtaText: 'Our Farm Origins',
       heroCtaLink: 'category.html',
@@ -187,7 +187,7 @@ const THEME_PRESETS = [
       metaDescription: 'Raw, non-GMO, cold-pressed superfoods and organic snacks sourced directly from sustainable farms.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '🌱 100% Certified Organic & Non-GMO' },
+      { key: 'hero.badge', value: '100% Certified Organic & Non-GMO' },
       { key: 'hero.title', value: 'Pure Nourishment from Nature’s Superfoods' },
       { key: 'hero.subtitle', value: 'Ethically harvested roasted seeds, stone-ground superfoods, and ancient wellness snacks.' },
       { key: 'story.title', value: 'From Pristine Valleys to Your Table' },
@@ -205,7 +205,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'PACIFICA Coastal Treats',
       tagline: 'Sun-Kissed Flavors & Crisp Sea Salt',
-      announcementText: '🌊 Fresh Wave of Delights • Free Express Shipping on Orders Above ₹499',
+      announcementText: 'Fresh Wave of Delights • Free Express Shipping on Orders Above ₹499',
       heroCtaText: 'Taste the Coast',
       heroSecondaryCtaText: 'View All Flavors',
       heroCtaLink: 'category.html',
@@ -217,7 +217,7 @@ const THEME_PRESETS = [
       metaDescription: 'Crispy artisanal kettle snacks seasoned with pure mineral sea salt and coastal botanicals.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '☀️ Mineral Sea Salt & Coastal Herbs' },
+      { key: 'hero.badge', value: 'Mineral Sea Salt & Coastal Herbs' },
       { key: 'hero.title', value: 'Crisp Coastal Crunch in Every Bite' },
       { key: 'hero.subtitle', value: 'Kettle-cooked crisps seasoned with pure sea salt, sun-ripened citrus zest, and refreshing coastal spices.' },
       { key: 'story.title', value: 'Inspired by Pacific Shores & Sunlit Waves' },
@@ -235,7 +235,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'MAISON DE PATISSERIE',
       tagline: 'Freshly Baked Parisian Bliss Every Morning',
-      announcementText: '🍰 Fresh Warm Batch Out of the Oven! Order Sweet Treats Directly Home.',
+      announcementText: 'Fresh Warm Batch Out of the Oven! Order Sweet Treats Directly Home.',
       heroCtaText: 'Order Fresh Bakes',
       heroSecondaryCtaText: 'Our Bakery Menu',
       heroCtaLink: 'category.html',
@@ -247,7 +247,7 @@ const THEME_PRESETS = [
       metaDescription: 'Authentic French macarons, buttery croissants, and handcrafted dessert boxes delivered fresh.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '🎀 100% Pure Normandy Butter & Belgian Cocoa' },
+      { key: 'hero.badge', value: '100% Pure Normandy Butter & Belgian Cocoa' },
       { key: 'hero.title', value: 'Whimsical Cakes & Golden Pastries' },
       { key: 'hero.subtitle', value: 'Delicate French macarons, flaky pastries, and dreamy gourmet dessert boxes crafted with love.' },
       { key: 'story.title', value: 'A Parisian Dream in Every Bake' },
@@ -265,7 +265,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'MONOLITH Lifestyle & Coffee',
       tagline: 'Precision Engineered for Daily Peak Focus',
-      announcementText: '⚡ Single-Origin Micro-Lots & Functional Energy Snacks In Stock.',
+      announcementText: 'Single-Origin Micro-Lots & Functional Energy Snacks In Stock.',
       heroCtaText: 'Shop Precision Fuel',
       heroSecondaryCtaText: 'View Batch Roasts',
       heroCtaLink: 'category.html',
@@ -277,7 +277,7 @@ const THEME_PRESETS = [
       metaDescription: 'Direct-trade specialty coffee and high-performance clean energy bites.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '⚡ 100% Direct-Trade & Zero Fillers' },
+      { key: 'hero.badge', value: '100% Direct-Trade & Zero Fillers' },
       { key: 'hero.title', value: 'Precision Craft. Unrivaled Performance.' },
       { key: 'hero.subtitle', value: 'Micro-lot single-origin beans and clean energy bites engineered for modern creators.' },
       { key: 'story.title', value: 'Engineered for the Modern Minimalist' },
@@ -295,7 +295,7 @@ const THEME_PRESETS = [
     values: {
       siteName: 'AVADH Heritage Spices & Achar',
       tagline: 'Slow Sun-Cured in Clay Pots with Pure Mustard Oil',
-      announcementText: '🌶️ Grandmother’s 100-Year-Old Clay Pot Sun-Cured Recipes • 100% Natural',
+      announcementText: 'Grandmother’s 100-Year-Old Clay Pot Sun-Cured Recipes • 100% Natural',
       heroCtaText: 'Shop Clay-Pot Achars',
       heroSecondaryCtaText: 'Our Sun-Curing Process',
       heroCtaLink: 'category.html',
@@ -307,7 +307,7 @@ const THEME_PRESETS = [
       metaDescription: 'Authentic clay-pot fermented achars, stone-ground whole spices and traditional condiments.'
     },
     contentOverrides: [
-      { key: 'hero.badge', value: '☀️ 90-Day Naturally Sun-Cured in Clay Pots' },
+      { key: 'hero.badge', value: '90-Day Naturally Sun-Cured in Clay Pots' },
       { key: 'hero.title', value: 'Timeless Flavors of Clay-Pot Spices' },
       { key: 'hero.subtitle', value: 'Authentic sun-cured achars, stone-ground masalas, and hand-pounded condiments made without preservatives.' },
       { key: 'story.title', value: 'The Lost Art of Slow Sun-Curing' },
@@ -459,7 +459,7 @@ function applyFont(s) {
   styleTag.textContent = `
     html{font-size:${s.baseFontSize || '16px'};}
     body{font-family:${bodyStack};}
-    h1,h2,h3,h4,h5,h6,.brand-font{font-family:${headingStack} !important;color:${s.headingColor} !important;}
+    h1,h2,h3,h4,h5,h6,.brand-font{font-family:${headingStack} !important;color:${s.headingColor};}
     ${radiusCss}
   `;
 }

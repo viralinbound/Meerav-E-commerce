@@ -67,7 +67,7 @@ function detectUserGPSLocation() {
         addressPickerMap.setView([latitude, longitude], 15);
         addressMarker.setLatLng([latitude, longitude]);
         updateCheckoutCoordinates(latitude, longitude);
-        showToast('GPS Location pinned successfully! 📍', 'success');
+        showToast('GPS Location pinned successfully!', 'success');
       }
     },
     (error) => {
@@ -163,7 +163,7 @@ function initLiveOrderTrackingMap(order) {
   let currentLng = warehouse.lng;
 
   const driverMarker = L.marker([currentLat, currentLng], { icon: driverIcon }).addTo(liveTrackingMap);
-  driverMarker.bindPopup(`<b>Driver: Suresh Patil</b><br/>Delivery Van En Route 🚚`).openPopup();
+  driverMarker.bindPopup(`<b>Driver: Suresh Patil</b><br/>Delivery Van En Route`).openPopup();
 
   // Animate Rider Movement
   trackingInterval = setInterval(() => {

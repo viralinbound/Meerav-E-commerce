@@ -82,7 +82,7 @@ async function loadAdminData() {
   const fetchedContent = await MiraDB.fetchPageContent();
   
   const defaultPageContentRows = [
-    { key: 'hero.badge', value: '👑 100% Pure Oil & Authentic Bikaneri Spices', label: 'Hero Badge Text', page: 'hero', sort_order: 1 },
+    { key: 'hero.badge', value: '100% Pure Oil & Authentic Bikaneri Spices', label: 'Hero Badge Text', page: 'hero', sort_order: 1 },
     { key: 'hero.title', value: 'Royal Taste of Authentic Bikaner', label: 'Hero Main Title', page: 'hero', sort_order: 2 },
     { key: 'hero.subtitle', value: 'Handcrafted namkeens, golden bhujia, crispy mathri and royal sweets prepared fresh in pure oil.', label: 'Hero Subtitle', page: 'hero', sort_order: 3 },
     { key: 'home.showcase.heading', value: 'Select a Category to Explore Snacks', label: 'Category Showcase Heading', page: 'categories', sort_order: 4 },
@@ -170,7 +170,7 @@ function setupAdminRealtime() {
       const idx = adminState.orders.findIndex(o => o.id === updated.id);
       if (idx === -1) {
         adminState.orders.unshift(updated);
-        if (payload.eventType === 'INSERT') showToast(`New order received: #${updated.id} 🛎️`, 'success');
+        if (payload.eventType === 'INSERT') showToast(`New order received: #${updated.id}`, 'success');
       } else {
         adminState.orders[idx] = updated;
       }
@@ -320,7 +320,7 @@ async function handleAdminLogin(event) {
     return;
   }
 
-  showToast(`Welcome, ${result.profile.name}! Admin Operations Portal Unlocked 🛡️`, 'success');
+  showToast(`Welcome, ${result.profile.name}! Admin Operations Portal Unlocked`, 'success');
   await enterAdminDashboard(result.profile);
   checkAdminAuth();
 }
@@ -350,7 +350,7 @@ async function handleForcePasswordChange(event) {
   }
 
   adminState.currentAdmin.must_change_password = false;
-  showToast('Password updated! Welcome to the portal. 🔐', 'success');
+  showToast('Password updated! Welcome to the portal.', 'success');
   checkAdminAuth();
 }
 
@@ -540,7 +540,7 @@ async function updateOrderStatus(orderId, newStatus) {
 
   renderAdminOrders();
   renderAdminNotificationLogs();
-  showToast(`Order #${order.id} status updated to "${newStatus}". WhatsApp alert dispatched! 🚀`, 'success');
+  showToast(`Order #${order.id} status updated to "${newStatus}". WhatsApp alert dispatched!`, 'success');
 }
 
 /**
@@ -633,7 +633,7 @@ async function handleProductPhotosUpload(event) {
     }
   }
 
-  if (status) status.textContent = uploaded === files.length ? `Uploaded ${uploaded} photo(s) ✓` : `Uploaded ${uploaded} of ${files.length} — some failed`;
+  if (status) status.textContent = uploaded === files.length ? `Uploaded ${uploaded} photo(s)` : `Uploaded ${uploaded} of ${files.length} — some failed`;
   if (uploaded < files.length) showToast('Some photos failed to upload — please retry those', 'error');
 }
 
@@ -655,7 +655,7 @@ async function handleProductVideosUpload(event) {
     }
   }
 
-  if (status) status.textContent = uploaded === files.length ? `Uploaded ${uploaded} video(s) ✓` : `Uploaded ${uploaded} of ${files.length} — some failed`;
+  if (status) status.textContent = uploaded === files.length ? `Uploaded ${uploaded} video(s)` : `Uploaded ${uploaded} of ${files.length} — some failed`;
   if (uploaded < files.length) showToast('Some videos failed to upload — please retry those', 'error');
 }
 
@@ -707,7 +707,7 @@ function openAddProductModal() {
   document.getElementById('prod-form-id').value = '';
   document.getElementById('prod-form-name').value = '';
   document.getElementById('prod-form-tag').value = 'Signature Bikaneri';
-  document.getElementById('prod-form-spice').value = 'Medium (🌶️🌶️)';
+  document.getElementById('prod-form-spice').value = 'Medium';
   document.getElementById('prod-form-desc').value = '';
   document.getElementById('prod-form-image').value = 'assets/images/pack_bikaneri_bhujia.svg';
 
@@ -813,7 +813,7 @@ async function saveProductForm(event) {
       variants
     };
     adminState.products[existingIndex] = savedProduct;
-    showToast(`Updated product: ${name} with new packaging image & pricing! 🎉`, 'success');
+    showToast(`Updated product: ${name} with new packaging image & pricing!`, 'success');
   } else {
     savedProduct = {
       id,
@@ -835,7 +835,7 @@ async function saveProductForm(event) {
       variants
     };
     adminState.products.unshift(savedProduct);
-    showToast(`Added new product: ${name} with uploaded pouch packaging! 🍿`, 'success');
+    showToast(`Added new product: ${name} with uploaded pouch packaging!`, 'success');
   }
 
   await MiraDB.dbUpsertProduct(savedProduct, MiraDB.adminClient);
@@ -951,7 +951,7 @@ async function handleCategoryImageUpload(event) {
   if (url) {
     document.getElementById('cat-form-image').value = url;
     document.getElementById('cat-form-img-preview').src = url;
-    if (status) status.textContent = 'Uploaded ✓';
+    if (status) status.textContent = 'Uploaded';
     // Replace, don't accumulate — delete the old cloud file now that the new one is live.
     // No-ops harmlessly if `previousUrl` is one of the bundled assets/images/*.jpg defaults.
     MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
@@ -1014,10 +1014,10 @@ async function saveCategoryForm(event) {
 
   if (existingIdx !== -1) {
     adminState.categories[existingIdx] = { ...adminState.categories[existingIdx], ...savedCategory };
-    showToast(`Updated category: ${name}! 📁`, 'success');
+    showToast(`Updated category: ${name}!`, 'success');
   } else {
     adminState.categories.push(savedCategory);
-    showToast(`Added new category: ${name}! 📁`, 'success');
+    showToast(`Added new category: ${name}!`, 'success');
   }
 
   await MiraDB.dbUpsertCategory(savedCategory, MiraDB.adminClient);
@@ -1165,7 +1165,7 @@ async function triggerCustomNotification(event) {
   await MiraDB.dbInsertNotification(notif, MiraDB.adminClient);
   MiraDB.logAdminActivity(adminState.currentAdmin, 'notification.broadcast', target, { type });
   renderAdminNotificationLogs();
-  showToast(`Test ${type} alert sent successfully to ${target}! 🚀`, 'success');
+  showToast(`Test ${type} alert sent successfully to ${target}!`, 'success');
   document.getElementById('custom-notif-msg').value = '';
 }
 
@@ -1383,7 +1383,7 @@ async function handleSettingsBgImageUpload(event) {
     const preview = document.getElementById('settings-bg-image-preview');
     preview.src = url;
     preview.classList.remove('hidden');
-    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+    if (status) status.textContent = 'Uploaded — click Save to apply';
   } else if (status) {
     status.textContent = 'Upload failed — please retry';
   }
@@ -1398,7 +1398,7 @@ async function handleSettingsLogoUpload(event) {
   if (url) {
     adminState.pendingLogoUrl = url;
     document.getElementById('settings-logo-preview').src = url;
-    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+    if (status) status.textContent = 'Uploaded — click Save to apply';
   } else if (status) {
     status.textContent = 'Upload failed — please retry';
   }
@@ -1413,7 +1413,7 @@ async function handleSettingsFaviconUpload(event) {
   if (url) {
     adminState.pendingFaviconUrl = url;
     document.getElementById('settings-favicon-preview').src = url;
-    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
+    if (status) status.textContent = 'Uploaded — click Save to apply';
   } else if (status) {
     status.textContent = 'Upload failed — please retry';
   }
@@ -1488,14 +1488,21 @@ function collectSiteSettingsFromForm() {
 
 /** Shared by the Save button and one-click theme presets: write to Supabase, update local/live state, log it. */
 async function persistSiteSettings(updated, activityLabel) {
+  const before = { ...(adminState.siteSettings || window.SITE_SETTINGS || {}) };
+
+  const ok = await MiraDB.dbUpsertSiteSettings(updated, MiraDB.adminClient);
+  if (!ok) {
+    showToast('Could not save — the change did not reach the cloud. Please retry.', 'error');
+    return false;
+  }
+
   adminState.siteSettings = updated;
   window.SITE_SETTINGS = updated;
   if (typeof applySiteTheme === 'function') applySiteTheme(updated);
   try { localStorage.setItem('mira_site_settings', JSON.stringify(updated)); } catch(e) {}
 
-  await MiraDB.dbUpsertSiteSettings(updated, MiraDB.adminClient);
   if (adminState.currentAdmin) {
-    MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.update', activityLabel || 'Store Settings', {});
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.update', activityLabel || 'Store Settings', { before });
   }
   return true;
 }
@@ -1509,7 +1516,7 @@ async function saveSiteSettingsForm(event) {
   const ok = await persistSiteSettings(updated, 'Store Settings');
 
   if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = ' Save All Store Settings'; }
-  if (ok) showToast('Store settings saved & applied live across website! 🎨', 'success');
+  if (ok) showToast('Store settings saved & applied live across website!', 'success');
 }
 
 function renderThemePresetsGallery() {
@@ -1567,7 +1574,7 @@ async function applyThemePreset(presetKey) {
   if (ok) {
     renderSettingsForm();
     renderPageContentForm();
-    showToast(`"${preset.name}" is now live across the full website! ✨`, 'success');
+    showToast(`"${preset.name}" is now live across the full website!`, 'success');
   }
 }
 
@@ -1615,7 +1622,7 @@ async function resetToOriginalBrandDefaults() {
   };
 
   const defaultContent = [
-    { key: 'hero.badge', value: '👑 100% Pure Oil & Authentic Bikaneri Spices', label: 'Hero Badge Text', page: 'home', sort_order: 1 },
+    { key: 'hero.badge', value: '100% Pure Oil & Authentic Bikaneri Spices', label: 'Hero Badge Text', page: 'home', sort_order: 1 },
     { key: 'hero.title', value: 'Royal Taste of Authentic Bikaner', label: 'Hero Main Title', page: 'home', sort_order: 2 },
     { key: 'hero.subtitle', value: 'Handcrafted namkeens, golden bhujia, crispy mathri and royal sweets prepared fresh in pure oil.', label: 'Hero Subtitle', page: 'home', sort_order: 3 },
     { key: 'story.title', value: 'Four Decades of Royal Bikaneri Craftsmanship', label: 'Story Title', page: 'home', sort_order: 4 },
@@ -1645,7 +1652,7 @@ async function resetToOriginalBrandDefaults() {
 
     renderSettingsForm();
     renderPageContentForm();
-    showToast('Website successfully restored to default MEERAV brand! 🌟', 'success');
+    showToast('Website successfully restored to default MEERAV brand!', 'success');
   }
 }
 
@@ -1737,7 +1744,7 @@ async function saveCouponForm(event) {
 
   const ok = await MiraDB.dbUpsertCoupon(couponObj, MiraDB.adminClient);
   if (ok) {
-    showToast(`Coupon ${code} saved successfully! 🎉`, 'success');
+    showToast(`Coupon ${code} saved successfully!`, 'success');
     closeCouponModal();
     adminState.coupons = await fetchCoupons();
     renderAdminCoupons();
@@ -1787,7 +1794,7 @@ function renderAdminTestimonials() {
         <span class="font-bold text-xs text-gray-900">${t.name}</span>
       </td>
       <td class="p-3 text-xs text-gray-600">${t.city || '—'}</td>
-      <td class="p-3 text-xs text-amber-500 font-bold">${'★'.repeat(Math.round(t.rating || 5))}</td>
+      <td class="p-3 text-xs text-amber-500 font-bold">${''.repeat(Math.round(t.rating || 5))}</td>
       <td class="p-3 text-xs text-gray-600 truncate max-w-xs">${t.reviewText}</td>
       <td class="p-3">
         <button onclick="toggleTestimonialVisible('${t.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${t.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
@@ -2044,6 +2051,7 @@ async function savePageContentForm(event) {
   const submitBtn = document.getElementById('page-content-save-btn');
   if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
 
+  const before = adminState.pageContentRows.map(row => ({ key: row.key, value: row.value, label: row.label, page: row.page, sortOrder: row.sort_order }));
   const entries = adminState.pageContentRows.map(row => {
     const el = document.querySelector(`[data-content-key="${row.key}"]`);
     return { key: row.key, value: el ? el.value : row.value, label: row.label, page: row.page, sortOrder: row.sort_order };
@@ -2063,8 +2071,8 @@ async function savePageContentForm(event) {
   entries.forEach(e => { map[e.key] = e.value; });
   window.SITE_PAGE_CONTENT = map;
   if (typeof applyPageContent === 'function') applyPageContent(map);
-  MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.content_update', 'Website Text Content', {});
-  showToast('Text content saved & applied live! 📝', 'success');
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.content_update', 'Website Text Content', { before });
+  showToast('Text content saved & applied live!', 'success');
 }
 
 /**
@@ -2172,7 +2180,7 @@ function closeTempPasswordModal() {
 
 function copyTempPassword() {
   const pw = document.getElementById('temp-pw-value').textContent;
-  navigator.clipboard?.writeText(pw).then(() => showToast('Password copied to clipboard 📋', 'success'));
+  navigator.clipboard?.writeText(pw).then(() => showToast('Password copied to clipboard', 'success'));
 }
 
 async function removeAdminAccount(adminId, name) {
@@ -2259,7 +2267,7 @@ function closeAdminDetailModal() {
   adminState.viewingAdminId = null;
 }
 
-const UNDOABLE_ACTIONS = new Set(['product.update', 'product.create', 'product.delete', 'product.toggle_stock', 'category.update', 'category.create', 'category.delete', 'order.status_update']);
+const UNDOABLE_ACTIONS = new Set(['product.update', 'product.create', 'product.delete', 'product.toggle_stock', 'category.update', 'category.create', 'category.delete', 'order.status_update', 'settings.update', 'settings.content_update']);
 
 async function renderAdminDetailActivity(adminId) {
   const container = document.getElementById('admin-detail-activity');
@@ -2318,13 +2326,41 @@ async function undoActivity(entryId) {
       case 'order.status_update':
         await MiraDB.dbUpdateOrderStatus(d.orderId, d.from, MiraDB.adminClient);
         break;
+      case 'settings.update': {
+        if (!d.before) throw new Error('No prior state recorded to restore');
+        const restoredOk = await MiraDB.dbUpsertSiteSettings(d.before, MiraDB.adminClient);
+        if (!restoredOk) throw new Error('Restore was rejected by the server');
+        adminState.siteSettings = d.before;
+        window.SITE_SETTINGS = d.before;
+        if (typeof applySiteTheme === 'function') applySiteTheme(d.before);
+        break;
+      }
+      case 'settings.content_update': {
+        if (!d.before) throw new Error('No prior state recorded to restore');
+        const restoredOk = await MiraDB.dbUpsertPageContent(d.before, MiraDB.adminClient);
+        if (!restoredOk) throw new Error('Restore was rejected by the server');
+        adminState.pageContentRows = d.before.map(e => ({ key: e.key, value: e.value, label: e.label, page: e.page, sort_order: e.sortOrder }));
+        const restoredMap = {};
+        d.before.forEach(e => { restoredMap[e.key] = e.value; });
+        window.SITE_PAGE_CONTENT = restoredMap;
+        if (typeof applyPageContent === 'function') applyPageContent(restoredMap);
+        break;
+      }
       default:
         throw new Error('This action type cannot be undone');
     }
 
     await MiraDB.markActivityUndone(entryId);
     MiraDB.logAdminActivity(adminState.currentAdmin, 'admin.undo', entry.target, { undidEntryId: entryId, originalAction: entry.action });
-    showToast('Change reverted ↩️', 'success');
+
+    // Root undoing a *different* admin's theme/settings change — flag it to
+    // them automatically so they know it was reverted and why.
+    const isSettingsAction = entry.action === 'settings.update' || entry.action === 'settings.content_update';
+    if (isSettingsAction && entry.admin_id && entry.admin_id !== adminState.currentAdmin.id) {
+      MiraDB.warnAdmin(entry.admin_id, `Your change "${entry.target}" was undone by ${adminState.currentAdmin.name} — it was reverted as an incorrect theme/settings change.`);
+    }
+
+    showToast('Change reverted', 'success');
     await renderAdminDetailActivity(entry.admin_id);
     renderAdminProducts();
     renderAdminCategories();
@@ -2380,7 +2416,7 @@ function previewWhatsAppNotification(orderId) {
   if (!order) return;
 
   const itemsList = order.items ? order.items.map(i => `• ${i.name} x${i.qty} (₹${i.price * i.qty})`).join('\n') : 'Assorted Namkeens';
-  const messageBody = `*Namaste ${order.customer.name}!* 🙏\n\nThank you for ordering with *MEERAV Namkeens*! 🍿✨\n\n📦 *Order ID:* #${order.id}\n💰 *Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n📍 *Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n🚚 *Status:* ${order.orderStatus}\n📦 *Tracking:* ${order.trackingNumber}\n\nYour fresh batch is packed in airtight zipper packs. For queries, reply to this chat!`;
+  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for ordering with *MEERAV Namkeens*!\n\n*Order ID:* #${order.id}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Tracking:* ${order.trackingNumber}\n\nYour fresh batch is packed in airtight zipper packs. For queries, reply to this chat!`;
 
   document.getElementById('wa-preview-name').textContent = order.customer.name;
   document.getElementById('wa-preview-body').innerHTML = messageBody.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');

@@ -402,7 +402,7 @@ function renderStoreDietaryFilters() {
           ? 'bg-[#4A0713] text-white shadow-sm' 
           : 'bg-amber-100/50 text-[#4A0713] hover:bg-amber-100 border border-amber-300/60'
       }">
-      ${tag === 'all' ? '✨ All Varieties' : tag}
+      ${tag === 'all' ? 'All Varieties' : tag}
     </button>
   `).join('');
 }
@@ -716,13 +716,13 @@ function applyCoupon() {
       discountPercent: found.discountType === 'percentage' ? found.discountVal : null,
       discountFlat: found.discountType === 'flat' ? found.discountVal : null
     };
-    showToast(`Coupon ${code} applied! Saved discount 🎉`, 'success');
+    showToast(`Coupon ${code} applied! Saved discount`, 'success');
   } else if (code === 'MIRA10' || code === 'MEERAV10') {
     storeState.appliedCoupon = { code, discountPercent: 10 };
-    showToast(`Coupon ${code} applied! 10% Discount saved 🎉`, 'success');
+    showToast(`Coupon ${code} applied! 10% Discount saved`, 'success');
   } else if (code === 'FREESHIP') {
     storeState.appliedCoupon = { code: 'FREESHIP', freeShipping: true };
-    showToast('Free shipping coupon applied! 🚚', 'success');
+    showToast('Free shipping coupon applied!', 'success');
   } else {
     showToast('Invalid coupon code. Try "MEERAV10" or check active store promotions.', 'error');
     return;
@@ -787,7 +787,7 @@ function renderStoreCart() {
     shippingBannerHtml = `
       <div class="mb-3 p-2.5 bg-amber-100/70 border border-amber-200 rounded-xl text-xs">
         <div class="flex justify-between items-center font-bold text-[#4A0713] mb-1">
-          <span>🚚 Add <strong>${formatPrice(remainingForFree)}</strong> more for <strong>FREE Delivery!</strong></span>
+          <span>Add <strong>${formatPrice(remainingForFree)}</strong> more for <strong>FREE Delivery!</strong></span>
           <span>${progressPercent}%</span>
         </div>
         <div class="w-full h-1.5 bg-amber-200 rounded-full overflow-hidden">
@@ -799,7 +799,7 @@ function renderStoreCart() {
     shippingBannerHtml = `
       <div class="mb-3 p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 font-black flex items-center gap-2">
         
-        <span>🎉 You have unlocked <strong>FREE Shipping!</strong></span>
+        <span>You have unlocked <strong>FREE Shipping!</strong></span>
       </div>
     `;
   }
@@ -931,7 +931,7 @@ function toggleWishlist(productId) {
   const index = storeState.wishlist.indexOf(productId);
   if (index === -1) {
     storeState.wishlist.push(productId);
-    showToast('Saved to your favorites! ❤️', 'success');
+    showToast('Saved to your favorites!', 'success');
   } else {
     storeState.wishlist.splice(index, 1);
     showToast('Removed from favorites', 'info');
@@ -1136,7 +1136,7 @@ async function completeOrderWithPayment(paymentMethod) {
   updateStoreBadgeCounts();
 
   closePaymentGatewayModal();
-  showToast('Payment Verified! Order Dispatched from Bikaner Hub 🎉', 'success');
+  showToast('Payment Verified! Order Dispatched from Bikaner Hub', 'success');
 
   openOrderTrackingView(newOrderId);
 }
@@ -1180,7 +1180,7 @@ function previewWhatsAppNotification(orderId) {
   if (!order) return;
 
   const itemsList = order.items.map(i => `• ${i.name} x${i.qty} (₹${i.price * i.qty})`).join('\n');
-  const messageBody = `*Namaste ${order.customer.name}!* 🙏\n\nThank you for choosing *MEERAV Namkeens* (An Authentic Bikaneri Taste)! 🍿✨\n\n📦 *Order ID:* #${order.id}\n💰 *Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n📍 *Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n🚚 *Status:* ${order.orderStatus}\n🗺️ *Live GPS Tracking:* https://meerav.com/track/${order.id}\n\nPrepared fresh in pure & clean oil with authentic royal recipes.`;
+  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for choosing *MEERAV Namkeens* (An Authentic Bikaneri Taste)!\n\n*Order ID:* #${order.id}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Live GPS Tracking:* https://meerav.com/track/${order.id}\n\nPrepared fresh in pure & clean oil with authentic royal recipes.`;
 
   document.getElementById('wa-preview-name').textContent = order.customer.name;
   document.getElementById('wa-preview-body').innerHTML = messageBody.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');

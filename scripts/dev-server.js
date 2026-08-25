@@ -88,11 +88,11 @@ const server = http.createServer((req, res) => {
 
 server.listen(PORT, () => {
   console.log(`\n======================================================`);
-  console.log(`🚀 MEERAV Local Development Server is Running!`);
+  console.log(`MEERAV Local Development Server is Running!`);
   console.log(`======================================================`);
-  console.log(`🌐 Storefront:  http://localhost:${PORT}`);
-  console.log(`📦 Admin Panel: http://localhost:${PORT}/admin.html`);
-  console.log(`🗂️  Category:    http://localhost:${PORT}/category.html?id=bhujia-sev`);
-  console.log(`🛍️  Product:     http://localhost:${PORT}/product.html?id=p1`);
+  console.log(`Storefront:  http://localhost:${PORT}`);
+  console.log(`Admin Panel: http://localhost:${PORT}/admin.html`);
+  console.log(`Category:    http://localhost:${PORT}/category.html?id=bhujia-sev`);
+  console.log(`Product:     http://localhost:${PORT}/product.html?id=p1`);
   console.log(`======================================================\n`);
 });

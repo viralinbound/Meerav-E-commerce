@@ -119,7 +119,7 @@ function renderDietaryFilters() {
           ? 'bg-amber-950 text-white shadow-sm' 
           : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200/60'
       }">
-      ${tag === 'all' ? '✨ All Diets' : tag}
+      ${tag === 'all' ? 'All Diets' : tag}
     </button>
   `).join('');
 }
@@ -380,10 +380,10 @@ function applyCoupon() {
 
   if (code === 'MIRA10') {
     state.appliedCoupon = { code: 'MIRA10', discountPercent: 10 };
-    showToast('Coupon MIRA10 applied! 10% Discount saved 🎉', 'success');
+    showToast('Coupon MIRA10 applied! 10% Discount saved', 'success');
   } else if (code === 'FREESHIP') {
     state.appliedCoupon = { code: 'FREESHIP', freeShipping: true };
-    showToast('Free shipping coupon applied! 🚚', 'success');
+    showToast('Free shipping coupon applied!', 'success');
   } else {
     showToast('Invalid coupon code. Try "MIRA10" or "FREESHIP"', 'error');
     return;
@@ -487,7 +487,7 @@ function toggleWishlist(productId) {
   const index = state.wishlist.indexOf(productId);
   if (index === -1) {
     state.wishlist.push(productId);
-    showToast('Saved to your wishlist! ❤️', 'success');
+    showToast('Saved to your wishlist!', 'success');
   } else {
     state.wishlist.splice(index, 1);
     showToast('Removed from wishlist', 'info');
@@ -687,7 +687,7 @@ function completeOrderWithPayment(paymentMethod) {
   renderNotificationLogs();
 
   closePaymentGatewayModal();
-  showToast('Payment Successful! Order Confirmed 🎉', 'success');
+  showToast('Payment Successful! Order Confirmed', 'success');
 
   // Switch to Live Tracking View
   updateView('tracking');
@@ -718,7 +718,7 @@ function previewWhatsAppNotification(orderId) {
   if (!order) return;
 
   const itemsList = order.items.map(i => `• ${i.name} x${i.qty} (₹${i.price * i.qty})`).join('\n');
-  const messageBody = `*Namaste ${order.customer.name}!* 🙏\n\nThank you for ordering with *Mira Namkeens*! 🍿✨\n\n📦 *Order ID:* #${order.id}\n💰 *Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n📍 *Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n🚚 *Status:* ${order.orderStatus}\n📦 *Live GPS Tracking:* https://miranamkeens.com/track/${order.id}\n\nYour fresh batch is prepared with 100% pure spices & care. For queries, reply to this message anytime!`;
+  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for ordering with *Mira Namkeens*!\n\n*Order ID:* #${order.id}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Live GPS Tracking:* https://miranamkeens.com/track/${order.id}\n\nYour fresh batch is prepared with 100% pure spices & care. For queries, reply to this message anytime!`;
 
   document.getElementById('wa-preview-name').textContent = order.customer.name;
   document.getElementById('wa-preview-phone').textContent = order.customer.phone;
@@ -766,7 +766,7 @@ function quickWhatsAppOrder(productId, variantIndex) {
   if (!product) return;
 
   const variant = product.variants[variantIndex] || product.variants[0];
-  const message = `Hello Mira Namkeens! 👋 I would like to quickly order:\n- *${product.name}* (${variant.weight})\n- Price: ₹${variant.price}\n\nPlease share delivery details and UPI payment link.`;
+  const message = `Hello Mira Namkeens! I would like to quickly order:\n- *${product.name}* (${variant.weight})\n- Price: ₹${variant.price}\n\nPlease share delivery details and UPI payment link.`;
   
   const encoded = encodeURIComponent(message);
   window.open(`https://wa.me/919876543210?text=${encoded}`, '_blank');
@@ -843,7 +843,7 @@ function updateOrderStatus(orderId, newStatus) {
 
   renderAdminOrders();
   renderNotificationLogs();
-  showToast(`Order #${order.id} status updated to "${newStatus}". WhatsApp alert dispatched! 🚀`, 'success');
+  showToast(`Order #${order.id} status updated to "${newStatus}". WhatsApp alert dispatched!`, 'success');
 }
 
 function renderAdminProducts() {
@@ -954,7 +954,7 @@ function triggerCustomNotification(event) {
   });
 
   renderNotificationLogs();
-  showToast(`Test ${type} alert sent successfully to ${target}! 🚀`, 'success');
+  showToast(`Test ${type} alert sent successfully to ${target}!`, 'success');
   document.getElementById('custom-notif-msg').value = '';
 }
 
