@@ -856,7 +856,7 @@ function renderStoreTestimonials() {
   }
 
   container.innerHTML = items.map(item => {
-    const stars = Array(Math.round(item.rating || 5)).fill('').join('');
+    const stars = Array(Math.round(item.rating || 5)).fill('<i class="fas fa-star text-amber-400"></i>').join('');
     return `
       <div class="p-6 bg-white rounded-3xl border border-amber-200/80 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-300">
         <div class="space-y-3">

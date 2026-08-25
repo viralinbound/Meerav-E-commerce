@@ -245,6 +245,7 @@ ON CONFLICT (code) DO NOTHING;
 -- 4d. TESTIMONIALS & REVIEWS TABLE
 CREATE TABLE IF NOT EXISTS public.testimonials (
     id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    customer_id TEXT REFERENCES public.customers(id) ON DELETE SET NULL,
     name TEXT NOT NULL,
     city TEXT DEFAULT 'India',
     rating NUMERIC(2,1) NOT NULL DEFAULT 5.0,
@@ -254,6 +255,8 @@ CREATE TABLE IF NOT EXISTS public.testimonials (
     is_visible BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS idx_testimonials_customer_id ON public.testimonials(customer_id);
 
 INSERT INTO public.testimonials (name, city, rating, review_text, avatar, sort_order) VALUES
 ('Pooja Sharma', 'Mumbai, Maharashtra', 5.0, 'The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.', 'assets/images/drive_1.jpg', 1),
@@ -430,6 +433,13 @@ CREATE POLICY "public read testimonials" ON public.testimonials FOR SELECT USING
 CREATE POLICY "admins write testimonials" ON public.testimonials FOR INSERT WITH CHECK (is_admin((select auth.uid())));
 CREATE POLICY "admins update testimonials" ON public.testimonials FOR UPDATE USING (is_admin((select auth.uid())));
 CREATE POLICY "admins delete testimonials" ON public.testimonials FOR DELETE USING (is_admin((select auth.uid())));
+-- A signed-in customer may also write/edit only their own real review (deterministic
+-- id so a re-submit updates it rather than creating a duplicate); admins still moderate
+-- (hide/delete) every review via the policies above.
+CREATE POLICY "customers manage own testimonial" ON public.testimonials FOR INSERT
+    WITH CHECK ((select auth.uid())::text = customer_id);
+CREATE POLICY "customers update own testimonial" ON public.testimonials FOR UPDATE
+    USING ((select auth.uid())::text = customer_id);
 
 -- FAQs: public read, admin write
 ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;

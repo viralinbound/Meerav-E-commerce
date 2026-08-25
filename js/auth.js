@@ -191,6 +191,28 @@ function renderCustomerAuthUI() {
           </div>
         </div>
 
+        <!-- Write a Review — always uses this account's real name & photo, never editable here -->
+        <div class="space-y-2 pt-2 border-t border-gray-100">
+          <h4 class="font-black text-xs text-gray-900 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-star text-amber-500"></i> ${authState.myReviewId ? 'Your Review' : 'Write a Review'}
+          </h4>
+          <form onsubmit="submitCustomerReview(event)" class="p-3 bg-white rounded-xl border border-gray-200/80 space-y-2 text-xs">
+            <div class="flex items-center gap-2">
+              <img src="${avatarSrc}" class="w-7 h-7 rounded-full object-cover border border-amber-300" />
+              <span class="font-bold text-gray-800">${authState.customer.name}</span>
+            </div>
+            <div id="review-star-picker" class="flex items-center gap-1 text-lg text-amber-400">
+              ${[1,2,3,4,5].map(n => `<i class="fas fa-star cursor-pointer" data-star="${n}" onclick="setReviewStarRating(${n})"></i>`).join('')}
+            </div>
+            <input type="hidden" id="review-rating-input" value="5" />
+            <textarea id="review-text-input" rows="2" required placeholder="Tell other customers what you thought..."
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
+            <button type="submit" class="w-full py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5">
+              <i class="fas fa-paper-plane text-[10px]"></i> Submit Review
+            </button>
+          </form>
+        </div>
+
         <!-- Action Buttons -->
         <div class="pt-2 border-t border-gray-100 flex gap-2">
           <button onclick="logoutCustomer()" class="py-2.5 px-4 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition">
@@ -202,6 +224,7 @@ function renderCustomerAuthUI() {
         </div>
       </div>
     `;
+    renderExistingCustomerReview();
   } else {
     const isSignup = authState.authView !== 'signin';
 
@@ -301,6 +324,69 @@ function renderCustomerAuthUI() {
 function switchCustomerAuthView(view) {
   authState.authView = view;
   renderCustomerAuthUI();
+}
+
+/**
+ * REAL CUSTOMER REVIEWS — name & photo always come from the signed-in
+ * account (never a free-text field), so what shows on the homepage is
+ * always a genuine reviewer, not something an admin typed in. Admins can
+ * only hide or delete a review, never author one.
+ */
+function renderExistingCustomerReview() {
+  if (!authState.customer) return;
+  const existing = ((typeof storeState !== 'undefined' && storeState.testimonials) || [])
+    .find(t => t.customerId === authState.customer.id);
+  authState.myReviewId = existing ? existing.id : null;
+  if (existing) {
+    setReviewStarRating(Math.round(existing.rating) || 5);
+    const textEl = document.getElementById('review-text-input');
+    if (textEl) textEl.value = existing.reviewText || '';
+  }
+}
+
+function setReviewStarRating(n) {
+  const input = document.getElementById('review-rating-input');
+  if (input) input.value = n;
+  document.querySelectorAll('#review-star-picker i').forEach(star => {
+    const val = Number(star.dataset.star);
+    star.classList.toggle('fas', val <= n);
+    star.classList.toggle('far', val > n);
+  });
+}
+
+async function submitCustomerReview(event) {
+  event.preventDefault();
+  if (!authState.customer) return;
+
+  const reviewText = document.getElementById('review-text-input').value.trim();
+  const rating = Number(document.getElementById('review-rating-input').value) || 5;
+  if (!reviewText) return;
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
+
+  const testimonial = {
+    id: authState.myReviewId || `t-${authState.customer.id}`,
+    customerId: authState.customer.id,
+    name: authState.customer.name,
+    avatar: authState.customer.avatar || null,
+    city: (authState.customer.address || '').split(',').pop().trim() || 'India',
+    rating,
+    reviewText,
+    isVisible: true,
+    sortOrder: 0
+  };
+
+  const ok = await MiraDB.dbUpsertTestimonial(testimonial);
+
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-paper-plane text-[10px]"></i> Submit Review'; }
+
+  if (ok) {
+    authState.myReviewId = testimonial.id;
+    showToast('Thank you! Your review is now live.', 'success');
+  } else {
+    showToast('Could not save your review — please try again.', 'error');
+  }
 }
 
 let tempAvatarData = null; // public Storage URL of the avatar picked before the account exists yet

@@ -301,6 +301,7 @@ export function appCouponToDb(c) {
 export function dbTestimonialToApp(row) {
   return {
     id: row.id,
+    customerId: row.customer_id || null,
     name: row.name,
     city: row.city || '',
     rating: Number(row.rating) || 5,
@@ -314,6 +315,7 @@ export function dbTestimonialToApp(row) {
 export function appTestimonialToDb(t) {
   return {
     id: t.id,
+    customer_id: t.customerId || null,
     name: t.name,
     city: t.city || null,
     rating: Number(t.rating) || 5,
