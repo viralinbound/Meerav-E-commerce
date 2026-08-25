@@ -232,6 +232,8 @@ function renderChatbotWidget() {
   const botName = settings.chatbotName || 'Meerav AI Sommelier';
   const botSubtitle = settings.chatbotSubtitle || 'Order Assistant & Personalization';
   const avatarIcon = settings.chatbotAvatarIcon || 'fa-robot';
+  const avatarImage = settings.chatbotAvatarImage || '';
+  const avatarHtml = avatarImage ? `<img src="${avatarImage}" class="w-full h-full object-cover rounded-full" alt="${botName}" />` : `<i class="fas ${avatarIcon}"></i>`;
   const accent = settings.chatbotColor || settings.accentColor || '#E59819';
   const quickPrompts = (settings.chatbotQuickPrompts && settings.chatbotQuickPrompts.length)
     ? settings.chatbotQuickPrompts
@@ -253,8 +255,8 @@ function renderChatbotWidget() {
         <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition"><i class="fas fa-xmark text-[9px]"></i></button>
       </div>
 
-      <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80">
-        <i class="fas ${avatarIcon}"></i>
+      <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80 overflow-hidden">
+        ${avatarHtml}
         <span id="chatbot-unread-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></span>
       </button>
 
@@ -265,8 +267,8 @@ function renderChatbotWidget() {
         <!-- Header -->
         <div class="p-3.5 bg-gradient-to-r from-[#4A0713] to-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[${accent}] to-[#FBBF24] flex items-center justify-center shadow-md shrink-0">
-              <i class="fas ${avatarIcon} text-[#32040C] text-base"></i>
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[${accent}] to-[#FBBF24] flex items-center justify-center shadow-md shrink-0 overflow-hidden text-[#32040C] text-base">
+              ${avatarHtml}
             </div>
             <div>
               <div class="font-black text-xs text-[#FBBF24] flex items-center gap-1">

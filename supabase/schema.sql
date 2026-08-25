@@ -149,6 +149,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     chatbot_name TEXT DEFAULT 'Meerav AI Sommelier',
     chatbot_subtitle TEXT DEFAULT 'Order Assistant & Personalization',
     chatbot_avatar_icon TEXT DEFAULT 'fa-robot',
+    chatbot_avatar_image TEXT,
     chatbot_color TEXT DEFAULT '#E59819',
     chatbot_greeting TEXT,
     order_id_prefix TEXT NOT NULL DEFAULT 'MEERAV-',

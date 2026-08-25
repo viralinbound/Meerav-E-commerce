@@ -21,6 +21,7 @@ const adminState = {
   testimonials: [],
   faqs: [],
   editingCouponId: null,
+  chatbotQuickPromptsDraft: [],
   editingTestimonialId: null,
   editingFaqId: null,
   siteSettings: null,
@@ -1323,12 +1324,84 @@ function renderSettingsForm() {
   document.getElementById('settings-chatbot-avatar-icon').value = s.chatbotAvatarIcon || 'fa-robot';
   document.getElementById('settings-chatbot-color').value = s.chatbotColor || s.accentColor || '#E59819';
   document.getElementById('settings-chatbot-greeting').value = s.chatbotGreeting || '';
-  const quickPrompts = (s.chatbotQuickPrompts && s.chatbotQuickPrompts.length ? s.chatbotQuickPrompts : DEFAULT_CHATBOT_QUICK_PROMPTS);
-  for (let i = 0; i < 4; i++) {
-    const qp = quickPrompts[i] || { label: '', prompt: '' };
-    document.getElementById(`settings-chatbot-qp-label-${i}`).value = qp.label || '';
-    document.getElementById(`settings-chatbot-qp-prompt-${i}`).value = qp.prompt || '';
+  document.getElementById('settings-chatbot-avatar-image').value = s.chatbotAvatarImage || '';
+  document.getElementById('settings-chatbot-avatar-status').textContent = 'Upload Custom Avatar';
+  const avatarPreviewWrap = document.getElementById('settings-chatbot-avatar-preview-wrap');
+  if (s.chatbotAvatarImage) {
+    document.getElementById('settings-chatbot-avatar-preview').src = s.chatbotAvatarImage;
+    avatarPreviewWrap.classList.remove('hidden');
+  } else {
+    avatarPreviewWrap.classList.add('hidden');
   }
+  adminState.chatbotQuickPromptsDraft = (s.chatbotQuickPrompts && s.chatbotQuickPrompts.length)
+    ? s.chatbotQuickPrompts.map(qp => ({ ...qp }))
+    : DEFAULT_CHATBOT_QUICK_PROMPTS.map(qp => ({ ...qp }));
+  renderChatbotQuickPromptRows();
+}
+
+/**
+ * Quick prompt buttons are a free-length list (admin can add/remove any
+ * number), so they're kept as an in-memory draft array re-rendered on every
+ * change, rather than a fixed set of numbered form fields.
+ */
+function renderChatbotQuickPromptRows() {
+  const container = document.getElementById('settings-chatbot-quick-prompts');
+  if (!container) return;
+  const rows = adminState.chatbotQuickPromptsDraft || [];
+  container.innerHTML = rows.map((qp, i) => `
+    <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
+      <input type="text" data-qp-label="${i}" value="${escapeAttr(qp.label || '')}" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" oninput="updateChatbotQuickPromptDraft(${i}, 'label', this.value)" />
+      <input type="text" data-qp-prompt="${i}" value="${escapeAttr(qp.prompt || '')}" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" oninput="updateChatbotQuickPromptDraft(${i}, 'prompt', this.value)" />
+      <button type="button" onclick="removeChatbotQuickPromptRow(${i})" title="Remove" class="p-2 text-red-500 hover:bg-red-50 rounded-lg"><i class="fas fa-trash-can"></i></button>
+    </div>
+  `).join('') || `<p class="text-[11px] text-gray-400">No quick prompts yet — click "Add Quick Prompt" above.</p>`;
+}
+
+function escapeAttr(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function updateChatbotQuickPromptDraft(idx, field, value) {
+  if (!adminState.chatbotQuickPromptsDraft[idx]) return;
+  adminState.chatbotQuickPromptsDraft[idx][field] = value;
+}
+
+function addChatbotQuickPromptRow() {
+  adminState.chatbotQuickPromptsDraft = adminState.chatbotQuickPromptsDraft || [];
+  adminState.chatbotQuickPromptsDraft.push({ label: '', prompt: '' });
+  renderChatbotQuickPromptRows();
+}
+
+function removeChatbotQuickPromptRow(idx) {
+  adminState.chatbotQuickPromptsDraft.splice(idx, 1);
+  renderChatbotQuickPromptRows();
+}
+
+async function handleChatbotAvatarUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('settings-chatbot-avatar-status');
+  const previousUrl = document.getElementById('settings-chatbot-avatar-image').value.trim();
+  if (status) status.textContent = 'Uploading...';
+
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (url) {
+    document.getElementById('settings-chatbot-avatar-image').value = url;
+    document.getElementById('settings-chatbot-avatar-preview').src = url;
+    document.getElementById('settings-chatbot-avatar-preview-wrap').classList.remove('hidden');
+    if (status) status.textContent = 'Uploaded — click Save to apply';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+  } else if (status) {
+    status.textContent = 'Upload failed — please retry';
+  }
+}
+
+function removeChatbotAvatarImage() {
+  const previousUrl = document.getElementById('settings-chatbot-avatar-image').value.trim();
+  document.getElementById('settings-chatbot-avatar-image').value = '';
+  document.getElementById('settings-chatbot-avatar-preview-wrap').classList.add('hidden');
+  document.getElementById('settings-chatbot-avatar-status').textContent = 'Upload Custom Avatar';
+  if (previousUrl) MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
 }
 
 function updateOrderIdExample() {
@@ -1491,6 +1564,70 @@ async function handleSettingsHeroImageUpload(event) {
   }
 }
 
+/**
+ * MASTER BRAND FILM — slide #1 in the hero carousel (see getHeroSlides() in
+ * store.js). Unlike the other hero fields, this modal persists to the cloud
+ * immediately on upload since there's no other metadata to fill in first.
+ */
+function openMasterFilmModal() {
+  const s = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
+  document.getElementById('master-film-image-preview').src = s.heroImageUrl || 'assets/images/commercial_scene_1.jpg';
+  document.getElementById('master-film-video-status').textContent = 'Upload Video';
+  document.getElementById('master-film-image-status').textContent = 'Upload Image';
+  document.getElementById('master-film-modal').classList.remove('hidden');
+}
+
+function closeMasterFilmModal() {
+  document.getElementById('master-film-modal').classList.add('hidden');
+}
+
+async function handleMasterFilmVideoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('master-film-video-status');
+  if (status) status.textContent = 'Uploading...';
+
+  const previousUrl = (window.SITE_SETTINGS && window.SITE_SETTINGS.heroVideoUrl) || '';
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (!url) {
+    if (status) status.textContent = 'Upload failed — please retry';
+    return;
+  }
+  const ok = await persistSiteSettings({ ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}), heroVideoUrl: url }, 'Master Brand Film Video');
+  if (ok) {
+    if (status) status.textContent = 'Uploaded';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+    renderAdminStories();
+    showToast('Master brand film updated!', 'success');
+  } else if (status) {
+    status.textContent = 'Save failed — please retry';
+  }
+}
+
+async function handleMasterFilmImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const status = document.getElementById('master-film-image-status');
+  if (status) status.textContent = 'Uploading...';
+
+  const previousUrl = (window.SITE_SETTINGS && window.SITE_SETTINGS.heroImageUrl) || '';
+  const url = await MiraDB.uploadMedia(file, 'branding');
+  if (!url) {
+    if (status) status.textContent = 'Upload failed — please retry';
+    return;
+  }
+  const ok = await persistSiteSettings({ ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}), heroImageUrl: url }, 'Master Brand Film Poster');
+  if (ok) {
+    document.getElementById('master-film-image-preview').src = url;
+    if (status) status.textContent = 'Uploaded';
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+    renderAdminStories();
+    showToast('Master brand film poster updated!', 'success');
+  } else if (status) {
+    status.textContent = 'Save failed — please retry';
+  }
+}
+
 async function handleSettingsLogoUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -1592,12 +1729,12 @@ function collectSiteSettingsFromForm() {
     chatbotName: document.getElementById('settings-chatbot-name').value.trim(),
     chatbotSubtitle: document.getElementById('settings-chatbot-subtitle').value.trim(),
     chatbotAvatarIcon: document.getElementById('settings-chatbot-avatar-icon').value,
+    chatbotAvatarImage: document.getElementById('settings-chatbot-avatar-image').value.trim(),
     chatbotColor: document.getElementById('settings-chatbot-color').value,
     chatbotGreeting: document.getElementById('settings-chatbot-greeting').value.trim(),
-    chatbotQuickPrompts: [0, 1, 2, 3].map(i => ({
-      label: document.getElementById(`settings-chatbot-qp-label-${i}`).value.trim(),
-      prompt: document.getElementById(`settings-chatbot-qp-prompt-${i}`).value.trim()
-    })).filter(qp => qp.label && qp.prompt)
+    chatbotQuickPrompts: (adminState.chatbotQuickPromptsDraft || [])
+      .map(qp => ({ label: (qp.label || '').trim(), prompt: (qp.prompt || '').trim() }))
+      .filter(qp => qp.label && qp.prompt)
   };
 }
 
@@ -2775,15 +2912,27 @@ function renderAdminStories() {
   const container = document.getElementById('admin-stories-table-body');
   if (!container) return;
 
-  const items = (adminState.broadcastStories || []).slice().sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-  if (!items.length) {
-    container.innerHTML = `<div class="p-6 text-center text-gray-400 text-xs border border-dashed border-gray-200 rounded-2xl">No stories added yet. Click "Upload Video / Photo" to add one.</div>`;
-    return;
-  }
+  const s = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
+  const masterFilmRow = `
+    <div class="flex items-center gap-3 p-3 bg-[#4A0713]/5 border-2 border-[#4A0713]/20 rounded-2xl">
+      <div class="w-8 h-8 rounded-full bg-[#4A0713] text-[#FBBF24] flex items-center justify-center shrink-0" title="Always plays first"><i class="fas fa-thumbtack text-[10px]"></i></div>
+      <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
+        <video src="${s.heroVideoUrl || 'assets/videos/meerav_brand_film.mp4'}" poster="${s.heroImageUrl || ''}" muted class="w-full h-full object-cover"></video>
+        <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs"><i class="fas fa-play"></i></span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-black text-gray-900 text-xs truncate">Master Brand Film</div>
+        <div class="text-[10px] text-gray-500 mt-1">Always plays first, on every page load</div>
+      </div>
+      <button onclick="openMasterFilmModal()" title="Edit Master Film" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg shrink-0"><i class="fas fa-pen"></i></button>
+    </div>
+  `;
 
-  container.innerHTML = items.map((s, idx) => `
+  const items = (adminState.broadcastStories || []).slice().sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+
+  container.innerHTML = masterFilmRow + items.map((s, idx) => `
     <div class="flex items-center gap-3 p-3 bg-amber-50/40 border border-amber-100 rounded-2xl hover:border-amber-300 transition">
-      <div class="w-8 h-8 rounded-full bg-[#4A0713] text-[#FBBF24] flex items-center justify-center font-black text-xs shrink-0" title="Play order">${idx + 1}</div>
+      <div class="w-8 h-8 rounded-full bg-[#4A0713] text-[#FBBF24] flex items-center justify-center font-black text-xs shrink-0" title="Play order">${idx + 2}</div>
       <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
         ${s.mediaType === 'video' ? `
           <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted class="w-full h-full object-cover"></video>

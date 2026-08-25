@@ -655,30 +655,11 @@
           <!-- 3. Master Hero & Media Studio -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
             <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
-              <i class="fas fa-film text-[#E59819]"></i> Hero Section & Master Brand Film
+              <i class="fas fa-film text-[#E59819]"></i> Hero Buttons
             </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Cinematic Video</label>
-                <label class="w-full py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer text-xs">
-                  <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="settings-hero-video-status">Upload Hero Video</span>
-                  <input type="file" accept="video/*" onchange="handleSettingsHeroVideoUpload(event)" class="hidden" />
-                </label>
-                <input type="hidden" id="settings-hero-video-url" />
-                <p class="text-[10px] text-gray-400 mt-1">Uploads directly to cloud storage for the 4K hero video player.</p>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Fallback / Poster Image</label>
-                <div class="flex items-center gap-3">
-                  <img id="settings-hero-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-12 h-12 rounded-xl object-cover border border-amber-200 shrink-0" />
-                  <label class="flex-1 py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer text-xs">
-                    <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="settings-hero-image-status">Upload Image</span>
-                    <input type="file" accept="image/*" onchange="handleSettingsHeroImageUpload(event)" class="hidden" />
-                  </label>
-                </div>
-                <input type="hidden" id="settings-hero-image-url" />
-              </div>
-            </div>
+            <p class="text-xs text-gray-500 -mt-2">The hero video/photo is now managed as slide #1 in <strong>Broadcast Stories & 4K Video Reels</strong> below — click its pencil icon to change it. These two buttons are the only other hero-section content.</p>
+            <input type="hidden" id="settings-hero-video-url" />
+            <input type="hidden" id="settings-hero-image-url" />
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
               <div>
@@ -1034,7 +1015,7 @@
                 <input type="text" id="settings-chatbot-subtitle" placeholder="Order Assistant & Personalization" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Avatar Icon</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Avatar Icon (used unless a custom image is uploaded)</label>
                 <select id="settings-chatbot-avatar-icon" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
                   <option value="fa-robot">Robot</option>
                   <option value="fa-comment-dots">Chat Bubble</option>
@@ -1048,30 +1029,36 @@
                 <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Accent Color</label>
                 <input type="color" id="settings-chatbot-color" class="w-full h-10 border border-gray-200 rounded-xl cursor-pointer" />
               </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Or Upload Your Own Brand Avatar Image</label>
+                <div class="flex items-center gap-3">
+                  <div id="settings-chatbot-avatar-preview-wrap" class="hidden">
+                    <img id="settings-chatbot-avatar-preview" class="w-12 h-12 rounded-full object-cover border border-amber-200 shrink-0" />
+                  </div>
+                  <label class="flex-1 py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer text-xs">
+                    <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="settings-chatbot-avatar-status">Upload Custom Avatar</span>
+                    <input type="file" accept="image/*" onchange="handleChatbotAvatarUpload(event)" class="hidden" />
+                  </label>
+                  <button type="button" onclick="removeChatbotAvatarImage()" class="px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+                    <i class="fas fa-trash-can"></i>
+                  </button>
+                </div>
+                <input type="hidden" id="settings-chatbot-avatar-image" />
+              </div>
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-600 mb-1.5">Custom Greeting Line (leave blank to use the default personalized greeting)</label>
               <textarea id="settings-chatbot-greeting" rows="2" placeholder="Namaste! Welcome to our store..." class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs"></textarea>
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-600 mb-2">Quick Prompt Buttons</label>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-bold text-gray-600">Quick Prompt Buttons</label>
+                <button type="button" onclick="addChatbotQuickPromptRow()" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-[10px] font-bold transition flex items-center gap-1">
+                  <i class="fas fa-plus"></i> Add Quick Prompt
+                </button>
+              </div>
               <div class="space-y-2" id="settings-chatbot-quick-prompts">
-                <div class="grid grid-cols-2 gap-2">
-                  <input type="text" id="settings-chatbot-qp-label-0" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
-                  <input type="text" id="settings-chatbot-qp-prompt-0" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <input type="text" id="settings-chatbot-qp-label-1" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
-                  <input type="text" id="settings-chatbot-qp-prompt-1" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <input type="text" id="settings-chatbot-qp-label-2" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
-                  <input type="text" id="settings-chatbot-qp-prompt-2" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <input type="text" id="settings-chatbot-qp-label-3" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" />
-                  <input type="text" id="settings-chatbot-qp-prompt-3" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" />
-                </div>
+                <!-- Populated via admin.js renderChatbotQuickPromptRows() -->
               </div>
             </div>
           </div>
@@ -1079,10 +1066,10 @@
           <!-- Bottom Save Button -->
           <div class="flex items-center justify-end gap-3 pt-2">
             <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-6 py-3.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer">
-               Reset to Default Brand (MEERAV)
+              <i class="fas fa-rotate-left"></i> Reset to Default Brand (MEERAV)
             </button>
             <button type="submit" id="settings-save-btn" class="px-8 py-3.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
-               Save All Store Settings
+              <i class="fas fa-check"></i> Save All Store Settings
             </button>
           </div>
 
@@ -1990,6 +1977,41 @@
           <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]"><i class="fas fa-check"></i> Save Story Reel</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Master Brand Film Editor — slide #1 in the hero carousel, always first, always visible -->
+  <div id="master-film-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-amber-200">
+      <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div>
+          <h3 class="font-black text-sm text-[#FBBF24]">Master Brand Film</h3>
+          <span class="text-[10px] text-amber-200">Always slide #1 — plays before every story</span>
+        </div>
+        <button onclick="closeMasterFilmModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" title="Close"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Hero Cinematic Video</label>
+          <label class="w-full py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
+            <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="master-film-video-status">Upload Video</span>
+            <input type="file" accept="video/*" onchange="handleMasterFilmVideoUpload(event)" class="hidden" />
+          </label>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Poster / Fallback Image</label>
+          <div class="flex items-center gap-3">
+            <img id="master-film-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-14 h-14 rounded-xl object-cover border border-amber-200 shrink-0" />
+            <label class="flex-1 py-2.5 px-3.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer">
+              <i class="fas fa-cloud-arrow-up text-[#E59819] mr-1"></i> <span id="master-film-image-status">Upload Image</span>
+              <input type="file" accept="image/*" onchange="handleMasterFilmImageUpload(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+        <div class="pt-3 border-t flex justify-end">
+          <button type="button" onclick="closeMasterFilmModal()" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">Done</button>
+        </div>
+      </div>
     </div>
   </div>
 

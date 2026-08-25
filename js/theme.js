@@ -56,6 +56,7 @@ const DEFAULT_SITE_SETTINGS = {
   chatbotName: 'Meerav AI Sommelier',
   chatbotSubtitle: 'Order Assistant & Personalization',
   chatbotAvatarIcon: 'fa-robot',
+  chatbotAvatarImage: '',
   chatbotColor: '#E59819',
   chatbotGreeting: '',
   chatbotQuickPrompts: [
