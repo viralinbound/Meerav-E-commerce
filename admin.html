@@ -588,23 +588,6 @@
       <!-- PAGE 7: BRAND TRANSFORMATION STUDIO & CMS STORE SETTINGS              -->
       <!-- ===================================================================== -->
       <div id="view-settings" class="admin-page-view hidden space-y-8">
-        
-        <!-- Studio Header with Quick Category Jump Bar -->
-        <div class="bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#1F0307] text-white p-6 rounded-3xl border-2 border-[#E59819] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div class="space-y-1">
-            <span class="px-3 py-1 bg-[#E59819] text-[#32040C] font-black text-[10px] rounded-full uppercase tracking-wider">White-Label Engine</span>
-            <h2 class="text-2xl font-black text-[#FBBF24]">Brand Transformation Studio</h2>
-            <p class="text-xs text-amber-200/80">Transform brand identity, 1-click theme kits, media, copy, coupons, reviews & currency in real time.</p>
-          </div>
-          <div class="flex items-center gap-2.5">
-            <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-4 py-2.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer">
-               Reset to Default (MEERAV)
-            </button>
-            <button type="button" onclick="document.getElementById('settings-form').requestSubmit()" class="px-6 py-2.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-xs rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer">
-               Save All Changes
-            </button>
-          </div>
-        </div>
 
         <!-- Main Form -->
         <form id="settings-form" onsubmit="saveSiteSettingsForm(event)" class="space-y-8">
@@ -1455,7 +1438,13 @@
         <div>
           <label class="block text-gray-700 font-bold mb-1">Category Image / Photo (Real Showcase)</label>
           <div class="flex items-center gap-3 mb-2">
-            <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
+            <div class="relative shrink-0">
+              <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
+              <button type="button" onclick="removeCategoryImage()" title="Remove image"
+                class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
             <div class="flex-1 space-y-1.5">
               <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="text-xs w-full" />
               <p id="cat-form-image-status" class="text-[10px] text-gray-400"></p>

@@ -309,6 +309,24 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return data.publicUrl;
   }
 
+  /**
+   * Deletes a previously-uploaded file given its public URL — used when an
+   * admin replaces an image (logo, category photo, product photo) so the
+   * old file doesn't sit around in Storage forever. Silently no-ops for
+   * URLs that aren't actually hosted in our bucket (e.g. the bundled
+   * assets/images/*.jpg defaults), since those aren't ours to delete.
+   */
+  async function deleteMedia(url, client = supabaseClient) {
+    if (!url) return true;
+    const marker = `/storage/v1/object/public/${mediaBucket}/`;
+    const idx = url.indexOf(marker);
+    if (idx === -1) return true;
+    const path = url.slice(idx + marker.length);
+    const { error } = await client.storage.from(mediaBucket).remove([path]);
+    if (error) { console.error('deleteMedia', error); return false; }
+    return true;
+  }
+
   async function signUpCustomer({ email, password, name, phone, address, pincode }) {
     const { data, error } = await supabaseClient.auth.signUp({
       email, password, options: { data: { name, phone } }
@@ -511,7 +529,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchTestimonials, dbUpsertTestimonial, dbDeleteTestimonial,
     fetchFaqs, dbUpsertFaq, dbDeleteFaq,
     subscribeTable,
-    uploadMedia,
+    uploadMedia, deleteMedia,
     signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange,
     adminClient: adminSupabaseClient,
     signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,

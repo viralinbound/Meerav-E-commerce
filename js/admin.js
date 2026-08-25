@@ -929,16 +929,32 @@ function populateCategoryDropdowns() {
   `).join('');
 }
 
+/** Clears the category image back to the default fallback, deleting the cloud file if it was a real upload. */
+function removeCategoryImage() {
+  const previousUrl = document.getElementById('cat-form-image').value.trim();
+  const defaultImg = 'assets/images/cinematic_bhujia.jpg';
+  document.getElementById('cat-form-image').value = defaultImg;
+  document.getElementById('cat-form-img-preview').src = defaultImg;
+  const status = document.getElementById('cat-form-image-status');
+  if (status) status.textContent = 'Removed — click Save to apply';
+  MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
+}
+
 async function handleCategoryImageUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
   const status = document.getElementById('cat-form-image-status');
+  const previousUrl = document.getElementById('cat-form-image').value.trim();
+
   if (status) status.textContent = 'Uploading...';
   const url = await MiraDB.uploadMedia(file, 'categories');
   if (url) {
     document.getElementById('cat-form-image').value = url;
     document.getElementById('cat-form-img-preview').src = url;
     if (status) status.textContent = 'Uploaded ✓';
+    // Replace, don't accumulate — delete the old cloud file now that the new one is live.
+    // No-ops harmlessly if `previousUrl` is one of the bundled assets/images/*.jpg defaults.
+    MiraDB.deleteMedia(previousUrl, MiraDB.adminClient);
   } else if (status) {
     status.textContent = 'Upload failed — please retry';
   }
@@ -1019,6 +1035,7 @@ async function deleteCategory(catId) {
   if (confirm(`Are you sure you want to delete category "${cat.name}"?`)) {
     adminState.categories = adminState.categories.filter(c => c.id !== catId);
     await MiraDB.dbDeleteCategory(catId, MiraDB.adminClient);
+    MiraDB.deleteMedia(cat.image, MiraDB.adminClient);
     MiraDB.logAdminActivity(adminState.currentAdmin, 'category.delete', cat.name, { categoryId: catId, before: cat });
     populateCategoryDropdowns();
     renderAdminCategories();

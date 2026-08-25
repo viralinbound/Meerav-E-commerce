@@ -465,7 +465,12 @@ ON CONFLICT (id) DO UPDATE SET public = true;
 
 CREATE POLICY "Public storage read" ON storage.objects FOR SELECT USING (bucket_id = 'meerav-media');
 CREATE POLICY "Public storage insert" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'meerav-media');
-CREATE POLICY "Public storage update" ON storage.objects FOR UPDATE USING (bucket_id = 'meerav-media');
+-- Update/delete are admin-only — anyone being able to overwrite or wipe uploaded
+-- media (logos, product photos, category images) would be a real security hole.
+CREATE POLICY "admin update meerav-media" ON storage.objects FOR UPDATE
+    USING (bucket_id = 'meerav-media' AND is_admin((select auth.uid())));
+CREATE POLICY "admin delete meerav-media" ON storage.objects FOR DELETE
+    USING (bucket_id = 'meerav-media' AND is_admin((select auth.uid())));
 
 -- 14. BOOTSTRAP THE FIRST ROOT ADMIN
 -- Sign up a real Supabase Auth user first (Dashboard → Authentication →
