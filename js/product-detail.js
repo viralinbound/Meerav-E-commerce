@@ -13,6 +13,37 @@ const pdpState = {
   isMuted: false
 };
 
+const PDP_CATEGORY_ICONS = {
+  'bhujia-sev': 'fas fa-fire',
+  'mixture-farsan': 'fas fa-bowl-rice',
+  'mathri': 'fas fa-sun',
+  'papad-mathri': 'fas fa-sun',
+  'roasted-diet': 'fas fa-seedling',
+  'healthy-roasted': 'fas fa-seedling',
+  'sweets-combos': 'fas fa-gift'
+};
+
+/** Quick-jump pills to every category, right below the breadcrumb — highlights the current product's category. */
+function renderPDPCategorySwitcher(categories) {
+  const container = document.getElementById('pdp-category-switcher');
+  if (!container) return;
+
+  const currentCat = pdpState.currentProduct.category;
+  const validCategories = categories.filter(c => c.id !== 'all');
+
+  container.innerHTML = validCategories.map(cat => {
+    const isActive = cat.id === currentCat;
+    return `
+      <a href="category?cat=${cat.id}" class="shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black transition-all ${
+        isActive ? 'bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shadow-md' : 'bg-white text-gray-700 hover:bg-amber-50 border border-amber-200'
+      }">
+        <i class="${PDP_CATEGORY_ICONS[cat.id] || cat.icon || 'fas fa-cookie'} text-[10px] ${isActive ? 'text-[#E59819]' : 'text-amber-600'}"></i>
+        <span>${cat.name}</span>
+      </a>
+    `;
+  }).join('');
+}
+
 /** Combines a product's photos[]/videos[] galleries into one ordered slide list (photos first, cover photo leads). */
 function buildPDPMediaList(p) {
   const photos = (p.photos && p.photos.length ? p.photos : (p.image ? [p.image] : []));
@@ -102,15 +133,15 @@ function renderPDPDetails() {
   // Pricing & Discounts
   const currentTotal = selectedVar.price * pdpState.quantity;
   const originalTotal = selectedVar.originalPrice * pdpState.quantity;
-  document.getElementById('pdp-price').textContent = `₹${currentTotal}`;
-  document.getElementById('pdp-orig-price').textContent = `₹${originalTotal}`;
+  document.getElementById('pdp-price').textContent = formatPrice(currentTotal);
+  document.getElementById('pdp-orig-price').textContent = formatPrice(originalTotal);
   document.getElementById('pdp-discount-badge').textContent = `${discount}% OFF`;
   document.getElementById('pdp-qty-display').textContent = pdpState.quantity;
 
   // Mobile Sticky Bar Sync
   const mobilePrice = document.getElementById('mobile-sticky-price');
   const mobileWeight = document.getElementById('mobile-sticky-weight');
-  if (mobilePrice) mobilePrice.textContent = `₹${currentTotal}`;
+  if (mobilePrice) mobilePrice.textContent = formatPrice(currentTotal);
   if (mobileWeight) mobileWeight.textContent = `${selectedVar.weight} • 100% Fresh`;
 
   // Variant Pills
@@ -123,7 +154,7 @@ function renderPDPDetails() {
           : 'bg-white text-gray-800 border-amber-200 hover:bg-amber-50'
       }">
       <span class="block text-sm mb-0.5">${v.weight}</span>
-      <span class="text-[11px] ${idx === pdpState.selectedVariantIdx ? 'text-amber-200' : 'text-[#4A0713]'} font-black">₹${v.price}</span>
+      <span class="text-[11px] ${idx === pdpState.selectedVariantIdx ? 'text-amber-200' : 'text-[#4A0713]'} font-black">${formatPrice(v.price)}</span>
     </button>
   `).join('');
 

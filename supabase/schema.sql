@@ -104,10 +104,10 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     background_color TEXT NOT NULL DEFAULT '#FFF9ED',
     background_gradient JSONB NOT NULL DEFAULT '["#FFF9ED","#FDF1D0","#E59819"]'::jsonb,
     background_image_url TEXT,
-    background_pattern_overlay BOOLEAN NOT NULL DEFAULT FALSE, -- deprecated, superseded by background_pattern
+    background_pattern_overlay BOOLEAN NOT NULL DEFAULT FALSE,
     background_pattern TEXT NOT NULL DEFAULT 'none', -- 'none' | 'dots' | 'grid' | 'stripes' | 'waves' | 'custom-image'
-    background_pattern_image_url TEXT, -- used when background_pattern = 'custom-image': an admin-uploaded tileable texture
-    admin_panel_color TEXT NOT NULL DEFAULT '#1F0307', -- the admin ops sidebar/login-gate's own dark background, separate from the storefront theme
+    background_pattern_image_url TEXT,
+    admin_panel_color TEXT NOT NULL DEFAULT '#1F0307',
     admin_panel_type TEXT NOT NULL DEFAULT 'solid', -- 'solid' | 'gradient'
     admin_panel_gradient JSONB NOT NULL DEFAULT '["#32040C","#1F0307","#030712"]'::jsonb,
     text_color TEXT NOT NULL DEFAULT '#1F2937',
@@ -115,6 +115,20 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     font_family TEXT NOT NULL DEFAULT 'Outfit',
     heading_font_family TEXT NOT NULL DEFAULT 'Outfit',
     base_font_size TEXT NOT NULL DEFAULT '16px',
+    border_radius TEXT NOT NULL DEFAULT 'rounded-2xl', -- 'rounded-2xl' | 'rounded-3xl' | 'rounded-lg' | 'rounded-none'
+    currency_symbol TEXT NOT NULL DEFAULT '₹',
+    currency_code TEXT NOT NULL DEFAULT 'INR',
+    hero_video_url TEXT,
+    hero_image_url TEXT,
+    hero_cta_text TEXT DEFAULT 'Order Online Now',
+    hero_cta_link TEXT DEFAULT 'category.html',
+    hero_secondary_cta_text TEXT DEFAULT 'Explore All Delicacies',
+    shipping_flat_fee NUMERIC(10,2) NOT NULL DEFAULT 50.00,
+    free_shipping_threshold NUMERIC(10,2) NOT NULL DEFAULT 499.00,
+    meta_title TEXT DEFAULT 'MEERAV - Authentic Bikaneri Namkeens & Sweets',
+    meta_description TEXT DEFAULT 'Handcrafted authentic Bikaneri namkeens, sweets and royal delicacies prepared in 100% pure oil.',
+    meta_keywords TEXT DEFAULT 'namkeen, bikaneri bhujia, sweets, snacks, pure oil',
+    og_image_url TEXT,
     announcement_text TEXT DEFAULT '✨ Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
     whatsapp_number TEXT DEFAULT '+919876543210',
     contact_email TEXT DEFAULT 'hello@meeravnamkeens.com',
@@ -137,9 +151,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
 
 INSERT INTO public.site_settings (id) VALUES ('default') ON CONFLICT (id) DO NOTHING;
 
--- 4b. PAGE CONTENT TABLE — admin-editable copy for headings/subheadings/
--- descriptions across the site (a generic key/value store so new editable
--- text blocks can be added without a schema change).
+-- 4b. PAGE CONTENT TABLE — admin-editable copy for headings/subheadings/descriptions
 CREATE TABLE IF NOT EXISTS public.page_content (
     key TEXT PRIMARY KEY,
     value TEXT NOT NULL,
@@ -154,17 +166,95 @@ INSERT INTO public.page_content (key, value, label, page, sort_order) VALUES
 ('home.hero.title_line1', 'Royal Bikaneri', 'Hero Title (Line 1)', 'home', 2),
 ('home.hero.title_highlight', 'Namkeens & Sev', 'Hero Title (Highlighted Word)', 'home', 3),
 ('home.hero.subtitle', 'Made with finest ingredients and authentic Bikaneri recipes. Prepared fresh daily in <strong>100% pure & clean oil</strong> with zero palm oil.', 'Hero Subtitle', 'home', 4),
-('home.showcase.heading', 'Select a Category to Explore Snacks', 'Category Showcase Heading', 'home', 5),
-('home.showcase.subheading', 'Click any traditional category below to view its handcrafted snacks, live prices & pack sizes', 'Category Showcase Subheading', 'home', 6),
-('home.trust.item1.title', 'Pure & Clean Oil', 'Trust Badge 1 - Title', 'home', 7),
-('home.trust.item1.desc', 'Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.', 'Trust Badge 1 - Description', 'home', 8),
-('home.trust.item2.title', 'Bikaneri Heritage', 'Trust Badge 2 - Title', 'home', 9),
-('home.trust.item2.desc', 'Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.', 'Trust Badge 2 - Description', 'home', 10),
-('home.trust.item3.title', 'Multi-Layer Airtight Pack', 'Trust Badge 3 - Title', 'home', 11),
-('home.trust.item3.desc', 'Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.', 'Trust Badge 3 - Description', 'home', 12),
-('home.trust.item4.title', 'Live WhatsApp Alerts', 'Trust Badge 4 - Title', 'home', 13),
-('home.trust.item4.desc', 'Instant WhatsApp notifications with courier tracking and live GPS route maps.', 'Trust Badge 4 - Description', 'home', 14)
+('home.hero.cta_btn1', 'Order Online Now', 'Hero Primary Button', 'home', 5),
+('home.hero.cta_btn2', 'Explore Categories', 'Hero Secondary Button', 'home', 6),
+('home.showcase.heading', 'Select a Category to Explore Snacks', 'Category Showcase Heading', 'home', 7),
+('home.showcase.subheading', 'Click any traditional category below to view its handcrafted snacks, live prices & pack sizes', 'Category Showcase Subheading', 'home', 8),
+('home.trust.item1.title', 'Pure & Clean Oil', 'Trust Badge 1 - Title', 'home', 9),
+('home.trust.item1.desc', 'Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.', 'Trust Badge 1 - Description', 'home', 10),
+('home.trust.item1.icon', 'fas fa-droplet', 'Trust Badge 1 - Icon', 'home', 11),
+('home.trust.item2.title', 'Bikaneri Heritage', 'Trust Badge 2 - Title', 'home', 12),
+('home.trust.item2.desc', 'Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.', 'Trust Badge 2 - Description', 'home', 13),
+('home.trust.item2.icon', 'fas fa-crown', 'Trust Badge 2 - Icon', 'home', 14),
+('home.trust.item3.title', 'Multi-Layer Airtight Pack', 'Trust Badge 3 - Title', 'home', 15),
+('home.trust.item3.desc', 'Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.', 'Trust Badge 3 - Description', 'home', 16),
+('home.trust.item3.icon', 'fas fa-box-open', 'Trust Badge 3 - Icon', 'home', 17),
+('home.trust.item4.title', 'Live WhatsApp Alerts', 'Trust Badge 4 - Title', 'home', 18),
+('home.trust.item4.desc', 'Instant WhatsApp notifications with courier tracking and live GPS route maps.', 'Trust Badge 4 - Description', 'home', 19),
+('home.trust.item4.icon', 'fab fa-whatsapp', 'Trust Badge 4 - Icon', 'home', 20),
+('home.story.heading', 'Heritage of Bikaner in Every Crunch', 'Story Heading', 'home', 21),
+('home.story.subheading', 'Four Decades of Culinary Mastery & Pure Taste', 'Story Subheading', 'home', 22),
+('home.story.p1', 'Born in the royal desert city of Bikaner, our snacks carry forward generations of secret family spice formulations, handcrafted by master halwais.', 'Story Paragraph 1', 'home', 23),
+('home.story.p2', 'We strictly refuse shortcuts: zero palm oil, zero chemical preservatives, only pure cold-pressed groundnut oil, pristine desert rock salt, and authentic Moth flour.', 'Story Paragraph 2', 'home', 24),
+('home.stats.item1.val', '40+', 'Stat 1 Value', 'home', 25),
+('home.stats.item1.label', 'Years of Heritage', 'Stat 1 Label', 'home', 26),
+('home.stats.item2.val', '75+', 'Stat 2 Value', 'home', 27),
+('home.stats.item2.label', 'Signature Delicacies', 'Stat 2 Label', 'home', 28),
+('home.stats.item3.val', '50K+', 'Stat 3 Value', 'home', 29),
+('home.stats.item3.label', 'Happy Snack Lovers', 'Stat 3 Label', 'home', 30),
+('home.stats.item4.val', '100%', 'Stat 4 Value', 'home', 31),
+('home.stats.item4.label', 'Pure Groundnut Oil', 'Stat 4 Label', 'home', 32),
+('home.testimonials.heading', 'Loved Across India & Beyond', 'Testimonials Heading', 'home', 33),
+('home.testimonials.subheading', 'Verified foodies share their love for authentic Bikaneri crunch', 'Testimonials Subheading', 'home', 34),
+('home.faqs.heading', 'Frequently Asked Questions', 'FAQs Heading', 'home', 35),
+('home.faqs.subheading', 'Everything you need to know about our fresh snacks, shipping & purity', 'FAQs Subheading', 'home', 36),
+('footer.about_text', 'Authentic royal Bikaneri namkeens, sweets, and roasted diet savories crafted daily in pure groundnut oil with zero palm oil.', 'Footer About Text', 'footer', 37)
 ON CONFLICT (key) DO NOTHING;
+
+-- 4c. COUPONS & PROMOTIONS TABLE
+CREATE TABLE IF NOT EXISTS public.coupons (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    code TEXT UNIQUE NOT NULL,
+    discount_type TEXT NOT NULL DEFAULT 'percentage', -- 'percentage' | 'flat'
+    discount_val NUMERIC(10,2) NOT NULL DEFAULT 10.00,
+    min_order_amount NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.coupons (code, discount_type, discount_val, min_order_amount, is_active, description) VALUES
+('MEERAV10', 'percentage', 10.00, 299.00, true, '10% Off on orders above ₹299'),
+('FESTIVE15', 'percentage', 15.00, 699.00, true, '15% Off on orders above ₹699'),
+('ROYAL50', 'flat', 50.00, 499.00, true, 'Flat ₹50 Off on orders above ₹499')
+ON CONFLICT (code) DO NOTHING;
+
+-- 4d. TESTIMONIALS & REVIEWS TABLE
+CREATE TABLE IF NOT EXISTS public.testimonials (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    name TEXT NOT NULL,
+    city TEXT DEFAULT 'India',
+    rating NUMERIC(2,1) NOT NULL DEFAULT 5.0,
+    review_text TEXT NOT NULL,
+    avatar TEXT,
+    sort_order INTEGER DEFAULT 0,
+    is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.testimonials (name, city, rating, review_text, avatar, sort_order) VALUES
+('Pooja Sharma', 'Mumbai, Maharashtra', 5.0, 'The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.', 'assets/images/drive_1.jpg', 1),
+('Vikramaditya Rathore', 'Jaipur, Rajasthan', 5.0, 'Finally a brand that uses 100% pure groundnut oil without sneaky palm oil. The Kasuri Methi Mathri with morning chai is pure bliss!', 'assets/images/drive_2.jpg', 2),
+('Ananya Deshmukh', 'Bengaluru, Karnataka', 5.0, 'Super fast courier delivery and the nitrogen packaging kept the sev absolutely fresh for weeks. 10/10 recommend!', 'assets/images/drive_3.jpg', 3)
+ON CONFLICT (id) DO NOTHING;
+
+-- 4e. FAQS TABLE
+CREATE TABLE IF NOT EXISTS public.faqs (
+    id TEXT PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    category TEXT DEFAULT 'general',
+    sort_order INTEGER DEFAULT 0,
+    is_visible BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+INSERT INTO public.faqs (question, answer, category, sort_order) VALUES
+('Do you use any Palm Oil or chemical preservatives?', 'Never. All our namkeens and savories are prepared exclusively in 100% pure cold-pressed groundnut and clean vegetable oils with zero palm oil and no artificial preservatives.', 'quality', 1),
+('How long does the crunch stay fresh in airtight packaging?', 'Our multi-layer food-grade packaging is flushed with food-grade nitrogen, guaranteeing factory-fresh crispiness and authentic aroma for 6+ months from manufacturing.', 'quality', 2),
+('What are the delivery charges and shipping times?', 'We offer FREE Shipping on all orders above our threshold! Standard shipping takes 2-4 business days across metro cities with live WhatsApp courier tracking.', 'shipping', 3),
+('Are these snacks 100% Vegetarian & Jain-friendly?', 'Yes! All our delicacies are 100% Pure Vegetarian. Many signature items like our Hing Sev, Moong Dal, and Roasted Makhana are also Jain-friendly with zero onion and garlic.', 'dietary', 4)
+ON CONFLICT (id) DO NOTHING;
 
 -- 5. CUSTOMERS TABLE
 CREATE TABLE IF NOT EXISTS public.customers (
@@ -296,6 +386,27 @@ CREATE POLICY "admins write page content" ON public.page_content FOR INSERT WITH
 CREATE POLICY "admins update page content" ON public.page_content FOR UPDATE USING (is_admin((select auth.uid())));
 CREATE POLICY "admins delete page content" ON public.page_content FOR DELETE USING (is_admin((select auth.uid())));
 
+-- Coupons: public read (for checkout discount verification), admin write
+ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public read coupons" ON public.coupons FOR SELECT USING (true);
+CREATE POLICY "admins write coupons" ON public.coupons FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update coupons" ON public.coupons FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete coupons" ON public.coupons FOR DELETE USING (is_admin((select auth.uid())));
+
+-- Testimonials: public read, admin write
+ALTER TABLE public.testimonials ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public read testimonials" ON public.testimonials FOR SELECT USING (true);
+CREATE POLICY "admins write testimonials" ON public.testimonials FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update testimonials" ON public.testimonials FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete testimonials" ON public.testimonials FOR DELETE USING (is_admin((select auth.uid())));
+
+-- FAQs: public read, admin write
+ALTER TABLE public.faqs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "public read faqs" ON public.faqs FOR SELECT USING (true);
+CREATE POLICY "admins write faqs" ON public.faqs FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update faqs" ON public.faqs FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete faqs" ON public.faqs FOR DELETE USING (is_admin((select auth.uid())));
+
 -- Customers: guests/self can register & update their own profile; admins (or the owner) can read it
 CREATE POLICY "customers insert own or guest" ON public.customers FOR INSERT
     WITH CHECK ((select auth.uid()) IS NULL OR (select auth.uid())::text = id);
@@ -341,6 +452,9 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.admin_activity_log;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.page_content;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.coupons;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.faqs;
 
 -- 13. STORAGE BUCKET (meerav-media)
 -- Systematic folder layout: meerav-media/categories/{category_id}/products/{product_id}/{photos|videos}/{filename}

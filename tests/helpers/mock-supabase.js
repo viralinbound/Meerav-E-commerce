@@ -48,6 +48,21 @@ export function seedDatabase() {
     orders: [],
     customers: [],
     notifications: [],
+    coupons: [
+      { id: 'c1', code: 'MEERAV10', discount_type: 'percentage', discount_val: 10, min_order_amount: 299, description: '10% Off', is_active: true, created_at: now }
+    ],
+    testimonials: [
+      { id: 't1', name: 'Pooja Sharma', city: 'Mumbai', rating: 5, review_text: 'Authentic taste!', avatar: 'assets/images/drive_1.jpg', is_visible: true, sort_order: 1, created_at: now }
+    ],
+    faqs: [
+      { id: 'f1', question: 'Do you use palm oil?', answer: 'Never.', category: 'quality', sort_order: 1, is_visible: true, created_at: now }
+    ],
+    site_settings: [
+      { id: 1, site_name: 'MEERAV NAMKEENS', primary_color: '#4A0713', updated_at: now }
+    ],
+    page_content: [
+      { key: 'hero.title', value: 'Royal Taste', label: 'Hero Title', page: 'home', sort_order: 1, updated_at: now }
+    ],
     admins: [
       {
         id: 'admin-root',
@@ -116,7 +131,7 @@ function applyFilters(rows, filters) {
 }
 
 function authorize(actor, table, op, row) {
-  if (table === 'categories' || table === 'products') {
+  if (table === 'categories' || table === 'products' || table === 'coupons' || table === 'testimonials' || table === 'faqs' || table === 'site_settings' || table === 'page_content') {
     if (op === 'select') return true;
     return actor.isAdmin;
   }
@@ -187,7 +202,7 @@ class Query {
   maybeSingle() { this.single = true; return this; }
 
   insert(row) { this.op = 'insert'; this.payload = row; return this; }
-  upsert(row) { this.op = 'upsert'; this.payload = row; return this; }
+  upsert(row, opts = {}) { this.op = 'upsert'; this.payload = row; this.conflictKey = opts.onConflict || 'id'; return this; }
   update(patch) { this.op = 'update'; this.payload = patch; return this; }
   delete() { this.op = 'delete'; return this; }
 
@@ -236,16 +251,24 @@ class Query {
     }
 
     if (this.op === 'upsert') {
-      const row = { ...this.payload };
-      if (!authorize(actor, this.table, 'upsert', row)) return deny('permission denied for upsert');
-      const idx = tableRows.findIndex((r) => r.id === row.id);
-      if (idx === -1) {
-        if (!row.created_at) row.created_at = new Date().toISOString();
-        tableRows.push(row);
-      } else {
-        tableRows[idx] = { ...tableRows[idx], ...row };
+      // Real supabase-js accepts either a single row object or an array of
+      // rows (bulk upsert) — mirror both so mocked calls behave like production.
+      const rows = Array.isArray(this.payload) ? this.payload : [this.payload];
+      const conflictKey = this.conflictKey || 'id';
+      const results = [];
+      for (const incoming of rows) {
+        const row = { ...incoming };
+        if (!authorize(actor, this.table, 'upsert', row)) return deny('permission denied for upsert');
+        const idx = tableRows.findIndex((r) => r[conflictKey] === row[conflictKey]);
+        if (idx === -1) {
+          if (!row.created_at) row.created_at = new Date().toISOString();
+          tableRows.push(row);
+        } else {
+          tableRows[idx] = { ...tableRows[idx], ...row };
+        }
+        results.push(row);
       }
-      return { data: clone(row), error: null };
+      return { data: Array.isArray(this.payload) ? clone(results) : clone(results[0]), error: null };
     }
 
     if (this.op === 'update') {

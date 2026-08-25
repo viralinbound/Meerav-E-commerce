@@ -51,7 +51,11 @@ export function appProductToDb(p) {
 }
 
 export function dbCategoryToApp(row) {
-  return { id: row.id, name: row.name, icon: row.icon, description: row.description };
+  return { id: row.id, name: row.name, icon: row.icon, description: row.description, image: row.image || row.image_url || null };
+}
+
+export function appCategoryToDb(c) {
+  return { id: c.id, name: c.name, icon: c.icon || 'fas fa-cookie', description: c.description || '', image_url: c.image || c.imageUrl || null };
 }
 
 export function dbCustomerToApp(row) {
@@ -155,6 +159,20 @@ export function dbSettingsToApp(row) {
     fontFamily: row.font_family,
     headingFontFamily: row.heading_font_family,
     baseFontSize: row.base_font_size,
+    borderRadius: row.border_radius || 'rounded-2xl',
+    currencySymbol: row.currency_symbol || '₹',
+    currencyCode: row.currency_code || 'INR',
+    heroVideoUrl: row.hero_video_url,
+    heroImageUrl: row.hero_image_url,
+    heroCtaText: row.hero_cta_text || 'Order Online Now',
+    heroCtaLink: row.hero_cta_link || 'category.html',
+    heroSecondaryCtaText: row.hero_secondary_cta_text || 'Explore Categories',
+    shippingFlatFee: Number(row.shipping_flat_fee) || 50,
+    freeShippingThreshold: Number(row.free_shipping_threshold) || 499,
+    metaTitle: row.meta_title,
+    metaDescription: row.meta_description,
+    metaKeywords: row.meta_keywords,
+    ogImageUrl: row.og_image_url,
     announcementText: row.announcement_text,
     whatsappNumber: row.whatsapp_number,
     contactEmail: row.contact_email,
@@ -201,6 +219,20 @@ export function appSettingsToDb(s) {
     font_family: s.fontFamily,
     heading_font_family: s.headingFontFamily,
     base_font_size: s.baseFontSize,
+    border_radius: s.borderRadius || 'rounded-2xl',
+    currency_symbol: s.currencySymbol || '₹',
+    currency_code: s.currencyCode || 'INR',
+    hero_video_url: s.heroVideoUrl || null,
+    hero_image_url: s.heroImageUrl || null,
+    hero_cta_text: s.heroCtaText || 'Order Online Now',
+    hero_cta_link: s.heroCtaLink || 'category.html',
+    hero_secondary_cta_text: s.heroSecondaryCtaText || 'Explore Categories',
+    shipping_flat_fee: s.shippingFlatFee !== undefined ? s.shippingFlatFee : 50,
+    free_shipping_threshold: s.freeShippingThreshold !== undefined ? s.freeShippingThreshold : 499,
+    meta_title: s.metaTitle || null,
+    meta_description: s.metaDescription || null,
+    meta_keywords: s.metaKeywords || null,
+    og_image_url: s.ogImageUrl || null,
     announcement_text: s.announcementText,
     whatsapp_number: s.whatsappNumber,
     contact_email: s.contactEmail,
@@ -218,5 +250,77 @@ export function appSettingsToDb(s) {
     payment_razorpay_key_id: s.paymentRazorpayKeyId || null,
     payment_stripe_enabled: s.paymentStripeEnabled,
     payment_stripe_publishable_key: s.paymentStripePublishableKey || null
+  };
+}
+
+export function dbCouponToApp(row) {
+  return {
+    id: row.id,
+    code: row.code,
+    discountType: row.discount_type,
+    discountVal: Number(row.discount_val) || 0,
+    minOrderAmount: Number(row.min_order_amount) || 0,
+    isActive: Boolean(row.is_active),
+    description: row.description || ''
+  };
+}
+
+export function appCouponToDb(c) {
+  return {
+    id: c.id,
+    code: (c.code || '').trim().toUpperCase(),
+    discount_type: c.discountType || 'percentage',
+    discount_val: Number(c.discountVal) || 0,
+    min_order_amount: Number(c.minOrderAmount) || 0,
+    is_active: c.isActive !== false,
+    description: c.description || null
+  };
+}
+
+export function dbTestimonialToApp(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    city: row.city || '',
+    rating: Number(row.rating) || 5,
+    reviewText: row.review_text,
+    avatar: row.avatar || null,
+    sortOrder: Number(row.sort_order) || 0,
+    isVisible: row.is_visible !== false
+  };
+}
+
+export function appTestimonialToDb(t) {
+  return {
+    id: t.id,
+    name: t.name,
+    city: t.city || null,
+    rating: Number(t.rating) || 5,
+    review_text: t.reviewText,
+    avatar: t.avatar || null,
+    sort_order: Number(t.sortOrder) || 0,
+    is_visible: t.isVisible !== false
+  };
+}
+
+export function dbFaqToApp(row) {
+  return {
+    id: row.id,
+    question: row.question,
+    answer: row.answer,
+    category: row.category || 'general',
+    sortOrder: Number(row.sort_order) || 0,
+    isVisible: row.is_visible !== false
+  };
+}
+
+export function appFaqToDb(f) {
+  return {
+    id: f.id,
+    question: f.question,
+    answer: f.answer,
+    category: f.category || 'general',
+    sort_order: Number(f.sortOrder) || 0,
+    is_visible: f.isVisible !== false
   };
 }

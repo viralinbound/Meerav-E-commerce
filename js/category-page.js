@@ -379,8 +379,8 @@ function renderCategoryProducts() {
           <div class="pt-3 border-t border-amber-100">
             <div class="flex items-baseline justify-between mb-3">
               <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-black text-[#4A0713]">₹${selectedVar.price}</span>
-                <span class="text-xs text-gray-400 line-through">₹${selectedVar.originalPrice}</span>
+                <span class="text-2xl font-black text-[#4A0713]">${formatPrice(selectedVar.price)}</span>
+                <span class="text-xs text-gray-400 line-through">${formatPrice(selectedVar.originalPrice)}</span>
                 <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
               </div>
               <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">

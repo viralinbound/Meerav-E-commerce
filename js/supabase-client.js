@@ -31,4 +31,7 @@ window.fetchCustomers = MiraDB.fetchCustomers;
 window.fetchNotifications = MiraDB.fetchNotifications;
 window.fetchSiteSettings = MiraDB.fetchSiteSettings;
 window.fetchPageContent = MiraDB.fetchPageContent;
+window.fetchCoupons = MiraDB.fetchCoupons;
+window.fetchTestimonials = MiraDB.fetchTestimonials;
+window.fetchFaqs = MiraDB.fetchFaqs;
 

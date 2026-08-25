@@ -22,15 +22,34 @@ const MIRA_DATA = {
   },
 
   categories: [
-    { id: "all", name: "All Delicacies", icon: "fas fa-border-all", description: "Complete Bikaner royal heritage snack collection" },
-    { id: "bhujia-sev", name: "Bhujia & Sev", icon: "fas fa-fire", description: "Thin, crispy golden sev & authentic Bikaneri bhujia prepared in pure oil" },
-    { id: "mixture-farsan", name: "Namkeen & Mixtures", icon: "fas fa-bowl-rice", description: "Rich royal medleys with cashews, raisins, boondi & crunchy namkeens" },
-    { id: "mathri", name: "Papad & Mathri", icon: "fas fa-sun", description: "Flaky handmade mathri, sun-dried papad, and authentic Rajasthani crisps" },
-    { id: "roasted-diet", name: "Roasted Diet Snacks", icon: "fas fa-seedling", description: "Slow-roasted superfoods, crispy moong dal, and diet makhana with zero palm oil" },
-    { id: "sweets-combos", name: "Sweets & Hampers", icon: "fas fa-gift", description: "Traditional Bikaneri sweets, festive combo boxes, and luxury gift hampers" }
+    { id: "all", name: "All Delicacies", icon: "fas fa-border-all", image: "assets/images/cinematic_bhujia.jpg", description: "Complete Bikaner royal heritage snack collection" },
+    { id: "bhujia-sev", name: "Bhujia & Sev", icon: "fas fa-fire", image: "assets/images/cinematic_bhujia.jpg", description: "Thin, crispy golden sev & authentic Bikaneri bhujia prepared in pure oil" },
+    { id: "mixture-farsan", name: "Namkeen & Mixtures", icon: "fas fa-bowl-rice", image: "assets/images/cinematic_mixture.jpg", description: "Rich royal medleys with cashews, raisins, boondi & crunchy namkeens" },
+    { id: "mathri", name: "Papad & Mathri", icon: "fas fa-sun", image: "assets/images/cinematic_papad.jpg", description: "Flaky handmade mathri, sun-dried papad, and authentic Rajasthani crisps" },
+    { id: "roasted-diet", name: "Roasted Diet Snacks", icon: "fas fa-seedling", image: "assets/images/cinematic_moong_dal.jpg", description: "Slow-roasted superfoods, crispy moong dal, and diet makhana with zero palm oil" },
+    { id: "sweets-combos", name: "Sweets & Hampers", icon: "fas fa-gift", image: "assets/images/commercial_scene_4.jpg", description: "Traditional Bikaneri sweets, festive combo boxes, and luxury gift hampers" }
   ],
 
   dietaryTags: ["No Onion-Garlic", "Jain Friendly", "Roasted", "Gluten-Free", "100% Pure Oil", "Pure Desi Ghee"],
+
+  coupons: [
+    { id: "c1", code: "MEERAV10", discountType: "percentage", discountVal: 10, minOrderAmount: 299, isActive: true, description: "10% Off on orders above ₹299" },
+    { id: "c2", code: "FESTIVE15", discountType: "percentage", discountVal: 15, minOrderAmount: 699, isActive: true, description: "15% Off on orders above ₹699" },
+    { id: "c3", code: "ROYAL50", discountType: "flat", discountVal: 50, minOrderAmount: 499, isActive: true, description: "Flat ₹50 Off on orders above ₹499" }
+  ],
+
+  testimonials: [
+    { id: "t1", name: "Pooja Sharma", city: "Mumbai, Maharashtra", rating: 5, reviewText: "The Moth Bhujia is unbelievable! Reminded me instantly of our family trip to Bikaner. Clean, crisp, non-greasy taste.", avatar: "assets/images/drive_1.jpg", sortOrder: 1, isVisible: true },
+    { id: "t2", name: "Vikramaditya Rathore", city: "Jaipur, Rajasthan", rating: 5, reviewText: "Finally a brand that uses 100% pure groundnut oil without sneaky palm oil. The Kasuri Methi Mathri with morning chai is pure bliss!", avatar: "assets/images/drive_2.jpg", sortOrder: 2, isVisible: true },
+    { id: "t3", name: "Ananya Deshmukh", city: "Bengaluru, Karnataka", rating: 5, reviewText: "Super fast courier delivery and the nitrogen packaging kept the sev absolutely fresh for weeks. 10/10 recommend!", avatar: "assets/images/drive_3.jpg", sortOrder: 3, isVisible: true }
+  ],
+
+  faqs: [
+    { id: "f1", question: "Do you use any Palm Oil or chemical preservatives?", answer: "Never. All our namkeens and savories are prepared exclusively in 100% pure cold-pressed groundnut and clean vegetable oils with zero palm oil and no artificial preservatives.", category: "quality", sortOrder: 1, isVisible: true },
+    { id: "f2", question: "How long does the crunch stay fresh in airtight packaging?", answer: "Our multi-layer food-grade packaging is flushed with food-grade nitrogen, guaranteeing factory-fresh crispiness and authentic aroma for 6+ months from manufacturing.", category: "quality", sortOrder: 2, isVisible: true },
+    { id: "f3", question: "What are the delivery charges and shipping times?", answer: "We offer FREE Shipping on all orders above our threshold! Standard shipping takes 2-4 business days across metro cities with live WhatsApp courier tracking.", category: "shipping", sortOrder: 3, isVisible: true },
+    { id: "f4", question: "Are these snacks 100% Vegetarian & Jain-friendly?", answer: "Yes! All our delicacies are 100% Pure Vegetarian. Many signature items like our Hing Sev, Moong Dal, and Roasted Makhana are also Jain-friendly with zero onion and garlic.", category: "dietary", sortOrder: 4, isVisible: true }
+  ],
 
   mockUsers: [
     {

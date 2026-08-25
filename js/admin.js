@@ -15,6 +15,12 @@ const adminState = {
   notifications: [],
   admins: [],
   myWarnings: [],
+  coupons: [],
+  testimonials: [],
+  faqs: [],
+  editingCouponId: null,
+  editingTestimonialId: null,
+  editingFaqId: null,
   siteSettings: null,
   pageContentRows: [],
   pendingLogoUrl: null,
@@ -54,16 +60,68 @@ function recomputeCustomerStats() {
 
 async function loadAdminData() {
   const adminClient = MiraDB.adminClient;
-  const [categories, products, orders, customers, notifications] = await Promise.all([
-    fetchCategories(), fetchProducts(), fetchOrders(), fetchCustomers(adminClient), fetchNotifications(adminClient)
+  const [categories, products, orders, customers, notifications, coupons, testimonials, faqs] = await Promise.all([
+    fetchCategories(), 
+    fetchProducts(), 
+    fetchOrders(), 
+    fetchCustomers(adminClient), 
+    fetchNotifications(adminClient),
+    typeof fetchCoupons === 'function' ? fetchCoupons() : Promise.resolve([]),
+    typeof fetchTestimonials === 'function' ? fetchTestimonials() : Promise.resolve([]),
+    typeof fetchFaqs === 'function' ? fetchFaqs() : Promise.resolve([])
   ]);
   adminState.categories = categories.length ? categories : [...MIRA_DATA.categories];
   adminState.products = products.length ? products : [...MIRA_DATA.products];
   adminState.orders = orders;
   adminState.customers = customers.length ? customers : [...MIRA_DATA.customers];
   adminState.notifications = notifications;
+  adminState.coupons = coupons.length ? coupons : [...(MIRA_DATA.coupons || [])];
+  adminState.testimonials = testimonials.length ? testimonials : [...(MIRA_DATA.testimonials || [])];
+  adminState.faqs = faqs.length ? faqs : [...(MIRA_DATA.faqs || [])];
   adminState.siteSettings = window.SITE_SETTINGS || (await MiraDB.fetchSiteSettings());
-  adminState.pageContentRows = (await MiraDB.fetchPageContent()).rows;
+  const fetchedContent = await MiraDB.fetchPageContent();
+  
+  const defaultPageContentRows = [
+    { key: 'hero.badge', value: '👑 100% Pure Oil & Authentic Bikaneri Spices', label: 'Hero Badge Text', page: 'hero', sort_order: 1 },
+    { key: 'hero.title', value: 'Royal Taste of Authentic Bikaner', label: 'Hero Main Title', page: 'hero', sort_order: 2 },
+    { key: 'hero.subtitle', value: 'Handcrafted namkeens, golden bhujia, crispy mathri and royal sweets prepared fresh in pure oil.', label: 'Hero Subtitle', page: 'hero', sort_order: 3 },
+    { key: 'home.showcase.heading', value: 'Select a Category to Explore Snacks', label: 'Category Showcase Heading', page: 'categories', sort_order: 4 },
+    { key: 'home.showcase.subheading', value: 'Click any traditional category below to view its handcrafted snacks, live prices & pack sizes', label: 'Category Showcase Subheading', page: 'categories', sort_order: 5 },
+    { key: 'home.trust.item1.image', value: 'assets/images/drive_4.jpg', label: 'Trust Item 1 (Image URL)', page: 'trust_badges', sort_order: 6 },
+    { key: 'home.trust.item1.title', value: 'Pure & Clean Oil', label: 'Trust Item 1 (Title)', page: 'trust_badges', sort_order: 7 },
+    { key: 'home.trust.item1.desc', value: 'Prepared exclusively in pure cold-pressed groundnut & vegetable oils with zero palm oil.', label: 'Trust Item 1 (Description)', page: 'trust_badges', sort_order: 8 },
+    { key: 'home.trust.item2.image', value: 'assets/images/drive_5.jpg', label: 'Trust Item 2 (Image URL)', page: 'trust_badges', sort_order: 9 },
+    { key: 'home.trust.item2.title', value: 'Bikaneri Heritage', label: 'Trust Item 2 (Title)', page: 'trust_badges', sort_order: 10 },
+    { key: 'home.trust.item2.desc', value: 'Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.', label: 'Trust Item 2 (Description)', page: 'trust_badges', sort_order: 11 },
+    { key: 'home.trust.item3.image', value: 'assets/images/meerav_aloo_bhujia_pack.png', label: 'Trust Item 3 (Image URL)', page: 'trust_badges', sort_order: 12 },
+    { key: 'home.trust.item3.title', value: 'Multi-Layer Airtight Pack', label: 'Trust Item 3 (Title)', page: 'trust_badges', sort_order: 13 },
+    { key: 'home.trust.item3.desc', value: 'Food-grade nitrogen flushed airtight packaging guarantees crisp crunch for 6+ months.', label: 'Trust Item 3 (Description)', page: 'trust_badges', sort_order: 14 },
+    { key: 'home.trust.item4.image', value: 'assets/images/drive_3.jpg', label: 'Trust Item 4 (Image URL)', page: 'trust_badges', sort_order: 15 },
+    { key: 'home.trust.item4.title', value: 'Live WhatsApp Alerts', label: 'Trust Item 4 (Title)', page: 'trust_badges', sort_order: 16 },
+    { key: 'home.trust.item4.desc', value: 'Instant WhatsApp notifications with courier tracking and live GPS route maps.', label: 'Trust Item 4 (Description)', page: 'trust_badges', sort_order: 17 },
+    { key: 'home.story.heading', value: 'Heritage of Bikaner in Every Crunch', label: 'Story Main Heading', page: 'story', sort_order: 18 },
+    { key: 'home.story.subheading', value: 'Four Decades of Culinary Mastery & Pure Taste', label: 'Story Subheading', page: 'story', sort_order: 19 },
+    { key: 'home.story.p1', value: 'Born in the royal desert city of Bikaner, our snacks carry forward generations of secret family spice formulations, handcrafted by master halwais.', label: 'Story Paragraph 1', page: 'story', sort_order: 20 },
+    { key: 'home.story.p2', value: 'We strictly refuse shortcuts: zero palm oil, zero chemical preservatives, only pure cold-pressed groundnut oil, pristine desert rock salt, and authentic Moth flour.', label: 'Story Paragraph 2', page: 'story', sort_order: 21 },
+    { key: 'home.stats.item1.val', value: '40+', label: 'Stat 1 Value', page: 'story', sort_order: 22 },
+    { key: 'home.stats.item1.label', value: 'Years Heritage', label: 'Stat 1 Label', page: 'story', sort_order: 23 },
+    { key: 'home.stats.item2.val', value: '75+', label: 'Stat 2 Value', page: 'story', sort_order: 24 },
+    { key: 'home.stats.item2.label', value: 'Delicacies', label: 'Stat 2 Label', page: 'story', sort_order: 25 },
+    { key: 'home.stats.item3.val', value: '50K+', label: 'Stat 3 Value', page: 'story', sort_order: 26 },
+    { key: 'home.stats.item3.label', value: 'Happy Foodies', label: 'Stat 3 Label', page: 'story', sort_order: 27 },
+    { key: 'home.stats.item4.val', value: '100%', label: 'Stat 4 Value', page: 'story', sort_order: 28 },
+    { key: 'home.stats.item4.label', value: 'Pure Oil', label: 'Stat 4 Label', page: 'story', sort_order: 29 },
+    { key: 'reviews.title', value: 'Loved by Over 50,000+ Snack Connoisseurs', label: 'Reviews Section Title', page: 'reviews', sort_order: 30 },
+    { key: 'faq.title', value: 'Frequently Asked Questions', label: 'FAQ Section Title', page: 'faq', sort_order: 31 },
+    { key: 'footer.bio', value: 'Authentic royal Bikaneri namkeens, bhujia and sweets crafted in pure oil with heritage recipes.', label: 'Footer Bio', page: 'footer', sort_order: 32 }
+  ];
+
+  const fetchedRows = fetchedContent.rows || [];
+  const fetchedKeys = new Set(fetchedRows.map(r => r.key));
+  adminState.pageContentRows = [
+    ...fetchedRows,
+    ...defaultPageContentRows.filter(d => !fetchedKeys.has(d.key))
+  ];
   recomputeCustomerStats();
 }
 
@@ -118,8 +176,8 @@ function setupAdminRealtime() {
       }
     }
     recomputeCustomerStats();
-    if (adminState.currentPage === 'overview') { renderAdminKPIs(); renderOverviewRecentOrders(); }
     if (adminState.currentPage === 'orders') renderAdminOrders();
+    if (adminState.currentPage === 'overview') { renderAdminKPIs(); renderOverviewRecentOrders(); }
     if (adminState.currentPage === 'customers') renderAdminCustomers();
   });
 
@@ -147,6 +205,21 @@ function setupAdminRealtime() {
       adminState.notifications.unshift(MiraDB.mappers.dbNotifToApp(payload.new));
       if (adminState.currentPage === 'notifications') renderAdminNotificationLogs();
     }
+  });
+
+  MiraDB.subscribeTable('coupons', async () => {
+    adminState.coupons = await fetchCoupons();
+    if (adminState.currentPage === 'settings') renderAdminCoupons();
+  });
+
+  MiraDB.subscribeTable('testimonials', async () => {
+    adminState.testimonials = await fetchTestimonials();
+    if (adminState.currentPage === 'settings') renderAdminTestimonials();
+  });
+
+  MiraDB.subscribeTable('faqs', async () => {
+    adminState.faqs = await fetchFaqs();
+    if (adminState.currentPage === 'settings') renderAdminFaqs();
   });
 
   // Root sees sub-admin activity live (RLS hides this entirely for non-root sessions).
@@ -195,7 +268,7 @@ function renderWarningBanner() {
 
   container.innerHTML = adminState.myWarnings.map(w => `
     <div class="p-4 bg-red-50 border-2 border-red-300 rounded-2xl flex items-start gap-3 mb-3">
-      <i class="fas fa-triangle-exclamation text-red-500 text-lg mt-0.5"></i>
+      
       <div class="flex-1 text-xs">
         <div class="font-black text-red-800 mb-0.5">Warning from ${w.issued_by_name}</div>
         <p class="text-red-700">${w.message}</p>
@@ -243,7 +316,7 @@ async function handleAdminLogin(event) {
 
   if (result.error) {
     if (errorBox) { errorBox.textContent = result.error.message || 'Invalid credentials'; errorBox.classList.remove('hidden'); }
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> <i class="fas fa-arrow-right text-xs"></i>'; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> '; }
     return;
   }
 
@@ -339,6 +412,9 @@ function showAdminPage(pageId) {
   } else if (pageId === 'settings') {
     renderSettingsForm();
     renderPageContentForm();
+    renderAdminCoupons();
+    renderAdminTestimonials();
+    renderAdminFaqs();
   } else if (pageId === 'admins') {
     renderAdminAccounts();
   }
@@ -354,7 +430,7 @@ function renderAdminKPIs() {
   const prodsEl = document.getElementById('admin-kpi-products');
   const catsEl = document.getElementById('admin-kpi-categories');
 
-  if (revenueEl) revenueEl.textContent = `₹${totalRevenue.toLocaleString()}`;
+  if (revenueEl) revenueEl.textContent = formatPrice(totalRevenue);
   if (ordersEl) ordersEl.textContent = adminState.orders.length;
   if (prodsEl) prodsEl.textContent = adminState.products.length;
   if (catsEl) catsEl.textContent = adminState.categories.filter(c => c.id !== 'all').length;
@@ -369,7 +445,7 @@ function renderOverviewRecentOrders() {
     <tr class="hover:bg-amber-50/40 transition">
       <td class="font-black text-[#4A0713] text-xs">#${order.id}</td>
       <td class="text-xs font-bold text-gray-900">${order.customer.name}</td>
-      <td class="font-black text-emerald-800 text-xs">₹${order.totalAmount}</td>
+      <td class="font-black text-emerald-800 text-xs">${formatPrice(order.totalAmount)}</td>
       <td>
         <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${
           order.orderStatus === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
@@ -410,7 +486,7 @@ function renderAdminOrders() {
         <div class="text-xs text-gray-700 font-semibold line-clamp-1">${order.items ? order.items.map(i => `${i.name} (x${i.qty})`).join(', ') : 'Signature Namkeens'}</div>
         <div class="text-[10px] text-gray-400 mt-0.5">${order.date} &bull; ${order.paymentMethod}</div>
       </td>
-      <td class="font-black text-[#4A0713] text-xs">₹${order.totalAmount}</td>
+      <td class="font-black text-[#4A0713] text-xs">${formatPrice(order.totalAmount)}</td>
       <td>
         <select onchange="updateOrderStatus('${order.id}', this.value)" class="text-xs font-black py-1 px-2.5 rounded-xl border cursor-pointer ${
           order.orderStatus === 'Delivered' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' :
@@ -427,10 +503,10 @@ function renderAdminOrders() {
       <td>
         <div class="flex items-center gap-1.5">
           <button onclick="previewWhatsAppNotification('${order.id}')" title="WhatsApp Alert" class="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs transition">
-            <i class="fab fa-whatsapp"></i>
+            
           </button>
           <button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="p-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs transition">
-            <i class="fas fa-envelope"></i>
+            
           </button>
         </div>
       </td>
@@ -505,7 +581,7 @@ function renderAdminProducts() {
         </td>
         <td>
           <div class="text-xs font-bold text-gray-800">
-            ₹${v.price} <span class="text-[10px] text-gray-400 line-through">₹${v.originalPrice}</span>
+            ${formatPrice(v.price)} <span class="text-[10px] text-gray-400 line-through">${formatPrice(v.originalPrice)}</span>
             <span class="text-[10px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded ml-1">${discount}% OFF</span>
           </div>
           <div class="text-[10px] text-gray-400">${p.variants.length} Variants (${p.variants.map(varItem => varItem.weight).join(', ')})</div>
@@ -514,17 +590,17 @@ function renderAdminProducts() {
           <button onclick="toggleProductStock('${p.id}')" class="px-2.5 py-1 text-[10px] font-black rounded-full transition ${
             p.inStock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200'
           }">
-            <i class="fas ${p.inStock ? 'fa-circle-check' : 'fa-circle-xmark'} mr-1"></i>
+            
             ${p.inStock ? 'In Stock' : 'Out of Stock'}
           </button>
         </td>
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition flex items-center gap-1">
-              <i class="fas fa-pen-to-square text-[10px]"></i> Edit / Image
+               Edit / Image
             </button>
             <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs transition">
-              <i class="fas fa-trash-alt"></i>
+              
             </button>
           </div>
         </td>
@@ -601,7 +677,7 @@ function renderProductPhotosGrid() {
       <img src="${url}" class="w-full h-full object-contain" />
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
       <button type="button" onclick="removeProductPhoto(${idx})" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-        <i class="fas fa-times"></i>
+        
       </button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
@@ -615,7 +691,7 @@ function renderProductVideosGrid() {
       <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
       <button type="button" onclick="removeProductVideo(${idx})" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-        <i class="fas fa-times"></i>
+        
       </button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
@@ -806,13 +882,15 @@ function renderAdminCategories() {
 
   tbody.innerHTML = validCats.map(cat => {
     const count = adminState.products.filter(p => p.category === cat.id).length;
+    const catImg = cat.image || 'assets/images/cinematic_bhujia.jpg';
 
     return `
       <tr class="hover:bg-amber-50/40 transition">
         <td>
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#4A0713] to-[#670E1E] text-[#FBBF24] flex items-center justify-center text-lg shadow-sm">
-              <i class="${cat.icon || 'fas fa-cookie'}"></i>
+            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-tr from-[#4A0713] to-[#670E1E] text-[#FBBF24] flex items-center justify-center text-lg shadow-sm border border-amber-300/50">
+              <img src="${catImg}" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
+              
             </div>
             <div>
               <div class="font-black text-xs text-gray-900">${cat.name}</div>
@@ -829,10 +907,10 @@ function renderAdminCategories() {
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-              <i class="fas fa-pen text-[10px]"></i> Edit
+               Edit
             </button>
             <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs transition">
-              <i class="fas fa-trash-alt"></i>
+              
             </button>
           </div>
         </td>
@@ -858,6 +936,8 @@ function openAddCategoryModal() {
   document.getElementById('cat-modal-title').textContent = 'Add New Snack Category';
   document.getElementById('cat-form-id').value = '';
   document.getElementById('cat-form-name').value = '';
+  document.getElementById('cat-form-image').value = 'assets/images/cinematic_bhujia.jpg';
+  document.getElementById('cat-form-img-preview').src = 'assets/images/cinematic_bhujia.jpg';
   document.getElementById('cat-form-icon').value = 'fas fa-cookie';
   document.getElementById('cat-form-desc').value = '';
 
@@ -872,6 +952,9 @@ function openEditCategoryModal(catId) {
   document.getElementById('cat-modal-title').textContent = `Edit Category: ${cat.name}`;
   document.getElementById('cat-form-id').value = cat.id;
   document.getElementById('cat-form-name').value = cat.name;
+  const imgUrl = cat.image || 'assets/images/cinematic_bhujia.jpg';
+  document.getElementById('cat-form-image').value = imgUrl;
+  document.getElementById('cat-form-img-preview').src = imgUrl;
   document.getElementById('cat-form-icon').value = cat.icon || 'fas fa-cookie';
   document.getElementById('cat-form-desc').value = cat.description || '';
 
@@ -888,12 +971,13 @@ async function saveCategoryForm(event) {
   const name = document.getElementById('cat-form-name').value.trim();
   const rawId = document.getElementById('cat-form-id').value.trim();
   const id = rawId || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const image = document.getElementById('cat-form-image').value.trim() || 'assets/images/cinematic_bhujia.jpg';
   const icon = document.getElementById('cat-form-icon').value.trim() || 'fas fa-cookie';
   const description = document.getElementById('cat-form-desc').value.trim();
 
   const existingIdx = adminState.categories.findIndex(c => c.id === id);
   const beforeCategory = existingIdx !== -1 ? { ...adminState.categories[existingIdx] } : null;
-  const savedCategory = { id, name, icon, description };
+  const savedCategory = { id, name, image, icon, description };
 
   if (existingIdx !== -1) {
     adminState.categories[existingIdx] = { ...adminState.categories[existingIdx], ...savedCategory };
@@ -966,11 +1050,11 @@ function renderAdminCustomers() {
           ${c.ordersCount} Orders
         </span>
       </td>
-      <td class="text-xs font-black text-emerald-700">₹${c.totalSpent.toLocaleString()}</td>
+      <td class="text-xs font-black text-emerald-700">${formatPrice(c.totalSpent)}</td>
       <td class="text-right">
         <div class="flex items-center justify-end gap-1.5">
           <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs transition border border-emerald-300">
-            <i class="fab fa-whatsapp"></i>
+            
           </a>
           <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition">
             View History
@@ -1003,7 +1087,7 @@ function renderAdminNotificationLogs() {
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
           n.type === 'WhatsApp' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
         }">
-          <i class="${n.type === 'WhatsApp' ? 'fab fa-whatsapp' : 'fas fa-envelope'}"></i>
+          
           ${n.type}
         </span>
       </td>
@@ -1014,7 +1098,7 @@ function renderAdminNotificationLogs() {
         <span class="inline-flex items-center gap-1 text-[11px] font-bold ${
           n.statusColor === 'green' ? 'text-emerald-600' : 'text-blue-600'
         }">
-          <i class="fas fa-check-double text-[10px]"></i>
+          
           ${n.status}
         </span>
       </td>
@@ -1071,6 +1155,19 @@ function renderSettingsForm() {
   document.getElementById('settings-logo-status').textContent = '';
   document.getElementById('settings-favicon-status').textContent = '';
 
+  // Hero Media & CTAs
+  const heroVideoInput = document.getElementById('settings-hero-video-url');
+  if (heroVideoInput) heroVideoInput.value = s.heroVideoUrl || '';
+  const heroImgInput = document.getElementById('settings-hero-image-url');
+  if (heroImgInput) heroImgInput.value = s.heroImageUrl || '';
+  const heroCtaInput = document.getElementById('settings-hero-cta-text');
+  if (heroCtaInput) heroCtaInput.value = s.heroCtaText || '';
+  const heroCtaLinkInput = document.getElementById('settings-hero-cta-link');
+  if (heroCtaLinkInput) heroCtaLinkInput.value = s.heroCtaLink || '';
+  const heroSecCtaInput = document.getElementById('settings-hero-secondary-cta-text');
+  if (heroSecCtaInput) heroSecCtaInput.value = s.heroSecondaryCtaText || '';
+
+  // Brand Theme Colors
   document.getElementById('settings-color-primary').value = s.primaryColor || '#4A0713';
   document.getElementById('settings-color-secondary').value = s.secondaryColor || '#32040C';
   document.getElementById('settings-color-accent').value = s.accentColor || '#E59819';
@@ -1084,11 +1181,25 @@ function renderSettingsForm() {
   document.getElementById('settings-admin-gradient-3').value = adminGradient[2] || '#030712';
   setAdminPanelType(s.adminPanelType || 'solid');
 
+  // Typography & UI Radius
   populateFontSelects();
   document.getElementById('settings-font-family').value = s.fontFamily || 'Outfit';
   document.getElementById('settings-heading-font-family').value = s.headingFontFamily || s.fontFamily || 'Outfit';
   document.getElementById('settings-base-font-size').value = s.baseFontSize || '16px';
+  const radiusSelect = document.getElementById('settings-border-radius');
+  if (radiusSelect) radiusSelect.value = s.borderRadius || 'rounded-2xl';
 
+  // Currency & Shipping Rules
+  const currSymInput = document.getElementById('settings-currency-symbol');
+  if (currSymInput) currSymInput.value = s.currencySymbol || '₹';
+  const currCodeInput = document.getElementById('settings-currency-code');
+  if (currCodeInput) currCodeInput.value = s.currencyCode || 'INR';
+  const freeShipInput = document.getElementById('settings-free-shipping-threshold');
+  if (freeShipInput) freeShipInput.value = s.freeShippingThreshold !== undefined ? s.freeShippingThreshold : 499;
+  const flatFeeInput = document.getElementById('settings-shipping-flat-fee');
+  if (flatFeeInput) flatFeeInput.value = s.shippingFlatFee !== undefined ? s.shippingFlatFee : 50;
+
+  // Background Engine
   document.getElementById('settings-color-background').value = s.backgroundColor || '#FFF9ED';
   const gradient = (s.backgroundGradient && s.backgroundGradient.length ? s.backgroundGradient : ['#FFF9ED', '#FDF1D0', '#E59819']);
   document.getElementById('settings-gradient-1').value = gradient[0] || '#FFF9ED';
@@ -1099,15 +1210,12 @@ function renderSettingsForm() {
   if (s.backgroundImageUrl) { bgPreview.src = s.backgroundImageUrl; bgPreview.classList.remove('hidden'); } else { bgPreview.classList.add('hidden'); }
   document.getElementById('settings-bg-image-status').textContent = '';
 
-  const patternPreview = document.getElementById('settings-pattern-image-preview');
-  if (s.backgroundPatternImageUrl) { patternPreview.src = s.backgroundPatternImageUrl; patternPreview.classList.remove('hidden'); } else { patternPreview.classList.add('hidden'); }
-  document.getElementById('settings-pattern-image-status').textContent = '';
-
   renderPatternStyleButtons();
   setBackgroundPattern(s.backgroundPattern || 'none');
   setBackgroundType(s.backgroundType || 'solid');
   renderThemePresetsGallery();
 
+  // Payment Gateways
   document.getElementById('settings-upi-id').value = s.paymentUpiId || '';
   document.getElementById('settings-upi-enabled').checked = !!s.paymentUpiEnabled;
   document.getElementById('settings-card-enabled').checked = !!s.paymentCardEnabled;
@@ -1118,6 +1226,15 @@ function renderSettingsForm() {
   document.getElementById('settings-stripe-key').value = s.paymentStripePublishableKey || '';
   document.getElementById('settings-stripe-enabled').checked = !!s.paymentStripeEnabled;
 
+  // SEO Metadata
+  const metaTitleInput = document.getElementById('settings-meta-title');
+  if (metaTitleInput) metaTitleInput.value = s.metaTitle || '';
+  const metaKeywordsInput = document.getElementById('settings-meta-keywords');
+  if (metaKeywordsInput) metaKeywordsInput.value = s.metaKeywords || '';
+  const metaDescInput = document.getElementById('settings-meta-desc');
+  if (metaDescInput) metaDescInput.value = s.metaDescription || '';
+
+  // Contact & Social
   document.getElementById('settings-whatsapp').value = s.whatsappNumber || '';
   document.getElementById('settings-contact-email').value = s.contactEmail || '';
   document.getElementById('settings-contact-phone').value = s.contactPhone || '';
@@ -1181,7 +1298,7 @@ function renderPatternStyleButtons() {
   container.innerHTML = PATTERN_STYLE_OPTIONS.map(opt => `
     <button type="button" onclick="setBackgroundPattern('${opt.value}')" data-pattern-btn="${opt.value}"
       class="pattern-style-btn py-2.5 rounded-xl text-[10px] font-bold border transition flex flex-col items-center gap-1">
-      <i class="fas ${opt.icon} text-sm"></i>
+      
       <span>${opt.label}</span>
     </button>
   `).join('');
@@ -1198,38 +1315,18 @@ function setBackgroundPattern(pattern) {
     btn.classList.toggle('text-gray-700', !active);
     btn.classList.toggle('border-gray-200', !active);
   });
-  document.getElementById('pattern-custom-fields').classList.toggle('hidden', pattern !== 'custom-image');
 }
 
-async function handleSettingsPatternImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const status = document.getElementById('settings-pattern-image-status');
-  if (status) status.textContent = 'Uploading...';
-  const url = await MiraDB.uploadMedia(file, 'branding');
-  if (url) {
-    adminState.pendingPatternImageUrl = url;
-    const preview = document.getElementById('settings-pattern-image-preview');
-    preview.src = url;
-    preview.classList.remove('hidden');
-    if (status) status.textContent = 'Uploaded ✓ — click Save to apply';
-  } else if (status) {
-    status.textContent = 'Upload failed — please retry';
-  }
-}
-
-/** Clears an uploaded image back to its default (logo/favicon) or to none (bg-image/pattern-image). Takes effect on Save. */
 function removeSettingsImage(which) {
   const map = {
     logo: { pendingKey: 'pendingLogoUrl', previewId: 'settings-logo-preview', statusId: 'settings-logo-status', defaultSrc: 'assets/images/meerav_logo.png' },
     favicon: { pendingKey: 'pendingFaviconUrl', previewId: 'settings-favicon-preview', statusId: 'settings-favicon-status', defaultSrc: 'assets/images/meerav_logo.png' },
-    'bg-image': { pendingKey: 'pendingBgImageUrl', previewId: 'settings-bg-image-preview', statusId: 'settings-bg-image-status', defaultSrc: '' },
-    'pattern-image': { pendingKey: 'pendingPatternImageUrl', previewId: 'settings-pattern-image-preview', statusId: 'settings-pattern-image-status', defaultSrc: '' }
+    'bg-image': { pendingKey: 'pendingBgImageUrl', previewId: 'settings-bg-image-preview', statusId: 'settings-bg-image-status', defaultSrc: '' }
   };
   const cfg = map[which];
   if (!cfg) return;
 
-  adminState[cfg.pendingKey] = ''; // explicit clear — distinct from `null` ("no change")
+  adminState[cfg.pendingKey] = '';
   const preview = document.getElementById(cfg.previewId);
   if (cfg.defaultSrc) {
     preview.src = cfg.defaultSrc;
@@ -1296,6 +1393,11 @@ function collectSiteSettingsFromForm() {
     tagline: document.getElementById('settings-tagline').value.trim(),
     logoUrl: adminState.pendingLogoUrl !== null ? adminState.pendingLogoUrl : current.logoUrl,
     faviconUrl: adminState.pendingFaviconUrl !== null ? adminState.pendingFaviconUrl : current.faviconUrl,
+    heroVideoUrl: document.getElementById('settings-hero-video-url') ? document.getElementById('settings-hero-video-url').value.trim() : current.heroVideoUrl,
+    heroImageUrl: document.getElementById('settings-hero-image-url') ? document.getElementById('settings-hero-image-url').value.trim() : current.heroImageUrl,
+    heroCtaText: document.getElementById('settings-hero-cta-text') ? document.getElementById('settings-hero-cta-text').value.trim() : current.heroCtaText,
+    heroCtaLink: document.getElementById('settings-hero-cta-link') ? document.getElementById('settings-hero-cta-link').value.trim() : current.heroCtaLink,
+    heroSecondaryCtaText: document.getElementById('settings-hero-secondary-cta-text') ? document.getElementById('settings-hero-secondary-cta-text').value.trim() : current.heroSecondaryCtaText,
     primaryColor: document.getElementById('settings-color-primary').value,
     secondaryColor: document.getElementById('settings-color-secondary').value,
     accentColor: document.getElementById('settings-color-accent').value,
@@ -1312,6 +1414,11 @@ function collectSiteSettingsFromForm() {
     fontFamily: document.getElementById('settings-font-family').value,
     headingFontFamily: document.getElementById('settings-heading-font-family').value,
     baseFontSize: document.getElementById('settings-base-font-size').value,
+    borderRadius: document.getElementById('settings-border-radius') ? document.getElementById('settings-border-radius').value : (current.borderRadius || 'rounded-2xl'),
+    currencySymbol: document.getElementById('settings-currency-symbol') ? document.getElementById('settings-currency-symbol').value.trim() : (current.currencySymbol || '₹'),
+    currencyCode: document.getElementById('settings-currency-code') ? document.getElementById('settings-currency-code').value.trim().toUpperCase() : (current.currencyCode || 'INR'),
+    freeShippingThreshold: document.getElementById('settings-free-shipping-threshold') ? Number(document.getElementById('settings-free-shipping-threshold').value) : (current.freeShippingThreshold || 499),
+    shippingFlatFee: document.getElementById('settings-shipping-flat-fee') ? Number(document.getElementById('settings-shipping-flat-fee').value) : (current.shippingFlatFee || 50),
     backgroundType: adminState.selectedBackgroundType,
     backgroundColor: document.getElementById('settings-color-background').value,
     backgroundGradient: [
@@ -1322,7 +1429,9 @@ function collectSiteSettingsFromForm() {
     ],
     backgroundImageUrl: adminState.pendingBgImageUrl !== null ? adminState.pendingBgImageUrl : current.backgroundImageUrl,
     backgroundPattern: adminState.selectedBackgroundPattern,
-    backgroundPatternImageUrl: adminState.pendingPatternImageUrl !== null ? adminState.pendingPatternImageUrl : current.backgroundPatternImageUrl,
+    metaTitle: document.getElementById('settings-meta-title') ? document.getElementById('settings-meta-title').value.trim() : current.metaTitle,
+    metaKeywords: document.getElementById('settings-meta-keywords') ? document.getElementById('settings-meta-keywords').value.trim() : current.metaKeywords,
+    metaDescription: document.getElementById('settings-meta-desc') ? document.getElementById('settings-meta-desc').value.trim() : current.metaDescription,
     paymentUpiId: document.getElementById('settings-upi-id').value.trim(),
     paymentUpiEnabled: document.getElementById('settings-upi-enabled').checked,
     paymentCardEnabled: document.getElementById('settings-card-enabled').checked,
@@ -1345,28 +1454,28 @@ function collectSiteSettingsFromForm() {
 
 /** Shared by the Save button and one-click theme presets: write to Supabase, update local/live state, log it. */
 async function persistSiteSettings(updated, activityLabel) {
-  const ok = await MiraDB.dbUpsertSiteSettings(updated, MiraDB.adminClient);
-  if (!ok) {
-    showToast('Could not save store settings — please retry', 'error');
-    return false;
-  }
   adminState.siteSettings = updated;
   window.SITE_SETTINGS = updated;
   if (typeof applySiteTheme === 'function') applySiteTheme(updated);
-  MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.update', activityLabel || 'Store Settings', {});
+  try { localStorage.setItem('mira_site_settings', JSON.stringify(updated)); } catch(e) {}
+
+  await MiraDB.dbUpsertSiteSettings(updated, MiraDB.adminClient);
+  if (adminState.currentAdmin) {
+    MiraDB.logAdminActivity(adminState.currentAdmin, 'settings.update', activityLabel || 'Store Settings', {});
+  }
   return true;
 }
 
 async function saveSiteSettingsForm(event) {
   event.preventDefault();
   const submitBtn = document.getElementById('settings-save-btn');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
 
   const updated = collectSiteSettingsFromForm();
   const ok = await persistSiteSettings(updated, 'Store Settings');
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Store Settings'; }
-  if (ok) showToast('Store settings saved & applied live! 🎨', 'success');
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = ' Save All Store Settings'; }
+  if (ok) showToast('Store settings saved & applied live across website! 🎨', 'success');
 }
 
 function renderThemePresetsGallery() {
@@ -1374,11 +1483,12 @@ function renderThemePresetsGallery() {
   if (!gallery || typeof THEME_PRESETS === 'undefined') return;
   gallery.innerHTML = THEME_PRESETS.map(preset => `
     <button type="button" onclick="applyThemePreset('${preset.key}')"
-      class="p-3 rounded-2xl border-2 border-gray-200 hover:border-purple-400 transition text-left group">
-      <div class="flex gap-1 mb-2">
-        ${preset.swatches.map(hex => `<span class="w-6 h-6 rounded-lg border border-black/10" style="background:${hex}"></span>`).join('')}
+      class="p-4 rounded-2xl border-2 border-gray-200 hover:border-purple-500 hover:shadow-md transition text-left group bg-white">
+      <div class="flex gap-1.5 mb-2">
+        ${preset.swatches.map(hex => `<span class="w-6 h-6 rounded-lg border border-black/10 shadow-xs" style="background:${hex}"></span>`).join('')}
       </div>
-      <div class="text-xs font-black text-gray-800 group-hover:text-purple-600">${preset.name}</div>
+      <div class="text-xs font-black text-gray-900 group-hover:text-purple-600">${preset.name}</div>
+      <div class="text-[10px] text-gray-500 mt-0.5">${preset.category || 'Theme Preset'}</div>
     </button>
   `).join('');
 }
@@ -1390,44 +1500,507 @@ async function applyThemePreset(presetKey) {
   const current = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
   const updated = { ...current, ...preset.values };
 
-  showToast(`Applying "${preset.name}" theme...`, 'info');
+  showToast(`Applying "${preset.name}" 1-click theme kit...`, 'info');
   const ok = await persistSiteSettings(updated, `Theme Preset: ${preset.name}`);
+
+  if (ok && preset.contentOverrides && preset.contentOverrides.length) {
+    const overrideMap = {};
+    preset.contentOverrides.forEach(o => { overrideMap[o.key] = o.value; });
+
+    const newRows = (adminState.pageContentRows || []).map(row => {
+      if (overrideMap[row.key] !== undefined) {
+        return { ...row, value: overrideMap[row.key] };
+      }
+      return row;
+    });
+
+    const entriesToSave = newRows.map(r => ({
+      key: r.key,
+      value: r.value,
+      label: r.label,
+      page: r.page,
+      sortOrder: r.sort_order || 1
+    }));
+
+    await MiraDB.dbUpsertPageContent(entriesToSave, MiraDB.adminClient);
+    adminState.pageContentRows = newRows;
+    const map = {};
+    entriesToSave.forEach(e => { map[e.key] = e.value; });
+    window.SITE_PAGE_CONTENT = map;
+    if (typeof applyPageContent === 'function') applyPageContent(map);
+  }
+
   if (ok) {
     renderSettingsForm();
-    showToast(`"${preset.name}" theme is now live across the whole website! ✨`, 'success');
+    renderPageContentForm();
+    showToast(`"${preset.name}" is now live across the full website! ✨`, 'success');
+  }
+}
+
+async function resetToOriginalBrandDefaults() {
+  if (!confirm('Are you sure you want to restore the website back to the original MEERAV Namkeens brand theme, text, and settings?')) {
+    return;
+  }
+
+  const defaults = typeof DEFAULT_SITE_SETTINGS !== 'undefined' ? { ...DEFAULT_SITE_SETTINGS } : {
+    id: 1,
+    siteName: 'MEERAV NAMKEENS & SWEETS',
+    tagline: 'From the Heart of Bikaner',
+    logoUrl: 'assets/images/meerav_logo.png',
+    faviconUrl: 'assets/images/meerav_logo.png',
+    primaryColor: '#4A0713',
+    secondaryColor: '#32040C',
+    accentColor: '#E59819',
+    accentLightColor: '#FBBF24',
+    headingColor: '#32040C',
+    textColor: '#1F1517',
+    adminPanelColor: '#1F0307',
+    adminPanelType: 'solid',
+    adminPanelGradient: ['#32040C', '#1F0307', '#030712'],
+    fontFamily: 'Outfit',
+    headingFontFamily: 'Outfit',
+    baseFontSize: '16px',
+    borderRadius: 'rounded-2xl',
+    currencySymbol: '₹',
+    currencyCode: 'INR',
+    freeShippingThreshold: 499,
+    shippingFlatFee: 50,
+    backgroundType: 'solid',
+    backgroundColor: '#FFF9ED',
+    backgroundGradient: ['#FFF9ED', '#FDF1D0', '#E59819'],
+    backgroundImageUrl: '',
+    backgroundPattern: 'none',
+    heroVideoUrl: 'assets/videos/meerav_brand_film.mp4',
+    heroImageUrl: 'assets/images/commercial_scene_1.jpg',
+    heroCtaText: 'Order Online Now',
+    heroCtaLink: 'category.html',
+    heroSecondaryCtaText: 'Explore Categories',
+    metaTitle: 'MEERAV - Authentic Bikaneri Namkeens & Sweets',
+    metaDescription: 'Handcrafted authentic Bikaneri namkeens, sweets and royal delicacies prepared in 100% pure oil.',
+    metaKeywords: 'namkeen, bikaneri bhujia, sweets, snacks, pure oil'
+  };
+
+  const defaultContent = [
+    { key: 'hero.badge', value: '👑 100% Pure Oil & Authentic Bikaneri Spices', label: 'Hero Badge Text', page: 'home', sort_order: 1 },
+    { key: 'hero.title', value: 'Royal Taste of Authentic Bikaner', label: 'Hero Main Title', page: 'home', sort_order: 2 },
+    { key: 'hero.subtitle', value: 'Handcrafted namkeens, golden bhujia, crispy mathri and royal sweets prepared fresh in pure oil.', label: 'Hero Subtitle', page: 'home', sort_order: 3 },
+    { key: 'story.title', value: 'Four Decades of Royal Bikaneri Craftsmanship', label: 'Story Title', page: 'home', sort_order: 4 },
+    { key: 'story.body', value: 'Born in the royal alleys of Bikaner, our recipes have been preserved across generations. We never use palm oil or artificial preservatives.', label: 'Story Description', page: 'home', sort_order: 5 },
+    { key: 'reviews.title', value: 'Loved by Over 50,000+ Snack Connoisseurs', label: 'Reviews Section Title', page: 'home', sort_order: 6 },
+    { key: 'faq.title', value: 'Frequently Asked Questions', label: 'FAQ Section Title', page: 'home', sort_order: 7 },
+    { key: 'footer.bio', value: 'Authentic royal Bikaneri namkeens, bhujia and sweets crafted in pure oil with heritage recipes.', label: 'Footer Bio', page: 'home', sort_order: 8 }
+  ];
+
+  showToast('Restoring original MEERAV brand defaults...', 'info');
+  const ok = await persistSiteSettings(defaults, 'Reset to Default MEERAV Brand');
+
+  if (ok) {
+    const entriesToSave = defaultContent.map(r => ({
+      key: r.key,
+      value: r.value,
+      label: r.label,
+      page: r.page,
+      sortOrder: r.sort_order || 1
+    }));
+    await MiraDB.dbUpsertPageContent(entriesToSave, MiraDB.adminClient);
+    adminState.pageContentRows = defaultContent;
+    const map = {};
+    entriesToSave.forEach(e => { map[e.key] = e.value; });
+    window.SITE_PAGE_CONTENT = map;
+    if (typeof applyPageContent === 'function') applyPageContent(map);
+
+    renderSettingsForm();
+    renderPageContentForm();
+    showToast('Website successfully restored to default MEERAV brand! 🌟', 'success');
   }
 }
 
 /**
- * Website Text Content — generic key/value editor for every heading,
- * subheading, and description tagged `data-ck="..."` in the storefront
- * HTML. Backed by `page_content`; js/theme.js applies it live on every page.
+ * 9B. PROMOTIONAL COUPONS CMS CRUD
+ */
+function renderAdminCoupons() {
+  const tbody = document.getElementById('admin-coupons-table-body');
+  if (!tbody) return;
+
+  const coupons = adminState.coupons || [];
+  if (!coupons.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 text-xs">No coupons created yet. Click "+ Add Coupon" to create one.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = coupons.map(c => `
+    <tr class="border-b hover:bg-amber-50/40 transition">
+      <td class="p-3 font-black text-[#4A0713] text-xs">${c.code}</td>
+      <td class="p-3 text-xs font-bold text-gray-800">${c.discountType === 'percentage' ? `${c.discountVal}% OFF` : `Flat ${formatPrice(c.discountVal)} OFF`}</td>
+      <td class="p-3 text-xs text-gray-600">${c.minOrderAmount ? formatPrice(c.minOrderAmount) : 'No Min'}</td>
+      <td class="p-3 text-xs text-gray-500 truncate max-w-xs">${c.description || '—'}</td>
+      <td class="p-3">
+        <button onclick="toggleCouponActive('${c.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${c.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+          ${c.isActive ? 'Active' : 'Inactive'}
+        </button>
+      </td>
+      <td class="p-3 text-right space-x-1">
+        <button onclick="openCouponModal('${c.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
+        <button onclick="deleteCoupon('${c.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openCouponModal(couponId = null) {
+  adminState.editingCouponId = couponId;
+  const modal = document.getElementById('coupon-modal');
+  const title = document.getElementById('coupon-modal-title');
+  const idInput = document.getElementById('coupon-form-id');
+  const codeInput = document.getElementById('coupon-form-code');
+  const typeSelect = document.getElementById('coupon-form-type');
+  const valInput = document.getElementById('coupon-form-val');
+  const minOrderInput = document.getElementById('coupon-form-min-order');
+  const descInput = document.getElementById('coupon-form-desc');
+  const activeCheckbox = document.getElementById('coupon-form-active');
+
+  if (couponId) {
+    const c = (adminState.coupons || []).find(item => item.id === couponId);
+    if (c) {
+      title.textContent = `Edit Coupon: ${c.code}`;
+      idInput.value = c.id;
+      codeInput.value = c.code;
+      typeSelect.value = c.discountType;
+      valInput.value = c.discountVal;
+      minOrderInput.value = c.minOrderAmount || '';
+      descInput.value = c.description || '';
+      activeCheckbox.checked = !!c.isActive;
+    }
+  } else {
+    title.textContent = 'Create New Coupon';
+    idInput.value = '';
+    codeInput.value = '';
+    typeSelect.value = 'percentage';
+    valInput.value = '';
+    minOrderInput.value = '';
+    descInput.value = '';
+    activeCheckbox.checked = true;
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeCouponModal() {
+  document.getElementById('coupon-modal').classList.add('hidden');
+  adminState.editingCouponId = null;
+}
+
+async function saveCouponForm(event) {
+  event.preventDefault();
+  const id = document.getElementById('coupon-form-id').value || `c-${Date.now()}`;
+  const code = document.getElementById('coupon-form-code').value.trim().toUpperCase();
+  const discountType = document.getElementById('coupon-form-type').value;
+  const discountVal = Number(document.getElementById('coupon-form-val').value) || 0;
+  const minOrderAmount = Number(document.getElementById('coupon-form-min-order').value) || 0;
+  const description = document.getElementById('coupon-form-desc').value.trim();
+  const isActive = document.getElementById('coupon-form-active').checked;
+
+  const couponObj = { id, code, discountType, discountVal, minOrderAmount, description, isActive };
+
+  const ok = await MiraDB.dbUpsertCoupon(couponObj, MiraDB.adminClient);
+  if (ok) {
+    showToast(`Coupon ${code} saved successfully! 🎉`, 'success');
+    closeCouponModal();
+    adminState.coupons = await fetchCoupons();
+    renderAdminCoupons();
+  } else {
+    showToast('Failed to save coupon — please retry', 'error');
+  }
+}
+
+async function toggleCouponActive(couponId) {
+  const c = (adminState.coupons || []).find(item => item.id === couponId);
+  if (!c) return;
+  c.isActive = !c.isActive;
+  await MiraDB.dbUpsertCoupon(c, MiraDB.adminClient);
+  showToast(`Coupon ${c.code} is now ${c.isActive ? 'Active' : 'Inactive'}`, 'info');
+  renderAdminCoupons();
+}
+
+async function deleteCoupon(couponId) {
+  const c = (adminState.coupons || []).find(item => item.id === couponId);
+  if (!c) return;
+  if (!confirm(`Delete coupon "${c.code}"?`)) return;
+  const ok = await MiraDB.dbDeleteCoupon(couponId, MiraDB.adminClient);
+  if (ok) {
+    showToast(`Coupon ${c.code} deleted`, 'info');
+    adminState.coupons = adminState.coupons.filter(item => item.id !== couponId);
+    renderAdminCoupons();
+  }
+}
+
+/**
+ * 9C. CUSTOMER TESTIMONIALS & REVIEWS CMS CRUD
+ */
+function renderAdminTestimonials() {
+  const tbody = document.getElementById('admin-testimonials-table-body');
+  if (!tbody) return;
+
+  const items = adminState.testimonials || [];
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-400 text-xs">No reviews added yet. Click "+ Add Review" to create one.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(t => `
+    <tr class="border-b hover:bg-amber-50/40 transition">
+      <td class="p-3 flex items-center gap-2">
+        <img src="${t.avatar || 'assets/images/default_avatar.jpg'}" class="w-7 h-7 rounded-full object-cover border border-amber-300" />
+        <span class="font-bold text-xs text-gray-900">${t.name}</span>
+      </td>
+      <td class="p-3 text-xs text-gray-600">${t.city || '—'}</td>
+      <td class="p-3 text-xs text-amber-500 font-bold">${'★'.repeat(Math.round(t.rating || 5))}</td>
+      <td class="p-3 text-xs text-gray-600 truncate max-w-xs">${t.reviewText}</td>
+      <td class="p-3">
+        <button onclick="toggleTestimonialVisible('${t.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${t.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+          ${t.isVisible !== false ? 'Visible' : 'Hidden'}
+        </button>
+      </td>
+      <td class="p-3 text-right space-x-1">
+        <button onclick="openTestimonialModal('${t.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
+        <button onclick="deleteTestimonial('${t.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openTestimonialModal(id = null) {
+  adminState.editingTestimonialId = id;
+  const modal = document.getElementById('testimonial-modal');
+  const title = document.getElementById('testimonial-modal-title');
+  const idInput = document.getElementById('testimonial-form-id');
+  const nameInput = document.getElementById('testimonial-form-name');
+  const cityInput = document.getElementById('testimonial-form-city');
+  const ratingSelect = document.getElementById('testimonial-form-rating');
+  const reviewInput = document.getElementById('testimonial-form-review');
+  const avatarInput = document.getElementById('testimonial-form-avatar');
+  const visibleCheckbox = document.getElementById('testimonial-form-visible');
+
+  if (id) {
+    const t = (adminState.testimonials || []).find(item => item.id === id);
+    if (t) {
+      title.textContent = `Edit Review: ${t.name}`;
+      idInput.value = t.id;
+      nameInput.value = t.name;
+      cityInput.value = t.city || '';
+      ratingSelect.value = String(t.rating || 5);
+      reviewInput.value = t.reviewText;
+      avatarInput.value = t.avatar || '';
+      visibleCheckbox.checked = t.isVisible !== false;
+    }
+  } else {
+    title.textContent = 'Add Customer Review';
+    idInput.value = '';
+    nameInput.value = '';
+    cityInput.value = '';
+    ratingSelect.value = '5';
+    reviewInput.value = '';
+    avatarInput.value = 'assets/images/drive_1.jpg';
+    visibleCheckbox.checked = true;
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeTestimonialModal() {
+  document.getElementById('testimonial-modal').classList.add('hidden');
+  adminState.editingTestimonialId = null;
+}
+
+async function saveTestimonialForm(event) {
+  event.preventDefault();
+  const id = document.getElementById('testimonial-form-id').value || `t-${Date.now()}`;
+  const name = document.getElementById('testimonial-form-name').value.trim();
+  const city = document.getElementById('testimonial-form-city').value.trim();
+  const rating = Number(document.getElementById('testimonial-form-rating').value) || 5;
+  const reviewText = document.getElementById('testimonial-form-review').value.trim();
+  const avatar = document.getElementById('testimonial-form-avatar').value.trim();
+  const isVisible = document.getElementById('testimonial-form-visible').checked;
+
+  const itemObj = { id, name, city, rating, reviewText, avatar, isVisible, sortOrder: 1 };
+
+  const ok = await MiraDB.dbUpsertTestimonial(itemObj, MiraDB.adminClient);
+  if (ok) {
+    showToast('Customer review saved!', 'success');
+    closeTestimonialModal();
+    adminState.testimonials = await fetchTestimonials();
+    renderAdminTestimonials();
+  } else {
+    showToast('Failed to save review — please retry', 'error');
+  }
+}
+
+async function toggleTestimonialVisible(id) {
+  const t = (adminState.testimonials || []).find(item => item.id === id);
+  if (!t) return;
+  t.isVisible = !t.isVisible;
+  await MiraDB.dbUpsertTestimonial(t, MiraDB.adminClient);
+  showToast(`Review is now ${t.isVisible ? 'Visible' : 'Hidden'}`, 'info');
+  renderAdminTestimonials();
+}
+
+async function deleteTestimonial(id) {
+  const t = (adminState.testimonials || []).find(item => item.id === id);
+  if (!t) return;
+  if (!confirm(`Delete review by "${t.name}"?`)) return;
+  const ok = await MiraDB.dbDeleteTestimonial(id, MiraDB.adminClient);
+  if (ok) {
+    showToast('Review deleted', 'info');
+    adminState.testimonials = adminState.testimonials.filter(item => item.id !== id);
+    renderAdminTestimonials();
+  }
+}
+
+/**
+ * 9D. FREQUENTLY ASKED QUESTIONS (FAQs) CMS CRUD
+ */
+function renderAdminFaqs() {
+  const tbody = document.getElementById('admin-faqs-table-body');
+  if (!tbody) return;
+
+  const items = adminState.faqs || [];
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-400 text-xs">No FAQs created yet. Click "+ Add FAQ" to create one.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = items.map(f => `
+    <tr class="border-b hover:bg-amber-50/40 transition">
+      <td class="p-3 font-bold text-xs text-gray-900 max-w-sm">${f.question}</td>
+      <td class="p-3 text-xs text-gray-600 capitalize">${f.category || 'General'}</td>
+      <td class="p-3 text-xs text-gray-500 font-mono">${f.sortOrder || 1}</td>
+      <td class="p-3">
+        <button onclick="toggleFaqVisible('${f.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${f.isVisible !== false ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+          ${f.isVisible !== false ? 'Visible' : 'Hidden'}
+        </button>
+      </td>
+      <td class="p-3 text-right space-x-1">
+        <button onclick="openFaqModal('${f.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
+        <button onclick="deleteFaq('${f.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function openFaqModal(id = null) {
+  adminState.editingFaqId = id;
+  const modal = document.getElementById('faq-modal');
+  const title = document.getElementById('faq-modal-title');
+  const idInput = document.getElementById('faq-form-id');
+  const questionInput = document.getElementById('faq-form-question');
+  const answerInput = document.getElementById('faq-form-answer');
+  const categoryInput = document.getElementById('faq-form-category');
+  const sortInput = document.getElementById('faq-form-sort');
+  const visibleCheckbox = document.getElementById('faq-form-visible');
+
+  if (id) {
+    const f = (adminState.faqs || []).find(item => item.id === id);
+    if (f) {
+      title.textContent = 'Edit FAQ';
+      idInput.value = f.id;
+      questionInput.value = f.question;
+      answerInput.value = f.answer;
+      categoryInput.value = f.category || 'quality';
+      sortInput.value = f.sortOrder || 1;
+      visibleCheckbox.checked = f.isVisible !== false;
+    }
+  } else {
+    title.textContent = 'Add FAQ';
+    idInput.value = '';
+    questionInput.value = '';
+    answerInput.value = '';
+    categoryInput.value = 'quality';
+    sortInput.value = (adminState.faqs || []).length + 1;
+    visibleCheckbox.checked = true;
+  }
+  modal.classList.remove('hidden');
+}
+
+function closeFaqModal() {
+  document.getElementById('faq-modal').classList.add('hidden');
+  adminState.editingFaqId = null;
+}
+
+async function saveFaqForm(event) {
+  event.preventDefault();
+  const id = document.getElementById('faq-form-id').value || `f-${Date.now()}`;
+  const question = document.getElementById('faq-form-question').value.trim();
+  const answer = document.getElementById('faq-form-answer').value.trim();
+  const category = document.getElementById('faq-form-category').value.trim();
+  const sortOrder = Number(document.getElementById('faq-form-sort').value) || 1;
+  const isVisible = document.getElementById('faq-form-visible').checked;
+
+  const faqObj = { id, question, answer, category, sortOrder, isVisible };
+
+  const ok = await MiraDB.dbUpsertFaq(faqObj, MiraDB.adminClient);
+  if (ok) {
+    showToast('FAQ saved successfully!', 'success');
+    closeFaqModal();
+    adminState.faqs = await fetchFaqs();
+    renderAdminFaqs();
+  } else {
+    showToast('Failed to save FAQ — please retry', 'error');
+  }
+}
+
+async function toggleFaqVisible(id) {
+  const f = (adminState.faqs || []).find(item => item.id === id);
+  if (!f) return;
+  f.isVisible = !f.isVisible;
+  await MiraDB.dbUpsertFaq(f, MiraDB.adminClient);
+  showToast(`FAQ is now ${f.isVisible ? 'Visible' : 'Hidden'}`, 'info');
+  renderAdminFaqs();
+}
+
+async function deleteFaq(id) {
+  const f = (adminState.faqs || []).find(item => item.id === id);
+  if (!f) return;
+  if (!confirm(`Delete FAQ: "${f.question}"?`)) return;
+  const ok = await MiraDB.dbDeleteFaq(id, MiraDB.adminClient);
+  if (ok) {
+    showToast('FAQ deleted', 'info');
+    adminState.faqs = adminState.faqs.filter(item => item.id !== id);
+    renderAdminFaqs();
+  }
+}
+
+/**
+ * 9E. WEBSITE TEXT CONTENT CMS
  */
 function renderPageContentForm() {
   const container = document.getElementById('page-content-fields');
   if (!container) return;
 
-  const rows = adminState.pageContentRows;
+  const rows = adminState.pageContentRows || [];
   if (!rows.length) {
-    container.innerHTML = '<p class="text-xs text-gray-400">No editable text blocks found yet.</p>';
+    container.innerHTML = '<p class="text-xs text-gray-400">Loading storefront text items...</p>';
     return;
   }
 
   const grouped = {};
   rows.forEach(row => {
-    if (!grouped[row.page]) grouped[row.page] = [];
-    grouped[row.page].push(row);
+    const p = row.page || 'General';
+    if (!grouped[p]) grouped[p] = [];
+    grouped[p].push(row);
   });
 
   container.innerHTML = Object.entries(grouped).map(([page, pageRows]) => `
-    <div class="space-y-3">
-      <div class="text-[10px] font-black text-indigo-600 uppercase tracking-wider">${page} page</div>
-      ${pageRows.map(row => `
-        <div>
-          <label class="block text-xs font-bold text-gray-600 mb-1.5">${row.label}</label>
-          <textarea data-content-key="${row.key}" rows="${row.value.length > 80 ? 2 : 1}" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">${row.value}</textarea>
-        </div>
-      `).join('')}
+    <div class="p-5 bg-amber-50/50 rounded-2xl border border-amber-200/80 space-y-4">
+      <div class="text-xs font-black text-indigo-700 uppercase tracking-wider flex items-center gap-1.5">
+        
+        <span>${page.toUpperCase()} SECTION TEXT</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        ${pageRows.map(row => `
+          <div class="${row.value && row.value.length > 80 ? 'sm:col-span-2' : ''}">
+            <label class="block text-xs font-bold text-gray-700 mb-1">${row.label} <code class="text-[10px] text-gray-400 font-normal">(${row.key})</code></label>
+            <textarea data-content-key="${row.key}" rows="${row.value && row.value.length > 80 ? 3 : 1}" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400">${row.value || ''}</textarea>
+          </div>
+        `).join('')}
+      </div>
     </div>
   `).join('');
 }
@@ -1435,7 +2008,7 @@ function renderPageContentForm() {
 async function savePageContentForm(event) {
   event.preventDefault();
   const submitBtn = document.getElementById('page-content-save-btn');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
 
   const entries = adminState.pageContentRows.map(row => {
     const el = document.querySelector(`[data-content-key="${row.key}"]`);
@@ -1444,7 +2017,7 @@ async function savePageContentForm(event) {
 
   const ok = await MiraDB.dbUpsertPageContent(entries, MiraDB.adminClient);
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Text Content'; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = ' Save Text Content'; }
 
   if (!ok) {
     showToast('Could not save text content — please retry', 'error');
@@ -1507,7 +2080,7 @@ async function renderAdminAccounts() {
           <span class="text-[10px] text-gray-300 font-bold">—</span>
         ` : `
           <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition">
-            <i class="fas fa-eye mr-1"></i> View
+             View
           </button>
         `}
       </td>
@@ -1632,13 +2205,13 @@ async function openAdminDetailModal(adminId) {
   } else {
     actionsBox.innerHTML = `
       <button onclick="resetAdminPasswordAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', '${a.email}')" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-xs font-bold transition">
-        <i class="fas fa-key mr-1"></i> Reset Password
+         Reset Password
       </button>
       <button onclick="toggleBanAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}', ${a.banned})" class="px-3 py-2 ${a.banned ? 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-orange-200'} border rounded-xl text-xs font-bold transition">
-        <i class="fas ${a.banned ? 'fa-circle-check' : 'fa-ban'} mr-1"></i> ${a.banned ? 'Unban' : 'Ban'}
+         ${a.banned ? 'Unban' : 'Ban'}
       </button>
       <button onclick="removeAdminAccount('${a.id}', '${a.name.replace(/'/g, "\\'")}')" class="px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-        <i class="fas fa-user-xmark mr-1"></i> Remove
+         Remove
       </button>
     `;
   }
@@ -1670,7 +2243,7 @@ async function renderAdminDetailActivity(adminId) {
       </div>
       ${UNDOABLE_ACTIONS.has(entry.action) && !entry.undone ? `
         <button onclick="undoActivity('${entry.id}')" class="px-2.5 py-1.5 bg-white hover:bg-amber-50 text-[#4A0713] border border-amber-300 rounded-lg text-[11px] font-black transition shrink-0">
-          <i class="fas fa-rotate-left mr-1"></i> Undo
+           Undo
         </button>
       ` : ''}
     </div>
@@ -1829,7 +2402,7 @@ function showToast(message, type = 'info') {
   const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
 
   toast.className = `toast flex items-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-semibold ${bgColor} border border-[#E59819]/40 shadow-xl`;
-  toast.innerHTML = `<i class="fas ${icon} text-[#FBBF24]"></i><span>${message}</span>`;
+  toast.innerHTML = `<span>${message}</span>`;
 
   container.appendChild(toast);
 

@@ -20,6 +20,7 @@
   <!-- Custom Admin Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/admin.css">
+
 </head>
 <body class="admin-body">
 
@@ -51,13 +52,13 @@
 
         <button type="submit" class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-lg shadow-[#4A0713]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#E59819]">
           <span>Authorize & Enter Portal</span>
-          <i class="fas fa-arrow-right text-xs"></i>
+          
         </button>
       </form>
 
       <div class="mt-6 pt-4 border-t border-gray-100 text-center">
         <a href="index" class="text-xs font-bold text-gray-500 hover:text-[#4A0713] transition flex items-center justify-center gap-1.5">
-          <i class="fas fa-arrow-left text-xs"></i> Return to Customer Storefront
+           Return to Customer Storefront
         </a>
       </div>
 
@@ -73,7 +74,7 @@
 
       <div class="text-center space-y-2 mb-6">
         <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-100 text-[#4A0713] flex items-center justify-center text-2xl">
-          <i class="fas fa-key"></i>
+          
         </div>
         <h2 class="text-xl font-black text-gray-900 tracking-tight">Set Your Password</h2>
         <p class="text-xs text-gray-500 font-medium">You're using a temporary password. Choose a new one to continue — you'll use it every time from now on.</p>
@@ -125,38 +126,30 @@
           </div>
         </div>
 
-        <!-- Multi-Page Navigation Menu -->
+        <!-- Multi-Page Navigation Menu (Clean Typography Without Icons) -->
         <nav class="space-y-1.5">
           <button onclick="showAdminPage('overview')" data-page="overview" class="admin-nav-item w-full text-left active">
-            <i class="fas fa-chart-pie w-5"></i>
             <span>Overview & KPIs</span>
           </button>
           <button onclick="showAdminPage('orders')" data-page="orders" class="admin-nav-item w-full text-left">
-            <i class="fas fa-boxes-packing w-5"></i>
             <span>Orders & Dispatch</span>
           </button>
           <button onclick="showAdminPage('catalog')" data-page="catalog" class="admin-nav-item w-full text-left">
-            <i class="fas fa-cookie w-5"></i>
             <span>Product Catalog CRUD</span>
           </button>
           <button onclick="showAdminPage('categories')" data-page="categories" class="admin-nav-item w-full text-left">
-            <i class="fas fa-layer-group w-5 text-amber-400"></i>
             <span>Category Management</span>
           </button>
           <button onclick="showAdminPage('customers')" data-page="customers" class="admin-nav-item w-full text-left">
-            <i class="fas fa-users w-5"></i>
             <span>Customer CRM</span>
           </button>
           <button onclick="showAdminPage('notifications')" data-page="notifications" class="admin-nav-item w-full text-left">
-            <i class="fab fa-whatsapp w-5 text-emerald-400"></i>
             <span>Notification Hub</span>
           </button>
           <button onclick="showAdminPage('settings')" data-page="settings" class="admin-nav-item w-full text-left">
-            <i class="fas fa-palette w-5 text-pink-400"></i>
             <span>Store Settings</span>
           </button>
           <button id="admin-nav-admins-btn" onclick="showAdminPage('admins')" data-page="admins" class="admin-nav-item w-full text-left hidden">
-            <i class="fas fa-user-shield w-5 text-[#FBBF24]"></i>
             <span>Admin Accounts</span>
           </button>
         </nav>
@@ -166,11 +159,9 @@
       <div class="pt-5 border-t border-gray-800 space-y-2">
         <div id="admin-identity-badge" class="px-3 py-2 text-[11px] text-gray-400"></div>
         <a href="index" class="flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
-          <i class="fas fa-store"></i>
-          <span>View Customer Store</span>
+          <span>View Customer Store &rarr;</span>
         </a>
         <button onclick="logoutAdmin()" class="w-full py-2.5 bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/60 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
-          <i class="fas fa-sign-out-alt"></i>
           <span>Logout Admin</span>
         </button>
       </div>
@@ -194,13 +185,13 @@
 
         <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
           <button onclick="openAddCategoryModal()" class="px-4 py-2.5 bg-white hover:bg-amber-50 text-[#4A0713] font-black text-xs rounded-xl shadow-sm border border-amber-300 transition flex items-center gap-1.5">
-            <i class="fas fa-folder-plus text-[#E59819]"></i> Add Category
+             Add Category
           </button>
           <button onclick="openAddProductModal()" class="px-4 py-2.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
-            <i class="fas fa-plus"></i> Add Product
+             Add Product
           </button>
           <a href="category" class="px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
-            <i class="fas fa-shopping-bag"></i> View Shop
+             View Shop
           </a>
         </div>
       </div>
@@ -208,28 +199,28 @@
       <!-- Mobile Horizontal Tab Bar (Visible on phones & tablets) -->
       <div class="flex md:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-amber-200/80">
         <button onclick="showAdminPage('overview')" class="px-3.5 py-2 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shrink-0">
-          <i class="fas fa-chart-pie mr-1"></i> Overview
+           Overview
         </button>
         <button onclick="showAdminPage('orders')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fas fa-boxes-packing mr-1"></i> Orders
+           Orders
         </button>
         <button onclick="showAdminPage('catalog')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fas fa-cookie mr-1"></i> Products
+           Products
         </button>
         <button onclick="showAdminPage('categories')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fas fa-layer-group mr-1"></i> Categories
+           Categories
         </button>
         <button onclick="showAdminPage('customers')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fas fa-users mr-1"></i> CRM
+           CRM
         </button>
         <button onclick="showAdminPage('notifications')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fab fa-whatsapp mr-1 text-emerald-600"></i> Alerts
+           Alerts
         </button>
         <button onclick="showAdminPage('settings')" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fas fa-palette mr-1 text-pink-500"></i> Settings
+           Settings
         </button>
         <button id="admin-mobile-admins-btn" onclick="showAdminPage('admins')" class="hidden px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0">
-          <i class="fas fa-user-shield mr-1"></i> Admins
+           Admins
         </button>
       </div>
 
@@ -243,16 +234,16 @@
           <div class="admin-stat-card">
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Sales</span>
-              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm"><i class="fas fa-indian-rupee-sign"></i></div>
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm"></div>
             </div>
             <div id="admin-kpi-revenue" class="text-3xl font-black text-gray-900">₹0</div>
-            <div class="text-[11px] text-emerald-600 font-bold mt-1.5"><i class="fas fa-arrow-trend-up"></i> Real-time calculated</div>
+            <div class="text-[11px] text-emerald-600 font-bold mt-1.5"> Real-time calculated</div>
           </div>
 
           <div class="admin-stat-card">
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Orders</span>
-              <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-sm"><i class="fas fa-boxes-stacked"></i></div>
+              <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-sm"></div>
             </div>
             <div id="admin-kpi-orders" class="text-3xl font-black text-gray-900">0</div>
             <div class="text-[11px] text-amber-800 font-bold mt-1.5">Processed orders</div>
@@ -261,7 +252,7 @@
           <div class="admin-stat-card">
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Catalog Items</span>
-              <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm"><i class="fas fa-cookie"></i></div>
+              <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm"></div>
             </div>
             <div id="admin-kpi-products" class="text-3xl font-black text-gray-900">14</div>
             <div class="text-[11px] text-blue-600 font-bold mt-1.5">Active signature snacks</div>
@@ -270,7 +261,7 @@
           <div class="admin-stat-card">
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Categories</span>
-              <div class="w-9 h-9 rounded-xl bg-amber-50 text-[#4A0713] flex items-center justify-center text-sm"><i class="fas fa-layer-group"></i></div>
+              <div class="w-9 h-9 rounded-xl bg-amber-50 text-[#4A0713] flex items-center justify-center text-sm"></div>
             </div>
             <div id="admin-kpi-categories" class="text-3xl font-black text-gray-900">5</div>
             <div class="text-[11px] text-amber-800 font-bold mt-1.5">Active Snack Categories</div>
@@ -359,7 +350,7 @@
               <input type="text" oninput="searchAdminProducts(this.value)" placeholder="Search products..." 
                 class="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
               <button onclick="openAddProductModal()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819] shrink-0">
-                <i class="fas fa-plus"></i> Add Product
+                 Add Product
               </button>
             </div>
           </div>
@@ -394,7 +385,7 @@
             </div>
 
             <button onclick="openAddCategoryModal()" class="px-5 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#E59819]">
-              <i class="fas fa-folder-plus text-[#E59819]"></i> Add New Category
+               Add New Category
             </button>
           </div>
 
@@ -468,7 +459,7 @@
           <div class="lg:col-span-6 flex flex-col items-center">
             <div class="text-center mb-3">
               <span class="font-bold text-xs text-gray-800 flex items-center justify-center gap-1.5">
-                <i class="fab fa-whatsapp text-emerald-600 text-base"></i> WhatsApp Customer Preview
+                 WhatsApp Customer Preview
               </span>
             </div>
 
@@ -478,7 +469,7 @@
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-1">
                     <span class="font-bold text-xs">MEERAV Official</span>
-                    <i class="fas fa-circle-check text-emerald-400 text-[11px]"></i>
+                    
                   </div>
                   <span class="text-[10px] text-emerald-200">Verified Business Account</span>
                 </div>
@@ -494,7 +485,7 @@
                     🚚 <strong>Courier:</strong> DTDC (AWB: 88492019)<br/>
                     🗺️ <strong>Live Map:</strong> https://meerav.com/track/8801
                   </div>
-                  <div class="text-right text-[10px] text-gray-400 mt-1">11:30 AM <i class="fas fa-check-double text-blue-500"></i></div>
+                  <div class="text-right text-[10px] text-gray-400 mt-1">11:30 AM </div>
                 </div>
               </div>
             </div>
@@ -504,7 +495,7 @@
           <div class="lg:col-span-6 flex flex-col">
             <div class="text-center mb-3">
               <span class="font-bold text-xs text-gray-800 flex items-center justify-center gap-1.5">
-                <i class="fas fa-envelope text-blue-600 text-sm"></i> Email Invoice Layout
+                 Email Invoice Layout
               </span>
             </div>
 
@@ -572,7 +563,7 @@
                 <input type="text" id="custom-notif-msg" placeholder="e.g. 10% discount on Bikaneri Aloo Bhujia!" required 
                   class="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none" />
                 <button type="submit" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shrink-0 transition">
-                  <i class="fas fa-paper-plane mr-1"></i> Send
+                   Send
                 </button>
               </div>
             </div>
@@ -607,78 +598,144 @@
       <!-- PAGE 7: STORE SETTINGS (branding, theme, payment gateway — stored in  -->
       <!-- the `site_settings` Supabase table and applied live storefront-wide) -->
       <!-- ===================================================================== -->
+      <!-- ===================================================================== -->
+      <!-- PAGE 7: BRAND TRANSFORMATION STUDIO & CMS STORE SETTINGS              -->
+      <!-- ===================================================================== -->
       <div id="view-settings" class="admin-page-view hidden space-y-8">
+        
+        <!-- Studio Header with Quick Category Jump Bar -->
+        <div class="bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#1F0307] text-white p-6 rounded-3xl border-2 border-[#E59819] shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <span class="px-3 py-1 bg-[#E59819] text-[#32040C] font-black text-[10px] rounded-full uppercase tracking-wider">White-Label Engine</span>
+            <h2 class="text-2xl font-black text-[#FBBF24]">Brand Transformation Studio</h2>
+            <p class="text-xs text-amber-200/80">Transform brand identity, 1-click theme kits, media, copy, coupons, reviews & currency in real time.</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-4 py-2.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5 cursor-pointer">
+               Reset to Default (MEERAV)
+            </button>
+            <button type="button" onclick="document.getElementById('settings-form').requestSubmit()" class="px-6 py-2.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-xs rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer">
+               Save All Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Form -->
         <form id="settings-form" onsubmit="saveSiteSettingsForm(event)" class="space-y-8">
 
-          <!-- Brand Identity -->
+          <!-- 1. 1-Click Brand Transformation Kits -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                   1-Click Brand Transformation Kits
+                </h3>
+                <p class="text-xs text-gray-500 mt-0.5">Instantly re-themes the entire site (colors, fonts, border radius, background) with 1 click.</p>
+              </div>
+              <span class="text-[11px] font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">7 Curated Styles</span>
+            </div>
+            <div id="theme-presets-gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2"></div>
+          </div>
+
+          <!-- 2. Brand Identity & Logo -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-store text-[#E59819]"></i> Brand Identity</h3>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               Brand Identity & Logos
+            </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Site / Brand Name</label>
-                <input type="text" id="settings-site-name" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" required />
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Site / Brand Name *</label>
+                <input type="text" id="settings-site-name" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" required />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Tagline</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Tagline</label>
                 <input type="text" id="settings-tagline" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
               </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Logo</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Logo (PNG/SVG with transparency)</label>
                 <div class="flex items-center gap-3">
-                  <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1" />
+                  <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
                   <div class="flex-1">
                     <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="text-xs" />
                     <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1"></p>
                   </div>
-                  <button type="button" onclick="removeSettingsImage('logo')" title="Remove — reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    <i class="fas fa-trash-alt text-xs"></i>
+                  <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    
                   </button>
                 </div>
               </div>
               <div>
                 <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
                 <div class="flex items-center gap-3">
-                  <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1" />
+                  <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
                   <div class="flex-1">
                     <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="text-xs" />
                     <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1"></p>
                   </div>
-                  <button type="button" onclick="removeSettingsImage('favicon')" title="Remove — reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    <i class="fas fa-trash-alt text-xs"></i>
+                  <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    
                   </button>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Theme Presets -->
-          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-4">
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-wand-magic-sparkles text-purple-500"></i> Theme Presets</h3>
-            <p class="text-[11px] text-gray-500">One click applies a full brand kit (colors, fonts, background) live to the whole website immediately — no need to hit Save separately.</p>
-            <div id="theme-presets-gallery" class="grid grid-cols-2 sm:grid-cols-3 gap-3"></div>
+          <!-- 3. Master Hero & Media Studio -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               Hero Section & Master Brand Film
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Cinematic Video URL / Path</label>
+                <input type="text" id="settings-hero-video-url" placeholder="assets/videos/meerav_brand_film.mp4" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs font-mono" />
+                <p class="text-[10px] text-gray-400 mt-1">Direct MP4 URL or local path for the 4K hero video player.</p>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Fallback / Poster Image URL</label>
+                <input type="text" id="settings-hero-image-url" placeholder="assets/images/commercial_scene_1.jpg" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs font-mono" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Button Text</label>
+                <input type="text" id="settings-hero-cta-text" placeholder="Order Online Now" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Link</label>
+                <input type="text" id="settings-hero-cta-link" placeholder="category.html" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Secondary CTA Button Text</label>
+                <input type="text" id="settings-hero-secondary-cta-text" placeholder="🎬 Watch All-Products Film" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
           </div>
 
-          <!-- Theme -->
+          <!-- 4. Theme — Colors, Typography & UI Border Radius -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-palette text-pink-500"></i> Theme — Colors & Font</h3>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               Theme — Colors, Typography & UI Border Radius
+            </h3>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Primary</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Primary Brand Color</label>
                 <input type="color" id="settings-color-primary" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Secondary</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Secondary Brand Color</label>
                 <input type="color" id="settings-color-secondary" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent Color</label>
                 <input type="color" id="settings-color-accent" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent Light</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent Light Color</label>
                 <input type="color" id="settings-color-accent-light" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
               </div>
             </div>
@@ -692,8 +749,85 @@
                 <input type="color" id="settings-color-text" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
               </div>
             </div>
-            <div class="space-y-3">
-              <label class="block text-xs font-bold text-gray-600">Admin Panel Background (this dashboard's own sidebar &amp; login screen)</label>
+
+            <!-- Typography & Radius -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Heading / Display Font</label>
+                <select id="settings-heading-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Body Font</label>
+                <select id="settings-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">UI Border Radius</label>
+                <select id="settings-border-radius" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold">
+                  <option value="rounded-2xl">Rounded (Standard / Royal)</option>
+                  <option value="rounded-3xl">Pill / Soft Organic (Curved)</option>
+                  <option value="rounded-lg">Subtle Rounded (Modern)</option>
+                  <option value="rounded-none">Square / Sharp (Minimalist)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Base Font Size</label>
+              <select id="settings-base-font-size" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
+                <option value="14px">Small (14px)</option>
+                <option value="16px">Default (16px)</option>
+                <option value="18px">Large (18px)</option>
+                <option value="20px">Extra Large (20px)</option>
+              </select>
+            </div>
+
+            <!-- Page Background Engine -->
+            <div class="pt-4 border-t border-gray-100 space-y-4">
+              <label class="block text-xs font-bold text-gray-600">Page Background Engine</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="setBackgroundType('solid')" data-bg-type-btn="solid" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
+                <button type="button" onclick="setBackgroundType('gradient')" data-bg-type-btn="gradient" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Multi-Color Gradient</button>
+                <button type="button" onclick="setBackgroundType('image')" data-bg-type-btn="image" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Full Image</button>
+              </div>
+
+              <div id="bg-solid-fields" class="hidden">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Color</label>
+                <input type="color" id="settings-color-background" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+
+              <div id="bg-gradient-fields" class="hidden space-y-2">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Gradient Colors (2–4 stops)</label>
+                <div class="grid grid-cols-4 gap-2">
+                  <input type="color" id="settings-gradient-1" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-2" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-3" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-4" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                </div>
+              </div>
+
+              <div id="bg-image-fields" class="hidden">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Image</label>
+                <div class="flex items-center gap-3">
+                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden" />
+                  <div class="flex-1">
+                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="text-xs" />
+                    <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1"></p>
+                  </div>
+                  <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Decorative CSS Pattern Overlay</label>
+                <div id="pattern-style-buttons" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+              </div>
+            </div>
+
+            <!-- Admin Sidebar Customizer -->
+            <div class="pt-4 border-t border-gray-100 space-y-3">
+              <label class="block text-xs font-bold text-gray-600">Admin Operations Sidebar Background</label>
               <div class="flex gap-2">
                 <button type="button" onclick="setAdminPanelType('solid')" data-admin-bg-type-btn="solid" class="admin-bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
                 <button type="button" onclick="setAdminPanelType('gradient')" data-admin-bg-type-btn="gradient" class="admin-bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Gradient</button>
@@ -709,135 +843,88 @@
                 </div>
               </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Heading / Display Font</label>
-                <select id="settings-heading-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Body Font</label>
-                <select id="settings-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
-              </div>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1.5">Text Size</label>
-              <select id="settings-base-font-size" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
-                <option value="14px">Small</option>
-                <option value="16px">Default</option>
-                <option value="18px">Large</option>
-                <option value="20px">Extra Large</option>
-              </select>
-            </div>
-            <p class="text-[10px] text-gray-400">Headings (titles) and body text can use different fonts/colors — a classic "display font + body font" brand kit.</p>
 
-            <div class="pt-4 border-t border-gray-100 space-y-4">
-              <label class="block text-xs font-bold text-gray-600">Page Background</label>
-              <div class="flex gap-2">
-                <button type="button" onclick="setBackgroundType('solid')" data-bg-type-btn="solid" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
-                <button type="button" onclick="setBackgroundType('gradient')" data-bg-type-btn="gradient" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Gradient</button>
-                <button type="button" onclick="setBackgroundType('image')" data-bg-type-btn="image" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Image</button>
-              </div>
-
-              <div id="bg-solid-fields" class="hidden">
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Color</label>
-                <input type="color" id="settings-color-background" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
-              </div>
-
-              <div id="bg-gradient-fields" class="hidden space-y-2">
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Gradient Colors (2–4 stops — e.g. tri-colour)</label>
-                <div class="grid grid-cols-4 gap-2">
-                  <input type="color" id="settings-gradient-1" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
-                  <input type="color" id="settings-gradient-2" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
-                  <input type="color" id="settings-gradient-3" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
-                  <input type="color" id="settings-gradient-4" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
-                </div>
-                <p class="text-[10px] text-gray-400">Leave stop 4 as-is to use only 3 colors.</p>
-              </div>
-
-              <div id="bg-image-fields" class="hidden">
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Image</label>
-                <div class="flex items-center gap-3">
-                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden" />
-                  <div class="flex-1">
-                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="text-xs" />
-                    <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1"></p>
-                  </div>
-                  <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    <i class="fas fa-trash-alt text-xs"></i>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Decorative Background Pattern</label>
-                <div id="pattern-style-buttons" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
-                <div id="pattern-custom-fields" class="hidden mt-3">
-                  <label class="block text-xs font-bold text-gray-600 mb-1.5">Custom Pattern Image (tiled)</label>
-                  <div class="flex items-center gap-3">
-                    <img id="settings-pattern-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden" />
-                    <div class="flex-1">
-                      <input type="file" accept="image/*" id="settings-pattern-image-upload" onchange="handleSettingsPatternImageUpload(event)" class="text-xs" />
-                      <p id="settings-pattern-image-status" class="text-[10px] text-gray-400 mt-1"></p>
-                    </div>
-                    <button type="button" onclick="removeSettingsImage('pattern-image')" title="Remove pattern image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                      <i class="fas fa-trash-alt text-xs"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p class="text-[10px] text-gray-400">Everything on this page applies live across the storefront and this admin portal the moment you save — and is stored in Supabase, so it survives redeploys.</p>
           </div>
 
-          <!-- Payment Gateway -->
+          <!-- 5. Commercials, Currency & Shipping Rules -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-credit-card text-emerald-600"></i> Payment Gateway</h3>
-
-            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               Global Currency & Shipping Rules
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               <div>
-                <div class="text-xs font-bold text-gray-800">UPI QR Payment</div>
-                <input type="text" id="settings-upi-id" placeholder="yourstore@upi" class="mt-1.5 w-56 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Currency Symbol *</label>
+                <input type="text" id="settings-currency-symbol" placeholder="₹" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-base font-black text-center" required />
+                <span class="text-[10px] text-gray-400 mt-1 block">e.g. ₹, $, €, £, AED, SAR, CAD</span>
               </div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="settings-upi-enabled" class="sr-only peer" />
-                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
-                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
-              </label>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Currency Code</label>
+                <input type="text" id="settings-currency-code" placeholder="INR" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold uppercase text-center" />
+                <span class="text-[10px] text-gray-400 mt-1 block">e.g. INR, USD, EUR, GBP, AED</span>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Free Shipping Threshold</label>
+                <input type="number" id="settings-free-shipping-threshold" placeholder="499" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" />
+                <span class="text-[10px] text-gray-400 mt-1 block">Orders above this get free shipping</span>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Flat Shipping Fee</label>
+                <input type="number" id="settings-shipping-flat-fee" placeholder="50" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" />
+                <span class="text-[10px] text-gray-400 mt-1 block">Charged on orders below threshold</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Payment Gateways -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base"> Payment Gateways & Methods</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+                <div>
+                  <div class="text-xs font-bold text-gray-800">UPI QR Payment</div>
+                  <input type="text" id="settings-upi-id" placeholder="yourstore@upi" class="mt-1.5 w-48 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-upi-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+                <div class="text-xs font-bold text-gray-800">Cash on Delivery (COD)</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-cod-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+                <div class="text-xs font-bold text-gray-800">Credit / Debit Card</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-card-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
+                <div class="text-xs font-bold text-gray-800">NetBanking</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-netbanking-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
             </div>
 
-            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
-              <div class="text-xs font-bold text-gray-800">Credit / Debit Card</div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="settings-card-enabled" class="sr-only peer" />
-                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
-                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
-              </label>
-            </div>
-
-            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
-              <div class="text-xs font-bold text-gray-800">NetBanking</div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="settings-netbanking-enabled" class="sr-only peer" />
-                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
-                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
-              </label>
-            </div>
-
-            <div class="flex items-center justify-between p-3.5 bg-amber-50/50 rounded-xl border border-amber-100">
-              <div class="text-xs font-bold text-gray-800">Cash on Delivery (COD)</div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" id="settings-cod-enabled" class="sr-only peer" />
-                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
-                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
-              </label>
-            </div>
-
-            <div class="pt-2 border-t border-gray-100 space-y-4">
-              <p class="text-[10px] text-gray-400">Live gateway credentials — stored securely, only used once real Razorpay/Stripe checkout is wired in.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
               <div class="flex items-center justify-between p-3.5 bg-blue-50/50 rounded-xl border border-blue-100">
                 <div class="flex-1 mr-3">
-                  <div class="text-xs font-bold text-gray-800">Razorpay</div>
-                  <input type="text" id="settings-razorpay-key" placeholder="Razorpay Key ID" class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                  <div class="text-xs font-bold text-gray-800">Razorpay Key ID</div>
+                  <input type="text" id="settings-razorpay-key" placeholder="rzp_live_..." class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                   <input type="checkbox" id="settings-razorpay-enabled" class="sr-only peer" />
@@ -845,10 +932,11 @@
                   <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
                 </label>
               </div>
+
               <div class="flex items-center justify-between p-3.5 bg-blue-50/50 rounded-xl border border-blue-100">
                 <div class="flex-1 mr-3">
-                  <div class="text-xs font-bold text-gray-800">Stripe</div>
-                  <input type="text" id="settings-stripe-key" placeholder="Stripe Publishable Key" class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                  <div class="text-xs font-bold text-gray-800">Stripe Publishable Key</div>
+                  <input type="text" id="settings-stripe-key" placeholder="pk_live_..." class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                   <input type="checkbox" id="settings-stripe-enabled" class="sr-only peer" />
@@ -859,12 +947,35 @@
             </div>
           </div>
 
-          <!-- Contact & Social -->
+          <!-- 7. SEO & Social Metadata -->
           <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-address-book text-blue-600"></i> Contact & Social</h3>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               SEO & Social Metadata
+            </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">WhatsApp Number</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Meta Browser Title</label>
+                <input type="text" id="settings-meta-title" placeholder="Brand Name - Signature Delicacies" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Meta Keywords</label>
+                <input type="text" id="settings-meta-keywords" placeholder="namkeen, bhujia, snacks, pure oil" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Meta Description</label>
+              <textarea id="settings-meta-desc" rows="2" placeholder="Handcrafted delicacies made with authentic recipes..." class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs"></textarea>
+            </div>
+          </div>
+
+          <!-- 8. Contact & Social Channels -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               Contact & Social Channels
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">WhatsApp Order Number</label>
                 <input type="text" id="settings-whatsapp" placeholder="+919876543210" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
               </div>
               <div>
@@ -876,7 +987,7 @@
                 <input type="text" id="settings-contact-phone" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
               </div>
               <div>
-                <label class="block text-xs font-bold text-gray-600 mb-1.5">Address</label>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Dispatch Hub Address</label>
                 <input type="text" id="settings-contact-address" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
               </div>
               <div>
@@ -888,42 +999,137 @@
                 <input type="text" id="settings-facebook" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
               </div>
             </div>
-          </div>
-
-          <!-- Storefront Copy -->
-          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-bullhorn text-amber-600"></i> Storefront Copy</h3>
             <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1.5">Top Announcement Bar</label>
-              <input type="text" id="settings-announcement" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Top Announcement Bar Text</label>
+              <input type="text" id="settings-announcement" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1.5">Footer Text</label>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Footer Copyright Text</label>
               <input type="text" id="settings-footer-text" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
             </div>
           </div>
 
-          <div class="flex justify-end">
-            <button type="submit" id="settings-save-btn" class="px-6 py-3 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-md transition flex items-center gap-2">
-              <i class="fas fa-floppy-disk"></i> Save Store Settings
+          <!-- Bottom Save Button -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-6 py-3.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer">
+               Reset to Default Brand (MEERAV)
+            </button>
+            <button type="submit" id="settings-save-btn" class="px-8 py-3.5 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
+               Save All Store Settings
             </button>
           </div>
 
         </form>
 
-        <!-- Website Text Content — headings/subheadings/descriptions, editable per element -->
-        <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5 mt-8">
+        <!-- 9. Promotional Coupons Manager CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                 Promotional Discount Coupons
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Create and manage coupon codes with percentage or flat discounts.</p>
+            </div>
+            <button type="button" onclick="openCouponModal()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+               Add Coupon
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-amber-50/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Coupon Code</th>
+                  <th class="p-3">Discount</th>
+                  <th class="p-3">Min Order</th>
+                  <th class="p-3">Description</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-coupons-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 10. Customer Testimonials & Reviews CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                 Customer Reviews & Testimonials
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Add verified customer reviews displayed on the homepage.</p>
+            </div>
+            <button type="button" onclick="openTestimonialModal()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+               Add Review
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-amber-50/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Customer</th>
+                  <th class="p-3">City</th>
+                  <th class="p-3">Rating</th>
+                  <th class="p-3">Review</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-testimonials-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 11. Frequently Asked Questions (FAQs) CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                 Frequently Asked Questions (FAQs)
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Manage questions and answers displayed in the help center accordion.</p>
+            </div>
+            <button type="button" onclick="openFaqModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+               Add FAQ
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-amber-50/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Question</th>
+                  <th class="p-3">Category</th>
+                  <th class="p-3">Sort Order</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-faqs-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 12. Full Website Text Content CMS (Grouped by section) -->
+        <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
           <div>
-            <h3 class="font-black text-gray-900 flex items-center gap-2"><i class="fas fa-heading text-indigo-500"></i> Website Text Content</h3>
-            <p class="text-[11px] text-gray-500 mt-1">Edit any heading, subheading, or description on the site. Changes apply live everywhere the moment you save.</p>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base"> Storefront Section Text CMS</h3>
+            <p class="text-xs text-gray-500 mt-1">Edit every heading, subheading, badge, and paragraph across all storefront sections.</p>
           </div>
           <div id="page-content-fields" class="space-y-4"></div>
           <div class="flex justify-end pt-2">
-            <button type="submit" id="page-content-save-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm rounded-2xl shadow-md transition flex items-center gap-2">
-              <i class="fas fa-floppy-disk"></i> Save Text Content
+            <button type="submit" id="page-content-save-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-2xl shadow-md transition flex items-center gap-2">
+               Save Section Text
             </button>
           </div>
         </form>
+
       </div>
 
       <!-- ===================================================================== -->
@@ -937,7 +1143,7 @@
             <p class="text-xs text-gray-500">Everyone with access to this portal. Backed by real Supabase Auth accounts — not a shared password.</p>
           </div>
           <button onclick="openAddAdminModal()" class="px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 border border-[#E59819]">
-            <i class="fas fa-user-plus"></i> Register New Admin
+             Register New Admin
           </button>
         </div>
 
@@ -992,11 +1198,11 @@
 
       <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
         <div class="flex items-center gap-2">
-          <i class="fas fa-user-shield text-[#FBBF24]"></i>
+          
           <h3 class="font-black text-sm text-[#FBBF24]">Register New Admin</h3>
         </div>
         <button onclick="closeAdminFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          <i class="fas fa-times text-sm"></i>
+          
         </button>
       </div>
 
@@ -1032,11 +1238,11 @@
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-amber-200">
       <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
         <div class="flex items-center gap-2">
-          <i class="fas fa-shield-halved text-[#FBBF24]"></i>
+          
           <h3 class="font-black text-sm text-[#FBBF24]">One-Time Temporary Password</h3>
         </div>
         <button onclick="closeTempPasswordModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          <i class="fas fa-times text-sm"></i>
+          
         </button>
       </div>
       <div class="p-6 space-y-4 text-xs">
@@ -1045,10 +1251,10 @@
         <div class="flex items-center gap-2">
           <div id="temp-pw-value" class="flex-1 px-4 py-3 bg-amber-50 border-2 border-amber-300 rounded-xl font-mono text-sm font-black text-[#4A0713] tracking-wide select-all"></div>
           <button onclick="copyTempPassword()" class="w-11 h-11 shrink-0 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center transition" title="Copy">
-            <i class="fas fa-copy"></i>
+            
           </button>
         </div>
-        <p class="text-[10px] text-red-500 font-bold"><i class="fas fa-triangle-exclamation mr-1"></i> This is shown once and cannot be retrieved again — copy it now.</p>
+        <p class="text-[10px] text-red-500 font-bold"> This is shown once and cannot be retrieved again — copy it now.</p>
         <button onclick="closeTempPasswordModal()" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
           Done
         </button>
@@ -1068,7 +1274,7 @@
           <p id="admin-detail-meta" class="text-[11px] text-gray-300 truncate"></p>
         </div>
         <button onclick="closeAdminDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white shrink-0">
-          <i class="fas fa-times text-sm"></i>
+          
         </button>
       </div>
 
@@ -1078,7 +1284,7 @@
         <div id="admin-detail-actions" class="flex flex-wrap gap-2"></div>
 
         <div>
-          <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"><i class="fas fa-bullhorn text-amber-500"></i> Send a Warning</h4>
+          <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"> Send a Warning</h4>
           <form onsubmit="sendWarningToAdmin(event)" class="flex gap-2">
             <input type="text" id="admin-warning-message" placeholder="e.g. Please confirm order statuses before dispatch" required
               class="flex-1 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
@@ -1088,7 +1294,7 @@
         </div>
 
         <div>
-          <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"><i class="fas fa-clock-rotate-left text-[#E59819]"></i> Activity — what changed on the site</h4>
+          <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"> Activity — what changed on the site</h4>
           <div id="admin-detail-activity" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
         </div>
       </div>
@@ -1103,11 +1309,11 @@
       
       <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
         <div class="flex items-center gap-2">
-          <i class="fas fa-cookie-bite text-[#FBBF24]"></i>
+          
           <h3 id="product-modal-title" class="font-black text-sm text-[#FBBF24]">Product & Packaging Editor</h3>
         </div>
         <button onclick="closeProductFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          <i class="fas fa-times text-sm"></i>
+          
         </button>
       </div>
 
@@ -1163,7 +1369,7 @@
           <!-- Product Photo Gallery — unlimited photos, uploads to Supabase Storage. First photo is the cover shown everywhere. -->
           <div class="sm:col-span-2 p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-2">
             <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
-              <i class="fas fa-images text-[#E59819]"></i> Product Photo Gallery (add as many as you like — first one is the cover)
+               Product Photo Gallery (add as many as you like — first one is the cover)
             </label>
             <input type="file" accept="image/*" multiple onchange="handleProductPhotosUpload(event)"
               class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#4A0713] file:text-[#FBBF24] hover:file:bg-[#32040C] cursor-pointer text-xs text-gray-500" />
@@ -1174,7 +1380,7 @@
           <!-- Product Video Gallery — unlimited videos, uploads to Supabase Storage. First video plays on hover/reels. -->
           <div class="sm:col-span-2 p-3.5 bg-amber-50/70 rounded-2xl border border-amber-200 space-y-2">
             <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
-              <i class="fas fa-video text-[#E59819]"></i> Product Video Gallery (optional, add as many as you like)
+               Product Video Gallery (optional, add as many as you like)
             </label>
             <input type="file" accept="video/*" multiple onchange="handleProductVideosUpload(event)"
               class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#4A0713] file:text-[#FBBF24] hover:file:bg-[#32040C] cursor-pointer text-xs text-gray-500" />
@@ -1192,7 +1398,7 @@
         <!-- Variant Pricing & Discount Modifier -->
         <div class="p-4 bg-amber-50 rounded-2xl border border-amber-200 space-y-3">
           <h4 class="font-black text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fas fa-tags text-[#E59819]"></i> Pack Size Variant Pricing & Discounts
+             Pack Size Variant Pricing & Discounts
           </h4>
 
           <div class="grid grid-cols-3 gap-3">
@@ -1243,11 +1449,11 @@
       
       <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
         <div class="flex items-center gap-2">
-          <i class="fas fa-layer-group text-[#FBBF24]"></i>
+          
           <h3 id="cat-modal-title" class="font-black text-sm text-[#FBBF24]">Category Editor</h3>
         </div>
         <button onclick="closeCategoryFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          <i class="fas fa-times text-sm"></i>
+          
         </button>
       </div>
 
@@ -1261,7 +1467,26 @@
         </div>
 
         <div>
-          <label class="block text-gray-700 font-bold mb-1">FontAwesome Icon Class</label>
+          <label class="block text-gray-700 font-bold mb-1">Category Image / Photo (Real Showcase)</label>
+          <div class="flex items-center gap-3 mb-2">
+            <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
+            <div class="flex-1">
+              <input type="text" id="cat-form-image" placeholder="assets/images/cinematic_bhujia.jpg or https://..." 
+                oninput="document.getElementById('cat-form-img-preview').src = this.value || 'assets/images/cinematic_bhujia.jpg'"
+                class="w-full px-3 py-2 border rounded-xl text-xs font-mono focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
+              <div class="flex gap-1.5 mt-1.5 flex-wrap">
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_bhujia.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_bhujia.jpg'" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-[10px] font-bold text-[#4A0713] rounded-lg border border-amber-200">Bhujia</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_mixture.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_mixture.jpg'" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-[10px] font-bold text-[#4A0713] rounded-lg border border-amber-200">Mixture</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_papad.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_papad.jpg'" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-[10px] font-bold text-[#4A0713] rounded-lg border border-amber-200">Mathri</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_moong_dal.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_moong_dal.jpg'" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-[10px] font-bold text-[#4A0713] rounded-lg border border-amber-200">Diet</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/commercial_scene_4.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/commercial_scene_4.jpg'" class="px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-[10px] font-bold text-[#4A0713] rounded-lg border border-amber-200">Sweets</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">FontAwesome Fallback Icon Class</label>
           <input type="text" id="cat-form-icon" placeholder="e.g. fas fa-fire, fas fa-seedling, fas fa-sun" 
             class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
           <span class="text-[10px] text-gray-400 mt-1 block">Example: <code>fas fa-fire</code>, <code>fas fa-sun</code>, <code>fas fa-gift</code></span>
@@ -1297,7 +1522,7 @@
             <div class="text-[10px] text-emerald-200">Customer: <span id="wa-preview-name"></span></div>
           </div>
         </div>
-        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"></button>
       </div>
 
       <div class="whatsapp-chat-pattern p-4 min-h-[300px] flex flex-col justify-end">
@@ -1305,7 +1530,7 @@
           <div id="wa-preview-body" class="text-xs text-gray-800 leading-relaxed"></div>
           <div class="text-right text-[10px] text-gray-400 mt-1.5 flex items-center justify-end gap-1">
             <span id="wa-preview-time"></span>
-            <i class="fas fa-check-double text-blue-500"></i>
+            
           </div>
         </div>
       </div>
@@ -1321,8 +1546,8 @@
   <div id="email-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
       <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
-        <h4 class="font-bold text-xs"><i class="fas fa-envelope mr-1.5"></i> Email Invoice Simulator</h4>
-        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-times"></i></button>
+        <h4 class="font-bold text-xs"> Email Invoice Simulator</h4>
+        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"></button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-3 text-xs flex-1">
@@ -1367,6 +1592,153 @@
           Done
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Coupon Form Modal -->
+  <div id="coupon-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-emerald-200">
+      <div class="p-4 bg-emerald-800 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="coupon-modal-title" class="font-black text-sm text-white">Coupon Editor</h3>
+        </div>
+        <button onclick="closeCouponModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          
+        </button>
+      </div>
+      <form onsubmit="saveCouponForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="coupon-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Coupon Code *</label>
+          <input type="text" id="coupon-form-code" required placeholder="e.g. MEERAV10" class="w-full px-3 py-2 border rounded-xl font-black uppercase text-gray-800" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Discount Type *</label>
+            <select id="coupon-form-type" class="w-full px-3 py-2 border rounded-xl font-bold">
+              <option value="percentage">Percentage (%)</option>
+              <option value="flat">Flat Amount</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Discount Value *</label>
+            <input type="number" id="coupon-form-val" required placeholder="10 or 50" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Minimum Order Amount</label>
+          <input type="number" id="coupon-form-min-order" placeholder="299" class="w-full px-3 py-2 border rounded-xl" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Description</label>
+          <input type="text" id="coupon-form-desc" placeholder="10% Off on orders above ₹299" class="w-full px-3 py-2 border rounded-xl" />
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="coupon-form-active" checked class="w-4 h-4 text-emerald-600 rounded" />
+          <label for="coupon-form-active" class="font-bold text-gray-700">Active (Accept on storefront)</label>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeCouponModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl shadow-md">Save Coupon</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Testimonial Form Modal -->
+  <div id="testimonial-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-amber-200">
+      <div class="p-4 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="testimonial-modal-title" class="font-black text-sm text-[#FBBF24]">Review Editor</h3>
+        </div>
+        <button onclick="closeTestimonialModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          
+        </button>
+      </div>
+      <form onsubmit="saveTestimonialForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="testimonial-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Customer Name *</label>
+          <input type="text" id="testimonial-form-name" required placeholder="e.g. Pooja Sharma" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">City / Location</label>
+            <input type="text" id="testimonial-form-city" placeholder="Mumbai, MH" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Rating (1 to 5 Stars)</label>
+            <select id="testimonial-form-rating" class="w-full px-3 py-2 border rounded-xl font-bold">
+              <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+              <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+              <option value="3">⭐⭐⭐ (3 Stars)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Review Text *</label>
+          <textarea id="testimonial-form-review" required rows="3" placeholder="The authentic crunch is unforgettable..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Customer Avatar URL / Path</label>
+          <input type="text" id="testimonial-form-avatar" placeholder="assets/images/drive_1.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="testimonial-form-visible" checked class="w-4 h-4 text-amber-600 rounded" />
+          <label for="testimonial-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeTestimonialModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black rounded-xl shadow-md border border-[#E59819]">Save Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAQ Form Modal -->
+  <div id="faq-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-blue-200">
+      <div class="p-4 bg-blue-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="faq-modal-title" class="font-black text-sm text-white">FAQ Editor</h3>
+        </div>
+        <button onclick="closeFaqModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          
+        </button>
+      </div>
+      <form onsubmit="saveFaqForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="faq-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Question *</label>
+          <input type="text" id="faq-form-question" required placeholder="e.g. Do you use Palm Oil?" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Answer *</label>
+          <textarea id="faq-form-answer" required rows="3" placeholder="Never. All snacks are made in 100% pure oil..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Category</label>
+            <input type="text" id="faq-form-category" placeholder="quality, shipping, dietary" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Sort Order</label>
+            <input type="number" id="faq-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="faq-form-visible" checked class="w-4 h-4 text-blue-600 rounded" />
+          <label for="faq-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeFaqModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-blue-800 hover:bg-blue-900 text-white font-black rounded-xl shadow-md">Save FAQ</button>
+        </div>
+      </form>
     </div>
   </div>
 

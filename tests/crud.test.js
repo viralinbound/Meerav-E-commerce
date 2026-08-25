@@ -254,3 +254,97 @@ describe('Core CRUD — notifications & storage', () => {
     expect((await api.fetchActivityForAdmin('admin-sub'))[0].undone).toBe(true);
   });
 });
+
+describe('100% Brand Customization & CMS Suite (Coupons, Testimonials, FAQs, Settings, Page Content)', () => {
+  let api;
+
+  beforeEach(() => {
+    ({ api } = createApi());
+  });
+
+  it('public read and admin CRUD for coupons', async () => {
+    const publicCoupons = await api.fetchCoupons();
+    expect(publicCoupons.length).toBeGreaterThanOrEqual(1);
+    expect(publicCoupons[0].code).toBe('MEERAV10');
+
+    // Guest cannot mutate
+    expect(await api.dbUpsertCoupon({ id: 'c2', code: 'FESTIVE20', discountType: 'percentage', discountVal: 20, isActive: true })).toBe(false);
+
+    // Admin can mutate
+    await api.signInAdmin('root@meerav.com', 'root-secret-1');
+    expect(await api.dbUpsertCoupon({ id: 'c2', code: 'FESTIVE20', discountType: 'percentage', discountVal: 20, isActive: true }, api.adminClient)).toBe(true);
+    
+    const afterUpsert = await api.fetchCoupons();
+    expect(afterUpsert.some(c => c.code === 'FESTIVE20')).toBe(true);
+
+    expect(await api.dbDeleteCoupon('c2', api.adminClient)).toBe(true);
+    const afterDelete = await api.fetchCoupons();
+    expect(afterDelete.some(c => c.code === 'FESTIVE20')).toBe(false);
+  });
+
+  it('public read and admin CRUD for testimonials/reviews', async () => {
+    const reviews = await api.fetchTestimonials();
+    expect(reviews.length).toBeGreaterThanOrEqual(1);
+    expect(reviews[0].name).toBe('Pooja Sharma');
+
+    // Guest cannot mutate
+    expect(await api.dbUpsertTestimonial({ id: 't2', name: 'Rohan', rating: 5, reviewText: 'Super crispy!', isVisible: true })).toBe(false);
+
+    // Admin can mutate
+    await api.signInAdmin('root@meerav.com', 'root-secret-1');
+    expect(await api.dbUpsertTestimonial({ id: 't2', name: 'Rohan', rating: 5, reviewText: 'Super crispy!', isVisible: true }, api.adminClient)).toBe(true);
+    
+    const afterUpsert = await api.fetchTestimonials();
+    expect(afterUpsert.some(t => t.name === 'Rohan')).toBe(true);
+
+    expect(await api.dbDeleteTestimonial('t2', api.adminClient)).toBe(true);
+  });
+
+  it('public read and admin CRUD for FAQs', async () => {
+    const faqs = await api.fetchFaqs();
+    expect(faqs.length).toBeGreaterThanOrEqual(1);
+    expect(faqs[0].question).toContain('palm oil');
+
+    await api.signInAdmin('root@meerav.com', 'root-secret-1');
+    expect(await api.dbUpsertFaq({ id: 'f2', question: 'How long is shelf life?', answer: '6 months', category: 'quality', sortOrder: 2, isVisible: true }, api.adminClient)).toBe(true);
+    
+    const afterUpsert = await api.fetchFaqs();
+    expect(afterUpsert.some(f => f.id === 'f2')).toBe(true);
+
+    expect(await api.dbDeleteFaq('f2', api.adminClient)).toBe(true);
+  });
+
+  it('admin can upsert site settings with full brand kit customization', async () => {
+    await api.signInAdmin('root@meerav.com', 'root-secret-1');
+    const settings = {
+      id: 1,
+      siteName: 'SHAHI SWEETS & NAMKEEN',
+      tagline: 'Imperial Flavours of Rajasthan',
+      primaryColor: '#0F172A',
+      secondaryColor: '#020617',
+      accentColor: '#38BDF8',
+      borderRadius: 'rounded-none',
+      currencySymbol: '$',
+      currencyCode: 'USD',
+      heroVideoUrl: 'https://example.com/shahi.mp4',
+      freeShippingThreshold: 50,
+      shippingFlatFee: 5
+    };
+
+    expect(await api.dbUpsertSiteSettings(settings, api.adminClient)).toBe(true);
+    const fetched = await api.fetchSiteSettings();
+    expect(fetched.siteName).toBe('SHAHI SWEETS & NAMKEEN');
+  });
+
+  it('admin can upsert page content CMS rows', async () => {
+    await api.signInAdmin('root@meerav.com', 'root-secret-1');
+    const contentEntries = [
+      { key: 'hero.title', value: '100% Pure Ghee Goodness', label: 'Hero Title', page: 'home', sortOrder: 1 },
+      { key: 'hero.badge', value: 'Royal Confectionery', label: 'Hero Badge', page: 'home', sortOrder: 2 }
+    ];
+
+    expect(await api.dbUpsertPageContent(contentEntries, api.adminClient)).toBe(true);
+    const fetched = await api.fetchPageContent();
+    expect(fetched.map['hero.title']).toBe('100% Pure Ghee Goodness');
+  });
+});
