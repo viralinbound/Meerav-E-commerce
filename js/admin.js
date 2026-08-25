@@ -398,6 +398,18 @@ function showAdminPage(pageId) {
     }
   });
 
+  // Update Mobile Horizontal Tab Bar active states
+  document.querySelectorAll('.admin-mobile-nav-item').forEach(item => {
+    const target = item.getAttribute('data-page');
+    if (target === pageId) {
+      item.classList.add('active', 'bg-[#4A0713]', 'text-[#FBBF24]', 'border-[#E59819]', 'font-black');
+      item.classList.remove('bg-white', 'text-gray-800', 'border-gray-200', 'font-bold');
+    } else {
+      item.classList.remove('active', 'bg-[#4A0713]', 'text-[#FBBF24]', 'border-[#E59819]', 'font-black');
+      item.classList.add('bg-white', 'text-gray-800', 'border-gray-200', 'font-bold');
+    }
+  });
+
   // Hide all views, show selected
   document.querySelectorAll('.admin-page-view').forEach(section => {
     section.classList.add('hidden');
