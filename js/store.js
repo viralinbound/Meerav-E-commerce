@@ -19,7 +19,8 @@ const storeState = {
   faqs: [],
   activeTrackingOrder: null,
   pendingCheckoutData: null,
-  activeProductDetail: null
+  activeProductDetail: null,
+  heroSlideIndex: 0
 };
 
 // Global Toast Helper
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   initProductVariants();
   renderCinematicVideoReels();
+  renderHeroCarousel();
   renderHomeCategoryCards();
   renderStoreCategories();
   renderStoreDietaryFilters();
@@ -106,6 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderStoreFaqs();
     renderStoreTrustBadges();
     renderCinematicVideoReels();
+    renderHeroCarousel();
   } catch (err) {
     console.warn('Storefront cloud sync fallback:', err.message);
   }
@@ -171,6 +174,17 @@ function setupStoreRealtime() {
 
   MiraDB.subscribeTable('coupons', async () => {
     storeState.coupons = await fetchCoupons();
+  });
+
+  MiraDB.subscribeTable('trust_badges', async () => {
+    storeState.trustBadges = await fetchTrustBadges();
+    renderStoreTrustBadges();
+  });
+
+  MiraDB.subscribeTable('broadcast_stories', async () => {
+    storeState.broadcastStories = await fetchBroadcastStories();
+    renderCinematicVideoReels();
+    renderHeroCarousel();
   });
 }
 
@@ -1271,16 +1285,114 @@ function closeEmailPreviewModal() {
 }
 
 /**
- * 7. CINEMATIC BRAND FILM MODAL & PLAYBACK CONTROLLER
+ * 7. HERO MEDIA CAROUSEL — driven by the admin's Broadcast Stories (cloud
+ * uploads, structured Storage folders), falling back to the single
+ * configured Hero Video/Image when the admin hasn't added any stories yet.
+ * Auto-scrolls, has left/right arrows, and opens a fullscreen lightbox.
  */
+function getHeroSlides() {
+  const stories = (storeState.broadcastStories || []).filter(s => s.isVisible !== false);
+  if (stories.length > 0) return stories;
+  const s = window.SITE_SETTINGS || {};
+  return [{
+    id: 'hero-default',
+    title: '4K CINEMATIC FILM • ALL PRODUCTS',
+    mediaType: 'video',
+    mediaUrl: s.heroVideoUrl || 'assets/videos/meerav_brand_film.mp4',
+    posterUrl: s.heroImageUrl || 'assets/images/commercial_scene_1.jpg'
+  }];
+}
+
+function renderHeroCarousel() {
+  const track = document.getElementById('hero-slides-wrapper');
+  if (!track) return;
+
+  const slides = getHeroSlides();
+  if (storeState.heroSlideIndex >= slides.length) storeState.heroSlideIndex = 0;
+
+  track.innerHTML = slides.map((s, idx) => `
+    <div class="w-full h-full shrink-0 relative cursor-pointer" onclick="openBrandFilmModal()">
+      ${s.mediaType === 'video' ? `
+        <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video"' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" autoplay loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></video>
+      ` : `
+        <img src="${s.mediaUrl}" alt="${s.title || ''}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+      `}
+    </div>
+  `).join('');
+
+  track.style.transform = `translateX(-${storeState.heroSlideIndex * 100}%)`;
+
+  const badge = document.getElementById('hero-slide-badge');
+  if (badge) badge.textContent = slides[storeState.heroSlideIndex].title || '4K CINEMATIC FILM • ALL PRODUCTS';
+
+  const counter = document.getElementById('hero-slide-counter');
+  if (counter) counter.innerHTML = `<i class="fas fa-images"></i> ${storeState.heroSlideIndex + 1} / ${slides.length}`;
+
+  const muteBtn = document.getElementById('video-mute-btn');
+  if (muteBtn) {
+    muteBtn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+    muteBtn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
+    muteBtn.classList.add('bg-black/70', 'text-[#FBBF24]');
+  }
+
+  if (!heroAutoScrollTimer) startHeroAutoScroll();
+}
+
+function nextHeroSlide() {
+  const slides = getHeroSlides();
+  storeState.heroSlideIndex = (storeState.heroSlideIndex + 1) % slides.length;
+  renderHeroCarousel();
+  syncHeroFullscreenMedia();
+}
+
+function prevHeroSlide() {
+  const slides = getHeroSlides();
+  storeState.heroSlideIndex = (storeState.heroSlideIndex - 1 + slides.length) % slides.length;
+  renderHeroCarousel();
+  syncHeroFullscreenMedia();
+}
+
+let heroAutoScrollTimer = null;
+function startHeroAutoScroll() {
+  stopHeroAutoScroll();
+  heroAutoScrollTimer = setInterval(() => nextHeroSlide(), 5000);
+}
+function stopHeroAutoScroll() {
+  if (heroAutoScrollTimer) { clearInterval(heroAutoScrollTimer); heroAutoScrollTimer = null; }
+}
+function pauseHeroAutoScroll() { stopHeroAutoScroll(); }
+function resumeHeroAutoScroll() { startHeroAutoScroll(); }
+
+function syncHeroFullscreenMedia() {
+  const modal = document.getElementById('brand-film-modal');
+  if (!modal || modal.classList.contains('hidden')) return;
+
+  const slides = getHeroSlides();
+  const s = slides[storeState.heroSlideIndex];
+  const video = document.getElementById('modal-brand-video');
+  const img = document.getElementById('modal-brand-image');
+  const titleEl = document.getElementById('brand-film-modal-title');
+  if (titleEl) titleEl.textContent = `MEERAV • ${s.title || 'Royal Bikaneri Showcase'}`;
+
+  if (s.mediaType === 'photo') {
+    if (video) { video.pause(); video.classList.add('hidden'); }
+    if (img) { img.src = s.mediaUrl; img.classList.remove('hidden'); }
+  } else {
+    if (img) img.classList.add('hidden');
+    if (video) {
+      video.src = s.mediaUrl;
+      video.classList.remove('hidden');
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    }
+  }
+}
+
 function openBrandFilmModal() {
   const modal = document.getElementById('brand-film-modal');
-  const video = document.getElementById('modal-brand-video');
   if (modal) modal.classList.remove('hidden');
-  if (video) {
-    video.currentTime = 0;
-    video.play().catch(() => {});
-  }
+  stopHeroAutoScroll();
+  syncHeroFullscreenMedia();
 }
 
 function closeBrandFilmModal() {
@@ -1288,13 +1400,14 @@ function closeBrandFilmModal() {
   const video = document.getElementById('modal-brand-video');
   if (video) video.pause();
   if (modal) modal.classList.add('hidden');
+  startHeroAutoScroll();
 }
 
 function toggleVideoMute() {
-  const video = document.getElementById('hero-cinematic-video');
+  const video = document.getElementById('hero-active-video');
   const btn = document.getElementById('video-mute-btn');
   if (!video || !btn) return;
-  
+
   video.muted = !video.muted;
   if (video.muted) {
     btn.innerHTML = '<i class="fas fa-volume-xmark"></i>';

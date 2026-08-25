@@ -438,6 +438,8 @@ function showAdminPage(pageId) {
     renderAdminCoupons();
     renderAdminTestimonials();
     renderAdminFaqs();
+    renderAdminTrustBadges();
+    renderAdminStories();
   } else if (pageId === 'admins') {
     renderAdminAccounts();
   }
@@ -1727,7 +1729,7 @@ async function resetToOriginalBrandDefaults() {
     heroVideoUrl: 'assets/videos/meerav_brand_film.mp4',
     heroImageUrl: 'assets/images/commercial_scene_1.jpg',
     heroCtaText: 'Order Online Now',
-    heroCtaLink: 'category.html',
+    heroCtaLink: 'category',
     heroSecondaryCtaText: 'Explore Categories',
     metaTitle: 'MEERAV - Authentic Bikaneri Namkeens & Sweets',
     metaDescription: 'Handcrafted authentic Bikaneri namkeens, sweets and royal delicacies prepared in 100% pure oil.',

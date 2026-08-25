@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     hero_video_url TEXT,
     hero_image_url TEXT,
     hero_cta_text TEXT DEFAULT 'Order Online Now',
-    hero_cta_link TEXT DEFAULT 'category.html',
+    hero_cta_link TEXT DEFAULT 'category',
     hero_secondary_cta_text TEXT DEFAULT 'Explore All Delicacies',
     shipping_flat_fee NUMERIC(10,2) NOT NULL DEFAULT 50.00,
     free_shipping_threshold NUMERIC(10,2) NOT NULL DEFAULT 499.00,

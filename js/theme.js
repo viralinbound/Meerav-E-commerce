@@ -36,7 +36,7 @@ const DEFAULT_SITE_SETTINGS = {
   heroVideoUrl: 'assets/videos/meerav_brand_film.mp4',
   heroImageUrl: 'assets/images/commercial_scene_1.jpg',
   heroCtaText: 'Order Online Now',
-  heroCtaLink: 'category.html',
+  heroCtaLink: 'category',
   heroSecondaryCtaText: 'Explore Categories',
   shippingFlatFee: 50,
   freeShippingThreshold: 499,
@@ -152,7 +152,7 @@ const THEME_PRESETS = [
       announcementText: 'Prepared in Pure & Clean Oil • Use coupon MEERAV10 for 10% Off!',
       heroCtaText: 'Order Fresh Namkeen',
       heroSecondaryCtaText: 'Explore Categories',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#4A0713', secondaryColor: '#32040C', accentColor: '#E59819', accentLightColor: '#FBBF24',
       headingColor: '#32040C', textColor: '#1F1517', backgroundType: 'solid', backgroundColor: '#FFF9ED',
       backgroundGradient: ['#FFF9ED', '#FDF1D0', '#E59819'], backgroundPattern: 'dots',
@@ -182,7 +182,7 @@ const THEME_PRESETS = [
       announcementText: 'Complimentary Luxury Velvet Gift Packaging on All Orders • Code: LUXE20',
       heroCtaText: 'Explore Luxury Reserve',
       heroSecondaryCtaText: 'View Tasting Menu',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#0A0A0A', secondaryColor: '#000000', accentColor: '#D4AF37', accentLightColor: '#F5D580',
       headingColor: '#D4AF37', textColor: '#E5E5E5', backgroundType: 'solid', backgroundColor: '#141414',
       backgroundGradient: ['#141414', '#0A0A0A', '#D4AF37'], backgroundPattern: 'none',
@@ -212,7 +212,7 @@ const THEME_PRESETS = [
       announcementText: 'Harvested from Wild Organic Valley Farms • Zero Chemicals Guaranteed',
       heroCtaText: 'Shop Organic Harvest',
       heroSecondaryCtaText: 'Our Farm Origins',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#14532D', secondaryColor: '#052E16', accentColor: '#65A30D', accentLightColor: '#A3E635',
       headingColor: '#14532D', textColor: '#1C1917', backgroundType: 'solid', backgroundColor: '#F7FEE7',
       backgroundGradient: ['#F7FEE7', '#ECFCCB', '#65A30D'], backgroundPattern: 'grid',
@@ -242,7 +242,7 @@ const THEME_PRESETS = [
       announcementText: 'Fresh Wave of Delights • Free Express Shipping on Orders Above ₹499',
       heroCtaText: 'Taste the Coast',
       heroSecondaryCtaText: 'View All Flavors',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#0C4A6E', secondaryColor: '#082F49', accentColor: '#0EA5E9', accentLightColor: '#7DD3FC',
       headingColor: '#0C4A6E', textColor: '#1E293B', backgroundType: 'gradient', backgroundColor: '#F0F9FF',
       backgroundGradient: ['#F0F9FF', '#E0F2FE', '#BAE6FD', '#7DD3FC'], backgroundPattern: 'waves',
@@ -272,7 +272,7 @@ const THEME_PRESETS = [
       announcementText: 'Fresh Warm Batch Out of the Oven! Order Sweet Treats Directly Home.',
       heroCtaText: 'Order Fresh Bakes',
       heroSecondaryCtaText: 'Our Bakery Menu',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#BE185D', secondaryColor: '#831843', accentColor: '#F472B6', accentLightColor: '#FBCFE8',
       headingColor: '#831843', textColor: '#44403C', backgroundType: 'gradient', backgroundColor: '#FDF2F8',
       backgroundGradient: ['#FDF2F8', '#FCE7F3', '#FBCFE8', '#F9A8D4'], backgroundPattern: 'dots',
@@ -302,7 +302,7 @@ const THEME_PRESETS = [
       announcementText: 'Single-Origin Micro-Lots & Functional Energy Snacks In Stock.',
       heroCtaText: 'Shop Precision Fuel',
       heroSecondaryCtaText: 'View Batch Roasts',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#18181B', secondaryColor: '#09090B', accentColor: '#EA580C', accentLightColor: '#FB923C',
       headingColor: '#18181B', textColor: '#3F3F46', backgroundType: 'solid', backgroundColor: '#FAFAFA',
       backgroundGradient: ['#FAFAFA', '#F4F4F5', '#E4E4E7'], backgroundPattern: 'none',
@@ -332,7 +332,7 @@ const THEME_PRESETS = [
       announcementText: 'Grandmother’s 100-Year-Old Clay Pot Sun-Cured Recipes • 100% Natural',
       heroCtaText: 'Shop Clay-Pot Achars',
       heroSecondaryCtaText: 'Our Sun-Curing Process',
-      heroCtaLink: 'category.html',
+      heroCtaLink: 'category',
       primaryColor: '#991B1B', secondaryColor: '#7F1D1D', accentColor: '#F97316', accentLightColor: '#FDBA74',
       headingColor: '#7F1D1D', textColor: '#292524', backgroundType: 'solid', backgroundColor: '#FFFBEB',
       backgroundGradient: ['#FFFBEB', '#FEF3C7', '#FDE68A'], backgroundPattern: 'stripes',
@@ -598,19 +598,17 @@ function applyBranding(s) {
   const footerCopyEl = document.getElementById('footer-copyright');
   if (footerCopyEl && s.footerText) footerCopyEl.textContent = s.footerText;
 
-  // Hero Media Switcher (Video vs Image)
-  const heroVideoEl = document.getElementById('hero-brand-video');
-  const heroImgEl = document.getElementById('hero-brand-image');
-  if (heroVideoEl && s.heroVideoUrl) {
-    const source = heroVideoEl.querySelector('source');
-    if (source && source.src !== s.heroVideoUrl) {
-      source.src = s.heroVideoUrl;
-      heroVideoEl.load();
-    }
-  }
-  if (heroImgEl && s.heroImageUrl) {
-    heroImgEl.src = s.heroImageUrl;
-  }
+  // Hero CTA Buttons — admin-editable text/link
+  const heroCtaTextEl = document.getElementById('hero-cta-text');
+  if (heroCtaTextEl && s.heroCtaText) heroCtaTextEl.textContent = s.heroCtaText;
+  const heroCtaBtnEl = document.getElementById('hero-cta-btn');
+  if (heroCtaBtnEl && s.heroCtaLink) heroCtaBtnEl.href = s.heroCtaLink;
+  const heroSecondaryCtaTextEl = document.getElementById('hero-secondary-cta-text');
+  if (heroSecondaryCtaTextEl && s.heroSecondaryCtaText) heroSecondaryCtaTextEl.textContent = s.heroSecondaryCtaText;
+
+  // Hero Media Carousel — driven by admin's Broadcast Stories, falling back
+  // to the single configured Hero Video/Image when there are none.
+  if (typeof renderHeroCarousel === 'function') renderHeroCarousel();
 
   // Payment Tabs Toggle
   const tabMap = { upi: s.paymentUpiEnabled, card: s.paymentCardEnabled, netbanking: s.paymentNetbankingEnabled, cod: s.paymentCodEnabled };
