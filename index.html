@@ -54,12 +54,12 @@
       </div>
       <div class="flex items-center gap-4 text-amber-200 text-[11px]">
         <a id="whatsapp-header-link" href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-1.5 hover:text-white transition">
-          
+          <i class="fab fa-whatsapp"></i>
           <span id="whatsapp-header-number">Order on WhatsApp: +91 98765 43210</span>
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
         <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
-           Admin Portal
+          <i class="fas fa-user-shield"></i> Admin Portal
         </a>
       </div>
     </div>
@@ -84,38 +84,38 @@
         <!-- Search Bar -->
         <div class="flex-1 max-w-md hidden md:block">
           <div class="relative">
-            
-            <input type="text" id="store-search-input" placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri, Makhana..." 
+            <i class="fas fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input type="text" id="store-search-input" placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri, Makhana..."
               class="w-full pl-11 pr-4 py-2.5 bg-amber-50/50 border border-amber-200 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white transition shadow-inner" />
           </div>
         </div>
 
         <!-- Right Quick Actions -->
         <div class="flex items-center gap-2 sm:gap-3">
-          
+
           <!-- Live Tracking Button -->
           <button onclick="openOrderTrackingView()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-100/70 hover:bg-amber-200 border border-amber-300 transition">
-            
+            <i class="fas fa-location-crosshairs"></i>
             <span>Track Order</span>
           </button>
 
           <!-- Customer Sign In / Account -->
-          <button id="header-customer-btn" onclick="openCustomerAuthModal()" 
+          <button id="header-customer-btn" onclick="openCustomerAuthModal()"
             class="px-3.5 py-2 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100 text-xs font-bold transition">
             <!-- Populated via auth.js -->
           </button>
 
           <!-- Wishlist -->
-          <button onclick="filterCategory('all'); showToast('Showing all favorites', 'info');" 
+          <button onclick="filterCategory('all'); showToast('Showing all favorites', 'info');"
             class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
-            
+            <i class="far fa-heart"></i>
             <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
           </button>
 
           <!-- Cart Button -->
-          <button onclick="openCartDrawer()" 
+          <button onclick="openCartDrawer()"
             class="relative flex items-center gap-2 px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-2xl font-black text-xs shadow-lg shadow-[#4A0713]/30 transition transform active:scale-95 border border-[#E59819]/40">
-            
+            <i class="fas fa-shopping-bag"></i>
             <span class="hidden sm:inline">Cart</span>
             <span class="cart-badge-count hidden px-2 py-0.5 bg-[#E59819] text-[#32040C] text-[11px] font-black rounded-full shadow-inner">0</span>
           </button>
@@ -153,39 +153,39 @@
 
             <!-- CTA Buttons -->
             <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
-              <a href="category?cat=all" 
+              <a href="category?cat=all"
                 class="px-7 py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black rounded-2xl shadow-xl shadow-[#4A0713]/30 transition transform hover:-translate-y-0.5 border border-[#E59819] inline-flex items-center gap-2">
-                
+                <i class="fas fa-bowl-food"></i>
                 <span>Explore Category Collections</span>
-                
+                <i class="fas fa-arrow-right text-xs"></i>
               </a>
 
-              <button onclick="openBrandFilmModal()" 
+              <button onclick="openBrandFilmModal()"
                 class="px-6 py-3.5 bg-gradient-to-r from-[#E59819] to-amber-500 hover:from-amber-600 hover:to-[#E59819] text-[#32040C] text-sm font-black rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2.5 border border-white/40">
                 <span class="w-6 h-6 rounded-full bg-[#32040C] text-[#FBBF24] flex items-center justify-center text-[10px] shadow-sm animate-pulse">
-                  
+                  <i class="fas fa-play"></i>
                 </span>
                 <span>Watch All-Products Film</span>
               </button>
 
-              <a href="category?cat=sweets-combos" 
+              <a href="category?cat=sweets-combos"
                 class="px-6 py-3.5 bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-sm font-black rounded-2xl shadow-md transition flex items-center gap-2 border border-amber-300">
-                 Festive Hampers
+                <i class="fas fa-gift"></i> Festive Hampers
               </a>
             </div>
 
             <!-- Authentic Trust Badges -->
             <div class="grid grid-cols-3 gap-3 pt-6 border-t border-amber-300/60 max-w-lg mx-auto lg:mx-0">
               <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]"> Pure & Clean</div>
+                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-droplet text-xs"></i> Pure & Clean</div>
                 <div class="text-[11px] text-gray-600 font-medium">Cold-Pressed Oil</div>
               </div>
               <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]"> 100% Veg</div>
+                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-leaf text-xs"></i> 100% Veg</div>
                 <div class="text-[11px] text-gray-600 font-medium">Certified Recipe</div>
               </div>
               <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]"> Bikaner Hub</div>
+                <div class="text-sm font-black text-[#4A0713]"><i class="fas fa-location-dot text-xs"></i> Bikaner Hub</div>
                 <div class="text-[11px] text-gray-600 font-medium">Same-Day Dispatch</div>
               </div>
             </div>
@@ -194,7 +194,7 @@
           <!-- Hero Right Column: 4K Master Cinematic Brand Video Player (All Products Film) -->
           <div class="lg:col-span-5 flex justify-center">
             <div class="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-[#E59819] max-w-md w-full aspect-square bg-black group">
-              
+
               <!-- Master Cinematic Brand Video -->
               <video id="hero-cinematic-video" 
                 src="assets/videos/meerav_brand_film.mp4" 
@@ -213,17 +213,17 @@
               <!-- Bottom Overlay Controls -->
               <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20">
                 <span class="text-[10px] text-amber-200 font-bold bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-amber-400/30">
- 35s Slow Royal Crunch
+                  <i class="fas fa-clock"></i> 35s Slow Royal Crunch
                 </span>
 
                 <div class="flex items-center gap-2">
-                  <button onclick="toggleVideoMute()" id="video-mute-btn" 
+                  <button onclick="toggleVideoMute()" id="video-mute-btn"
                     class="p-2.5 bg-black/70 hover:bg-[#E59819] text-[#FBBF24] hover:text-[#32040C] rounded-full backdrop-blur-md border border-[#E59819]/50 transition shadow-lg text-xs" title="Toggle Sound">
-                    
+                    <i class="fas fa-volume-xmark"></i>
                   </button>
-                  <button onclick="openBrandFilmModal()" 
+                  <button onclick="openBrandFilmModal()"
                     class="px-3.5 py-2 bg-[#4A0713]/90 hover:bg-[#32040C] text-[#FBBF24] rounded-full backdrop-blur-md border border-[#E59819] transition shadow-lg text-xs font-black flex items-center gap-1" title="Expand Fullscreen">
-                    
+                    <i class="fas fa-expand"></i>
                     <span>Fullscreen</span>
                   </button>
                 </div>
@@ -259,10 +259,10 @@
           <p class="text-xs text-amber-200/80">Filter by pure ingredients, spice levels, and order directly with live GPS tracking.</p>
         </div>
 
-        <a href="category?cat=all" 
+        <a href="category?cat=all"
           class="px-8 py-4 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 shrink-0 flex items-center gap-2 border border-white/20">
           <span id="home-total-products-btn">Explore All Products</span>
-          
+          <i class="fas fa-arrow-right text-xs"></i>
         </a>
       </div>
     </section>
@@ -592,7 +592,7 @@
           <span class="text-xs font-black text-[#FBBF24]">Bikaneri Recipe & Ingredients</span>
         </div>
         <button onclick="closeProductDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -671,7 +671,7 @@
           <p class="text-xs text-amber-200/80">Pin your exact address on the map for direct dispatch from Bikaner</p>
         </div>
         <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -872,16 +872,16 @@
   <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
       <div class="flex items-center gap-2">
-        
+        <i class="fas fa-shopping-bag"></i>
         <h3 class="font-black text-[#FBBF24] text-base">Your Bikaneri Cart</h3>
       </div>
       <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-        
+        <i class="fas fa-xmark"></i>
       </button>
     </div>
 
     <div class="px-4 py-2.5 bg-amber-100/70 text-[#4A0713] text-xs flex items-center gap-2 border-b border-amber-200">
-      
+      <i class="fas fa-truck-fast"></i>
       <span>Orders above ₹499 get <strong>FREE Express Delivery</strong>!</span>
     </div>
 
@@ -915,10 +915,10 @@
         </div>
       </div>
 
-      <button onclick="openCheckoutModal()" 
+      <button onclick="openCheckoutModal()"
         class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-sm rounded-2xl shadow-lg shadow-[#4A0713]/30 flex items-center justify-center gap-2 transition transform active:scale-98 border border-[#E59819]">
         <span>Proceed to Checkout</span>
-        
+        <i class="fas fa-arrow-right text-xs"></i>
       </button>
     </div>
   </div>
@@ -939,7 +939,7 @@
           </div>
         </div>
         <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center transition">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -973,7 +973,7 @@
   <div id="customer-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
       <div class="flex justify-end mb-1">
-        <button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"></button>
+        <button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-xmark"></i></button>
       </div>
       <div id="customer-auth-content"></div>
     </div>
@@ -992,7 +992,7 @@
             <div class="text-[10px] text-emerald-200">Customer: <span id="wa-preview-name"></span></div>
           </div>
         </div>
-        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"></button>
+        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"><i class="fas fa-xmark"></i></button>
       </div>
 
       <div class="whatsapp-chat-pattern p-4 min-h-[300px] flex flex-col justify-end">
@@ -1017,7 +1017,7 @@
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
       <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
         <h4 class="font-bold text-xs"> Tax Invoice & Receipt</h4>
-        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"></button>
+        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-xmark"></i></button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-3 text-xs flex-1">
@@ -1070,20 +1070,20 @@
   <!-- ========================================================================= -->
   <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
     <a href="index" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
-      
+      <i class="fas fa-house"></i>
       <span class="text-[10px] font-black">Home</span>
     </a>
     <a href="category" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      
+      <i class="fas fa-bowl-food"></i>
       <span class="text-[10px] font-bold">Categories</span>
     </a>
     <button onclick="openCartDrawer()" class="relative flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      
+      <i class="fas fa-shopping-bag"></i>
       <span class="cart-badge-count hidden absolute -top-1 right-2 w-4 h-4 bg-[#4A0713] text-[#FBBF24] text-[9px] font-black rounded-full flex items-center justify-center">0</span>
       <span class="text-[10px] font-bold">Cart</span>
     </button>
     <button onclick="openOrderTrackingView()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      
+      <i class="fas fa-location-crosshairs"></i>
       <span class="text-[10px] font-bold">Tracking</span>
     </button>
     <button onclick="openCustomerAuthModal()" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
@@ -1106,7 +1106,7 @@
           </div>
         </div>
         <button onclick="closeBrandFilmModal()" class="w-9 h-9 rounded-full bg-white/10 hover:bg-[#E59819] hover:text-[#32040C] text-white flex items-center justify-center transition">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 

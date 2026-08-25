@@ -93,6 +93,15 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return !error;
   }
 
+  // The branded, sequential order number (e.g. "MEERAV-1001") depends on
+  // order_seq, which Postgres only assigns once the insert actually commits —
+  // so it's fetched right after a successful checkout insert, not predicted client-side.
+  async function fetchOrderSeq(orderId) {
+    const { data, error } = await supabaseClient.from('orders').select('order_seq').eq('id', orderId).maybeSingle();
+    if (error || !data) { console.warn('fetchOrderSeq', error); return null; }
+    return data.order_seq != null ? Number(data.order_seq) : null;
+  }
+
   async function dbUpdateOrderStatus(orderId, newStatus, client = supabaseClient) {
     const { error } = await client.from('orders').update({ order_status: newStatus }).eq('id', orderId);
     if (error) console.error('dbUpdateOrderStatus', error);
@@ -550,7 +559,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchCategories, fetchProducts, fetchOrders, fetchCustomers, fetchNotifications,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
-    dbInsertOrder, dbUpdateOrderStatus,
+    dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,
     dbUpsertCustomer,
     fetchChatHistory, saveChatHistory, deleteChatHistory,
     dbInsertNotification,

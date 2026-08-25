@@ -316,7 +316,7 @@ async function handleAdminLogin(event) {
 
   if (result.error) {
     if (errorBox) { errorBox.textContent = result.error.message || 'Invalid credentials'; errorBox.classList.remove('hidden'); }
-    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> '; }
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<span>Authorize & Enter Portal</span> <i class="fas fa-arrow-right"></i>'; }
     return;
   }
 
@@ -443,7 +443,7 @@ function renderOverviewRecentOrders() {
   const recent = adminState.orders.slice(0, 5);
   tbody.innerHTML = recent.map(order => `
     <tr class="hover:bg-amber-50/40 transition">
-      <td class="font-black text-[#4A0713] text-xs">#${order.id}</td>
+      <td class="font-black text-[#4A0713] text-xs">#${formatOrderDisplayId(order)}</td>
       <td class="text-xs font-bold text-gray-900">${order.customer.name}</td>
       <td class="font-black text-emerald-800 text-xs">${formatPrice(order.totalAmount)}</td>
       <td>
@@ -476,7 +476,7 @@ function renderAdminOrders() {
 
   tbody.innerHTML = filtered.map(order => `
     <tr class="hover:bg-amber-50/40 transition">
-      <td class="font-black text-[#4A0713] text-xs">#${order.id}</td>
+      <td class="font-black text-[#4A0713] text-xs">#${formatOrderDisplayId(order)}</td>
       <td>
         <div class="font-black text-xs text-gray-900">${order.customer.name}</div>
         <div class="text-[11px] text-gray-500 font-medium">${order.customer.phone}</div>
@@ -503,10 +503,10 @@ function renderAdminOrders() {
       <td>
         <div class="flex items-center gap-1.5">
           <button onclick="previewWhatsAppNotification('${order.id}')" title="WhatsApp Alert" class="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs transition">
-            
+            <i class="fab fa-whatsapp"></i>
           </button>
           <button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="p-1.5 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs transition">
-            
+            <i class="fas fa-envelope"></i>
           </button>
         </div>
       </td>
@@ -525,7 +525,7 @@ async function updateOrderStatus(orderId, newStatus) {
     id: `NOTIF-${Math.floor(100 + Math.random() * 900)}`,
     type: 'WhatsApp',
     recipient: `${order.customer.phone} (${order.customer.name})`,
-    template: `Status Changed to ${newStatus} #${order.id}`,
+    template: `Status Changed to ${newStatus} #${formatOrderDisplayId(order)}`,
     time: 'Just now',
     status: 'Delivered & Read',
     statusColor: 'green'
@@ -536,11 +536,11 @@ async function updateOrderStatus(orderId, newStatus) {
     MiraDB.dbUpdateOrderStatus(order.id, newStatus, MiraDB.adminClient),
     MiraDB.dbInsertNotification(notif, MiraDB.adminClient)
   ]);
-  MiraDB.logAdminActivity(adminState.currentAdmin, 'order.status_update', `#${order.id}`, { orderId: order.id, from: previousStatus, to: newStatus });
+  MiraDB.logAdminActivity(adminState.currentAdmin, 'order.status_update', `#${formatOrderDisplayId(order)}`, { orderId: order.id, from: previousStatus, to: newStatus });
 
   renderAdminOrders();
   renderAdminNotificationLogs();
-  showToast(`Order #${order.id} status updated to "${newStatus}". WhatsApp alert dispatched!`, 'success');
+  showToast(`Order #${formatOrderDisplayId(order)} status updated to "${newStatus}". WhatsApp alert dispatched!`, 'success');
 }
 
 /**
@@ -587,20 +587,20 @@ function renderAdminProducts() {
           <div class="text-[10px] text-gray-400">${p.variants.length} Variants (${p.variants.map(varItem => varItem.weight).join(', ')})</div>
         </td>
         <td>
-          <button onclick="toggleProductStock('${p.id}')" class="px-2.5 py-1 text-[10px] font-black rounded-full transition ${
+          <button onclick="toggleProductStock('${p.id}')" class="px-2.5 py-1 text-[10px] font-black rounded-full transition flex items-center gap-1 ${
             p.inStock ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200'
           }">
-            
+            <i class="fas ${p.inStock ? 'fa-circle-check' : 'fa-circle-xmark'} text-[9px]"></i>
             ${p.inStock ? 'In Stock' : 'Out of Stock'}
           </button>
         </td>
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition flex items-center gap-1">
-               Edit / Image
+              <i class="fas fa-pen"></i> Edit / Image
             </button>
             <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs transition">
-              
+              <i class="fas fa-trash-can"></i>
             </button>
           </div>
         </td>
@@ -676,8 +676,8 @@ function renderProductPhotosGrid() {
     <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-white shrink-0">
       <img src="${url}" class="w-full h-full object-contain" />
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
-      <button type="button" onclick="removeProductPhoto(${idx})" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-        
+      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
+        <i class="fas fa-xmark"></i>
       </button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
@@ -690,8 +690,8 @@ function renderProductVideosGrid() {
     <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-black shrink-0">
       <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
-      <button type="button" onclick="removeProductVideo(${idx})" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
-        
+      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md">
+        <i class="fas fa-xmark"></i>
       </button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
@@ -906,11 +906,11 @@ function renderAdminCategories() {
         </td>
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-               Edit
+            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition flex items-center gap-1">
+              <i class="fas fa-pen"></i> Edit
             </button>
             <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="p-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs transition">
-              
+              <i class="fas fa-trash-can"></i>
             </button>
           </div>
         </td>
@@ -1088,7 +1088,7 @@ function renderAdminCustomers() {
       <td class="text-right">
         <div class="flex items-center justify-end gap-1.5">
           <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs transition border border-emerald-300">
-            
+            <i class="fab fa-whatsapp"></i>
           </a>
           <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition">
             View History
@@ -1121,7 +1121,7 @@ function renderAdminNotificationLogs() {
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
           n.type === 'WhatsApp' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
         }">
-          
+          <i class="${n.type === 'WhatsApp' ? 'fab fa-whatsapp' : 'fas fa-envelope'}"></i>
           ${n.type}
         </span>
       </td>
@@ -1279,6 +1279,12 @@ function renderSettingsForm() {
   document.getElementById('settings-announcement').value = s.announcementText || '';
   document.getElementById('settings-footer-text').value = s.footerText || '';
 
+  // Order Number Branding
+  document.getElementById('settings-order-id-prefix').value = s.orderIdPrefix || 'MEERAV-';
+  document.getElementById('settings-order-id-start').value = s.orderIdStartNumber != null ? s.orderIdStartNumber : 1001;
+  document.getElementById('settings-order-id-pad').value = s.orderIdPadDigits != null ? s.orderIdPadDigits : 0;
+  updateOrderIdExample();
+
   // AI Chatbot Customization
   document.getElementById('settings-chatbot-enabled').checked = s.chatbotEnabled !== false;
   document.getElementById('settings-chatbot-name').value = s.chatbotName || 'Meerav AI Sommelier';
@@ -1292,6 +1298,15 @@ function renderSettingsForm() {
     document.getElementById(`settings-chatbot-qp-label-${i}`).value = qp.label || '';
     document.getElementById(`settings-chatbot-qp-prompt-${i}`).value = qp.prompt || '';
   }
+}
+
+function updateOrderIdExample() {
+  const prefix = document.getElementById('settings-order-id-prefix')?.value || 'MEERAV-';
+  const start = Number(document.getElementById('settings-order-id-start')?.value) || 1001;
+  const pad = Number(document.getElementById('settings-order-id-pad')?.value) || 0;
+  const numStr = pad > 0 ? String(start).padStart(pad, '0') : String(start);
+  const exampleEl = document.getElementById('settings-order-id-example');
+  if (exampleEl) exampleEl.textContent = `${prefix}${numStr}`;
 }
 
 const DEFAULT_CHATBOT_QUICK_PROMPTS = [
@@ -1353,7 +1368,7 @@ function renderPatternStyleButtons() {
   container.innerHTML = PATTERN_STYLE_OPTIONS.map(opt => `
     <button type="button" onclick="setBackgroundPattern('${opt.value}')" data-pattern-btn="${opt.value}"
       class="pattern-style-btn py-2.5 rounded-xl text-[10px] font-bold border transition flex flex-col items-center gap-1">
-      
+      <i class="fas ${opt.icon} text-sm"></i>
       <span>${opt.label}</span>
     </button>
   `).join('');
@@ -1504,6 +1519,9 @@ function collectSiteSettingsFromForm() {
     facebookUrl: document.getElementById('settings-facebook').value.trim(),
     announcementText: document.getElementById('settings-announcement').value.trim(),
     footerText: document.getElementById('settings-footer-text').value.trim(),
+    orderIdPrefix: document.getElementById('settings-order-id-prefix').value.trim() || 'MEERAV-',
+    orderIdStartNumber: Number(document.getElementById('settings-order-id-start').value) || 1001,
+    orderIdPadDigits: Number(document.getElementById('settings-order-id-pad').value) || 0,
     chatbotEnabled: document.getElementById('settings-chatbot-enabled').checked,
     chatbotName: document.getElementById('settings-chatbot-name').value.trim(),
     chatbotSubtitle: document.getElementById('settings-chatbot-subtitle').value.trim(),
@@ -1541,12 +1559,12 @@ async function persistSiteSettings(updated, activityLabel) {
 async function saveSiteSettingsForm(event) {
   event.preventDefault();
   const submitBtn = document.getElementById('settings-save-btn');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
 
   const updated = collectSiteSettingsFromForm();
   const ok = await persistSiteSettings(updated, 'Store Settings');
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = ' Save All Store Settings'; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-check"></i> Save All Store Settings'; }
   if (ok) showToast('Store settings saved & applied live across website!', 'success');
 }
 
@@ -1707,13 +1725,14 @@ function renderAdminCoupons() {
       <td class="p-3 text-xs text-gray-600">${c.minOrderAmount ? formatPrice(c.minOrderAmount) : 'No Min'}</td>
       <td class="p-3 text-xs text-gray-500 truncate max-w-xs">${c.description || '—'}</td>
       <td class="p-3">
-        <button onclick="toggleCouponActive('${c.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${c.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+        <button onclick="toggleCouponActive('${c.id}')" title="${c.isActive ? 'Click to deactivate' : 'Click to activate'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${c.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+          <i class="fas ${c.isActive ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
           ${c.isActive ? 'Active' : 'Inactive'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openCouponModal('${c.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
-        <button onclick="deleteCoupon('${c.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"></button>
+        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
+        <button onclick="deleteCoupon('${c.id}')" title="Delete Coupon" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
       </td>
     </tr>
   `).join('');
@@ -1825,16 +1844,17 @@ function renderAdminTestimonials() {
         <span class="font-bold text-xs text-gray-900">${t.name}</span>
       </td>
       <td class="p-3 text-xs text-gray-600">${t.city || '—'}</td>
-      <td class="p-3 text-xs text-amber-500 font-bold">${''.repeat(Math.round(t.rating || 5))}</td>
+      <td class="p-3 text-xs text-amber-500 font-bold">${'<i class="fas fa-star"></i>'.repeat(Math.round(t.rating || 5))}</td>
       <td class="p-3 text-xs text-gray-600 truncate max-w-xs">${t.reviewText}</td>
       <td class="p-3">
-        <button onclick="toggleTestimonialVisible('${t.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${t.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+        <button onclick="toggleTestimonialVisible('${t.id}')" title="${t.isVisible !== false ? 'Click to hide from homepage' : 'Click to show on homepage'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${t.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+          <i class="fas ${t.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i>
           ${t.isVisible !== false ? 'Visible' : 'Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openTestimonialModal('${t.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
-        <button onclick="deleteTestimonial('${t.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"></button>
+        <button onclick="openTestimonialModal('${t.id}')" title="Edit Review" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
+        <button onclick="deleteTestimonial('${t.id}')" title="Delete Review" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
       </td>
     </tr>
   `).join('');
@@ -1945,13 +1965,14 @@ function renderAdminFaqs() {
       <td class="p-3 text-xs text-gray-600 capitalize">${f.category || 'General'}</td>
       <td class="p-3 text-xs text-gray-500 font-mono">${f.sortOrder || 1}</td>
       <td class="p-3">
-        <button onclick="toggleFaqVisible('${f.id}')" class="px-2 py-0.5 rounded-full text-[10px] font-black ${f.isVisible !== false ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+        <button onclick="toggleFaqVisible('${f.id}')" title="${f.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${f.isVisible !== false ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500'}">
+          <i class="fas ${f.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i>
           ${f.isVisible !== false ? 'Visible' : 'Hidden'}
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openFaqModal('${f.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"></button>
-        <button onclick="deleteFaq('${f.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg"></button>
+        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
+        <button onclick="deleteFaq('${f.id}')" title="Delete FAQ" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
       </td>
     </tr>
   `).join('');
@@ -2080,7 +2101,7 @@ function renderPageContentForm() {
 async function savePageContentForm(event) {
   event.preventDefault();
   const submitBtn = document.getElementById('page-content-save-btn');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = ' Saving...'; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...'; }
 
   const before = adminState.pageContentRows.map(row => ({ key: row.key, value: row.value, label: row.label, page: row.page, sortOrder: row.sort_order }));
   const entries = adminState.pageContentRows.map(row => {
@@ -2090,7 +2111,7 @@ async function savePageContentForm(event) {
 
   const ok = await MiraDB.dbUpsertPageContent(entries, MiraDB.adminClient);
 
-  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = ' Save Text Content'; }
+  if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = '<i class="fas fa-check"></i> Save Text Content'; }
 
   if (!ok) {
     showToast('Could not save text content — please retry', 'error');
@@ -2447,7 +2468,7 @@ function previewWhatsAppNotification(orderId) {
   if (!order) return;
 
   const itemsList = order.items ? order.items.map(i => `• ${i.name} x${i.qty} (₹${i.price * i.qty})`).join('\n') : 'Assorted Namkeens';
-  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for ordering with *MEERAV Namkeens*!\n\n*Order ID:* #${order.id}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Tracking:* ${order.trackingNumber}\n\nYour fresh batch is packed in airtight zipper packs. For queries, reply to this chat!`;
+  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for ordering with *MEERAV Namkeens*!\n\n*Order ID:* #${formatOrderDisplayId(order)}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Tracking:* ${order.trackingNumber}\n\nYour fresh batch is packed in airtight zipper packs. For queries, reply to this chat!`;
 
   document.getElementById('wa-preview-name').textContent = order.customer.name;
   document.getElementById('wa-preview-body').innerHTML = messageBody.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
@@ -2464,9 +2485,9 @@ function previewEmailNotification(orderId) {
   const order = adminState.orders.find(o => o.id === orderId) || adminState.orders[0];
   if (!order) return;
 
-  document.getElementById('email-preview-subject').textContent = `Order Confirmation #${order.id} - MEERAV Namkeens`;
+  document.getElementById('email-preview-subject').textContent = `Order Confirmation #${formatOrderDisplayId(order)} - MEERAV Namkeens`;
   document.getElementById('email-preview-to').textContent = `${order.customer.name} <${order.customer.email}>`;
-  document.getElementById('email-preview-order-id').textContent = order.id;
+  document.getElementById('email-preview-order-id').textContent = formatOrderDisplayId(order);
   document.getElementById('email-preview-date').textContent = order.date;
   document.getElementById('email-preview-customer-name').textContent = order.customer.name;
   document.getElementById('email-preview-address').textContent = order.customer.address;

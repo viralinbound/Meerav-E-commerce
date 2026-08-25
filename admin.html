@@ -52,13 +52,13 @@
 
         <button type="submit" class="w-full py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-lg shadow-[#4A0713]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#E59819]">
           <span>Authorize & Enter Portal</span>
-          
+          <i class="fas fa-arrow-right"></i>
         </button>
       </form>
 
       <div class="mt-6 pt-4 border-t border-gray-100 text-center">
         <a href="index" class="text-xs font-bold text-gray-500 hover:text-[#4A0713] transition flex items-center justify-center gap-1.5">
-           Return to Customer Storefront
+          <i class="fas fa-arrow-left"></i> Return to Customer Storefront
         </a>
       </div>
 
@@ -74,7 +74,7 @@
 
       <div class="text-center space-y-2 mb-6">
         <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-100 text-[#4A0713] flex items-center justify-center text-2xl">
-          
+          <i class="fas fa-key"></i>
         </div>
         <h2 class="text-xl font-black text-gray-900 tracking-tight">Set Your Password</h2>
         <p class="text-xs text-gray-500 font-medium">You're using a temporary password. Choose a new one to continue — you'll use it every time from now on.</p>
@@ -632,7 +632,7 @@
                     <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1"></p>
                   </div>
                   <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    
+                    <i class="fas fa-trash-can"></i>
                   </button>
                 </div>
               </div>
@@ -645,7 +645,7 @@
                     <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1"></p>
                   </div>
                   <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    
+                    <i class="fas fa-trash-can"></i>
                   </button>
                 </div>
               </div>
@@ -783,7 +783,7 @@
                     <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1"></p>
                   </div>
                   <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
-                    
+                    <i class="fas fa-trash-can"></i>
                   </button>
                 </div>
               </div>
@@ -976,6 +976,29 @@
               <label class="block text-xs font-bold text-gray-600 mb-1.5">Footer Copyright Text</label>
               <input type="text" id="settings-footer-text" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
             </div>
+          </div>
+
+          <!-- 8a2. Order Number Branding -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+              <i class="fas fa-hashtag text-[#E59819]"></i> Order Number Branding
+            </h3>
+            <p class="text-[11px] text-gray-500 -mt-2">Customers see this instead of the internal order key. Numbering always counts up 1, 2, 3... in the exact order orders arrive — only the prefix, starting number and padding are yours to brand.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Order ID Prefix</label>
+                <input type="text" id="settings-order-id-prefix" oninput="updateOrderIdExample()" placeholder="MEERAV-" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Starting Number</label>
+                <input type="number" id="settings-order-id-start" oninput="updateOrderIdExample()" min="1" placeholder="1001" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Pad Digits (0 = off)</label>
+                <input type="number" id="settings-order-id-pad" oninput="updateOrderIdExample()" min="0" max="10" placeholder="0" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+            <div class="text-[11px] text-gray-400">Example: <span id="settings-order-id-example" class="font-black text-[#4A0713]">MEERAV-1001</span></div>
           </div>
 
           <!-- 8b. AI Chatbot Customization -->
@@ -1235,7 +1258,7 @@
           <h3 class="font-black text-sm text-[#FBBF24]">Register New Admin</h3>
         </div>
         <button onclick="closeAdminFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -1275,7 +1298,7 @@
           <h3 class="font-black text-sm text-[#FBBF24]">One-Time Temporary Password</h3>
         </div>
         <button onclick="closeTempPasswordModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
       <div class="p-6 space-y-4 text-xs">
@@ -1284,7 +1307,7 @@
         <div class="flex items-center gap-2">
           <div id="temp-pw-value" class="flex-1 px-4 py-3 bg-amber-50 border-2 border-amber-300 rounded-xl font-mono text-sm font-black text-[#4A0713] tracking-wide select-all"></div>
           <button onclick="copyTempPassword()" class="w-11 h-11 shrink-0 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center transition" title="Copy">
-            
+            <i class="fas fa-copy"></i>
           </button>
         </div>
         <p class="text-[10px] text-red-500 font-bold"> This is shown once and cannot be retrieved again — copy it now.</p>
@@ -1307,7 +1330,7 @@
           <p id="admin-detail-meta" class="text-[11px] text-gray-300 truncate"></p>
         </div>
         <button onclick="closeAdminDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white shrink-0">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -1346,7 +1369,7 @@
           <h3 id="product-modal-title" class="font-black text-sm text-[#FBBF24]">Product & Packaging Editor</h3>
         </div>
         <button onclick="closeProductFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -1486,7 +1509,7 @@
           <h3 id="cat-modal-title" class="font-black text-sm text-[#FBBF24]">Category Editor</h3>
         </div>
         <button onclick="closeCategoryFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
 
@@ -1563,7 +1586,7 @@
             <div class="text-[10px] text-emerald-200">Customer: <span id="wa-preview-name"></span></div>
           </div>
         </div>
-        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"></button>
+        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"><i class="fas fa-xmark"></i></button>
       </div>
 
       <div class="whatsapp-chat-pattern p-4 min-h-[300px] flex flex-col justify-end">
@@ -1588,7 +1611,7 @@
     <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
       <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
         <h4 class="font-bold text-xs"> Email Invoice Simulator</h4>
-        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"></button>
+        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-xmark"></i></button>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-3 text-xs flex-1">
@@ -1645,7 +1668,7 @@
           <h3 id="coupon-modal-title" class="font-black text-sm text-white">Coupon Editor</h3>
         </div>
         <button onclick="closeCouponModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
       <form onsubmit="saveCouponForm(event)" class="p-6 space-y-4 text-xs">
@@ -1696,7 +1719,7 @@
           <h3 id="testimonial-modal-title" class="font-black text-sm text-[#FBBF24]">Review Editor</h3>
         </div>
         <button onclick="closeTestimonialModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
       <form onsubmit="saveTestimonialForm(event)" class="p-6 space-y-4 text-xs">
@@ -1748,7 +1771,7 @@
           <h3 id="faq-modal-title" class="font-black text-sm text-white">FAQ Editor</h3>
         </div>
         <button onclick="closeFaqModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
       <form onsubmit="saveFaqForm(event)" class="p-6 space-y-4 text-xs">

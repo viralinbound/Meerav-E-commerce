@@ -383,7 +383,7 @@ function renderStoreCategories() {
             : 'bg-white text-gray-800 hover:bg-amber-50/80 border border-amber-200/80'
         }">
         <img src="${imgUrl}" alt="" class="w-5 h-5 rounded-full object-cover border border-amber-400/60" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
-        
+        <i class="${cat.icon || 'fas fa-bowl-food'} hidden"></i>
         <span>${cat.name}</span>
       </button>
     `;
@@ -500,16 +500,16 @@ function renderStoreProducts() {
               <div class="veg-indicator-dot"></div>
             </div>
 
-            <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');" 
+            <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');"
               class="w-8 h-8 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
-              
+              <i class="${storeState.wishlist && storeState.wishlist.includes(p.id) ? 'fas fa-heart text-red-500' : 'far fa-heart'}"></i>
             </button>
           </div>
 
           <!-- Bottom Quality Banner -->
           <div class="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 text-[10px] text-[#FBBF24] font-bold bg-[#32040C]/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E59819]/40 shadow-md">
-            <span> Pure Oil</span>
-            <span class="text-emerald-400 font-black ml-1"> 100% Fresh</span>
+            <span><i class="fas fa-droplet"></i> Pure Oil</span>
+            <span class="text-emerald-400 font-black ml-1"><i class="fas fa-check-circle text-[9px]"></i> 100% Fresh</span>
           </div>
         </a>
 
@@ -519,7 +519,7 @@ function renderStoreProducts() {
             <!-- Rating & Reviews -->
             <div class="flex items-center justify-between mb-1.5">
               <div class="flex items-center gap-1 text-amber-600 text-xs font-extrabold">
-                
+                <i class="fas fa-star"></i>
                 <span>${p.rating}</span>
                 <span class="text-gray-400 font-medium text-[11px]">(${p.reviewsCount})</span>
               </div>
@@ -563,21 +563,21 @@ function renderStoreProducts() {
                 <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
               </div>
               <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
-                <span>View Details</span> 
+                <span>View Details</span> <i class="fas fa-arrow-right text-[9px]"></i>
               </a>
             </div>
 
             <!-- Action Buttons -->
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="addToCart('${p.id}', ${selectedIdx})" 
+              <button onclick="addToCart('${p.id}', ${selectedIdx})"
                 class="w-full py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-xl text-xs font-black transition border border-amber-300 flex items-center justify-center gap-1.5">
-                
+                <i class="fas fa-shopping-bag text-xs"></i>
                 <span>Add to Cart</span>
               </button>
-              
-              <button onclick="quickBuy('${p.id}', ${selectedIdx})" 
+
+              <button onclick="quickBuy('${p.id}', ${selectedIdx})"
                 class="w-full py-2.5 px-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819] shadow-md flex items-center justify-center gap-1.5">
-                
+                <i class="fas fa-bolt text-xs text-[#E59819]"></i>
                 <span>Express Buy</span>
               </button>
             </div>
@@ -817,18 +817,18 @@ function renderStoreCart() {
         <div class="flex items-center gap-2 mt-2">
           <div class="flex items-center border border-amber-200 bg-white rounded-lg overflow-hidden">
             <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
-              
+              <i class="fas fa-minus text-[9px]"></i>
             </button>
             <span class="w-7 text-center text-xs font-black text-gray-800">${item.qty}</span>
             <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
-              
+              <i class="fas fa-plus text-[9px]"></i>
             </button>
           </div>
           <span class="text-xs font-black text-[#4A0713] ml-auto">${formatPrice(item.price * item.qty)}</span>
         </div>
       </div>
-      <button onclick="removeFromCart('${item.id}')" class="text-gray-400 hover:text-red-500 p-1.5 transition">
-        
+      <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="text-gray-400 hover:text-red-500 p-1.5 transition">
+        <i class="fas fa-trash-alt text-xs"></i>
       </button>
     </div>
   `).join('');
@@ -895,7 +895,7 @@ function renderStoreFaqs() {
     <div class="bg-white rounded-2xl border border-amber-200/80 shadow-xs overflow-hidden">
       <button onclick="toggleStoreFaq(${idx})" class="w-full p-4 text-left flex items-center justify-between gap-3 font-black text-xs sm:text-sm text-gray-900 hover:text-[#4A0713] transition">
         <span>${item.question}</span>
-        
+        <i id="faq-icon-${idx}" class="fas fa-chevron-down text-amber-500 text-xs shrink-0 transition-transform"></i>
       </button>
       <div id="faq-content-${idx}" class="hidden px-4 pb-4 text-xs text-gray-600 leading-relaxed font-medium border-t border-amber-50 pt-3">
         ${item.answer}
@@ -1056,7 +1056,11 @@ async function completeOrderWithPayment(paymentMethod) {
   }
 
   const data = storeState.pendingCheckoutData;
-  const newOrderId = `MEERAV-${Math.floor(1000 + Math.random() * 9000)}`;
+  // Internal key only — never shown to the customer. The branded, sequential
+  // order number they see comes from order_seq (assigned by the DB on
+  // insert) via formatOrderDisplayId(), so it can't collide under concurrent
+  // checkouts the way a random client-side id could.
+  const newOrderId = `ord_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
   const orderDate = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
   const trackingNumber = `DTDC-${Math.floor(10000000 + Math.random() * 90000000)}`;
 
@@ -1098,7 +1102,10 @@ async function completeOrderWithPayment(paymentMethod) {
   };
 
   storeState.orders.unshift(newOrder);
-  await MiraDB.dbInsertOrder(newOrder);
+  const insertOk = await MiraDB.dbInsertOrder(newOrder);
+  if (insertOk) {
+    newOrder.orderSeq = await MiraDB.fetchOrderSeq(newOrderId);
+  }
   localStorage.setItem('mira_last_order_id', newOrderId);
 
   // Auto-link customer session if not logged in
@@ -1122,7 +1129,7 @@ async function completeOrderWithPayment(paymentMethod) {
     id: `NOTIF-${Math.floor(100 + Math.random() * 900)}`,
     type: 'WhatsApp',
     recipient: `${newOrder.customer.phone} (${newOrder.customer.name})`,
-    template: `New Order Placed #${newOrder.id}`,
+    template: `New Order Placed #${formatOrderDisplayId(newOrder)}`,
     time: 'Just now',
     status: 'Delivered & Read',
     statusColor: 'green'
@@ -1156,7 +1163,7 @@ function openOrderTrackingView(orderId) {
   document.getElementById('storefront-main-content').classList.add('hidden');
   document.getElementById('live-tracking-view').classList.remove('hidden');
 
-  document.getElementById('track-order-id').textContent = `#${order.id}`;
+  document.getElementById('track-order-id').textContent = `#${formatOrderDisplayId(order)}`;
   document.getElementById('track-order-amount').textContent = `₹${order.totalAmount}`;
   document.getElementById('track-customer-name').textContent = order.customer.name;
   document.getElementById('track-customer-address').textContent = order.customer.address;
@@ -1180,7 +1187,7 @@ function previewWhatsAppNotification(orderId) {
   if (!order) return;
 
   const itemsList = order.items.map(i => `• ${i.name} x${i.qty} (₹${i.price * i.qty})`).join('\n');
-  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for choosing *MEERAV Namkeens* (An Authentic Bikaneri Taste)!\n\n*Order ID:* #${order.id}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Live GPS Tracking:* https://meerav.com/track/${order.id}\n\nPrepared fresh in pure & clean oil with authentic royal recipes.`;
+  const messageBody = `*Namaste ${order.customer.name}!*\n\nThank you for choosing *MEERAV Namkeens* (An Authentic Bikaneri Taste)!\n\n*Order ID:* #${formatOrderDisplayId(order)}\n*Amount:* ₹${order.totalAmount} (${order.paymentStatus})\n*Delivery Address:* ${order.customer.address}\n\n*Items Ordered:*\n${itemsList}\n\n*Status:* ${order.orderStatus}\n*Live GPS Tracking:* https://meerav.com/track/${order.id}\n\nPrepared fresh in pure & clean oil with authentic royal recipes.`;
 
   document.getElementById('wa-preview-name').textContent = order.customer.name;
   document.getElementById('wa-preview-body').innerHTML = messageBody.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
@@ -1197,9 +1204,9 @@ function previewEmailNotification(orderId) {
   const order = storeState.orders.find(o => o.id === orderId) || storeState.orders[0];
   if (!order) return;
 
-  document.getElementById('email-preview-subject').textContent = `Order Confirmation #${order.id} - MEERAV Namkeens`;
+  document.getElementById('email-preview-subject').textContent = `Order Confirmation #${formatOrderDisplayId(order)} - MEERAV Namkeens`;
   document.getElementById('email-preview-to').textContent = `${order.customer.name} <${order.customer.email}>`;
-  document.getElementById('email-preview-order-id').textContent = order.id;
+  document.getElementById('email-preview-order-id').textContent = formatOrderDisplayId(order);
   document.getElementById('email-preview-date').textContent = order.date;
   document.getElementById('email-preview-customer-name').textContent = order.customer.name;
   document.getElementById('email-preview-address').textContent = order.customer.address;
@@ -1249,11 +1256,11 @@ function toggleVideoMute() {
   
   video.muted = !video.muted;
   if (video.muted) {
-    btn.innerHTML = '';
+    btn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
     btn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
     btn.classList.add('bg-black/70', 'text-[#FBBF24]');
   } else {
-    btn.innerHTML = '';
+    btn.innerHTML = '<i class="fas fa-volume-high"></i>';
     btn.classList.remove('bg-black/70', 'text-[#FBBF24]');
     btn.classList.add('bg-[#E59819]', 'text-[#32040C]');
   }

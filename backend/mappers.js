@@ -93,6 +93,7 @@ export function appCustomerToDb(c) {
 export function dbOrderToApp(row) {
   return {
     id: row.id,
+    orderSeq: row.order_seq != null ? Number(row.order_seq) : null,
     customer: row.customer,
     items: row.items || [],
     totalAmount: Number(row.total_amount) || 0,
@@ -188,6 +189,9 @@ export function dbSettingsToApp(row) {
     chatbotColor: row.chatbot_color || '#E59819',
     chatbotGreeting: row.chatbot_greeting || '',
     chatbotQuickPrompts: row.chatbot_quick_prompts && row.chatbot_quick_prompts.length ? row.chatbot_quick_prompts : null,
+    orderIdPrefix: row.order_id_prefix || 'MEERAV-',
+    orderIdStartNumber: row.order_id_start_number != null ? Number(row.order_id_start_number) : 1001,
+    orderIdPadDigits: row.order_id_pad_digits != null ? Number(row.order_id_pad_digits) : 0,
     paymentUpiEnabled: row.payment_upi_enabled,
     paymentUpiId: row.payment_upi_id,
     paymentCodEnabled: row.payment_cod_enabled,
@@ -255,6 +259,9 @@ export function appSettingsToDb(s) {
     chatbot_color: s.chatbotColor || null,
     chatbot_greeting: s.chatbotGreeting || null,
     chatbot_quick_prompts: s.chatbotQuickPrompts || [],
+    order_id_prefix: s.orderIdPrefix || 'MEERAV-',
+    order_id_start_number: s.orderIdStartNumber != null ? Number(s.orderIdStartNumber) : 1001,
+    order_id_pad_digits: s.orderIdPadDigits != null ? Number(s.orderIdPadDigits) : 0,
     payment_upi_enabled: s.paymentUpiEnabled,
     payment_upi_id: s.paymentUpiId,
     payment_cod_enabled: s.paymentCodEnabled,

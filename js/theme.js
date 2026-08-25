@@ -64,6 +64,9 @@ const DEFAULT_SITE_SETTINGS = {
     { label: 'Gift Boxes', prompt: 'I want gift boxes and sweets for celebration' },
     { label: 'Track Van', prompt: 'Where is my order delivery van right now?' }
   ],
+  orderIdPrefix: 'MEERAV-',
+  orderIdStartNumber: 1001,
+  orderIdPadDigits: 0,
   paymentUpiEnabled: true,
   paymentUpiId: 'meeravnamkeens@upi',
   paymentCodEnabled: true,
@@ -86,6 +89,25 @@ window.formatPrice = function(amount, symbol) {
   const num = Number(amount) || 0;
   const formatted = (num % 1 === 0) ? num.toLocaleString() : num.toFixed(2);
   return `${sym}${formatted}`;
+};
+
+/**
+ * Builds the branded, sequential order number a customer actually sees
+ * (e.g. "MEERAV-1001"), from the admin's custom prefix/start number and the
+ * order's server-assigned order_seq (strictly increasing in real arrival
+ * order — safe under concurrent checkouts, unlike a client-side counter).
+ * Falls back to the raw internal id if order_seq hasn't loaded yet.
+ */
+window.formatOrderDisplayId = function(order) {
+  if (!order) return '';
+  const s = window.SITE_SETTINGS || {};
+  if (order.orderSeq == null) return order.id;
+  const prefix = s.orderIdPrefix || 'MEERAV-';
+  const start = Number(s.orderIdStartNumber) || 1001;
+  const pad = Number(s.orderIdPadDigits) || 0;
+  const num = start + Number(order.orderSeq) - 1;
+  const numStr = pad > 0 ? String(num).padStart(pad, '0') : String(num);
+  return `${prefix}${numStr}`;
 };
 
 const GOOGLE_FONT_STACKS = {

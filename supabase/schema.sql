@@ -82,9 +82,16 @@ CREATE TABLE IF NOT EXISTS public.orders (
     tracking_number TEXT,
     driver JSONB DEFAULT '{}'::jsonb,
     notifications JSONB DEFAULT '{}'::jsonb,
+    -- Server-assigned, strictly increasing per insert (safe under concurrent
+    -- checkouts, unlike a client-computed counter). Combined with the admin's
+    -- order_id_prefix/order_id_start_number below to build the branded,
+    -- sequential order number customers actually see (e.g. "MEERAV-1001").
+    order_seq BIGINT GENERATED ALWAYS AS IDENTITY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_order_seq ON public.orders(order_seq);
 
 CREATE TRIGGER trg_orders_updated_at BEFORE UPDATE ON public.orders
     FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
@@ -144,6 +151,9 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
     chatbot_avatar_icon TEXT DEFAULT 'fa-robot',
     chatbot_color TEXT DEFAULT '#E59819',
     chatbot_greeting TEXT,
+    order_id_prefix TEXT NOT NULL DEFAULT 'MEERAV-',
+    order_id_start_number INTEGER NOT NULL DEFAULT 1001,
+    order_id_pad_digits INTEGER NOT NULL DEFAULT 0,
     chatbot_quick_prompts JSONB NOT NULL DEFAULT '[
         {"label":"Order Spicy","prompt":"Help me order spicy snacks for today"},
         {"label":"Diet & Roasted","prompt":"Show me roasted diet snacks with zero palm oil"},

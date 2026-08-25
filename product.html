@@ -68,22 +68,22 @@
           <a href="category" class="hover:text-[#4A0713] transition text-[#4A0713]">Categories & Snacks</a>
           <a href="category?cat=sweets-combos" class="hover:text-[#4A0713] transition">Gift Hampers</a>
           <a href="index?view=tracking" class="hover:text-[#4A0713] transition text-blue-700">
-             Live Tracking
+            <i class="fas fa-location-crosshairs"></i> Live Tracking
           </a>
         </div>
 
         <!-- Right Quick Actions -->
         <div class="flex items-center gap-2 sm:gap-3">
           <!-- Customer Account -->
-          <button id="header-customer-btn" onclick="openCustomerAuthModal()" 
+          <button id="header-customer-btn" onclick="openCustomerAuthModal()"
             class="px-3.5 py-2 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100 text-xs font-bold transition">
             <!-- Populated via auth.js -->
           </button>
 
           <!-- Cart Button -->
-          <button onclick="openCartDrawer()" 
+          <button onclick="openCartDrawer()"
             class="relative flex items-center gap-2 px-4 py-2.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-2xl font-black text-xs shadow-lg shadow-[#4A0713]/30 transition transform active:scale-95 border border-[#E59819]/40">
-            
+            <i class="fas fa-shopping-bag"></i>
             <span class="hidden sm:inline">Cart</span>
             <span class="cart-badge-count hidden px-2 py-0.5 bg-[#E59819] text-[#32040C] text-[11px] font-black rounded-full shadow-inner">0</span>
           </button>
@@ -101,9 +101,9 @@
     <!-- Breadcrumbs Navigation -->
     <nav class="flex items-center gap-2 text-xs text-gray-500 mb-4 font-medium">
       <a href="index" class="hover:text-[#4A0713] transition">Home</a>
-      
+      <i class="fas fa-chevron-right text-[9px] text-gray-300"></i>
       <a href="category" id="breadcrumb-category" class="hover:text-[#4A0713] transition capitalize">Bikaneri Namkeens</a>
-      
+      <i class="fas fa-chevron-right text-[9px] text-gray-300"></i>
       <span id="breadcrumb-product-name" class="font-black text-[#4A0713] truncate max-w-[200px]">Product Details</span>
     </nav>
 
@@ -121,9 +121,9 @@
             <span class="text-gray-400 font-normal">| Scroll &larr; &rarr;</span>
           </div>
 
-          <button onclick="openFullscreenMedia()" 
+          <button onclick="openFullscreenMedia()"
             class="text-[11px] font-black text-[#4A0713] hover:text-[#E59819] flex items-center gap-1 bg-amber-100/80 hover:bg-amber-200 px-2.5 py-1 rounded-xl transition border border-amber-300">
-            
+            <i class="fas fa-expand"></i>
             <span>Fullscreen View</span>
           </button>
         </div>
@@ -136,15 +136,15 @@
           <div id="pdp-slides-wrapper" class="w-full h-full flex transition-transform duration-500 ease-out"></div>
 
           <!-- Left Arrow Button -->
-          <button onclick="event.stopPropagation(); prevPDPSlide();" 
+          <button onclick="event.stopPropagation(); prevPDPSlide();"
             class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/65 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-sm shadow-xl transition border border-white/20 z-20">
-            
+            <i class="fas fa-chevron-left"></i>
           </button>
 
           <!-- Right Arrow Button -->
-          <button onclick="event.stopPropagation(); nextPDPSlide();" 
+          <button onclick="event.stopPropagation(); nextPDPSlide();"
             class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/65 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-sm shadow-xl transition border border-white/20 z-20">
-            
+            <i class="fas fa-chevron-right"></i>
           </button>
 
           <!-- Top Glassmorphic Badges Overlay -->
@@ -163,15 +163,15 @@
                 <div class="veg-indicator-dot"></div>
               </div>
               <button onclick="event.stopPropagation(); togglePDPWishlist();" class="w-9 h-9 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
-                
+                <i id="pdp-wishlist-icon" class="far fa-heart text-sm"></i>
               </button>
             </div>
           </div>
 
           <!-- Bottom Authenticity Glassmorphic Banner -->
           <div class="absolute bottom-3.5 left-3.5 right-3.5 bg-[#32040C]/85 backdrop-blur-md p-2 rounded-2xl border border-[#E59819]/50 flex items-center justify-between text-xs text-[#FBBF24] font-bold shadow-lg z-20 pointer-events-none">
-            <span> Pure & Clean Oil</span>
-            <span class="text-emerald-400 font-black"> Tap to View Fullscreen</span>
+            <span><i class="fas fa-droplet"></i> Pure & Clean Oil</span>
+            <span class="text-emerald-400 font-black"><i class="fas fa-hand-pointer"></i> Tap to View Fullscreen</span>
           </div>
 
         </div>
@@ -266,11 +266,11 @@
             <span class="text-xs text-gray-500 font-bold hidden sm:inline">Qty:</span>
             <div class="flex items-center border-2 border-amber-200 bg-amber-50/40 rounded-xl overflow-hidden shadow-xs">
               <button onclick="changePDPQty(-1)" class="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-amber-200 font-black transition">
-                
+                <i class="fas fa-minus text-xs"></i>
               </button>
               <span id="pdp-qty-display" class="w-9 text-center font-black text-sm text-gray-900">1</span>
               <button onclick="changePDPQty(1)" class="w-9 h-9 flex items-center justify-center text-gray-700 hover:bg-amber-200 font-black transition">
-                
+                <i class="fas fa-plus text-xs"></i>
               </button>
             </div>
           </div>
@@ -278,18 +278,18 @@
 
         <!-- Dual Direct Action Buttons: Buy Now & Add to Cart -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-          
+
           <!-- Add to Cart Button -->
-          <button onclick="addCurrentProductToCart()" 
+          <button onclick="addCurrentProductToCart()"
             class="py-4 px-6 rounded-2xl bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-sm font-black flex items-center justify-center gap-2 border-2 border-[#E59819] transition transform active:scale-98 shadow-md">
-            
+            <i class="fas fa-shopping-bag"></i>
             <span>Add to Cart</span>
           </button>
 
           <!-- Buy Now Button (1-Click Express Checkout) -->
-          <button onclick="buyNowCurrentProduct()" 
+          <button onclick="buyNowCurrentProduct()"
             class="py-4 px-6 rounded-2xl bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black flex items-center justify-center gap-2 border-2 border-[#E59819] shadow-xl shadow-[#4A0713]/30 transition transform active:scale-98">
-            
+            <i class="fas fa-bolt"></i>
             <span>Buy Now (Express Checkout)</span>
           </button>
         </div>
@@ -420,15 +420,15 @@
   <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
       <div class="flex items-center gap-2">
-        
+        <i class="fas fa-shopping-bag"></i>
         <h3 class="font-black text-[#FBBF24] text-base">Your Bikaneri Cart</h3>
       </div>
       <button onclick="closeCartDrawer()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
-        
+        <i class="fas fa-xmark"></i>
       </button>
     </div>
     <div class="px-4 py-2.5 bg-amber-100/70 text-[#4A0713] text-xs flex items-center gap-2 border-b border-amber-200">
-      
+      <i class="fas fa-truck-fast"></i>
       <span>Orders above ₹499 get <strong>FREE Express Delivery</strong>!</span>
     </div>
     <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
@@ -455,7 +455,7 @@
     <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
       <div class="p-5 bg-[#4A0713] text-white flex items-center justify-between border-b border-[#E59819]">
         <div><h3 class="font-black text-lg text-[#FBBF24]">Express Bikaner Checkout</h3><p class="text-xs text-amber-200/80">Direct dispatch from Bikaner kitchen</p></div>
-        <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"></button>
+        <button onclick="closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"><i class="fas fa-xmark"></i></button>
       </div>
       <form onsubmit="proceedToPaymentGateway(event)" class="p-6 overflow-y-auto space-y-4 text-xs">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -520,10 +520,10 @@
 
       <div class="flex items-center gap-2">
         <button onclick="toggleFSMute()" id="fs-mute-btn" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition text-sm">
-          
+          <i id="fs-mute-icon" class="fas fa-volume-up text-amber-300"></i>
         </button>
         <button onclick="closeFullscreenMedia()" class="w-10 h-10 rounded-full bg-red-600/80 hover:bg-red-600 text-white flex items-center justify-center transition text-base font-bold shadow-lg">
-          
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
     </div>
@@ -542,26 +542,26 @@
       </video>
 
       <!-- Prev / Next Lightbox Controls -->
-      <button onclick="prevPDPSlide(); syncFullscreenMedia();" 
+      <button onclick="prevPDPSlide(); syncFullscreenMedia();"
         class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-lg shadow-2xl transition border border-white/20">
-        
+        <i class="fas fa-chevron-left"></i>
       </button>
-      <button onclick="nextPDPSlide(); syncFullscreenMedia();" 
+      <button onclick="nextPDPSlide(); syncFullscreenMedia();"
         class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center text-lg shadow-2xl transition border border-white/20">
-        
+        <i class="fas fa-chevron-right"></i>
       </button>
     </div>
 
     <!-- Lightbox Footer -->
     <div class="flex items-center justify-between text-white border-t border-white/15 pt-3">
       <span class="text-xs text-amber-200/90 font-medium">
- <strong>From Bikaner, Rajasthan</strong> &bull; Prepared Daily in Pure & Clean Oil
+        <strong>From Bikaner, Rajasthan</strong> &bull; Prepared Daily in Pure & Clean Oil
       </span>
 
       <div class="flex items-center gap-3">
-        <button onclick="closeFullscreenMedia(); openCartDrawer();" 
+        <button onclick="closeFullscreenMedia(); openCartDrawer();"
           class="px-5 py-2.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] font-black text-xs rounded-xl shadow-lg transition">
- Buy This Snack Now
+          <i class="fas fa-bolt"></i> Buy This Snack Now
         </button>
       </div>
     </div>
@@ -571,7 +571,7 @@
   <!-- Customer Auth Modal -->
   <div id="customer-auth-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in p-6">
-      <div class="flex justify-end mb-1"><button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"></button></div>
+      <div class="flex justify-end mb-1"><button onclick="closeCustomerAuthModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-xmark"></i></button></div>
       <div id="customer-auth-content"></div>
     </div>
   </div>
@@ -584,15 +584,15 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <button onclick="addCurrentPDPToCart()" 
+      <button onclick="addCurrentPDPToCart()"
         class="px-3.5 py-2.5 bg-amber-100 text-[#4A0713] font-black text-xs rounded-xl border border-amber-300 shadow-sm active:scale-95 transition flex items-center gap-1">
-        
+        <i class="fas fa-shopping-bag"></i>
         <span>Add</span>
       </button>
-      
-      <button onclick="quickBuyCurrentPDP()" 
+
+      <button onclick="quickBuyCurrentPDP()"
         class="px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] font-black text-xs rounded-xl border border-[#E59819] shadow-lg active:scale-95 transition flex items-center gap-1.5">
-        
+        <i class="fas fa-bolt"></i>
         <span>Express Buy</span>
       </button>
     </div>
@@ -601,15 +601,15 @@
   <!-- Mobile Bottom Sticky Navigation Bar -->
   <div class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-amber-200 px-3 py-2 flex items-center justify-around md:hidden shadow-2xl">
     <a href="index" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      
+      <i class="fas fa-house"></i>
       <span class="text-[10px] font-bold">Home</span>
     </a>
     <a href="category" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
-      
+      <i class="fas fa-bowl-food"></i>
       <span class="text-[10px] font-black">Categories</span>
     </a>
     <button onclick="openCartDrawer()" class="relative flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
-      
+      <i class="fas fa-shopping-bag"></i>
       <span class="cart-badge-count hidden absolute -top-1 right-2 w-4 h-4 bg-[#4A0713] text-[#FBBF24] text-[9px] font-black rounded-full flex items-center justify-center">0</span>
       <span class="text-[10px] font-bold">Cart</span>
     </button>
