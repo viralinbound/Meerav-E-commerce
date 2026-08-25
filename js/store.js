@@ -854,8 +854,8 @@ function renderStoreCart() {
           <span class="text-xs font-black text-[#4A0713] ml-auto">${formatPrice(item.price * item.qty)}</span>
         </div>
       </div>
-      <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg text-sm font-black transition">
-        ✕
+      <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+        <i class="fas fa-xmark"></i>
       </button>
     </div>
   `).join('');
@@ -913,7 +913,7 @@ function renderStoreTestimonials() {
     const avatar = (!item.avatar || item.avatar.includes('drive_')) 
       ? (item.name.includes('Vikram') ? 'assets/images/avatar_vikram.jpg' : item.name.includes('Ananya') ? 'assets/images/avatar_ananya.jpg' : 'assets/images/avatar_pooja.jpg') 
       : item.avatar;
-    const stars = '★'.repeat(Math.round(item.rating || 5));
+    const stars = '<i class="fas fa-star"></i>'.repeat(Math.round(item.rating || 5));
 
     return `
       <div class="p-6 bg-white rounded-3xl border border-amber-200/80 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-300">
@@ -1291,16 +1291,16 @@ function closeEmailPreviewModal() {
  * Auto-scrolls, has left/right arrows, and opens a fullscreen lightbox.
  */
 function getHeroSlides() {
-  const stories = (storeState.broadcastStories || []).filter(s => s.isVisible !== false);
-  if (stories.length > 0) return stories;
   const s = window.SITE_SETTINGS || {};
-  return [{
-    id: 'hero-default',
+  const masterFilm = {
+    id: 'hero-master-film',
     title: '4K CINEMATIC FILM • ALL PRODUCTS',
     mediaType: 'video',
     mediaUrl: s.heroVideoUrl || 'assets/videos/meerav_brand_film.mp4',
     posterUrl: s.heroImageUrl || 'assets/images/commercial_scene_1.jpg'
-  }];
+  };
+  const stories = (storeState.broadcastStories || []).filter(s => s.isVisible !== false);
+  return [masterFilm, ...stories];
 }
 
 function renderHeroCarousel() {

@@ -1222,26 +1222,12 @@
               <p class="text-xs text-gray-500 mt-0.5">Add as many videos or photos to the horizontal auto-scrolling reels showcase with live product buy buttons.</p>
             </div>
             <button type="button" onclick="openStoryModal()" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5">
-              + Add Video / Photo Story
+              <i class="fas fa-cloud-arrow-up"></i> Upload Video / Photo
             </button>
           </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr class="border-b bg-amber-50/70 text-gray-700 font-black text-[11px]">
-                  <th class="p-3">Media Preview</th>
-                  <th class="p-3">Story Title</th>
-                  <th class="p-3">Type & Tag</th>
-                  <th class="p-3">Linked Snack / Price</th>
-                  <th class="p-3">Order</th>
-                  <th class="p-3">Visible</th>
-                  <th class="p-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="admin-stories-table-body">
-                <!-- Populated via admin.js -->
-              </tbody>
-            </table>
+          <p class="text-[10px] text-gray-400">Numbered in play order — set a lower "Sort Order" in the editor to push a story earlier; everything after it shifts down automatically.</p>
+          <div id="admin-stories-table-body" class="space-y-2">
+            <!-- Populated via admin.js -->
           </div>
         </div>
 
@@ -1250,13 +1236,13 @@
         <!-- 12. Full Website Text Content CMS (Grouped by section) -->
         <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-amber-100 p-6 space-y-5">
           <div>
-            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base"> Storefront Section Text CMS</h3>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base"><i class="fas fa-pen-to-square text-indigo-600"></i> Storefront Section Text CMS</h3>
             <p class="text-xs text-gray-500 mt-1">Edit every heading, subheading, badge, and paragraph across all storefront sections.</p>
           </div>
           <div id="page-content-fields" class="space-y-4"></div>
           <div class="flex justify-end pt-2">
             <button type="submit" id="page-content-save-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-2xl shadow-md transition flex items-center gap-2">
-               Save Section Text
+              <i class="fas fa-check"></i> Save Section Text
             </button>
           </div>
         </form>

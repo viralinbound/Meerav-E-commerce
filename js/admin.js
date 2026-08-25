@@ -528,10 +528,10 @@ function renderAdminOrders() {
       <td>
         <div class="flex items-center gap-1.5">
           <button onclick="previewWhatsAppNotification('${order.id}')" title="WhatsApp Alert" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition">
-  💬 WhatsApp
+  <i class="fab fa-whatsapp"></i> WhatsApp
 </button>
 <button onclick="previewEmailNotification('${order.id}')" title="Email Invoice" class="px-2.5 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded-lg text-xs font-bold transition">
-  📄 Receipt
+  <i class="fas fa-file-invoice"></i> Receipt
 </button>
         </div>
       </td>
@@ -622,10 +622,10 @@ function renderAdminProducts() {
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-  ✎ Edit
+  <i class="fas fa-pen"></i> Edit
 </button>
 <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-  ✕ Delete
+  <i class="fas fa-trash-can"></i> Delete
 </button>
           </div>
         </td>
@@ -701,7 +701,7 @@ function renderProductPhotosGrid() {
     <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-white shrink-0">
       <img src="${url}" class="w-full h-full object-contain" />
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
-      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[11px] font-black shadow-md">✕</button>
+      <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
 }
@@ -713,7 +713,7 @@ function renderProductVideosGrid() {
     <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#E59819]' : 'border-amber-200'} bg-black shrink-0">
       <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
       ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#4A0713] text-[#FBBF24] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
-      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[11px] font-black shadow-md">✕</button>
+      <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
 }
@@ -928,10 +928,10 @@ function renderAdminCategories() {
         <td class="text-right">
           <div class="flex items-center justify-end gap-2">
             <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-xl text-xs font-bold transition">
-  ✎ Edit
+  <i class="fas fa-pen"></i> Edit
 </button>
 <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
-  ✕ Delete
+  <i class="fas fa-trash-can"></i> Delete
 </button>
           </div>
         </td>
@@ -1112,7 +1112,7 @@ function renderAdminCustomers() {
       <td class="text-right">
         <div class="flex items-center justify-end gap-1.5">
           <a href="https://wa.me/${c.phone.replace(/\D/g, '')}" target="_blank" title="Chat on WhatsApp" class="p-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs transition border border-emerald-300">
-            💬
+            <i class="fab fa-whatsapp"></i>
           </a>
           <button onclick="viewCustomerDetails('${c.id}')" class="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold transition">
             View History
@@ -2772,50 +2772,61 @@ async function deleteTrustBadge(id) {
  * 9F. BROADCAST STORIES & 4K REELS CMS CRUD
  */
 function renderAdminStories() {
-  const tbody = document.getElementById('admin-stories-table-body');
-  if (!tbody) return;
+  const container = document.getElementById('admin-stories-table-body');
+  if (!container) return;
 
-  const items = adminState.broadcastStories || [];
+  const items = (adminState.broadcastStories || []).slice().sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
   if (!items.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400 text-xs">No broadcast stories added yet. Click "+ Add Video / Photo Story" to add videos.</td></tr>`;
+    container.innerHTML = `<div class="p-6 text-center text-gray-400 text-xs border border-dashed border-gray-200 rounded-2xl">No stories added yet. Click "Upload Video / Photo" to add one.</div>`;
     return;
   }
 
-  tbody.innerHTML = items.map(s => `
-    <tr class="border-b hover:bg-amber-50/40 transition">
-      <td class="p-3">
-        <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
-          ${s.mediaType === 'video' ? `
-            <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted class="w-full h-full object-cover"></video>
-            <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs"><i class="fas fa-play"></i></span>
-          ` : `
-            <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" class="w-full h-full object-cover" />
-          `}
+  container.innerHTML = items.map((s, idx) => `
+    <div class="flex items-center gap-3 p-3 bg-amber-50/40 border border-amber-100 rounded-2xl hover:border-amber-300 transition">
+      <div class="w-8 h-8 rounded-full bg-[#4A0713] text-[#FBBF24] flex items-center justify-center font-black text-xs shrink-0" title="Play order">${idx + 1}</div>
+      <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-amber-300 shadow-sm shrink-0 relative flex items-center justify-center">
+        ${s.mediaType === 'video' ? `
+          <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted class="w-full h-full object-cover"></video>
+          <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs"><i class="fas fa-play"></i></span>
+        ` : `
+          <img src="${s.posterUrl || s.mediaUrl}" alt="${s.title}" class="w-full h-full object-cover" />
+        `}
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="font-black text-gray-900 text-xs truncate">${s.title}</div>
+        <div class="text-[10px] text-gray-500 mt-1 flex flex-wrap items-center gap-1.5">
+          <span class="px-1.5 py-0.5 rounded-full font-black flex items-center gap-1 ${s.mediaType === 'video' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}">
+            <i class="fas ${s.mediaType === 'video' ? 'fa-video' : 'fa-image'}"></i> ${s.mediaType === 'video' ? '4K Video' : 'Photo'}
+          </span>
+          <span>${s.tag || '—'}</span>
+          <span class="text-emerald-700 font-bold">₹${s.price || 99}</span>
         </div>
-      </td>
-      <td class="p-3 font-black text-gray-900 text-xs">${s.title}</td>
-      <td class="p-3 text-xs">
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 w-fit ${s.mediaType === 'video' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}">
-          <i class="fas ${s.mediaType === 'video' ? 'fa-video' : 'fa-image'}"></i> ${s.mediaType === 'video' ? '4K Video' : 'Photo'}
-        </span>
-        <div class="text-[10px] text-gray-500 mt-1 font-bold">${s.tag || '—'}</div>
-      </td>
-      <td class="p-3 text-xs font-bold text-gray-700">
-        <span class="text-emerald-700 font-black">₹${s.price || 99}</span>
-        <div class="text-[10px] text-gray-400">ID: ${s.productId || 'p1'}</div>
-      </td>
-      <td class="p-3 text-xs font-bold text-gray-700">#${s.sortOrder || 1}</td>
-      <td class="p-3">
-        <button onclick="toggleStoryVisible('${s.id}')" title="${s.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${s.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
-          <i class="fas ${s.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i> ${s.isVisible !== false ? 'Visible' : 'Hidden'}
-        </button>
-      </td>
-      <td class="p-3 text-right space-x-1">
-        <button onclick="openStoryModal('${s.id}')" title="Edit Story" class="px-2.5 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-bold transition"><i class="fas fa-pen"></i> Edit</button>
-        <button onclick="deleteStory('${s.id}')" title="Delete Story" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition"><i class="fas fa-trash-can"></i> Delete</button>
-      </td>
-    </tr>
+      </div>
+      <button onclick="toggleStoryVisible('${s.id}')" title="${s.isVisible !== false ? 'Click to hide' : 'Click to show'}" class="px-2 py-1 rounded-full text-[10px] font-black flex items-center gap-1 shrink-0 ${s.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
+        <i class="fas ${s.isVisible !== false ? 'fa-eye' : 'fa-eye-slash'}"></i>
+      </button>
+      <div class="flex items-center gap-1 shrink-0">
+        <button onclick="openStoryModal('${s.id}')" title="Edit Story" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><i class="fas fa-pen"></i></button>
+        <button onclick="deleteStory('${s.id}')" title="Delete Story" class="p-1.5 text-red-600 hover:bg-red-50 rounded-full"><i class="fas fa-trash-can"></i></button>
+      </div>
+    </div>
   `).join('');
+}
+
+/** Re-sorts by the chosen sort order and rewrites clean 1..N numbers to the cloud — this is what
+ *  makes "insert at position 2" push everything after it down, and closes gaps left by a delete. */
+async function renumberBroadcastStories() {
+  const sorted = [...(adminState.broadcastStories || [])].sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  const writes = [];
+  sorted.forEach((s, idx) => {
+    const newOrder = idx + 1;
+    if (s.sortOrder !== newOrder) {
+      s.sortOrder = newOrder;
+      writes.push(MiraDB.dbUpsertStory(s, MiraDB.adminClient));
+    }
+  });
+  if (writes.length) await Promise.all(writes);
+  adminState.broadcastStories = sorted;
 }
 
 function openStoryModal(id = null) {
@@ -2933,11 +2944,14 @@ async function saveStoryForm(event) {
     return;
   }
 
-  let stories = adminState.broadcastStories || [];
-  const idx = stories.findIndex(s => s.id === id);
-  if (idx !== -1) stories[idx] = storyObj; else stories.push(storyObj);
-  stories.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  // Drop the old copy of this row, then re-insert it right before whichever
+  // existing row now has an equal-or-later sort order — that's what makes
+  // choosing "2" push the old #2 (and everything after it) down to #3, #4...
+  let stories = (adminState.broadcastStories || []).filter(s => s.id !== id);
+  const insertAt = stories.findIndex(s => (s.sortOrder || 0) >= sortOrder);
+  if (insertAt === -1) stories.push(storyObj); else stories.splice(insertAt, 0, storyObj);
   adminState.broadcastStories = stories;
+  await renumberBroadcastStories();
 
   showToast(`Story "${title}" saved & live on the storefront!`, 'success');
   closeStoryModal();
@@ -2974,6 +2988,7 @@ async function deleteStory(id) {
   }
 
   adminState.broadcastStories = stories.filter(item => item.id !== id);
+  await renumberBroadcastStories();
   showToast(`Story deleted`, 'info');
   renderAdminStories();
 }
