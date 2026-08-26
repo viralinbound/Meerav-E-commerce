@@ -36,4 +36,5 @@ window.fetchTestimonials = MiraDB.fetchTestimonials;
 window.fetchFaqs = MiraDB.fetchFaqs;
 window.fetchTrustBadges = MiraDB.fetchTrustBadges;
 window.fetchBroadcastStories = MiraDB.fetchBroadcastStories;
+window.fetchPageDesignPatches = MiraDB.fetchPageDesignPatches;
 

@@ -211,6 +211,24 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return true;
   }
 
+  // ---------------------------------------------------------------------
+  // DESIGN EDITOR — published (cloud) layout patches. The editor itself
+  // works purely off localStorage until an admin clicks "Publish Live";
+  // this is what makes that click actually reach every visitor.
+  async function fetchPageDesignPatches(pageKey, client = supabaseClient) {
+    const { data, error } = await client.from('page_design_patches').select('patches').eq('page_key', pageKey).maybeSingle();
+    if (error) { console.warn('fetchPageDesignPatches', error); return null; }
+    return data ? data.patches : null;
+  }
+
+  async function dbUpsertPageDesignPatches(pageKey, patches, adminUserId, client = supabaseClient) {
+    const { error } = await client.from('page_design_patches').upsert({
+      page_key: pageKey, patches, updated_at: new Date().toISOString(), updated_by: adminUserId || null
+    });
+    if (error) { console.error('dbUpsertPageDesignPatches', error); return false; }
+    return true;
+  }
+
   async function fetchCoupons(client = supabaseClient) {
     try {
       const { data, error } = await client.from('coupons').select('*').order('created_at', { ascending: false });
@@ -643,6 +661,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     dbInsertNotification,
     fetchSiteSettings, dbUpsertSiteSettings,
     fetchPageContent, dbUpsertPageContent,
+    fetchPageDesignPatches, dbUpsertPageDesignPatches,
     fetchCoupons, dbUpsertCoupon, dbDeleteCoupon,
     fetchTestimonials, dbUpsertTestimonial, dbDeleteTestimonial,
     fetchFaqs, dbUpsertFaq, dbDeleteFaq,

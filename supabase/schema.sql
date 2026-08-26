@@ -185,6 +185,19 @@ CREATE TABLE IF NOT EXISTS public.page_content (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- Design Editor (design-editor.html): published drag-and-drop layout edits
+-- (element position/size/colors/media/links, plus any elements/blocks added
+-- via its palette) for one page. The editor itself works off localStorage
+-- until an admin clicks "Publish Live", which upserts here; js/apply-editor-
+-- patches.js reads this (and stays subscribed via Realtime) so every
+-- visitor sees the published result, not just the editing browser.
+CREATE TABLE IF NOT EXISTS public.page_design_patches (
+    page_key TEXT PRIMARY KEY,              -- 'home' | 'category' | 'product'
+    patches JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_by UUID REFERENCES auth.users(id)
+);
+
 INSERT INTO public.page_content (key, value, label, page, sort_order) VALUES
 ('home.hero.badge', 'FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE', 'Hero Badge Text', 'home', 1),
 ('home.hero.title_line1', 'Royal Bikaneri', 'Hero Title (Line 1)', 'home', 2),
@@ -422,6 +435,7 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.page_content ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.page_design_patches ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.admins ENABLE ROW LEVEL SECURITY;
@@ -462,6 +476,13 @@ CREATE POLICY "public read page content" ON public.page_content FOR SELECT USING
 CREATE POLICY "admins write page content" ON public.page_content FOR INSERT WITH CHECK (is_admin((select auth.uid())));
 CREATE POLICY "admins update page content" ON public.page_content FOR UPDATE USING (is_admin((select auth.uid())));
 CREATE POLICY "admins delete page content" ON public.page_content FOR DELETE USING (is_admin((select auth.uid())));
+
+-- Design editor patches: public read (every visitor sees the published
+-- layout), admin write.
+CREATE POLICY "public read design patches" ON public.page_design_patches FOR SELECT USING (true);
+CREATE POLICY "admins write design patches" ON public.page_design_patches FOR INSERT WITH CHECK (is_admin((select auth.uid())));
+CREATE POLICY "admins update design patches" ON public.page_design_patches FOR UPDATE USING (is_admin((select auth.uid())));
+CREATE POLICY "admins delete design patches" ON public.page_design_patches FOR DELETE USING (is_admin((select auth.uid())));
 
 -- Coupons: public read (for checkout discount verification), admin write
 ALTER TABLE public.coupons ENABLE ROW LEVEL SECURITY;
@@ -561,6 +582,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.admin_activity_log;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.site_settings;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.page_content;
+ALTER PUBLICATION supabase_realtime ADD TABLE public.page_design_patches;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.coupons;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.testimonials;
 ALTER PUBLICATION supabase_realtime ADD TABLE public.faqs;

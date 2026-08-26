@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Editor — MEERAV Admin</title>
+<link rel="icon" href="assets/images/meerav_logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/editor.css">
+<style>body{font-family:'Outfit',sans-serif;}</style>
+</head>
+<body>
+
+<div class="ed-app">
+
+  <!-- ============ TOP TOOLBAR ============ -->
+  <div class="ed-topbar">
+    <a href="admin.html" class="ed-btn" title="Back to Admin Dashboard"><i class="fas fa-arrow-left"></i> Admin</a>
+    <span style="width:1px;height:20px;background:rgba(255,255,255,.15)"></span>
+
+    <button id="ed-undo-btn" class="ed-btn" onclick="MiraEditor.undo()" disabled title="Undo (Ctrl+Z)"><i class="fas fa-rotate-left"></i> Undo</button>
+    <button id="ed-redo-btn" class="ed-btn" onclick="MiraEditor.redo()" disabled title="Redo (Ctrl+Y)"><i class="fas fa-rotate-right"></i> Redo</button>
+
+    <span style="width:1px;height:20px;background:rgba(255,255,255,.15)"></span>
+
+    <button id="ed-preview-btn" class="ed-btn" onclick="MiraEditor.togglePreview()" title="Toggle preview (hides selection tools)"><i class="fas fa-eye"></i> Preview</button>
+    <button class="ed-btn ed-btn-danger" onclick="MiraEditor.resetPage()" title="Discard all local edits on this page"><i class="fas fa-trash-can"></i> Reset Page</button>
+
+    <span style="width:1px;height:20px;background:rgba(255,255,255,.15)"></span>
+    <button id="ed-publish-btn" class="ed-btn ed-btn-primary" onclick="MiraEditor.publishToCloud()" title="Push this page's local changes live for every visitor"><i class="fas fa-cloud-arrow-up"></i> Publish Live</button>
+
+    <div class="ed-status"><span class="dot"></span> <span id="ed-status-text">Local Design Editor — changes save to this browser only</span></div>
+  </div>
+
+  <!-- ============ BODY: LEFT / CANVAS / RIGHT ============ -->
+  <div class="ed-body">
+
+    <!-- LEFT PANEL -->
+    <div class="ed-left">
+      <div class="ed-panel-title">Page</div>
+      <div class="ed-field">
+        <select id="ed-page-select" class="ed-select" style="width:100%;color:#111" onchange="MiraEditor.loadPage(this.value)">
+          <option value="home">Home (index.html)</option>
+          <option value="category">Category Explorer</option>
+          <option value="product">Product Detail</option>
+        </select>
+      </div>
+
+      <div class="ed-panel-title">Device Preview</div>
+      <div class="ed-row2" style="margin-bottom:6px">
+        <button class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb" onclick="MiraEditor.setDevice('desktop')"><i class="fas fa-desktop"></i></button>
+        <button class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb" onclick="MiraEditor.setDevice('tablet')"><i class="fas fa-tablet-screen-button"></i></button>
+      </div>
+      <button class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%" onclick="MiraEditor.setDevice('mobile')"><i class="fas fa-mobile-screen-button"></i> Mobile Width</button>
+
+      <div class="ed-panel-title">Move Grid</div>
+      <div class="ed-field">
+        <label><input type="checkbox" id="ed-snap-toggle" checked onchange="MiraEditor.setSnap(this.checked)"> Snap to grid</label>
+      </div>
+      <div class="ed-field">
+        <select id="ed-grid-size" class="ed-select" style="width:100%;color:#111" onchange="MiraEditor.setGridSize(this.value)">
+          <option value="4">4px grid</option>
+          <option value="8" selected>8px grid</option>
+          <option value="16">16px grid</option>
+        </select>
+      </div>
+
+      <div class="ed-tabs">
+        <button class="ed-tab-btn active" data-tab="elements" onclick="MiraEditor.setLeftTab('elements')">Elements</button>
+        <button class="ed-tab-btn" data-tab="blocks" onclick="MiraEditor.setLeftTab('blocks')">Blocks</button>
+        <button class="ed-tab-btn" data-tab="layers" onclick="MiraEditor.setLeftTab('layers')">Layers</button>
+      </div>
+
+      <div class="ed-tab-panel active" id="ed-tab-elements">
+        <div class="ed-panel-title" style="margin-top:0">Add Element</div>
+        <div class="ed-add-grid">
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('heading')"><i class="fas fa-heading"></i> Heading</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('text')"><i class="fas fa-align-left"></i> Text</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('button')"><i class="fas fa-square"></i> Button</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('image')"><i class="fas fa-image"></i> Image</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('container')"><i class="fas fa-vector-square"></i> Section</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('spacer')"><i class="fas fa-arrows-up-down"></i> Spacer</button>
+        </div>
+
+        <div class="ed-panel-title">Add Shape</div>
+        <div class="ed-add-grid">
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('divider')"><i class="fas fa-minus"></i> Divider</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('rectangle')"><i class="fas fa-square-full"></i> Rectangle</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('circle')"><i class="fas fa-circle"></i> Circle</button>
+          <button class="ed-add-btn" onclick="MiraEditor.insertElement('icon')"><i class="fas fa-star"></i> Icon</button>
+        </div>
+        <div class="ed-empty-hint" style="text-align:left;padding:6px 0 0;font-size:10px">New elements drop in right after whatever is selected (or at the end of the page).</div>
+      </div>
+
+      <div class="ed-tab-panel" id="ed-tab-blocks">
+        <div class="ed-panel-title" style="margin-top:0">Ready-Made Blocks</div>
+        <div class="ed-block-list">
+          <button class="ed-block-btn" onclick="MiraEditor.insertElement('imageCard')">
+            <i class="fas fa-id-card"></i>
+            <span><b>Image Card</b><small>Photo + title + text + button</small></span>
+          </button>
+          <button class="ed-block-btn" onclick="MiraEditor.insertElement('ctaBanner')">
+            <i class="fas fa-bullhorn"></i>
+            <span><b>CTA Banner</b><small>Gradient promo strip with a button</small></span>
+          </button>
+          <button class="ed-block-btn" onclick="MiraEditor.insertElement('testimonialCard')">
+            <i class="fas fa-quote-left"></i>
+            <span><b>Testimonial Card</b><small>Stars, quote &amp; customer name</small></span>
+          </button>
+          <button class="ed-block-btn" onclick="MiraEditor.insertElement('featureRow')">
+            <i class="fas fa-list-check"></i>
+            <span><b>Feature Row</b><small>Icon + title + description</small></span>
+          </button>
+        </div>
+        <div class="ed-empty-hint" style="text-align:left;padding:8px 0 0;font-size:10px">Blocks drop in as one unit — click any photo, text or button inside afterwards to edit just that piece.</div>
+      </div>
+
+      <div class="ed-tab-panel" id="ed-tab-layers">
+        <div class="ed-panel-title" style="margin-top:0">Layers</div>
+        <div id="ed-layers-tree" class="ed-layer-list"></div>
+      </div>
+
+      <div class="ed-panel-title">How to Use</div>
+      <div class="ed-empty-hint" style="text-align:left;padding:0">
+        Click any element (or a row in Layers) to select it.<br><br>
+        • Drag the <b>gold handle</b> to move it<br>
+        • Drag the <b>corner square</b> to resize<br>
+        • Double-click text to edit it<br>
+        • Use the right panel for colors, media &amp; links<br><br>
+        Grayed-out rows/sections (products, cart, reviews…) are generated from live data — edit those from the normal Admin CRM pages.
+      </div>
+    </div>
+
+    <!-- CANVAS -->
+    <div class="ed-canvas-wrap" id="ed-canvas-wrap">
+      <div class="ed-canvas-frame" id="ed-canvas-frame" style="width:100%;height:100%">
+        <iframe id="ed-iframe" title="Website preview"></iframe>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: PROPERTIES -->
+    <div class="ed-right">
+      <div id="ed-empty-hint" class="ed-empty-hint">
+        <i class="fas fa-arrow-pointer" style="font-size:20px;display:block;margin-bottom:8px;color:#d1d5db"></i>
+        Select an element on the page to edit its position, size, colors, media or link.
+      </div>
+
+      <div id="ed-props" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:6px;flex-wrap:wrap">
+          <span id="ed-el-tag-label" style="font-size:11px;font-weight:900;color:#4A0713;background:#fef3c7;padding:3px 8px;border-radius:8px"></span>
+          <span id="ed-el-id-label" title="Stable ID for this element — the same ID means it's the same element" style="font-size:9.5px;font-weight:800;color:#78350f;background:#fff7ed;border:1px solid #fed7aa;padding:3px 7px;border-radius:8px;font-family:monospace"></span>
+        </div>
+
+        <div class="ed-panel-title">Move &amp; Reorder</div>
+        <div class="ed-row2">
+          <button id="ed-move-up-btn" class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%;justify-content:center" onclick="MiraEditor.moveSibling('up')"><i class="fas fa-arrow-up"></i> Move Up</button>
+          <button id="ed-move-down-btn" class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%;justify-content:center" onclick="MiraEditor.moveSibling('down')"><i class="fas fa-arrow-down"></i> Move Down</button>
+        </div>
+        <button class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%;justify-content:center;margin-top:8px" onclick="MiraEditor.resetPosition()"><i class="fas fa-location-crosshairs"></i> Reset Free-Drag Position</button>
+        <div class="ed-row2" style="margin-top:8px">
+          <button class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%;justify-content:center" onclick="MiraEditor.bringToFront()" title="Bring to front"><i class="fas fa-clone"></i> To Front</button>
+          <button class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%;justify-content:center" onclick="MiraEditor.sendToBack()" title="Send to back"><i class="fas fa-layer-group"></i> To Back</button>
+        </div>
+
+        <div class="ed-panel-title">Size</div>
+        <div class="ed-row2">
+          <div class="ed-field"><label>Width (px)</label><input type="number" id="ed-width-input"></div>
+          <div class="ed-field"><label>Height (px)</label><input type="number" id="ed-height-input"></div>
+        </div>
+
+        <div class="ed-panel-title">Shape</div>
+        <div class="ed-shape-grid">
+          <button class="ed-shape-btn" onclick="MiraEditor.setShape('square')"><span class="ed-shape-preview" style="border-radius:0"></span>Square</button>
+          <button class="ed-shape-btn" onclick="MiraEditor.setShape('rounded')"><span class="ed-shape-preview" style="border-radius:6px"></span>Rounded</button>
+          <button class="ed-shape-btn" onclick="MiraEditor.setShape('pill')"><span class="ed-shape-preview" style="border-radius:999px"></span>Pill</button>
+          <button class="ed-shape-btn" onclick="MiraEditor.setShape('circle')"><span class="ed-shape-preview" style="border-radius:50%"></span>Circle</button>
+        </div>
+
+        <div class="ed-panel-title">Background</div>
+        <div class="ed-field">
+          <label>Type</label>
+          <select id="ed-bg-type">
+            <option value="solid">Solid Color</option>
+            <option value="gradient">Gradient</option>
+            <option value="image">Image</option>
+            <option value="none">None / Transparent</option>
+          </select>
+        </div>
+        <div id="ed-bg-solid-row" class="ed-field">
+          <label>Background Color</label>
+          <input type="color" id="ed-bg-color-input">
+        </div>
+        <div id="ed-bg-gradient-row" style="display:none">
+          <div class="ed-row2">
+            <div class="ed-field"><label>Color 1</label><input type="color" id="ed-grad-color1" value="#4A0713"></div>
+            <div class="ed-field"><label>Color 2</label><input type="color" id="ed-grad-color2" value="#E59819"></div>
+          </div>
+          <div class="ed-field"><label>Angle: <span id="ed-grad-angle-value">135deg</span></label><input type="range" id="ed-grad-angle" min="0" max="360" step="15" value="135"></div>
+        </div>
+        <div id="ed-bg-image-row" style="display:none">
+          <div class="ed-field"><label>Upload Background Image</label><input type="file" id="ed-bg-image-file" accept="image/*"></div>
+          <div class="ed-field"><label>Fit</label>
+            <select id="ed-bg-image-size">
+              <option value="cover">Cover (fill &amp; crop)</option>
+              <option value="contain">Contain (fit inside)</option>
+              <option value="auto">Original size</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ed-panel-title">Text Color</div>
+        <div class="ed-field"><input type="color" id="ed-text-color-input"></div>
+        <div class="ed-field">
+          <label>Quick Theme Swatches</label>
+          <div class="ed-swatches" id="ed-swatches"></div>
+        </div>
+
+        <div class="ed-panel-title">Typography &amp; Spacing</div>
+        <div class="ed-field"><label>Font Size: <span id="ed-fontsize-value">—</span></label><input type="range" id="ed-fontsize-range" min="9" max="72" step="1"></div>
+        <div class="ed-field"><label>Padding: <span id="ed-padding-value">—</span></label><input type="range" id="ed-padding-range" min="0" max="60" step="2"></div>
+        <div class="ed-field"><label>Corner Radius: <span id="ed-radius-value">—</span></label><input type="range" id="ed-radius-range" min="0" max="40" step="2"></div>
+
+        <div id="ed-media-section" style="display:none">
+          <div class="ed-panel-title">Media</div>
+          <div class="ed-field">
+            <label>Replace Image / Video</label>
+            <input type="file" id="ed-media-file-input" accept="image/*,video/*">
+          </div>
+          <div class="ed-locked-note">Local test mode embeds the file directly in this browser's storage. Cloud publish (added later) will upload it to real storage instead.</div>
+        </div>
+
+        <div id="ed-link-section" style="display:none">
+          <div class="ed-panel-title">Link / Redirect</div>
+          <div class="ed-field">
+            <label>Redirect To</label>
+            <select id="ed-link-target">
+              <option value="index.html">Home Page</option>
+              <option value="category.html">Category Explorer</option>
+              <option value="product.html?id=p1">Product Detail</option>
+              <option value="__custom__">Custom URL…</option>
+            </select>
+          </div>
+          <div class="ed-field">
+            <label>Custom URL</label>
+            <input type="text" id="ed-link-custom" placeholder="https:// or a page like category.html">
+          </div>
+        </div>
+
+        <div class="ed-panel-title">Danger Zone</div>
+        <button id="ed-reset-element-btn" class="ed-btn" style="background:#f3f4f6;color:#111;border-color:#e5e7eb;width:100%;justify-content:center;margin-bottom:6px" onclick="MiraEditor.resetSelected()"><i class="fas fa-clock-rotate-left"></i> Revert This Element</button>
+        <button id="ed-delete-btn" class="ed-btn ed-btn-danger" style="background:#fef2f2;color:#dc2626;border-color:#fecaca;width:100%;justify-content:center" onclick="MiraEditor.deleteSelected()"><i class="fas fa-trash-can"></i> Delete Element</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Selection overlay (fixed-position, drawn over the iframe from the parent document) -->
+<div class="ed-overlay">
+  <div class="ed-hover-box" id="ed-hover-box" style="display:none"></div>
+  <div class="ed-select-box" id="ed-select-box" style="display:none"></div>
+  <div class="ed-select-label" id="ed-select-label" style="display:none"></div>
+  <div class="ed-drag-handle" id="ed-drag-handle" style="display:none" title="Drag to move"><i class="fas fa-up-down-left-right"></i></div>
+  <div class="ed-handle" id="ed-resize-handle" style="display:none" title="Drag to resize"></div>
+</div>
+
+<div class="ed-toast-mini" id="ed-toast-mini"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/env-config.js"></script>
+<script type="module" src="js/supabase-client.js"></script>
+<script defer src="js/editor.js"></script>
+</body>
+</html>
