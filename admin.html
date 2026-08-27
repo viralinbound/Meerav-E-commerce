@@ -562,8 +562,8 @@
             <div class="sm:col-span-5">
               <label class="block text-[11px] text-gray-300 mb-1 font-semibold">Custom Message</label>
               <div class="flex gap-2">
-                <input type="text" id="custom-notif-msg" placeholder="e.g. 10% discount on Bikaneri Aloo Bhujia!" required 
-                  class="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none" />
+                <input type="text" id="custom-notif-msg" placeholder="e.g. 10% discount on Bikaneri Aloo Bhujia!" required
+                  class="flex-1 min-w-0 px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none" />
                 <button type="submit" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shrink-0 transition">
                   <i class="fas fa-paper-plane"></i> Send
                 </button>
@@ -1399,7 +1399,7 @@ Register New Admin
           <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"> Send a Warning</h4>
           <form onsubmit="sendWarningToAdmin(event)" class="flex gap-2">
             <input type="text" id="admin-warning-message" placeholder="e.g. Please confirm order statuses before dispatch" required
-              class="flex-1 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
+              class="flex-1 min-w-0 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#E59819] focus:outline-none" />
             <button type="submit" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shrink-0">Send</button>
           </form>
           <div id="admin-detail-warnings" class="space-y-2 mt-3"></div>

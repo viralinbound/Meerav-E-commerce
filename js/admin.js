@@ -1337,8 +1337,8 @@ function renderChatbotQuickPromptRows() {
   const rows = adminState.chatbotQuickPromptsDraft || [];
   container.innerHTML = rows.map((qp, i) => `
     <div class="grid grid-cols-[1fr_1fr_auto] gap-2 items-center">
-      <input type="text" data-qp-label="${i}" value="${escapeAttr(qp.label || '')}" placeholder="Button label" class="px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" oninput="updateChatbotQuickPromptDraft(${i}, 'label', this.value)" />
-      <input type="text" data-qp-prompt="${i}" value="${escapeAttr(qp.prompt || '')}" placeholder="Prompt sent to chatbot" class="px-3 py-2 border border-gray-200 rounded-lg text-xs" oninput="updateChatbotQuickPromptDraft(${i}, 'prompt', this.value)" />
+      <input type="text" data-qp-label="${i}" value="${escapeAttr(qp.label || '')}" placeholder="Button label" class="min-w-0 px-3 py-2 border border-gray-200 rounded-lg text-xs font-bold" oninput="updateChatbotQuickPromptDraft(${i}, 'label', this.value)" />
+      <input type="text" data-qp-prompt="${i}" value="${escapeAttr(qp.prompt || '')}" placeholder="Prompt sent to chatbot" class="min-w-0 px-3 py-2 border border-gray-200 rounded-lg text-xs" oninput="updateChatbotQuickPromptDraft(${i}, 'prompt', this.value)" />
       <button type="button" onclick="removeChatbotQuickPromptRow(${i})" title="Remove" class="p-2 text-red-500 hover:bg-red-50 rounded-lg"></button>
     </div>
   `).join('') || `<p class="text-[11px] text-gray-400">No quick prompts yet — click "Add Quick Prompt" above.</p>`;
@@ -2341,7 +2341,7 @@ function renderStoryParagraphRows() {
   const rows = adminState.storyParagraphsDraft || [];
   container.innerHTML = rows.map((p, idx) => `
     <div class="flex items-start gap-2">
-      <textarea rows="2" placeholder="Paragraph ${idx + 1} text..." class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400" onchange="updateStoryParagraphDraft(${idx}, this.value)">${p || ''}</textarea>
+      <textarea rows="2" placeholder="Paragraph ${idx + 1} text..." class="flex-1 min-w-0 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400" onchange="updateStoryParagraphDraft(${idx}, this.value)">${p || ''}</textarea>
       <button type="button" onclick="removeStoryParagraphRow(${idx})" title="Delete Paragraph" class="mt-1 w-8 h-8 shrink-0 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg"><i class="fas fa-trash-can"></i></button>
     </div>
   `).join('') || '<p class="text-xs text-gray-400">No paragraphs yet — click Add Paragraph.</p>';
@@ -2368,9 +2368,9 @@ function renderStatsItemRows() {
   if (!container) return;
   const rows = adminState.statsItemsDraft || [];
   container.innerHTML = rows.map((s, idx) => `
-    <div class="flex items-center gap-2">
-      <input type="text" value="${escapeAttr(s.val || '')}" placeholder="Value e.g. 40+" class="w-28 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-400" onchange="updateStatsItemDraft(${idx}, 'val', this.value)" />
-      <input type="text" value="${escapeAttr(s.label || '')}" placeholder="Label e.g. Years Heritage" class="flex-1 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400" onchange="updateStatsItemDraft(${idx}, 'label', this.value)" />
+    <div class="grid grid-cols-[64px_1fr_auto] sm:grid-cols-[112px_1fr_auto] gap-2 items-center">
+      <input type="text" value="${escapeAttr(s.val || '')}" placeholder="40+" class="min-w-0 px-2.5 sm:px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold focus:ring-2 focus:ring-indigo-400" onchange="updateStatsItemDraft(${idx}, 'val', this.value)" />
+      <input type="text" value="${escapeAttr(s.label || '')}" placeholder="Label e.g. Years Heritage" class="min-w-0 px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-indigo-400" onchange="updateStatsItemDraft(${idx}, 'label', this.value)" />
       <button type="button" onclick="removeStatsItemRow(${idx})" title="Delete Stat" class="w-8 h-8 shrink-0 flex items-center justify-center bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg"><i class="fas fa-trash-can"></i></button>
     </div>
   `).join('') || '<p class="text-xs text-gray-400">No stats yet — click Add Stat.</p>';
