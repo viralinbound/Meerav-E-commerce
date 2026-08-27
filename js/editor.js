@@ -271,6 +271,9 @@ const MiraEditor = (function () {
     renderOverlay();
     renderPropertiesPanel();
     highlightActiveLayer();
+    // On phones/tablets the panel is a hidden drawer — tapping something on
+    // the canvas should surface its properties automatically.
+    if (window.innerWidth <= 900) openMobilePanel('right');
   }
 
   function highlightActiveLayer() {
@@ -986,6 +989,27 @@ const MiraEditor = (function () {
   function setSnap(on) { state.snapEnabled = on; }
   function setGridSize(px) { state.gridSnap = Number(px); }
 
+  // ------------------------------------------------------------- mobile UI
+  function toggleMobilePanel(side) {
+    const target = document.getElementById(side === 'left' ? 'ed-left-panel' : 'ed-right-panel');
+    const opening = !target.classList.contains('ed-mobile-open');
+    if (opening) openMobilePanel(side); else closeMobilePanels();
+  }
+  function openMobilePanel(side) {
+    const left = document.getElementById('ed-left-panel');
+    const right = document.getElementById('ed-right-panel');
+    const backdrop = document.getElementById('ed-mobile-backdrop');
+    left.classList.remove('ed-mobile-open');
+    right.classList.remove('ed-mobile-open');
+    (side === 'left' ? left : right).classList.add('ed-mobile-open');
+    backdrop.classList.add('ed-mobile-open');
+  }
+  function closeMobilePanels() {
+    document.getElementById('ed-left-panel').classList.remove('ed-mobile-open');
+    document.getElementById('ed-right-panel').classList.remove('ed-mobile-open');
+    document.getElementById('ed-mobile-backdrop').classList.remove('ed-mobile-open');
+  }
+
   function setLeftTab(tab) {
     document.querySelectorAll('.ed-tab-btn').forEach((btn) => btn.classList.toggle('active', btn.dataset.tab === tab));
     document.querySelectorAll('.ed-tab-panel').forEach((panel) => panel.classList.toggle('active', panel.id === 'ed-tab-' + tab));
@@ -1111,6 +1135,6 @@ const MiraEditor = (function () {
     loadPage, undo, redo, resetPage, resetSelected, deleteSelected,
     moveSibling, resetPosition, togglePreview, setDevice, setSnap, setGridSize,
     bringToFront, sendToBack, insertElement, setLeftTab, setShape,
-    publishToCloud
+    publishToCloud, toggleMobilePanel, closeMobilePanels
   };
 })();

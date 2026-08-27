@@ -19,6 +19,11 @@
   <!-- ============ TOP TOOLBAR ============ -->
   <div class="ed-topbar">
     <a href="admin.html" class="ed-btn" title="Back to Admin Dashboard"><i class="fas fa-arrow-left"></i> Admin</a>
+
+    <!-- Mobile/tablet only — the side panels become slide-in drawers below 900px -->
+    <button class="ed-btn ed-mobile-panel-toggle" onclick="MiraEditor.toggleMobilePanel('left')" title="Elements, Blocks & Layers"><i class="fas fa-shapes"></i></button>
+    <button class="ed-btn ed-mobile-panel-toggle" onclick="MiraEditor.toggleMobilePanel('right')" title="Properties"><i class="fas fa-sliders"></i></button>
+
     <span style="width:1px;height:20px;background:rgba(255,255,255,.15)"></span>
 
     <button id="ed-undo-btn" class="ed-btn" onclick="MiraEditor.undo()" disabled title="Undo (Ctrl+Z)"><i class="fas fa-rotate-left"></i> Undo</button>
@@ -38,8 +43,12 @@
   <!-- ============ BODY: LEFT / CANVAS / RIGHT ============ -->
   <div class="ed-body">
 
+    <!-- Tap-outside-to-close backdrop for the mobile drawer panels -->
+    <div class="ed-mobile-backdrop" id="ed-mobile-backdrop" onclick="MiraEditor.closeMobilePanels()"></div>
+
     <!-- LEFT PANEL -->
-    <div class="ed-left">
+    <div class="ed-left" id="ed-left-panel">
+      <button class="ed-mobile-panel-close" onclick="MiraEditor.closeMobilePanels()" title="Close"><i class="fas fa-xmark"></i></button>
       <div class="ed-panel-title">Page</div>
       <div class="ed-field">
         <select id="ed-page-select" class="ed-select" style="width:100%;color:#111" onchange="MiraEditor.loadPage(this.value)">
@@ -142,7 +151,8 @@
     </div>
 
     <!-- RIGHT PANEL: PROPERTIES -->
-    <div class="ed-right">
+    <div class="ed-right" id="ed-right-panel">
+      <button class="ed-mobile-panel-close" onclick="MiraEditor.closeMobilePanels()" title="Close"><i class="fas fa-xmark"></i></button>
       <div id="ed-empty-hint" class="ed-empty-hint">
         <i class="fas fa-arrow-pointer" style="font-size:20px;display:block;margin-bottom:8px;color:#d1d5db"></i>
         Select an element on the page to edit its position, size, colors, media or link.

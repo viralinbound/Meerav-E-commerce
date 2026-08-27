@@ -77,10 +77,56 @@ body { background: #f3f4f6; }
   display: grid;
   grid-template-columns: 230px 1fr 300px;
   min-height: 0;
+  position: relative;
 }
+
+/* ---------- Mobile / tablet: side panels become slide-in drawers ---------- */
+.ed-mobile-panel-toggle { display: none; }
+.ed-mobile-panel-close { display: none; }
+.ed-mobile-backdrop { display: none; }
+
 @media (max-width: 900px) {
   .ed-body { grid-template-columns: 1fr; }
-  .ed-left, .ed-right { display: none; }
+
+  .ed-left, .ed-right {
+    position: fixed;
+    top: 47px; /* below the topbar */
+    bottom: 0;
+    width: min(85vw, 320px);
+    z-index: 60;
+    box-shadow: 0 0 30px rgba(0,0,0,.3);
+    transition: transform .25s ease;
+  }
+  .ed-left { left: 0; transform: translateX(-105%); }
+  .ed-right { right: 0; transform: translateX(105%); }
+  .ed-left.ed-mobile-open, .ed-right.ed-mobile-open { transform: translateX(0); }
+
+  .ed-mobile-panel-toggle {
+    display: inline-flex;
+  }
+  .ed-mobile-panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .ed-mobile-backdrop.ed-mobile-open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 47px;
+    background: rgba(0,0,0,.35);
+    z-index: 55;
+  }
+  /* Toolbar gets tight on phones — let the status text wrap out of the way */
+  .ed-topbar { flex-wrap: wrap; row-gap: 6px; }
+  .ed-status { flex-basis: 100%; margin-left: 0; }
 }
 
 .ed-left, .ed-right {
