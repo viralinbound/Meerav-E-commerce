@@ -637,11 +637,11 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
             <div>
               <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Logo (PNG/SVG with transparency)</label>
-              <div class="flex items-center gap-3">
-                <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
-                <div class="flex-1">
-                  <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="text-xs" />
-                  <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1"></p>
+              <div class="flex items-center gap-3 flex-wrap">
+                <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-900 file:text-[11px] file:font-bold hover:file:bg-amber-200 file:cursor-pointer cursor-pointer" />
+                  <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
                 </div>
                 <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
                   <i class="fas fa-trash-can"></i>
@@ -650,11 +650,11 @@
             </div>
             <div>
               <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
-              <div class="flex items-center gap-3">
-                <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs" />
-                <div class="flex-1">
-                  <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="text-xs" />
-                  <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1"></p>
+              <div class="flex items-center gap-3 flex-wrap">
+                <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-amber-50 border border-amber-200 p-1 shadow-xs shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-900 file:text-[11px] file:font-bold hover:file:bg-amber-200 file:cursor-pointer cursor-pointer" />
+                  <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
                 </div>
                 <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
                   <i class="fas fa-trash-can"></i>
@@ -807,11 +807,11 @@
 
               <div id="bg-image-fields" class="hidden">
                 <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Image</label>
-                <div class="flex items-center gap-3">
-                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden" />
-                  <div class="flex-1">
-                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="text-xs" />
-                    <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1"></p>
+                <div class="flex items-center gap-3 flex-wrap">
+                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-amber-50 border border-amber-200 hidden shrink-0" />
+                  <div class="flex-1 min-w-0">
+                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-900 file:text-[11px] file:font-bold hover:file:bg-amber-200 file:cursor-pointer cursor-pointer" />
+                    <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
                   </div>
                   <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
                     <i class="fas fa-trash-can"></i>
@@ -1585,8 +1585,8 @@ Register New Admin
               <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-300 shadow-sm" alt="Category Image" />
               <button type="button" onclick="removeCategoryImage()" title="Remove Image" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
             </div>
-            <div class="flex-1 space-y-1.5">
-              <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="text-xs w-full" />
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-amber-100 file:text-amber-900 file:text-[11px] file:font-bold hover:file:bg-amber-200 file:cursor-pointer cursor-pointer" />
               <p id="cat-form-image-status" class="text-[10px] text-gray-400"></p>
               <input type="text" id="cat-form-image" placeholder="or paste an image URL: assets/images/cinematic_bhujia.jpg or https://..."
                 oninput="document.getElementById('cat-form-img-preview').src = this.value || 'assets/images/cinematic_bhujia.jpg'"
