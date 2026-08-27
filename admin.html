@@ -111,10 +111,10 @@
   <!-- ========================================================================= -->
   <!-- 2. MULTI-PAGE ADMIN DASHBOARD CONTAINER                                   -->
   <!-- ========================================================================= -->
-  <div id="admin-dashboard-container" class="hidden min-h-screen flex flex-col md:flex-row">
+  <div id="admin-dashboard-container" class="hidden min-h-screen flex flex-col lg:flex-row">
     
     <!-- Left Navigation Sidebar (Multi-Page Tabs) — desktop only; phones/tablets use the horizontal tab bar in the main workspace below -->
-    <aside class="admin-sidebar hidden md:flex md:w-64 p-5 flex-col justify-between shrink-0 border-r border-gray-800 bg-[#1F0307]">
+    <aside class="admin-sidebar hidden lg:flex lg:w-64 p-5 flex-col justify-between shrink-0 border-r border-gray-800 bg-[#1F0307]">
       <div class="space-y-6">
         
         <!-- Admin Header -->
@@ -190,13 +190,13 @@
              Lives in this shared header (not inside any single page view), so it's
              reachable from every admin page without scrolling back to the top. -->
         <button onclick="logoutAdmin()" title="Sign out"
-          class="md:hidden shrink-0 flex items-center gap-1.5 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-black transition">
+          class="lg:hidden shrink-0 flex items-center gap-1.5 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-black transition">
           <i class="fas fa-right-from-bracket"></i> <span>Sign Out</span>
         </button>
       </div>
 
       <!-- Mobile Horizontal Tab Bar (Visible on phones & tablets) -->
-      <div class="flex md:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-amber-200/80">
+      <div class="flex lg:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-amber-200/80">
         <button onclick="showAdminPage('overview')" data-page="overview" class="admin-mobile-nav-item active px-3.5 py-2 rounded-xl text-xs font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819] shrink-0 flex items-center gap-1.5 whitespace-nowrap">
           <i class="fas fa-gauge-high"></i> Overview
         </button>
