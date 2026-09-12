@@ -9,7 +9,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -20,11 +20,11 @@
           colors: {
             meerav: {
               maroon: '#4A0713',
-              dark: '#32040C',
-              gold: '#E59819',
-              goldlight: '#FBBF24',
-              cream: '#FFF9ED',
-              creamdark: '#FDF1D0'
+              dark: '#2E0509',
+              gold: '#B9812E',
+              goldlight: '#E5C98C',
+              cream: '#FAF6EE',
+              creamdark: '#F3ECDD'
             }
           }
         }
@@ -155,9 +155,9 @@ Admin Portal
               <span data-ck="home.hero.badge">FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE</span>
             </div>
 
-            <h1 class="text-4xl sm:text-6xl font-black text-[#32040C] tracking-tight leading-tight">
+            <h1 class="text-4xl sm:text-6xl font-medium text-[#2E0509] tracking-tight leading-tight">
               <span data-ck="home.hero.title_line1">Royal Bikaneri</span> <br/>
-              <span data-ck="home.hero.title_highlight" class="text-[#E59819] underline decoration-[#4A0713] decoration-wavy decoration-2">Namkeens & Sev</span>
+              <span data-ck="home.hero.title_highlight" class="meerav-serif-italic text-[#4A0713]">Namkeens &amp; Sev</span>
             </h1>
 
             <p data-ck="home.hero.subtitle" class="text-gray-700 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
@@ -196,8 +196,8 @@ Admin Portal
           </div>
 
           <!-- Hero Right Column: 4K Master Cinematic Brand Video Player (All Products Film) -->
-          <div class="lg:col-span-5 flex justify-center">
-            <div class="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-[#E59819] max-w-md w-full aspect-square bg-black group"
+          <div class="lg:col-span-5 flex justify-center relative">
+            <div class="relative meerav-arch-frame overflow-hidden shadow-2xl max-w-md w-full aspect-[4/5] bg-black group"
                  onmouseenter="pauseHeroAutoScroll()" onmouseleave="resumeHeroAutoScroll()">
 
               <!-- Media Slide Track — populated live from admin's Broadcast Stories (falls back to the single Hero Video/Image if none are added) -->
@@ -237,10 +237,16 @@ Admin Portal
               </div>
 
             </div>
+
+            <!-- Dashed "EST." stamp badge — matches the packaging shot in the redesign -->
+            <div class="meerav-stamp absolute -right-1 top-1 w-24 h-24 text-[11px] hidden sm:flex" aria-hidden="true">
+              EST. IN<br/>BIKANER<br/>RAJASTHAN
+            </div>
           </div>
 
         </div>
       </div>
+      <div class="meerav-scallop" style="--meerav-scallop-bg:#F3ECDD"></div>
     </section>
 
     

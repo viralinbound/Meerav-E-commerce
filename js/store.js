@@ -225,11 +225,11 @@ function renderHomeCategoryCards() {
     const displayImg = cat.image || catStyle.image || 'assets/images/cinematic_bhujia.jpg';
 
     return `
-      <a href="category?cat=${cat.id}" 
-        class="p-4 sm:p-6 bg-white rounded-3xl border-2 border-amber-200/80 hover:border-[#E59819] hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 block active:scale-98">
+      <a href="category?cat=${cat.id}"
+        class="p-4 sm:p-6 bg-transparent transition-all cursor-pointer text-center group block active:scale-98">
         
         <!-- Real Food Showcase Image with Royal Gold Border & Hover Zoom -->
-        <div class="w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#520914] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-xl group-hover:scale-110 transition-all duration-500 border-2 border-[#E59819]/50 relative">
+        <div class="meerav-arch-frame-sm w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 bg-[#520914] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-xl group-hover:scale-110 transition-all duration-500 relative">
           <img src="${displayImg}" alt="${cat.name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
         </div>
 

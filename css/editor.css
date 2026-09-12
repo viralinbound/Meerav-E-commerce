@@ -5,9 +5,9 @@
 
 :root {
   --ed-maroon: #4A0713;
-  --ed-maroon-dark: #32040C;
-  --ed-gold: #E59819;
-  --ed-gold-light: #FBBF24;
+  --ed-maroon-dark: #2E0509;
+  --ed-gold: #B9812E;
+  --ed-gold-light: #E5C98C;
 }
 
 html, body { height: 100%; overflow: hidden; }

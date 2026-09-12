@@ -5,26 +5,68 @@
 
 :root {
   --meerav-maroon: #4A0713;
-  --meerav-maroon-dark: #32040C;
+  --meerav-maroon-dark: #2E0509;
   --meerav-maroon-light: #670E1E;
-  --meerav-gold: #E59819;
-  --meerav-gold-light: #FBBF24;
-  --meerav-gold-dark: #B45309;
-  --meerav-cream: #FFF9ED;
-  --meerav-cream-dark: #FDF1D0;
-  --meerav-text-dark: #1F1517;
+  --meerav-gold: #B9812E;
+  --meerav-gold-light: #E5C98C;
+  --meerav-gold-dark: #8a611f;
+  --meerav-cream: #FAF6EE;
+  --meerav-cream-dark: #F3ECDD;
+  --meerav-text-dark: #211412;
   --meerav-text-muted: #6B5E61;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Manrope', sans-serif;
   background-color: var(--meerav-cream);
   color: var(--meerav-text-dark);
   overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6, .brand-font {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+}
+
+/* Italic serif accent — matches the mockup's "An Authentic Bikaneri Taste" treatment */
+.meerav-serif-italic {
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+}
+
+/* Arch-shaped image frame: rounded top corners, flat bottom — the hero/category "packet" crop */
+.meerav-arch-frame {
+  border-radius: 220px 220px 8px 8px;
+  overflow: hidden;
+}
+.meerav-arch-frame-sm {
+  border-radius: 120px 120px 6px 6px;
+  overflow: hidden;
+}
+
+/* Scalloped divider strip used between hero/footer sections */
+.meerav-scallop {
+  height: 16px;
+  background: var(--meerav-maroon);
+  background-image: radial-gradient(circle at 10px 0, transparent 8px, var(--meerav-scallop-bg, var(--meerav-cream)) 9px);
+  background-size: 20px 16px;
+}
+
+/* Dashed circular "EST." stamp badge, as seen on the hero packaging shot */
+.meerav-stamp {
+  border-radius: 50%;
+  border: 1.5px dashed var(--meerav-maroon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-10deg);
+  background: rgba(250, 246, 238, 0.8);
+  font-family: 'Newsreader', serif;
+  font-weight: 600;
+  color: var(--meerav-maroon);
+  text-align: center;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
 }
 
 /* Custom Scrollbar */
@@ -45,10 +87,9 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 
 /* Royal Pattern Backgrounds */
 .meerav-hero-pattern {
-  background-color: var(--meerav-cream);
-  background-image: radial-gradient(#e59819 0.75px, transparent 0.75px), radial-gradient(#4a0713 0.75px, #fff9ed 0.75px);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
+  background-color: var(--meerav-cream-dark);
+  background-image: radial-gradient(#e0c48a 0.8px, transparent 0.8px);
+  background-size: 22px 22px;
 }
 
 .meerav-maroon-bg {
@@ -65,19 +106,28 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   position: relative;
 }
 
-/* Product Card - Royal Packaging Look */
+/* Product Card - flat, editorial packaging look (2026 redesign) */
 .product-card {
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid rgba(229, 152, 25, 0.25);
-  background: #FFFFFF;
-  border-radius: 22px;
-  box-shadow: 0 4px 18px rgba(74, 7, 19, 0.05);
+  border: none;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 35px -8px rgba(74, 7, 19, 0.16);
-  border-color: rgba(229, 152, 25, 0.7);
+  transform: none;
+  box-shadow: none;
+}
+
+.product-card .product-name {
+  font-family: 'Newsreader', serif;
+  color: var(--meerav-text-dark);
+}
+
+.product-card .product-price {
+  color: var(--meerav-maroon);
+  font-weight: 700;
 }
 
 /* Product Image Frame */
@@ -85,23 +135,43 @@ h1, h2, h3, h4, h5, h6, .brand-font {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  background: #1F0307;
+  background: #EFE7D8;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 20px 20px 0 0;
+  border-radius: 0;
 }
 
 .product-pack-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .product-card:hover .product-pack-frame img {
-  transform: scale(1.08);
+  transform: scale(1.07);
+}
+
+/* Slide-up "Add to Cart" bar on hover, matching the mockup's quick-add overlay */
+.product-pack-frame .quick-add-bar {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  background: #211412;
+  color: var(--meerav-cream);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  padding: 12px 0;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover .quick-add-bar,
+.product-pack-frame:hover .quick-add-bar {
+  transform: translateY(0);
 }
 
 /* Video Hover Overlay for Product Cards */
@@ -137,19 +207,19 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 }
 
 .reels-card {
-  flex: 0 0 260px;
-  border-radius: 24px;
+  flex: 0 0 220px;
+  border-radius: 110px 110px 6px 6px;
   overflow: hidden;
   background: #23040A;
-  border: 1.5px solid rgba(229, 152, 25, 0.4);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(185, 129, 46, 0.35);
+  box-shadow: none;
   transition: all 0.35s ease;
 }
 
 .reels-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  border-color: #FBBF24;
-  box-shadow: 0 16px 35px rgba(229, 152, 25, 0.25);
+  transform: translateY(-4px);
+  border-color: var(--meerav-gold);
+  box-shadow: 0 16px 35px rgba(185, 129, 46, 0.2);
 }
 
 @keyframes marqueeScroll {

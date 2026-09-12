@@ -12,25 +12,25 @@ const DEFAULT_SITE_SETTINGS = {
   logoUrl: 'assets/images/meerav_logo.png',
   faviconUrl: 'assets/images/meerav_logo.png',
   primaryColor: '#4A0713',
-  secondaryColor: '#32040C',
-  accentColor: '#E59819',
-  accentLightColor: '#FBBF24',
+  secondaryColor: '#2E0509',
+  accentColor: '#B9812E',
+  accentLightColor: '#E5C98C',
   backgroundType: 'solid',
-  backgroundColor: '#FFF9ED',
-  backgroundGradient: ['#FFF9ED', '#FDF1D0', '#E59819'],
+  backgroundColor: '#FAF6EE',
+  backgroundGradient: ['#FAF6EE', '#F3ECDD', '#B9812E'],
   backgroundImageUrl: '',
-  backgroundPatternOverlay: false,
-  backgroundPattern: 'none',
+  backgroundPatternOverlay: true,
+  backgroundPattern: 'dots',
   backgroundPatternImageUrl: '',
-  adminPanelColor: '#1F0307',
-  adminPanelType: 'solid',
-  adminPanelGradient: ['#32040C', '#1F0307', '#030712'],
-  textColor: '#1F1517',
-  headingColor: '#32040C',
-  fontFamily: 'Outfit',
-  headingFontFamily: 'Outfit',
+  adminPanelColor: '#2E0509',
+  adminPanelType: 'gradient',
+  adminPanelGradient: ['#4A0713', '#2E0509', '#1F0307'],
+  textColor: '#211412',
+  headingColor: '#2E0509',
+  fontFamily: 'Manrope',
+  headingFontFamily: 'Newsreader',
   baseFontSize: '16px',
-  borderRadius: 'rounded-2xl',
+  borderRadius: 'rounded-none',
   currencySymbol: '₹',
   currencyCode: 'INR',
   heroVideoUrl: 'assets/videos/meerav_brand_film.mp4',
@@ -112,6 +112,8 @@ window.formatOrderDisplayId = function(order) {
 };
 
 const GOOGLE_FONT_STACKS = {
+  'Newsreader': "'Newsreader', serif",
+  'Manrope': "'Manrope', sans-serif",
   'Outfit': "'Outfit', sans-serif",
   'Plus Jakarta Sans': "'Plus Jakarta Sans', sans-serif",
   'Poppins': "'Poppins', sans-serif",
@@ -142,6 +144,37 @@ function digitsOnly(str) {
  * Instantly re-themes the entire website (colors, fonts, borders, identity, copy) with 1 click.
  */
 const THEME_PRESETS = [
+  {
+    key: 'bikaner-2026',
+    name: 'Bikaner Royal 2026',
+    category: 'Signature Meerav Redesign',
+    swatches: ['#4A0713', '#B9812E', '#FAF6EE'],
+    values: {
+      siteName: 'MEERAV',
+      tagline: 'An Authentic Bikaneri Taste',
+      announcementText: 'Fried Fresh, Same Day • Pure Groundnut Oil • Zero Palm Oil',
+      heroCtaText: 'Shop the Collection',
+      heroSecondaryCtaText: 'Our Story',
+      heroCtaLink: 'category',
+      primaryColor: '#4A0713', secondaryColor: '#2E0509', accentColor: '#B9812E', accentLightColor: '#E5C98C',
+      headingColor: '#2E0509', textColor: '#211412', backgroundType: 'solid', backgroundColor: '#FAF6EE',
+      backgroundGradient: ['#FAF6EE', '#F3ECDD', '#B9812E'], backgroundPattern: 'dots',
+      fontFamily: 'Manrope', headingFontFamily: 'Newsreader', borderRadius: 'rounded-none', adminPanelColor: '#2E0509',
+      adminPanelType: 'gradient', adminPanelGradient: ['#4A0713', '#2E0509', '#1F0307'],
+      metaTitle: 'MEERAV - An Authentic Bikaneri Taste',
+      metaDescription: 'Moth flour, pure groundnut oil and desert rock salt — Bikaneri namkeens fried fresh in small batches and sealed airtight the same day.'
+    },
+    contentOverrides: [
+      { key: 'hero.badge', value: 'Royal Kitchens of Bikaner, Rajasthan' },
+      { key: 'hero.title', value: 'An Authentic Bikaneri Taste.' },
+      { key: 'hero.subtitle', value: 'Moth flour, pure groundnut oil and desert rock salt — recipes carried from the walled city of Bikaner, fried fresh in small batches and sealed airtight the same day.' },
+      { key: 'story.title', value: 'Moth flour. Pure oil. Desert salt. That’s it.' },
+      { key: 'story.body', value: 'Every batch is fried in cold-pressed groundnut oil, never palm oil, and sealed the same day in nitrogen-flushed pouches — so the crunch you get is the crunch that left our kitchen.' },
+      { key: 'reviews.title', value: 'What our customers say' },
+      { key: 'faq.title', value: 'Frequently Asked Questions' },
+      { key: 'footer.bio', value: 'Authentic Bikaneri namkeens and sweets, fried fresh in Bikaner’s royal kitchens and shipped nationwide.' }
+    ]
+  },
   {
     key: 'royal-heritage',
     name: 'Royal Heritage',
@@ -461,7 +494,9 @@ function applyFont(s) {
   const linkId = 'dynamic-google-font';
   let link = document.getElementById(linkId);
   const families = [...new Set([bodyFamily, headingFamily])]
-    .map(f => `family=${f.replace(/ /g, '+')}:wght@400;500;600;700;800;900`)
+    .map(f => f === 'Newsreader'
+      ? `family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500`
+      : `family=${f.replace(/ /g, '+')}:wght@400;500;600;700;800;900`)
     .join('&');
   const href = `https://fonts.googleapis.com/css2?${families}&display=swap`;
   if (!link) {

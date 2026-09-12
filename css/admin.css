@@ -5,27 +5,27 @@
 
 :root {
   --admin-maroon: #4A0713;
-  --admin-maroon-dark: #32040C;
+  --admin-maroon-dark: #2E0509;
   --admin-maroon-night: #1F0307;
-  --admin-gold: #E59819;
-  --admin-gold-light: #FBBF24;
-  --admin-cream: #FFFDF8;
-  --admin-cream-dark: #FBF0D5;
+  --admin-gold: #B9812E;
+  --admin-gold-light: #E5C98C;
+  --admin-cream: #FAF6EE;
+  --admin-cream-dark: #F3ECDD;
   --admin-card-bg: #FFFFFF;
 }
 
 body.admin-body {
-  background-color: #FDF9F2;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: #1F1517;
+  background-color: #FAF6EE;
+  font-family: 'Manrope', sans-serif;
+  color: #211412;
 }
 
 /* Sidebar Styling */
 .admin-sidebar {
-  background: linear-gradient(180deg, #2A030A 0%, #170104 100%);
-  color: #FDF1D0;
+  background: linear-gradient(180deg, #4A0713 0%, #1F0307 100%);
+  color: #F3ECDD;
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
-  border-right: 1px solid rgba(229, 152, 25, 0.35);
+  border-right: 1px solid rgba(185, 129, 46, 0.35);
 }
 
 .admin-nav-item {
