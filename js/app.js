@@ -158,7 +158,7 @@ function renderProducts() {
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="col-span-full py-16 text-center">
-        <div class="w-20 h-20 mx-auto mb-4 bg-[#F5EFE4] rounded-full flex items-center justify-center text-[#A87A22] text-3xl">
+        <div class="w-20 h-20 mx-auto mb-4 bg-[#F5EFE4] rounded-full flex items-center justify-center text-[#7E5A14] text-3xl">
           
         </div>
         <h3 class="text-xl font-bold text-gray-800">No Namkeens Found</h3>
@@ -417,7 +417,7 @@ function renderCart() {
   if (state.cart.length === 0) {
     container.innerHTML = `
       <div class="py-16 text-center text-gray-500">
-        <div class="w-16 h-16 mx-auto mb-3 bg-[#FBF8F3] rounded-full flex items-center justify-center text-[#C9922E] text-2xl">
+        <div class="w-16 h-16 mx-auto mb-3 bg-[#FBF8F3] rounded-full flex items-center justify-center text-[#8F6718] text-2xl">
           
         </div>
         <p class="font-bold text-gray-800 text-base">Your Cart is Empty</p>

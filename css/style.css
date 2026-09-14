@@ -29,6 +29,9 @@
   --gold-500:  #C9922E;   /* CTAs, highlights (dark text sits on this)     */
   --gold-300:  #E8B75D;   /* gold text on dark brand surfaces             */
   --gold-700:  #A87A22;   /* gold hover                                    */
+  --gold-800:  #8F6718;   /* gold as TEXT on light bg — 4.8:1, the only gold
+                             that passes AA on --bg. Use this, not gold-500,
+                             for any gold-coloured text on a light surface. */
 
   /* ---- Neutrals -------------------------------------------------------- */
   --bg:        #FBF8F3;   /* page background — warm off-white              */
@@ -253,6 +256,13 @@ textarea:focus-visible,
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--meerav-terracotta-dark);
+}
+
+/* Eyebrow tag sitting on a dark band — the default colour is brand garnet,
+   which would be dark-on-dark there. */
+.bh-tag-on-dark {
+  color: var(--gold-300);
+  border-bottom-color: var(--gold-300);
 }
 
 .bh-card {

@@ -782,8 +782,8 @@ function renderStoreTrustBadges() {
       <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#C9922E] rotate-[-2deg] group-hover:rotate-0 transition-transform duration-300">
         <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='assets/images/feature_oil.jpg'" />
       </div>
-      <h4 class="font-black text-base text-[#1F1A17]">${b.title}</h4>
-      <p class="text-xs text-[#6B625A] leading-relaxed font-medium">${b.description}</p>
+      <h4 class="font-black text-base text-[#FBF8F3]">${b.title}</h4>
+      <p class="text-xs text-[#F0E9DD]/85 leading-relaxed font-medium">${b.description}</p>
     </div>
   `).join('');
 }
