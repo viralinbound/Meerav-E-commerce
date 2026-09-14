@@ -812,8 +812,15 @@ function meeravProductCard(p, opts) {
   const img = p.image || 'assets/images/cinematic_bhujia.jpg';
   const inStock = p.inStock !== false;
 
+  // Deterministic (not random) micro-tilt: same product always gets the same
+  // variant across re-renders, but the grid as a whole reads hand-set rather
+  // than machine-printed. Derived from the product id so it's stable.
+  const tiltVariants = ['a', 'b', 'c', 'd'];
+  const idSum = String(p.id).split('').reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+  const tiltClass = `ms-card--${tiltVariants[idSum % tiltVariants.length]}`;
+
   return `
-    <article class="ms-card group" data-product-id="${p.id}">
+    <article class="ms-card ${tiltClass} group" data-product-id="${p.id}">
       <a href="product?id=${p.id}" class="ms-card-media" aria-label="View ${p.name}"
         ${p.video ? `onmouseenter="const el=this.querySelector('video'); if(el){el.currentTime=0; el.play().catch(()=>{});}" onmouseleave="const el=this.querySelector('video'); if(el){el.pause();}"` : ''}>
         <img src="${img}" alt="${p.name}" loading="lazy" decoding="async"

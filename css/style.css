@@ -285,11 +285,15 @@ textarea:focus-visible,
    ========================================================================== */
 
 /* --- Product card ------------------------------------------------------- */
+/* A hand-set stall, not a printed grid: corners are cut very slightly
+   unevenly and each card carries a hair of rotation that deepens on
+   hover — cycles through 4 fixed variants (assigned by meeravProductCard()
+   from the product id, so it's stable across re-renders, not random jitter). */
 .ms-card {
   position: relative;
   background: #fff;
   border: 1px solid rgba(42, 29, 20, 0.10);
-  border-radius: var(--ms-radius);
+  border-radius: 11px 9px 10px 8px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -297,8 +301,15 @@ textarea:focus-visible,
               box-shadow var(--ms-duration) var(--ms-ease),
               border-color var(--ms-duration) var(--ms-ease);
 }
+.ms-card--a { transform: rotate(-0.35deg); }
+.ms-card--b { transform: rotate( 0.3deg); }
+.ms-card--c { transform: rotate(-0.2deg); }
+.ms-card--d { transform: rotate( 0.4deg); }
+.ms-card--a:hover { transform: rotate(-0.35deg) translateY(-3px); }
+.ms-card--b:hover { transform: rotate( 0.3deg)  translateY(-3px); }
+.ms-card--c:hover { transform: rotate(-0.2deg)  translateY(-3px); }
+.ms-card--d:hover { transform: rotate( 0.4deg)  translateY(-3px); }
 .ms-card:hover {
-  transform: translateY(-3px);
   box-shadow: var(--ms-shadow-md);
   border-color: rgba(217, 143, 30, 0.55);
 }
@@ -317,6 +328,9 @@ textarea:focus-visible,
   object-fit: cover;
   display: block;
   transition: transform 520ms var(--ms-ease);
+  /* Warm the photos a touch and lift shadows slightly, closer to a shot on
+     a kitchen counter than a flat studio catalog frame. */
+  filter: saturate(1.08) contrast(1.02) sepia(0.04) brightness(1.01);
 }
 .ms-card:hover .ms-card-media img { transform: scale(1.05); }
 
@@ -328,6 +342,15 @@ textarea:focus-visible,
   transition: opacity var(--ms-duration) var(--ms-ease);
 }
 .ms-card-media:hover video { opacity: 1; }
+
+/* Grid rows breathe unevenly instead of sitting on one laser-flat baseline —
+   a shelf someone actually stocked, not a spreadsheet. Purely a vertical
+   nudge so wrapping/columns/alignment are untouched. */
+@media (min-width: 640px) {
+  .ms-card:nth-child(4n+2)  { margin-top: 6px; }
+  .ms-card:nth-child(4n+3)  { margin-top: -4px; }
+  .ms-card:nth-child(4n)    { margin-top: 3px; }
+}
 
 .ms-card-body {
   padding: 14px 14px 16px;
@@ -622,6 +645,8 @@ textarea:focus-visible,
 
   /* Tilts read as misalignment on narrow screens — straighten them. */
   .bh-tilt-1, .bh-tilt-2, .bh-tilt-3, .bh-tilt-4 { transform: none; }
+  .ms-card--a, .ms-card--b, .ms-card--c, .ms-card--d { transform: none; }
+  .ms-card:nth-child(n) { margin-top: 0; }
 }
 
 @media (min-width: 768px) {
@@ -637,7 +662,11 @@ textarea:focus-visible,
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .ms-card:hover { transform: none; }
+  .ms-card,
+  .ms-card--a, .ms-card--b, .ms-card--c, .ms-card--d,
+  .ms-card--a:hover, .ms-card--b:hover, .ms-card--c:hover, .ms-card--d:hover {
+    transform: none;
+  }
   .ms-card:hover .ms-card-media img { transform: none; }
   .reels-card:hover { transform: none; }
   .ms-skeleton::after { animation: none; }
