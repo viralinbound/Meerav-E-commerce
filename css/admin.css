@@ -1,34 +1,34 @@
 /* ==========================================================================
    MEERAV NAMKEENS - ROYAL BIKANERI ADMIN COMMAND CENTER STYLES
-   Matching Authentic Brand Theme: Deep Maroon (#4A0713), Royal Gold (#E59819) & Sandstone Cream
+   Matching Authentic Brand Theme: Deep Maroon (#B5451D), Royal Gold (#E59819) & Sandstone Cream
    ========================================================================== */
 
 :root {
-  --admin-maroon: #4A0713;
-  --admin-maroon-dark: #2E0509;
-  --admin-maroon-night: #1F0307;
-  --admin-gold: #B9812E;
-  --admin-gold-light: #E5C98C;
-  --admin-cream: #FAF6EE;
-  --admin-cream-dark: #F3ECDD;
+  --admin-maroon: #B5451D;
+  --admin-maroon-dark: #7C2E12;
+  --admin-maroon-night: #2A1D14;
+  --admin-gold: #2C4A5E;
+  --admin-gold-light: #EADDBF;
+  --admin-cream: #F3E9D4;
+  --admin-cream-dark: #EADDBF;
   --admin-card-bg: #FFFFFF;
 }
 
 body.admin-body {
-  background-color: #FAF6EE;
+  background-color: #F3E9D4;
   font-family: 'Manrope', sans-serif;
   color: #211412;
 }
 
 /* Sidebar Styling — royal gradient with a faint Rajasthani jaali lattice overlay */
 .admin-sidebar {
-  background-color: #1F0307;
+  background-color: #2A1D14;
   background-image:
     linear-gradient(45deg, rgba(229, 201, 140, 0.05) 1px, transparent 1px),
     linear-gradient(-45deg, rgba(229, 201, 140, 0.05) 1px, transparent 1px),
-    linear-gradient(180deg, #4A0713 0%, #1F0307 100%);
+    linear-gradient(180deg, #B5451D 0%, #2A1D14 100%);
   background-size: 26px 26px, 26px 26px, 100% 100%;
-  color: #F3ECDD;
+  color: #EADDBF;
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
   border-right: 1px solid rgba(185, 129, 46, 0.35);
 }
@@ -55,7 +55,7 @@ body.admin-body {
 }
 
 .admin-nav-item.active {
-  background: linear-gradient(135deg, #4A0713 0%, #670E1E 100%) !important;
+  background: linear-gradient(135deg, #B5451D 0%, #670E1E 100%) !important;
   color: #FBBF24 !important;
   border: 1px solid #E59819 !important;
   box-shadow: 0 8px 18px rgba(74, 7, 19, 0.4);
@@ -100,7 +100,7 @@ body.admin-body {
 
 .admin-table th {
   background: #FFF9ED;
-  color: #4A0713;
+  color: #B5451D;
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;

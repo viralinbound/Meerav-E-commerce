@@ -4,10 +4,10 @@
  */
 
 :root {
-  --ed-maroon: #4A0713;
-  --ed-maroon-dark: #2E0509;
-  --ed-gold: #B9812E;
-  --ed-gold-light: #E5C98C;
+  --ed-maroon: #B5451D;
+  --ed-maroon-dark: #7C2E12;
+  --ed-gold: #D98F1E;
+  --ed-gold-light: #EADDBF;
 }
 
 html, body { height: 100%; overflow: hidden; }

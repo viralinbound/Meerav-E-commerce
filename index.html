@@ -20,11 +20,11 @@
           colors: {
             meerav: {
               maroon: '#4A0713',
-              dark: '#2E0509',
-              gold: '#B9812E',
-              goldlight: '#E5C98C',
-              cream: '#FAF6EE',
-              creamdark: '#F3ECDD'
+              dark: '#1A1109',
+              gold: '#B5451D',
+              goldlight: '#EADDBF',
+              cream: '#F3E9D4',
+              creamdark: '#EADDBF'
             }
           }
         }
@@ -144,97 +144,47 @@ Admin Portal
   <main id="storefront-main-content" class="animate-fade-in">
     
     <!-- Hero Banner with Authentic Packaging Visuals -->
-    <section class="relative overflow-hidden meerav-bandhani-bg py-12 sm:py-18 border-b border-amber-200/80">
+    <section class="relative overflow-hidden bh-banner-bg py-16 sm:py-24 border-b border-[#7C2E12]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          
-          <!-- Hero Text Content -->
-          <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#4A0713] border border-[#E59819] text-[#FBBF24] text-xs font-black shadow-md">
-              
-              <span data-ck="home.hero.badge">FROM THE HEART OF BIKANER • AN AUTHENTIC BIKANERI TASTE</span>
-            </div>
 
-            <div class="meerav-royal-rule w-24 mx-auto lg:mx-0 rounded-full" aria-hidden="true"></div>
+        <!-- Quiet asymmetric hero: media on the left in a single hairline frame, text and CTA stacked on the right -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
 
-            <h1 class="text-4xl sm:text-6xl font-medium text-[#2E0509] tracking-tight leading-tight">
-              <span data-ck="home.hero.title_line1">Royal Bikaneri</span> <br/>
-              <span data-ck="home.hero.title_highlight" class="meerav-serif-italic text-[#4A0713]">Namkeens &amp; Sev</span>
-            </h1>
-
-            <p data-ck="home.hero.subtitle" class="text-gray-700 text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-              Made with finest ingredients and authentic Bikaneri recipes. Prepared fresh daily in <strong>100% pure & clean oil</strong> with zero palm oil.
-            </p>
-
-            <!-- CTA Buttons — text/link admin-editable via Settings > Hero Section -->
-            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
-
-              <a href="category?cat=all" id="hero-cta-btn"
-                class="px-7 py-3.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-sm font-black rounded-2xl shadow-xl shadow-[#4A0713]/30 transition transform hover:-translate-y-0.5 border border-[#E59819] inline-flex items-center gap-2">
-                <span id="hero-cta-text">Explore Category Collections</span>
-              </a>
-
-              <button onclick="openBrandFilmModal()"
-                class="px-6 py-3.5 bg-gradient-to-r from-[#E59819] to-amber-500 hover:from-amber-600 hover:to-[#E59819] text-[#32040C] text-sm font-black rounded-2xl shadow-lg transition transform hover:-translate-y-0.5 flex items-center gap-2 border border-white/40 cursor-pointer">
-                <span id="hero-secondary-cta-text">Explore Categories</span>
-              </button>
-            </div>
-
-            <!-- Authentic Trust Badges -->
-            <div class="grid grid-cols-3 gap-3 pt-6 border-t border-amber-300/60 max-w-lg mx-auto lg:mx-0">
-              <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]">Pure & Clean</div>
-                <div class="text-[11px] text-gray-600 font-medium">Cold-Pressed Oil</div>
-              </div>
-              <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]">100% Veg</div>
-                <div class="text-[11px] text-gray-600 font-medium">Certified Recipe</div>
-              </div>
-              <div class="text-center lg:text-left">
-                <div class="text-sm font-black text-[#4A0713]">Bikaner Hub</div>
-                <div class="text-[11px] text-gray-600 font-medium">Same-Day Dispatch</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Hero Right Column: 4K Master Cinematic Brand Video Player (All Products Film) -->
-          <div class="lg:col-span-5 flex justify-center relative">
-            <div class="meerav-jharokha-surround max-w-md w-full">
-            <div class="meerav-mandala-corner tl" aria-hidden="true"></div>
-            <div class="meerav-mandala-corner tr" aria-hidden="true"></div>
-            <div class="relative meerav-arch-frame overflow-hidden shadow-2xl w-full aspect-[4/5] bg-black group"
+          <div class="lg:col-span-6 flex justify-center relative">
+            <div class="bh-polaroid max-w-lg w-full bh-photo-shadow">
+            <div class="relative meerav-arch-frame overflow-hidden w-full aspect-[16/10] bg-black group !rounded-none"
                  onmouseenter="pauseHeroAutoScroll()" onmouseleave="resumeHeroAutoScroll()">
 
               <!-- Media Slide Track — populated live from admin's Broadcast Stories (falls back to the single Hero Video/Image if none are added) -->
               <div id="hero-slides-wrapper" class="w-full h-full flex transition-transform duration-500 ease-out"></div>
 
               <!-- Left / Right Arrows -->
-              <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center shadow-xl transition border border-white/20 z-20" title="Previous">
+              <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-[#B5451D] text-white flex items-center justify-center transition border border-white/20 z-20" title="Previous">
                 <i class="fas fa-chevron-left text-xs"></i>
               </button>
-              <button onclick="nextHeroSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 hover:bg-[#E59819] text-white hover:text-[#32040C] backdrop-blur-md flex items-center justify-center shadow-xl transition border border-white/20 z-20" title="Next">
+              <button onclick="nextHeroSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-[#B5451D] text-white flex items-center justify-center transition border border-white/20 z-20" title="Next">
                 <i class="fas fa-chevron-right text-xs"></i>
               </button>
 
               <!-- Top Badge Overlay -->
-              <div class="absolute top-3 left-3 px-3 py-1 bg-black/75 backdrop-blur-md rounded-full border border-[#E59819]/60 text-[#FBBF24] text-[11px] font-black flex items-center gap-1.5 shadow-lg z-20 pointer-events-none">
+              <div class="absolute top-3 left-3 px-3 py-1 bg-[#2A1D14]/85 border border-[#D98F1E]/60 text-[#EADDBF] text-[11px] font-black flex items-center gap-1.5 z-20 pointer-events-none">
                 <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                <span id="hero-slide-badge">4K CINEMATIC FILM • ALL PRODUCTS</span>
+                <span id="hero-slide-badge">FRESH FROM THE KITCHEN • ALL PRODUCTS</span>
               </div>
 
               <!-- Bottom Overlay Controls -->
               <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20">
-                <span id="hero-slide-counter" class="text-[10px] text-amber-200 font-bold bg-black/60 backdrop-blur-xs px-2.5 py-1 rounded-lg border border-amber-400/30">
+                <span id="hero-slide-counter" class="text-[10px] text-amber-200 font-bold bg-black/60 px-2.5 py-1 border border-amber-400/30">
                   <i class="fas fa-images"></i> 1 / 1
                 </span>
 
                 <div class="flex items-center gap-2">
                   <button onclick="toggleVideoMute()" id="video-mute-btn"
-                    class="p-2.5 bg-black/70 hover:bg-[#E59819] text-[#FBBF24] hover:text-[#32040C] rounded-full backdrop-blur-md border border-[#E59819]/50 transition shadow-lg text-xs" title="Toggle Sound">
+                    class="p-2.5 bg-black/70 hover:bg-[#B5451D] text-[#EADDBF] border border-[#B5451D]/50 transition text-xs" title="Toggle Sound">
                     <i class="fas fa-volume-xmark"></i>
                   </button>
                   <button onclick="openBrandFilmModal()"
-                    class="px-3.5 py-2 bg-[#4A0713]/90 hover:bg-[#32040C] text-[#FBBF24] rounded-full backdrop-blur-md border border-[#E59819] transition shadow-lg text-xs font-black flex items-center gap-1" title="Expand Fullscreen">
+                    class="px-3.5 py-2 bg-[#2A1D14]/90 hover:bg-[#1A1109] text-[#EADDBF] border border-[#B5451D] transition text-xs font-black flex items-center gap-1" title="Expand Fullscreen">
                     <i class="fas fa-expand"></i>
                     <span>Fullscreen</span>
                   </button>
@@ -242,19 +192,65 @@ Admin Portal
               </div>
 
             </div>
-
-            <!-- Dashed "EST." stamp badge — matches the packaging shot in the redesign -->
-            <div class="meerav-stamp absolute -right-1 top-1 w-24 h-24 text-[11px] hidden sm:flex" aria-hidden="true">
-              EST. IN<br/>BIKANER<br/>RAJASTHAN
             </div>
+
+            <!-- "EST." mark, restyled as a quiet outlined roundel rather than a bright stamp -->
+            <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-[#F3E9D4] border border-[#B5451D] text-[#7C2E12] text-[10px] hidden sm:flex items-center justify-center text-center font-bold leading-tight" aria-hidden="true">
+              EST.<br/>BIKANER
+            </div>
+          </div>
+
+          <!-- Headline + CTA column: single flowing block, no tiling -->
+          <div class="lg:col-span-6 text-center lg:text-left">
+            <span class="inline-block font-serif italic text-[11px] sm:text-xs tracking-[0.14em] uppercase text-[#D98F1E] border-b-[1.5px] border-[#D98F1E] pb-1 mb-4 sm:mb-5">
+              <span data-ck="home.hero.badge">A small kitchen in Bikaner, since 1983</span>
+            </span>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.08] bh-heading" style="text-shadow:0 2px 12px rgba(0,0,0,0.35);">
+              <span data-ck="home.hero.title_line1">We still fry it</span> <br/>
+              the way <span data-ck="home.hero.title_highlight" class="italic text-[#D98F1E]">Nani</span> did.
+            </h1>
+
+            <p data-ck="home.hero.subtitle" class="text-[#EADDC5] text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium mt-4 sm:mt-5">
+              No shortcuts, no palm oil, no factory lines — just moth flour, pure groundnut oil and desert rock salt, fried in small batches every morning and packed the same day.
+            </p>
+
+            <p class="bh-handwritten text-[#D98F1E] text-base sm:text-lg mt-3" style="transform:rotate(-1.5deg);">— packed by hand, every single time</p>
+
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center lg:justify-start">
+              <a href="category?cat=all" id="hero-cta-btn"
+                class="px-6 sm:px-7 py-3.5 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-none bh-hard-shadow transition inline-flex items-center justify-center gap-2">
+                <span id="hero-cta-text">See What's Fresh Today</span>
+              </a>
+
+              <button onclick="openBrandFilmModal()"
+                class="px-6 py-3.5 border-2 border-[#F3E9D4] text-[#F3E9D4] hover:bg-white/10 text-sm font-black rounded-none transition flex items-center justify-center gap-2 cursor-pointer">
+                <span id="hero-secondary-cta-text">Read Our Story</span>
+              </button>
+            </div>
+
+            <!-- Trust badges as a simple inline row, no tiles -->
+            <div class="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-2.5 sm:gap-y-3 mt-8 sm:mt-9 justify-center lg:justify-start text-xs font-bold text-[#EADDC5]">
+              <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> Pure & Clean Oil</span>
+              <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> 100% Vegetarian</span>
+              <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> Same-Day Dispatch</span>
             </div>
           </div>
 
         </div>
       </div>
-      <div class="meerav-temple-divider"></div>
-      <div class="meerav-scallop" style="--meerav-scallop-bg:#F3ECDD"></div>
+      <div class="bh-torn-edge"></div>
     </section>
+
+    <!-- Signboard strip — flat indigo bar, hand-painted shop-sign feel -->
+    <div class="bh-signboard-band py-3 sm:py-3.5 border-b border-[#1A1109]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-center gap-x-6 sm:gap-x-9 gap-y-2 text-[11px] sm:text-xs font-medium text-[#F3E9D4]">
+        <span class="flex items-center gap-1.5"><span class="text-[#D98F1E]">—</span> Fried fresh every morning</span>
+        <span class="flex items-center gap-1.5"><span class="text-[#D98F1E]">—</span> Pure groundnut oil, always</span>
+        <span class="flex items-center gap-1.5"><span class="text-[#D98F1E]">—</span> Packed &amp; shipped same day</span>
+        <span class="flex items-center gap-1.5"><span class="text-[#D98F1E]">—</span> Family recipe, four decades</span>
+      </div>
+    </div>
 
     
     <!-- 4K Video Reels & Cinematic Stories (Watch & Shop Broadcast) -->
@@ -283,9 +279,9 @@ Admin Portal
 
     <!-- Visual Category Showcase Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="meerav-cartouche">
-          Royal Bikaner Specialties
+      <div class="text-left max-w-2xl mb-10 border-l-4 border-[#2C4A5E] pl-5">
+        <span class="bh-tag">
+          Bazaar Specialties
         </span>
         <h2 data-ck="home.showcase.heading" class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3">Select a Category to Explore Snacks</h2>
         <p data-ck="home.showcase.subheading" class="text-xs sm:text-sm text-gray-600 mt-2 font-medium">Click any traditional category below to view its handcrafted snacks, live prices & pack sizes</p>
@@ -297,9 +293,7 @@ Admin Portal
       </div>
 
       <!-- Action Banner to All Categories & Products (Dynamically Auto-Counts Total Catalog) -->
-      <div class="relative bg-gradient-to-r from-[#4A0713] via-[#32040C] to-[#1F0307] rounded-3xl p-8 text-white shadow-2xl border-2 border-[#E59819] flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
-        <div class="meerav-mandala-corner tl" aria-hidden="true"></div>
-        <div class="meerav-mandala-corner br" aria-hidden="true"></div>
+      <div class="relative bg-[#7C2E12] rounded-none p-8 text-white border-3 border-[#2A1D14] shadow-[7px_7px_0_#2C4A5E] flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
         <div class="space-y-1 text-center md:text-left">
           <span class="text-xs text-[#FBBF24] font-black uppercase tracking-wider">Complete Bikaner Catalog</span>
           <h3 id="home-total-products-count" class="text-2xl font-black text-white">Want to explore all authentic varieties?</h3>
@@ -307,15 +301,15 @@ Admin Portal
         </div>
 
         <a href="category?cat=all"
-          class="px-8 py-4 bg-[#E59819] hover:bg-amber-600 text-[#32040C] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 shrink-0 flex items-center gap-2 border border-white/20">
+          class="px-8 py-4 bg-[#2C4A5E] hover:bg-[#EADDBF] text-[#7C2E12] font-black text-sm rounded-none shadow-xl transition border-2 border-[#2A1D14] shrink-0 flex items-center gap-2">
           <span id="home-total-products-btn">Explore All Products</span>
         </a>
       </div>
     </section>
 
-    <div class="meerav-temple-divider-dark"></div>
+    <div class="bh-torn-edge"></div>
     <!-- Royal Trust Section with Real Image Badges (Full Dynamic CMS) -->
-    <section id="home-trust-section" class="meerav-jaali-bg-dark text-white py-16 border-t-2 border-[#E59819] transition-all">
+    <section id="home-trust-section" class="bh-signboard-band text-white py-16 border-t-4 border-[#7C2E12] transition-all">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div id="home-trust-badges-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center md:text-left">
           <!-- Populated dynamically by store.js -->
@@ -327,15 +321,15 @@ Admin Portal
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-18 border-b border-amber-200/80">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div class="lg:col-span-6 space-y-6">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-100 text-[#4A0713] text-xs font-black border border-amber-300">
-            
-            <span>Our Royal Culinary Story</span>
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100 text-[#7C2E12] text-xs font-black border border-[#D98F1E]">
+
+            <span>Our Family's Story</span>
           </div>
-          <h2 data-ck="home.story.heading" class="text-3xl sm:text-4xl font-black text-[#32040C] tracking-tight leading-tight">
-            Heritage of Bikaner in Every Crunch
+          <h2 data-ck="home.story.heading" class="text-3xl sm:text-4xl font-black text-[#2A1D14] tracking-tight leading-tight bh-heading">
+            Heritage of Bikaner, in every batch.
           </h2>
-          <p data-ck="home.story.subheading" class="text-sm font-bold text-[#E59819] uppercase tracking-wider">
-            Four Decades of Culinary Mastery & Pure Taste
+          <p data-ck="home.story.subheading" class="text-sm font-bold text-[#B5451D] uppercase tracking-wider">
+            Four decades, one kitchen, no shortcuts
           </p>
           <div id="home-story-paragraphs" class="space-y-3">
             <!-- Populated dynamically by store.js -->
@@ -348,14 +342,12 @@ Admin Portal
         </div>
 
         <div class="lg:col-span-6 flex justify-center">
-          <div class="meerav-jharokha-surround max-w-md w-full">
-          <div class="meerav-mandala-corner bl" aria-hidden="true"></div>
-          <div class="meerav-mandala-corner br" aria-hidden="true"></div>
-          <div class="relative overflow-hidden shadow-2xl w-full aspect-4/3 bg-amber-50 rounded-t-[220px] rounded-b-lg">
+          <div class="bh-polaroid max-w-md w-full">
+          <div class="relative overflow-hidden w-full aspect-4/3 bg-amber-50">
             <img id="home-story-image" src="assets/images/commercial_scene_3.jpg" alt="Heritage Kitchen" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
               <div class="text-white space-y-1">
-                <span class="px-2.5 py-0.5 bg-[#E59819] text-[#32040C] text-[10px] font-black rounded-full uppercase">Authentic Kitchen</span>
+                <span class="bh-tag !bg-[#2C4A5E]">Authentic Kitchen</span>
                 <p class="text-xs font-bold text-amber-200">Slow-Fried in Pure Groundnut Oil with Bikaner Desert Spices</p>
               </div>
             </div>
@@ -368,7 +360,7 @@ Admin Portal
     <!-- Customer Reviews & Testimonials Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-amber-200/80">
       <div class="text-center max-w-2xl mx-auto mb-10">
-        <span class="px-4 py-1.5 bg-amber-100 text-[#4A0713] text-xs font-black rounded-full uppercase tracking-wider border border-amber-300">
+        <span class="bh-tag">
           Verified Customer Feedback
         </span>
         <h2 data-ck="home.testimonials.heading" class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3">Loved Across India & Beyond</h2>
@@ -383,7 +375,7 @@ Admin Portal
     <!-- Frequently Asked Questions (FAQs) Section -->
     <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="text-center mb-10">
-        <span class="px-4 py-1.5 bg-amber-100 text-[#4A0713] text-xs font-black rounded-full uppercase tracking-wider border border-amber-300">
+        <span class="bh-tag">
           Got Questions?
         </span>
         <h2 data-ck="home.faqs.heading" class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3">Frequently Asked Questions</h2>
@@ -396,8 +388,8 @@ Admin Portal
     </section>
 
     <!-- Enhanced 4-Column Footer -->
-    <div class="meerav-temple-divider-dark"></div>
-    <footer class="meerav-jaali-bg-dark text-gray-400 pt-16 pb-10 border-t-2 border-[#E59819] text-xs" style="background-color:#1F0307;">
+    <div class="bh-torn-edge"></div>
+    <footer class="bh-signboard-band text-gray-400 pt-16 pb-10 border-t-4 border-[#7C2E12] text-xs" style="background-color:#2A1D14;">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           
@@ -592,7 +584,7 @@ Admin Portal
 
       <div class="p-6 overflow-y-auto space-y-5 text-xs">
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
-          <div class="sm:col-span-5 relative h-60 rounded-2xl overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FDF1D0] flex items-center justify-center p-2 border border-amber-200">
+          <div class="sm:col-span-5 relative h-60 rounded-2xl overflow-hidden bg-gradient-to-b from-[#F3E9D4] to-[#EADDBF] flex items-center justify-center p-2 border border-amber-200">
             <img id="pdetail-image" src="" alt="Product" class="max-h-full w-auto object-contain filter drop-shadow-md" />
             <span id="pdetail-tag" class="absolute top-2.5 left-2.5 px-2.5 py-1 bg-[#4A0713] text-[#FBBF24] font-black text-[10px] rounded-full border border-[#E59819]"></span>
           </div>
@@ -916,7 +908,7 @@ Admin Portal
   <!-- 8.5 BRAND FILM CINEMA MODAL                                               -->
   <!-- ========================================================================= -->
   <div id="brand-film-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-gradient-to-b from-[#32040C] to-[#1a0206] w-full max-w-4xl rounded-3xl shadow-2xl border-2 border-[#E59819] overflow-hidden animate-fade-in text-white">
+    <div class="bg-gradient-to-b from-[#32040C] to-[#1A1109] w-full max-w-4xl rounded-3xl shadow-2xl border-2 border-[#E59819] overflow-hidden animate-fade-in text-white">
 
       <!-- Modal Header -->
       <div class="p-4 sm:p-5 flex items-center justify-between border-b border-[#E59819]/30 bg-black/40">

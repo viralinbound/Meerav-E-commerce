@@ -224,19 +224,23 @@ function renderHomeCategoryCards() {
     const catStyle = categoryDefaults[cat.id] || { image: cat.image || 'assets/images/cinematic_bhujia.jpg', icon: cat.icon || 'fas fa-cookie-bite', name: cat.name };
     const displayImg = cat.image || catStyle.image || 'assets/images/cinematic_bhujia.jpg';
 
+    const catTilt = ['-2deg', '1.5deg', '-1deg', '2deg', '-1.5deg'][validCats.indexOf(cat) % 5];
+
     return `
       <a href="category?cat=${cat.id}"
-        class="p-4 sm:p-6 bg-transparent transition-all cursor-pointer text-center group block active:scale-98">
-        
-        <!-- Real Food Showcase Image with Royal Gold Border & Hover Zoom -->
-        <div class="meerav-arch-frame-sm w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 bg-[#520914] text-[#FBBF24] flex items-center justify-center text-2xl sm:text-3xl shadow-xl group-hover:scale-110 transition-all duration-500 relative">
-          <img src="${displayImg}" alt="${cat.name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
+        class="p-3 sm:p-4 bg-transparent transition-all cursor-pointer text-center group block active:scale-98">
+
+        <!-- Polaroid-style photo frame, consistent with the hand-crafted hero -->
+        <div class="bg-white p-2 pb-4 mx-auto mb-3 w-full max-w-[140px] shadow-md group-hover:shadow-lg transition-all duration-300" style="transform:rotate(${catTilt});">
+          <div class="w-full aspect-square overflow-hidden bg-[#EADDBF]">
+            <img src="${displayImg}" alt="${cat.name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" />
+          </div>
         </div>
 
-        <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${cat.name || catStyle.name}</h4>
+        <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#7C2E12] mb-1 leading-snug">${cat.name || catStyle.name}</h4>
         <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
-        
-        <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#4A0713] group-hover:underline">
+
+        <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#7C2E12] group-hover:underline">
           Explore &rarr;
         </span>
       </a>
@@ -505,47 +509,51 @@ function renderStoreProducts() {
     const selectedVar = p.variants[selectedIdx] || p.variants[0];
     const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
 
+    const tiltClass = ['bh-tilt-1', 'bh-tilt-2', 'bh-tilt-3', 'bh-tilt-4'][filtered.indexOf(p) % 4];
+
     return `
-      <div class="product-card overflow-hidden flex flex-col justify-between relative group">
+      <div class="product-card bh-card ${tiltClass} bh-hard-shadow overflow-hidden flex flex-col justify-between relative group">
+        <!-- Sticker-style price tag, stuck on the corner -->
+        <span class="bh-price-tag absolute -top-2 -right-2 z-30">${formatPrice(selectedVar.price)}</span>
+
         <!-- Packaging Visual Frame with Video Hover Preview -->
         <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block relative"
           onmouseenter="const v=this.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}"
           onmouseleave="const v=this.querySelector('video'); if(v){v.pause();}">
-          
+
           <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="group-hover:scale-108 transition-transform duration-500" />
-          
+
           ${p.video ? `
             <video class="card-video-preview" src="${p.video}" muted loop playsinline preload="none"></video>
-            <div class="absolute bottom-3 right-3 z-20 px-2.5 py-1 bg-black/75 backdrop-blur-md rounded-full text-[#FBBF24] text-[10px] font-black flex items-center gap-1 border border-[#E59819]/50 shadow-md">
-              
+            <div class="absolute bottom-3 right-3 z-20 px-2.5 py-1 bg-[#2A1D14]/85 text-[#EADDBF] text-[10px] font-black flex items-center gap-1 border border-[#D98F1E]/60">
               <span>4K REEL</span>
             </div>
           ` : ''}
 
-          <!-- Top Left Badges -->
+          <!-- Top Left Badges — flat, hand-stamped tag look, no glossy pills -->
           <div class="absolute top-3 left-3 z-20 flex items-center gap-1.5">
-            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-[#4A0713]/90 backdrop-blur-md text-[#FBBF24] border border-[#E59819]/60 shadow-md">
+            <span class="px-2.5 py-1 text-[10px] font-black bg-[#2A1D14]/90 text-[#EADDBF] border border-[#D98F1E]/60">
               ${p.tag}
             </span>
-            <span class="px-2 py-1 rounded-full text-[10px] font-black bg-[#E59819] text-[#32040C] shadow-md">
+            <span class="px-2 py-1 text-[10px] font-black bg-[#D98F1E] text-[#2A1D14]">
               ${selectedVar.weight}
             </span>
           </div>
 
           <!-- Top Right Actions -->
           <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5">
-            <div class="veg-indicator bg-white/95 backdrop-blur-md shadow-md" title="100% Pure Vegetarian">
+            <div class="veg-indicator bg-white/95 shadow-md" title="100% Pure Vegetarian">
               <div class="veg-indicator-dot"></div>
             </div>
 
             <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');"
-              class="w-8 h-8 rounded-full bg-black/60 hover:bg-white text-white hover:text-red-600 backdrop-blur-md flex items-center justify-center shadow-md transition border border-white/20">
+              class="w-8 h-8 bg-black/60 hover:bg-white text-white hover:text-red-600 flex items-center justify-center shadow-md transition border border-white/20">
 
             </button>
           </div>
 
           <!-- Bottom Quality Banner -->
-          <div class="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 text-[10px] text-[#FBBF24] font-bold bg-[#32040C]/85 backdrop-blur-md px-2.5 py-1 rounded-lg border border-[#E59819]/40 shadow-md">
+          <div class="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 text-[10px] text-[#EADDBF] font-bold bg-[#2A1D14]/85 px-2.5 py-1 border border-[#D98F1E]/40">
             <span>Pure Oil</span>
             <span class="text-emerald-400 font-black ml-1">100% Fresh</span>
           </div>
@@ -579,10 +587,10 @@ function renderStoreProducts() {
               <span class="text-[10px] font-extrabold text-gray-400 block mb-1.5 uppercase tracking-wider">Pack Weight:</span>
               <div class="flex flex-wrap gap-1.5">
                 ${p.variants.map((v, idx) => `
-                  <button onclick="setProductVariant('${p.id}', ${idx})" 
-                    class="px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
-                      idx === selectedIdx 
-                        ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm border border-[#E59819]' 
+                  <button onclick="setProductVariant('${p.id}', ${idx})"
+                    class="px-2.5 py-1 text-xs font-black transition-all ${
+                      idx === selectedIdx
+                        ? 'bg-[#4A0713] text-[#FBBF24] border border-[#E59819]'
                         : 'bg-amber-50/80 text-gray-700 hover:bg-amber-100 border border-amber-200'
                     }">
                     ${v.weight}
@@ -608,14 +616,14 @@ function renderStoreProducts() {
             <!-- Action Buttons -->
             <div class="grid grid-cols-2 gap-2">
               <button onclick="addToCart('${p.id}', ${selectedIdx})"
-                class="w-full py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-xl text-xs font-black transition border border-amber-300 flex items-center justify-center gap-1.5">
+                class="w-full py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-xs font-black transition border border-amber-300 flex items-center justify-center gap-1.5">
 
                 <span>Add to Cart</span>
               </button>
 
               <button onclick="quickBuy('${p.id}', ${selectedIdx})"
-                class="w-full py-2.5 px-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819] shadow-md flex items-center justify-center gap-1.5">
-                
+                class="w-full py-2.5 px-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-black transition border border-[#E59819] bh-hard-shadow flex items-center justify-center gap-1.5">
+
                 <span>Express Buy</span>
               </button>
             </div>
@@ -896,11 +904,11 @@ function renderStoreTrustBadges() {
 
   container.innerHTML = items.map(b => `
     <div class="space-y-3 group text-center md:text-left animate-fade-in">
-      <div class="w-16 h-16 rounded-2xl bg-[#E59819] text-[#32040C] overflow-hidden p-1 flex items-center justify-center text-xl mx-auto md:mx-0 shadow-xl font-black border-2 border-amber-300 group-hover:scale-110 transition-transform duration-300">
-        <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" loading="lazy" decoding="async" class="w-full h-full object-cover rounded-xl" onerror="this.src='assets/images/feature_oil.jpg'" />
+      <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[-2deg] group-hover:rotate-0 transition-transform duration-300">
+        <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='assets/images/feature_oil.jpg'" />
       </div>
-      <h4 class="font-black text-base text-[#FBBF24]">${b.title}</h4>
-      <p class="text-xs text-amber-100/80 leading-relaxed font-medium">${b.description}</p>
+      <h4 class="font-black text-base text-[#F3E9D4]">${b.title}</h4>
+      <p class="text-xs text-[#EADDC5] leading-relaxed font-medium">${b.description}</p>
     </div>
   `).join('');
 }

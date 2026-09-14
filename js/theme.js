@@ -8,27 +8,27 @@
 
 const DEFAULT_SITE_SETTINGS = {
   siteName: 'MEERAV Namkeens & Sweets',
-  tagline: 'From the Heart of Bikaner',
+  tagline: 'Fried Fresh in Bikaner, Since 1983',
   logoUrl: 'assets/images/meerav_logo.png',
   faviconUrl: 'assets/images/meerav_logo.png',
-  primaryColor: '#4A0713',
-  secondaryColor: '#2E0509',
-  accentColor: '#B9812E',
-  accentLightColor: '#E5C98C',
+  primaryColor: '#B5451D',
+  secondaryColor: '#7C2E12',
+  accentColor: '#D98F1E',
+  accentLightColor: '#EADDBF',
   backgroundType: 'solid',
-  backgroundColor: '#FAF6EE',
-  backgroundGradient: ['#FAF6EE', '#F3ECDD', '#B9812E'],
+  backgroundColor: '#F3E9D4',
+  backgroundGradient: ['#F3E9D4', '#EADDBF', '#D98F1E'],
   backgroundImageUrl: '',
   backgroundPatternOverlay: true,
   backgroundPattern: 'dots',
   backgroundPatternImageUrl: '',
-  adminPanelColor: '#2E0509',
+  adminPanelColor: '#2C4A5E',
   adminPanelType: 'gradient',
-  adminPanelGradient: ['#4A0713', '#2E0509', '#1F0307'],
-  textColor: '#211412',
-  headingColor: '#2E0509',
-  fontFamily: 'Manrope',
-  headingFontFamily: 'Newsreader',
+  adminPanelGradient: ['#B5451D', '#7C2E12', '#2A1D14'],
+  textColor: '#2A1D14',
+  headingColor: '#7C2E12',
+  fontFamily: 'Merriweather',
+  headingFontFamily: 'Playfair Display',
   baseFontSize: '16px',
   borderRadius: 'rounded-none',
   currencySymbol: '₹',
@@ -114,6 +114,9 @@ window.formatOrderDisplayId = function(order) {
 const GOOGLE_FONT_STACKS = {
   'Newsreader': "'Newsreader', serif",
   'Manrope': "'Manrope', sans-serif",
+  'Fraunces': "'Fraunces', serif",
+  'Baloo 2': "'Baloo 2', sans-serif",
+  'Fredoka': "'Fredoka', sans-serif",
   'Outfit': "'Outfit', sans-serif",
   'Plus Jakarta Sans': "'Plus Jakarta Sans', sans-serif",
   'Poppins': "'Poppins', sans-serif",
@@ -124,6 +127,7 @@ const GOOGLE_FONT_STACKS = {
   'Lora': "'Lora', serif",
   'Roboto': "'Roboto', sans-serif",
   'Nunito': "'Nunito', sans-serif",
+  'Nunito Sans': "'Nunito Sans', sans-serif",
   'Raleway': "'Raleway', sans-serif",
   'Work Sans': "'Work Sans', sans-serif",
   'DM Sans': "'DM Sans', sans-serif",
@@ -144,6 +148,130 @@ function digitsOnly(str) {
  * Instantly re-themes the entire website (colors, fonts, borders, identity, copy) with 1 click.
  */
 const THEME_PRESETS = [
+  {
+    key: 'bikaner-handmade-2026',
+    name: 'Bikaner Handmade — Family Kitchen',
+    category: 'Signature Meerav Redesign',
+    swatches: ['#B5451D', '#D98F1E', '#2C4A5E'],
+    values: {
+      siteName: 'MEERAV',
+      tagline: 'Fried Fresh in Bikaner, Since 1983',
+      announcementText: 'FRIED FRESH, SAME DAY • PURE GROUNDNUT OIL, NO PALM OIL • SHIPPED FROM BIKANER',
+      heroCtaText: "See What's Fresh Today",
+      heroSecondaryCtaText: 'Read Our Story',
+      heroCtaLink: 'category',
+      primaryColor: '#B5451D', secondaryColor: '#7C2E12', accentColor: '#D98F1E', accentLightColor: '#EADDBF',
+      headingColor: '#7C2E12', textColor: '#2A1D14', backgroundType: 'solid', backgroundColor: '#F3E9D4',
+      backgroundGradient: ['#F3E9D4', '#EADDBF', '#D98F1E'], backgroundPattern: 'dots',
+      fontFamily: 'Merriweather', headingFontFamily: 'Playfair Display', borderRadius: 'rounded-none', adminPanelColor: '#2C4A5E',
+      adminPanelType: 'gradient', adminPanelGradient: ['#B5451D', '#7C2E12', '#2A1D14'],
+      metaTitle: 'MEERAV - Fried Fresh in Bikaner Since 1983',
+      metaDescription: 'A small family kitchen in Bikaner frying namkeens and sweets by hand since 1983 — pure groundnut oil, no palm oil, packed and shipped the same day.'
+    },
+    contentOverrides: [
+      { key: 'hero.badge', value: 'A small kitchen in Bikaner, since 1983' },
+      { key: 'hero.title', value: 'We still fry it the way Nani did.' },
+      { key: 'hero.subtitle', value: 'No shortcuts, no palm oil, no factory lines — just moth flour, pure groundnut oil and desert rock salt, fried in small batches every morning and packed the same day.' },
+      { key: 'story.title', value: 'Heritage of Bikaner, in every batch.' },
+      { key: 'story.body', value: 'My father started frying bhujia out of a single kadhai in 1983. Four decades on, we still measure the oil by hand and taste every batch before it’s packed — no machines decide when it’s ready, we do.' },
+      { key: 'reviews.title', value: 'What people are saying' },
+      { key: 'faq.title', value: 'Got Questions?' },
+      { key: 'footer.bio', value: 'Made by hand in Bikaner, Rajasthan. Fried fresh, packed same-day, shipped nationwide.' }
+    ]
+  },
+  {
+    key: 'thar-desert-gold-2026',
+    name: 'Thar Desert Gold — Dune & Dusk',
+    category: 'Signature Meerav Redesign',
+    swatches: ['#B8892B', '#5B6B4A', '#2B1D10'],
+    values: {
+      siteName: 'MEERAV',
+      tagline: 'Thar Desert Gold Reserve',
+      announcementText: 'Fried Fresh, Same Day • Pure Groundnut Oil • Zero Palm Oil',
+      heroCtaText: 'Explore the Range',
+      heroSecondaryCtaText: 'Our Story',
+      heroCtaLink: 'category',
+      primaryColor: '#B8892B', secondaryColor: '#8A611A', accentColor: '#5B6B4A', accentLightColor: '#EFD9A8',
+      headingColor: '#8A611A', textColor: '#2B1D10', backgroundType: 'solid', backgroundColor: '#FBF3E0',
+      backgroundGradient: ['#FBF3E0', '#EFD9A8', '#B8892B'], backgroundPattern: 'dots',
+      fontFamily: 'Nunito Sans', headingFontFamily: 'Cormorant Garamond', borderRadius: 'rounded-sm', adminPanelColor: '#8A611A',
+      adminPanelType: 'gradient', adminPanelGradient: ['#B8892B', '#8A611A', '#2B1D10'],
+      metaTitle: 'MEERAV - Thar Desert Gold Reserve',
+      metaDescription: 'Sun-dried spices and desert-baked flavor — Bikaneri namkeens fried fresh in small batches, dressed in the warm dune-gold of the Thar Desert at dusk.'
+    },
+    contentOverrides: [
+      { key: 'hero.badge', value: 'From the Dunes of the Thar Desert' },
+      { key: 'hero.title', value: 'Sun-Dried Spices, Desert-Baked Flavor.' },
+      { key: 'hero.subtitle', value: 'Moth flour, pure groundnut oil and desert rock salt — recipes carried from Bikaner\'s golden dunes, fried fresh in small batches and sealed airtight the same day.' },
+      { key: 'story.title', value: 'Moth flour. Pure oil. Desert salt. That’s it.' },
+      { key: 'story.body', value: 'Every batch is fried in cold-pressed groundnut oil, never palm oil, and sealed the same day in nitrogen-flushed pouches — so the crunch you get is the crunch that left our kitchen.' },
+      { key: 'reviews.title', value: 'What our customers say' },
+      { key: 'faq.title', value: 'Frequently Asked Questions' },
+      { key: 'footer.bio', value: 'Authentic Bikaneri namkeens and sweets, fried fresh and dressed in the warm gold of the Thar Desert at dusk, shipped nationwide.' }
+    ]
+  },
+  {
+    key: 'pushkar-mela-2026',
+    name: 'Pushkar Mela — Festival Pink & Turquoise',
+    category: 'Signature Meerav Redesign',
+    swatches: ['#C81E5C', '#0E7C86', '#E8A317'],
+    values: {
+      siteName: 'MEERAV',
+      tagline: 'Festival Flavors of Pushkar',
+      announcementText: 'Fried Fresh, Same Day • Pure Groundnut Oil • Zero Palm Oil',
+      heroCtaText: 'Shop the Collection',
+      heroSecondaryCtaText: 'Our Story',
+      heroCtaLink: 'category',
+      primaryColor: '#C81E5C', secondaryColor: '#8F1140', accentColor: '#0E7C86', accentLightColor: '#F4C452',
+      headingColor: '#8F1140', textColor: '#2B1B2E', backgroundType: 'solid', backgroundColor: '#FFF8ED',
+      backgroundGradient: ['#FFF8ED', '#FBEBD1', '#E8A317'], backgroundPattern: 'dots',
+      fontFamily: 'Baloo 2', headingFontFamily: 'Fredoka', borderRadius: 'rounded-3xl', adminPanelColor: '#8F1140',
+      adminPanelType: 'gradient', adminPanelGradient: ['#C81E5C', '#8F1140', '#5C0A28'],
+      metaTitle: 'MEERAV - Festival Flavors of Pushkar',
+      metaDescription: 'Moth flour, pure groundnut oil and desert rock salt — Bikaneri namkeens fried fresh in small batches, celebrated in the bright colors of the Pushkar mela.'
+    },
+    contentOverrides: [
+      { key: 'hero.badge', value: 'Straight from the Pushkar Mela' },
+      { key: 'hero.title', value: 'Festival-Bright Bikaneri Flavors.' },
+      { key: 'hero.subtitle', value: 'Moth flour, pure groundnut oil and desert rock salt — recipes carried from Rajasthan\'s liveliest festival lanes, fried fresh in small batches and sealed airtight the same day.' },
+      { key: 'story.title', value: 'Moth flour. Pure oil. Desert salt. That’s it.' },
+      { key: 'story.body', value: 'Every batch is fried in cold-pressed groundnut oil, never palm oil, and sealed the same day in nitrogen-flushed pouches — so the crunch you get is the crunch that left our kitchen.' },
+      { key: 'reviews.title', value: 'What our customers say' },
+      { key: 'faq.title', value: 'Frequently Asked Questions' },
+      { key: 'footer.bio', value: 'Authentic Bikaneri namkeens and sweets, fried fresh and dressed in the festival colors of Pushkar, shipped nationwide.' }
+    ]
+  },
+  {
+    key: 'thar-bazaar-2026',
+    name: 'Thar Bazaar — Indigo & Marigold',
+    category: 'Signature Meerav Redesign',
+    swatches: ['#1E3A5F', '#E8752A', '#FBF3E7'],
+    values: {
+      siteName: 'MEERAV',
+      tagline: 'Straight from the Thar Bazaar',
+      announcementText: 'Fried Fresh, Same Day • Pure Groundnut Oil • Zero Palm Oil',
+      heroCtaText: 'Shop the Collection',
+      heroSecondaryCtaText: 'Our Story',
+      heroCtaLink: 'category',
+      primaryColor: '#1E3A5F', secondaryColor: '#14283F', accentColor: '#E8752A', accentLightColor: '#F5B14D',
+      headingColor: '#14283F', textColor: '#241C15', backgroundType: 'solid', backgroundColor: '#FBF3E7',
+      backgroundGradient: ['#FBF3E7', '#F3E4CE', '#E8752A'], backgroundPattern: 'dots',
+      fontFamily: 'Work Sans', headingFontFamily: 'Fraunces', borderRadius: 'rounded-none', adminPanelColor: '#14283F',
+      adminPanelType: 'gradient', adminPanelGradient: ['#1E3A5F', '#14283F', '#0E1D2E'],
+      metaTitle: 'MEERAV - Straight from the Thar Bazaar',
+      metaDescription: 'Moth flour, pure groundnut oil and desert rock salt — Bikaneri namkeens fried fresh in small batches, dressed in the colors of the Thar desert bazaar.'
+    },
+    contentOverrides: [
+      { key: 'hero.badge', value: 'From the Bazaars of the Thar Desert' },
+      { key: 'hero.title', value: 'Bold Flavors of the Bazaar.' },
+      { key: 'hero.subtitle', value: 'Moth flour, pure groundnut oil and desert rock salt — recipes carried from Bikaner\'s bustling bazaar lanes, fried fresh in small batches and sealed airtight the same day.' },
+      { key: 'story.title', value: 'Moth flour. Pure oil. Desert salt. That’s it.' },
+      { key: 'story.body', value: 'Every batch is fried in cold-pressed groundnut oil, never palm oil, and sealed the same day in nitrogen-flushed pouches — so the crunch you get is the crunch that left our kitchen.' },
+      { key: 'reviews.title', value: 'What our customers say' },
+      { key: 'faq.title', value: 'Frequently Asked Questions' },
+      { key: 'footer.bio', value: 'Authentic Bikaneri namkeens and sweets, fried fresh and dressed in the bold colors of the Thar bazaar, shipped nationwide.' }
+    ]
+  },
   {
     key: 'bikaner-2026',
     name: 'Bikaner Royal 2026',
@@ -496,6 +624,8 @@ function applyFont(s) {
   const families = [...new Set([bodyFamily, headingFamily])]
     .map(f => f === 'Newsreader'
       ? `family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500`
+      : f === 'Fraunces'
+      ? `family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500;1,9..144,600`
       : `family=${f.replace(/ /g, '+')}:wght@400;500;600;700;800;900`)
     .join('&');
   const href = `https://fonts.googleapis.com/css2?${families}&display=swap`;
