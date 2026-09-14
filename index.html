@@ -43,41 +43,39 @@
 <body class="pb-mobile-nav selection:bg-amber-200 selection:text-amber-950">
 
   <!-- ========================================================================= -->
-  <!-- 1. TOP PROMO & BRAND ANNOUNCEMENT BAR                                     -->
+  <!-- 1. TOP UTILITY BAR                                                        -->
   <!-- ========================================================================= -->
-  <header class="bg-[#32040C] text-white text-xs py-2.5 px-4 sm:px-6 lg:px-8 border-b border-[#E59819]/40">
+  <header class="bg-[#32040C] text-white text-xs py-2 px-4 sm:px-6 lg:px-8 border-b border-[#E59819]/40">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
       <div class="flex items-center gap-2 font-medium">
         <span class="bg-[#E59819] text-[#32040C] font-black text-[10px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">Bikaner Special</span>
         <span id="announcement-bar-text">Prepared in Pure & Clean Oil • Use coupon <strong class="text-[#FBBF24] font-black">MEERAV10</strong> for 10% Off!</span>
       </div>
       <div class="flex items-center gap-4 text-amber-200 text-[11px]">
+        <a href="about" class="hover:text-white transition font-bold">About Us</a>
+        <span class="text-[#E59819]/50 hidden sm:inline">|</span>
+        <button onclick="openOrderTrackingView()" class="hover:text-white transition font-bold">Track Order</button>
+        <span class="text-[#E59819]/50 hidden sm:inline">|</span>
         <a id="whatsapp-header-link" href="https://wa.me/919876543210" target="_blank" class="flex items-center gap-1.5 hover:text-white transition">
           <i class="fab fa-whatsapp"></i>
-          <span id="whatsapp-header-number">Order on WhatsApp: +91 98765 43210</span>
+          <span id="whatsapp-header-number" class="hidden sm:inline">WhatsApp Order</span>
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
-        <a href="about" class="hover:text-white transition flex items-center gap-1 font-bold">
-          About Us
-        </a>
-        <span class="text-[#E59819]/50 hidden sm:inline">|</span>
-        <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
-Admin Portal
-        </a>
+        <a href="admin" class="hover:text-[#FBBF24] transition font-bold text-amber-300">Admin Portal</a>
       </div>
     </div>
   </header>
 
   <!-- ========================================================================= -->
-  <!-- 2. LUXURY STICKY NAVIGATION BAR WITH OFFICIAL MEERAV LOGO                 -->
+  <!-- 2. STICKY BRAND NAVIGATION — ROW 1: LOGO / SEARCH / ACCOUNT / CART        -->
   <!-- ========================================================================= -->
   <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-amber-200/60 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-20 gap-4">
-        
+      <div class="flex items-center justify-between h-18 sm:h-20 gap-4 py-2">
+
         <!-- Official Brand Logo -->
-        <a href="index" class="flex items-center gap-3 cursor-pointer group">
-          <img id="header-brand-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-12 sm:h-14 w-auto object-contain filter drop-shadow-sm group-hover:scale-105 transition-transform duration-300" />
+        <a href="index" class="flex items-center gap-3 cursor-pointer group shrink-0">
+          <img id="header-brand-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-11 sm:h-13 w-auto object-contain filter drop-shadow-sm" />
           <div class="hidden sm:block border-l border-amber-300 pl-3">
             <span id="header-brand-title" class="text-xs font-black tracking-wider uppercase text-[#4A0713] block leading-tight">MEERAV</span>
             <span id="header-brand-tagline" class="text-[10px] font-bold text-amber-700 block leading-tight">From the Heart of Bikaner</span>
@@ -101,12 +99,6 @@ Admin Portal
             <i class="fas fa-magnifying-glass"></i>
           </button>
 
-          <!-- Live Tracking Button -->
-          <button onclick="openOrderTrackingView()" class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-amber-900 bg-amber-100/70 hover:bg-amber-200 border border-amber-300 transition">
-            <i class="fas fa-location-crosshairs"></i>
-            <span>Track Order</span>
-          </button>
-
           <!-- Customer Sign In / Account -->
           <button id="header-customer-btn" onclick="openCustomerAuthModal()"
             class="px-3.5 py-2 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-100 text-xs font-bold transition">
@@ -114,7 +106,7 @@ Admin Portal
           </button>
 
           <!-- Wishlist -->
-          <button onclick="filterCategory('all'); showToast('Showing all favorites', 'info');"
+          <button onclick="window.location.href='category?cat=all'"
             class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
             <i class="far fa-heart"></i>
             <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
@@ -137,6 +129,21 @@ Admin Portal
           <svg class="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path stroke-linecap="round" d="M16.5 16.5L21 21"></path></svg>
           <input type="text" id="store-search-input-mobile" placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri, Makhana..."
             class="w-full pl-11 pr-4 py-2.5 bg-amber-50/50 border border-amber-200 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white transition shadow-inner" />
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 2: CATEGORY MEGA-NAV (Bikaji-style) -->
+    <div class="border-t border-amber-100 bg-[#FDF8ED]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar text-xs font-black uppercase tracking-wide">
+          <a href="category?cat=all" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E]">All Delicacies</a>
+          <a href="category?cat=bhujia-sev" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E]">Bhujia & Sev</a>
+          <a href="category?cat=mixture-farsan" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E]">Namkeen & Mixtures</a>
+          <a href="category?cat=mathri" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E]">Papad & Mathri</a>
+          <a href="category?cat=roasted-diet" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E]">Roasted Diet Snacks</a>
+          <a href="category?cat=sweets-combos" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E]">Sweets & Festive Boxes</a>
+          <a href="about" class="shrink-0 px-4 py-3 text-[#7C2E12] hover:text-[#B5451D] hover:bg-amber-100/60 transition border-b-2 border-transparent hover:border-[#D98F1E] sm:ml-auto">Our Story</a>
         </div>
       </div>
     </div>
@@ -232,17 +239,114 @@ Admin Portal
       <div class="absolute bottom-0 left-0 right-0 bh-torn-edge z-10"></div>
     </section>
 
-    <!-- Signboard strip — flat indigo bar, hand-painted shop-sign feel -->
-    <div class="bh-signboard-band py-3 sm:py-3.5 border-b border-[#1A1109]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-center gap-x-6 sm:gap-x-9 gap-y-2 text-[11px] sm:text-xs font-medium text-[#2A1D14]">
-        <span class="flex items-center gap-1.5"><span class="text-[#7C2E12] font-bold">—</span> Fried fresh every morning</span>
-        <span class="flex items-center gap-1.5"><span class="text-[#7C2E12] font-bold">—</span> Pure groundnut oil, always</span>
-        <span class="flex items-center gap-1.5"><span class="text-[#7C2E12] font-bold">—</span> Packed &amp; shipped same day</span>
-        <span class="flex items-center gap-1.5"><span class="text-[#7C2E12] font-bold">—</span> Family recipe, four decades</span>
+    <!-- ========================================================================= -->
+    <!-- BHUJIA SPOTLIGHT — Bikaji-style featured-category showcase                -->
+    <!-- ========================================================================= -->
+    <section class="relative bg-[#2C4A5E] py-16 sm:py-20 overflow-hidden">
+      <!-- Section label -->
+      <div class="text-center mb-2 relative z-10">
+        <span class="bh-tag !text-[#EADDBF] !border-[#D98F1E]">Bikaneri Bhujia</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#F3E9D4] mt-2 bh-heading">The Royal Treat</h2>
       </div>
-    </div>
 
-    
+      <!-- Floating hero pack on a rounded color blob -->
+      <div class="relative max-w-3xl mx-auto mt-8 mb-4">
+        <div class="mx-auto w-[85%] sm:w-3/4 aspect-[16/11] bg-[#D98F1E] rounded-t-[999px] rounded-b-[40px] opacity-90"></div>
+        <img id="bhujia-spotlight-hero-img" src="assets/images/cinematic_bhujia.jpg" alt="Bikaneri Bhujia"
+          class="absolute inset-0 mx-auto my-auto w-[55%] sm:w-[42%] max-h-[85%] object-contain drop-shadow-2xl" style="top:0;left:0;right:0;bottom:0;" />
+        <p id="bhujia-spotlight-hero-name" class="text-center text-[#F3E9D4] font-bold text-sm mt-4">Meerav Authentic Aloo Bhujia</p>
+      </div>
+
+      <!-- Mini product grid -->
+      <div id="bhujia-spotlight-grid" class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10">
+        <!-- Populated dynamically by renderBhujiaSpotlight() in store.js -->
+      </div>
+
+      <div class="text-center mt-10 relative z-10">
+        <a href="category?cat=bhujia-sev" class="inline-flex items-center gap-2 px-8 py-3 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-full shadow-lg transition">
+          Explore All Bhujia
+        </a>
+      </div>
+    </section>
+
+    <div class="bh-torn-edge"></div>
+
+    <!-- Bikaji-style bold tagline strip -->
+    <section class="bg-[#D98F1E] py-8 sm:py-10 border-y-4 border-[#7C2E12]">
+      <div class="max-w-5xl mx-auto px-4 text-center">
+        <p class="text-lg sm:text-2xl font-black text-[#2A1D14] leading-snug bh-heading">
+          PRESERVING RAJASTHANI TASTE<br class="sm:hidden" /> THROUGH HONEST SNACKING.<br/>
+          <span class="text-[#7C2E12]">FOR OVER 40 YEARS.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Brand Story & Milestone Stats Section -->
+    <section id="home-story-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-18 border-b border-amber-200/80">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-6 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100 text-[#7C2E12] text-xs font-black border border-[#D98F1E]">
+
+            <span>Our Family's Story</span>
+          </div>
+          <h2 data-ck="home.story.heading" class="text-3xl sm:text-4xl font-black text-[#2A1D14] tracking-tight leading-tight bh-heading">
+            Heritage of Bikaner, in every batch.
+          </h2>
+          <p data-ck="home.story.subheading" class="text-sm font-bold text-[#B5451D] uppercase tracking-wider">
+            Four decades, one kitchen, no shortcuts
+          </p>
+          <div id="home-story-paragraphs" class="space-y-3">
+            <!-- Populated dynamically by store.js -->
+          </div>
+
+          <!-- Milestone Stats Counters (Full Dynamic CMS) -->
+          <div id="home-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-amber-200">
+            <!-- Populated dynamically by store.js -->
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="bh-polaroid max-w-md w-full">
+          <div class="relative overflow-hidden w-full aspect-4/3 bg-amber-50">
+            <img id="home-story-image" src="assets/images/feature_heritage.jpg" alt="Amber Fort, Rajasthan" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+              <div class="text-white space-y-1">
+                <span class="bh-tag !bg-[#2C4A5E]">Rajasthan, Our Home</span>
+                <p class="text-xs font-bold text-amber-200">The Same Desert Land That Gives Us Our Spices &amp; Salt</p>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Best Sellers Carousel (Bikaji-style) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-amber-200/80">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="bh-tag">Most Loved</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3 bh-heading">Best Sellers</h2>
+        <p class="text-xs sm:text-sm text-gray-600 mt-2 font-medium">The snacks our customers reorder the most</p>
+      </div>
+      <div id="home-bestsellers-track" class="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth pb-4">
+        <!-- Populated dynamically by renderBestSellers() in store.js -->
+      </div>
+      <div class="text-center mt-8">
+        <a href="category?cat=all" class="inline-flex items-center gap-2 px-8 py-3 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-full shadow-lg transition">
+          Explore All Products
+        </a>
+      </div>
+    </section>
+
+    <!-- Royal Trust Section with Real Image Badges (Full Dynamic CMS) -->
+    <section id="home-trust-section" class="bh-signboard-band text-[#2A1D14] py-16 border-t-4 border-[#7C2E12] transition-all">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div id="home-trust-badges-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center md:text-left">
+          <!-- Populated dynamically by store.js -->
+        </div>
+      </div>
+    </section>
+
     <!-- 4K Video Reels & Cinematic Stories (Watch & Shop Broadcast) -->
     <section id="home-broadcast-reels-section" class="py-12 bg-gradient-to-b from-amber-50/60 to-white border-b border-amber-200/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -297,86 +401,6 @@ Admin Portal
       </div>
     </section>
 
-    <!-- ========================================================================= -->
-    <!-- BHUJIA SPOTLIGHT — Bikaji-style featured-category showcase                -->
-    <!-- ========================================================================= -->
-    <section class="relative bg-[#2C4A5E] py-16 sm:py-20 overflow-hidden">
-      <!-- Section label -->
-      <div class="text-center mb-2 relative z-10">
-        <span class="bh-tag !text-[#EADDBF] !border-[#D98F1E]">Bikaneri Bhujia</span>
-        <h2 class="text-3xl sm:text-4xl font-black text-[#F3E9D4] mt-2 bh-heading">The Royal Treat</h2>
-      </div>
-
-      <!-- Floating hero pack on a rounded color blob -->
-      <div class="relative max-w-3xl mx-auto mt-8 mb-4">
-        <div class="mx-auto w-[85%] sm:w-3/4 aspect-[16/11] bg-[#D98F1E] rounded-t-[999px] rounded-b-[40px] opacity-90"></div>
-        <img id="bhujia-spotlight-hero-img" src="assets/images/cinematic_bhujia.jpg" alt="Bikaneri Bhujia"
-          class="absolute inset-0 mx-auto my-auto w-[55%] sm:w-[42%] max-h-[85%] object-contain drop-shadow-2xl" style="top:0;left:0;right:0;bottom:0;" />
-        <p id="bhujia-spotlight-hero-name" class="text-center text-[#F3E9D4] font-bold text-sm mt-4">Meerav Authentic Aloo Bhujia</p>
-      </div>
-
-      <!-- Mini product grid -->
-      <div id="bhujia-spotlight-grid" class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10">
-        <!-- Populated dynamically by renderBhujiaSpotlight() in store.js -->
-      </div>
-
-      <div class="text-center mt-10 relative z-10">
-        <a href="category?cat=bhujia-sev" class="inline-flex items-center gap-2 px-8 py-3 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-full shadow-lg transition">
-          Explore All Bhujia
-        </a>
-      </div>
-    </section>
-
-    <div class="bh-torn-edge"></div>
-    <!-- Royal Trust Section with Real Image Badges (Full Dynamic CMS) -->
-    <section id="home-trust-section" class="bh-signboard-band text-[#2A1D14] py-16 border-t-4 border-[#7C2E12] transition-all">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div id="home-trust-badges-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center md:text-left">
-          <!-- Populated dynamically by store.js -->
-        </div>
-      </div>
-    </section>
-
-    <!-- Brand Story & Milestone Stats Section -->
-    <section id="home-story-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-18 border-b border-amber-200/80">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div class="lg:col-span-6 space-y-6">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100 text-[#7C2E12] text-xs font-black border border-[#D98F1E]">
-
-            <span>Our Family's Story</span>
-          </div>
-          <h2 data-ck="home.story.heading" class="text-3xl sm:text-4xl font-black text-[#2A1D14] tracking-tight leading-tight bh-heading">
-            Heritage of Bikaner, in every batch.
-          </h2>
-          <p data-ck="home.story.subheading" class="text-sm font-bold text-[#B5451D] uppercase tracking-wider">
-            Four decades, one kitchen, no shortcuts
-          </p>
-          <div id="home-story-paragraphs" class="space-y-3">
-            <!-- Populated dynamically by store.js -->
-          </div>
-
-          <!-- Milestone Stats Counters (Full Dynamic CMS) -->
-          <div id="home-stats-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-amber-200">
-            <!-- Populated dynamically by store.js -->
-          </div>
-        </div>
-
-        <div class="lg:col-span-6 flex justify-center">
-          <div class="bh-polaroid max-w-md w-full">
-          <div class="relative overflow-hidden w-full aspect-4/3 bg-amber-50">
-            <img id="home-story-image" src="assets/images/feature_heritage.jpg" alt="Amber Fort, Rajasthan" class="w-full h-full object-cover" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
-              <div class="text-white space-y-1">
-                <span class="bh-tag !bg-[#2C4A5E]">Rajasthan, Our Home</span>
-                <p class="text-xs font-bold text-amber-200">The Same Desert Land That Gives Us Our Spices &amp; Salt</p>
-              </div>
-            </div>
-          </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- Customer Reviews & Testimonials Section -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-b border-amber-200/80">
       <div class="text-center max-w-2xl mx-auto mb-10">
@@ -406,6 +430,7 @@ Admin Portal
         <!-- Rendered dynamically by store.js -->
       </div>
     </section>
+
 
     <!-- Enhanced 4-Column Footer -->
     <div class="bh-torn-edge"></div>

@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStoreDietaryFilters();
   renderStoreProducts();
   renderBhujiaSpotlight();
+  renderBestSellers();
   renderStoreTrustBadges();
   renderStoreStoryParagraphs();
   renderStoreStats();
@@ -969,6 +970,52 @@ function renderBhujiaSpotlight() {
       `;
     }).join('');
   }
+}
+
+/**
+ * BEST SELLERS CAROUSEL (Bikaji-style horizontal scroll of top-rated products)
+ */
+function renderBestSellers() {
+  const container = document.getElementById('home-bestsellers-track');
+  if (!container) return;
+
+  const products = (storeState.products && storeState.products.length ? storeState.products : (MIRA_DATA.products || []));
+  const sorted = [...products].sort((a, b) => {
+    const aScore = (a.tag === 'Best Seller' ? 1000 : 0) + (a.reviewsCount || 0);
+    const bScore = (b.tag === 'Best Seller' ? 1000 : 0) + (b.reviewsCount || 0);
+    return bScore - aScore;
+  });
+  const items = sorted.slice(0, 8);
+  if (!items.length) return;
+
+  container.innerHTML = items.map(p => {
+    const variant = (p.variants && p.variants[0]) || { price: 0, originalPrice: 0 };
+    const hasDiscount = variant.originalPrice && variant.originalPrice > variant.price;
+    const isWishlisted = storeState.wishlist && storeState.wishlist.includes(p.id);
+    return `
+      <div class="shrink-0 w-44 sm:w-52 text-center space-y-3">
+        <div class="relative">
+          <button onclick="toggleWishlist('${p.id}')" class="absolute -top-2 -right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md z-10 transition" title="Save to favorites">
+            <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'text-[#B5451D]' : 'text-[#2A1D14]'} text-sm"></i>
+          </button>
+          <div class="bg-white p-3 shadow-md border border-amber-200/80 cursor-pointer" onclick="window.location.href='product?id=${p.id}'">
+            <div class="aspect-square overflow-hidden flex items-center justify-center bg-amber-50">
+              <img src="${p.image || 'assets/images/cinematic_bhujia.jpg'}" alt="${p.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" />
+            </div>
+          </div>
+        </div>
+        <h4 class="font-black text-xs sm:text-sm text-[#2A1D14] leading-snug px-1 line-clamp-2">${p.name}</h4>
+        <div class="flex items-center justify-center gap-2">
+          <span class="font-black text-[#7C2E12] text-sm">${formatPrice(variant.price)}</span>
+          ${hasDiscount ? `<span class="text-[11px] text-[#2A1D14]/50 line-through">${formatPrice(variant.originalPrice)}</span>` : ''}
+        </div>
+        <button onclick="addToCart('${p.id}', 0); showToast('Added to cart!', 'success');"
+          class="w-full px-4 py-2 border-2 border-[#2A1D14] text-[#2A1D14] hover:bg-[#2A1D14] hover:text-white text-[11px] font-black rounded-full transition">
+          Add to Cart
+        </button>
+      </div>
+    `;
+  }).join('');
 }
 
 /**

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MEERAV - Bikaneri Categories & Snack Collection</title>
+  <title>MEERAV - About Us | Our Story from Bikaner</title>
   <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
   
   <!-- Google Fonts -->
@@ -132,7 +132,7 @@
   </nav>
 
   <!-- ========================================================================= -->
-  <!-- 3. DEDICATED CATEGORY HEADER BANNER                                       -->
+  <!-- 3. ABOUT US HEADER BANNER                                                 -->
   <!-- ========================================================================= -->
   <section class="relative overflow-hidden bg-[#7C2E12] text-white py-10 px-4 sm:px-6 lg:px-8 border-b-4 border-[#2A1D14]">
     <div class="absolute inset-0 bh-signboard-band opacity-90 pointer-events-none" aria-hidden="true"></div>
@@ -143,22 +143,20 @@
         <nav class="flex items-center gap-2 text-xs text-amber-200/80 mb-2 font-medium">
           <a href="index" class="hover:text-white transition">Home</a>
           →
-          <span class="text-white font-black">Categories & Products</span>
-          →
-          <span id="current-category-breadcrumb" class="text-[#FBBF24] font-black capitalize">All Delicacies</span>
+          <span class="text-[#FBBF24] font-black">About Us</span>
         </nav>
 
-        <h1 id="current-category-title" class="text-3xl sm:text-4xl font-black text-[#FBBF24] tracking-tight mb-2">
-          Bikaneri Namkeens & Snacks
+        <h1 class="text-3xl sm:text-4xl font-black text-[#FBBF24] tracking-tight mb-2 bh-heading">
+          Meerav Ki Kahani — Our Story
         </h1>
-        <p id="current-category-desc" class="text-xs sm:text-sm text-amber-100 max-w-2xl leading-relaxed font-medium">
-          Crispy, handcrafted namkeens prepared daily in 100% pure & clean cold-pressed oil with authentic Rajasthani spices.
+        <p class="text-xs sm:text-sm text-amber-100 max-w-2xl leading-relaxed font-medium">
+          A small family kitchen in Bikaner, fried fresh every morning since 1983 — no shortcuts, no palm oil, no factory lines.
         </p>
       </div>
 
       <div class="flex items-center gap-3">
         <span class="px-3.5 py-1.5 bg-amber-500/20 text-[#FBBF24] border border-[#E59819] rounded-2xl text-xs font-black flex items-center gap-1.5 shadow-sm">
-Same-Day Dispatch from Bikaner
+Four Decades of Aslee Bikaneri Taste
         </span>
       </div>
 
@@ -167,49 +165,153 @@ Same-Day Dispatch from Bikaner
   <div class="bh-torn-edge"></div>
 
   <!-- ========================================================================= -->
-  <!-- 4. CATEGORY SELECTOR TABS & PRODUCTS GRID                                 -->
+  <!-- 4. ABOUT US CONTENT                                                       -->
   <!-- ========================================================================= -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-fade-in space-y-8">
-    
-    <!-- Category Picker Cards — the only way to pick a category. Hidden once
-         one is chosen, so the product list opens as its own clean page. -->
-    <div id="category-picker-section" class="space-y-5">
-      <h3 class="text-lg sm:text-xl font-black text-gray-900">Choose a Category to Explore Snacks</h3>
-      <div id="category-picker-cards-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
-        <!-- Populated via category-page.js -->
+  <main class="animate-fade-in">
+
+    <!-- Our Story -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-amber-200/80">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-6 space-y-6">
+          <span class="bh-tag">Meerav Ki Kahani</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-[#2A1D14] tracking-tight leading-tight bh-heading">
+            We still fry it the way <span class="italic text-[#B5451D]">Nani</span> did.
+          </h2>
+          <div class="space-y-4 text-sm text-gray-700 leading-relaxed font-medium">
+            <p>Meerav began the way most honest kitchens do — not as a business plan, but as a family's own recipe box. In 1983, in a small kitchen in Bikaner, our Nani started frying namkeens the traditional way: hand-mixed spice blends, slow-fried batches, and a stubborn refusal to cut corners.</p>
+            <p>Four decades later, the kitchen has grown, but the method hasn't changed. We still measure our moth dal flour by hand, still test the oil temperature by feel, and still pack every order the same day it's fried — because that's the only way we know how to make it taste right.</p>
+            <p>No palm oil, no chemical preservatives, no factory shortcuts. Just pure cold-pressed groundnut oil, desert rock salt, and a family recipe that's never been written down — only passed on.</p>
+          </div>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <span class="bh-price-tag">Est. 1983</span>
+            <span class="bh-price-tag" style="transform:rotate(-4deg);">100% Vegetarian</span>
+            <span class="bh-price-tag" style="transform:rotate(3deg);">Zero Palm Oil</span>
+          </div>
+        </div>
+        <div class="lg:col-span-6 flex justify-center">
+          <div class="bh-polaroid max-w-md w-full">
+            <div class="relative overflow-hidden w-full aspect-4/3 bg-amber-50">
+              <img src="assets/images/feature_heritage.jpg" alt="Meerav's kitchen heritage, Bikaner" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
+                <div class="text-white space-y-1">
+                  <span class="bh-tag !bg-[#2C4A5E]">Bikaner, Rajasthan</span>
+                  <p class="text-xs font-bold text-amber-200">Where Every Batch Still Begins</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Shown once a category is picked: quick way back + item count -->
-    <div id="category-back-row" class="hidden items-center justify-between gap-4">
-      <button type="button" id="category-back-btn" onclick="clearCategorySelection()"
-        class="flex items-center gap-2 text-xs font-black text-[#4A0713] hover:underline">
-         Change Category
-      </button>
-      <span id="category-items-count" class="shrink-0 text-xs text-[#4A0713] font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-        Showing 8 Items
-      </span>
-    </div>
+    <div class="bh-torn-edge"></div>
 
-    <!-- Dietary Filter Pills -->
-    <div id="category-dietary-container" class="hidden flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
-      <!-- Populated via category-page.js -->
-    </div>
+    <!-- Meerav At A Glance — Milestones -->
+    <section class="bh-signboard-band text-[#2A1D14] py-16 border-t-4 border-[#7C2E12]">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <span class="bh-tag">Meerav At A Glance</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-[#2A1D14] mt-3 bh-heading">Four Decades, One Kitchen</h2>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          <div class="bh-card bh-tilt-1 p-5 text-center space-y-1">
+            <div class="text-3xl font-black text-[#7C2E12]">1983</div>
+            <div class="text-[11px] font-bold text-[#5A4632] uppercase tracking-wide">The Year It Began</div>
+          </div>
+          <div class="bh-card bh-tilt-2 p-5 text-center space-y-1">
+            <div class="text-3xl font-black text-[#7C2E12]">40+</div>
+            <div class="text-[11px] font-bold text-[#5A4632] uppercase tracking-wide">Years of Heritage</div>
+          </div>
+          <div class="bh-card bh-tilt-3 p-5 text-center space-y-1">
+            <div class="text-3xl font-black text-[#7C2E12]">75+</div>
+            <div class="text-[11px] font-bold text-[#5A4632] uppercase tracking-wide">Handcrafted Delicacies</div>
+          </div>
+          <div class="bh-card bh-tilt-4 p-5 text-center space-y-1">
+            <div class="text-3xl font-black text-[#7C2E12]">50K+</div>
+            <div class="text-[11px] font-bold text-[#5A4632] uppercase tracking-wide">Happy Foodies Served</div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Products Cards Grid -->
-    <div id="category-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Populated via category-page.js -->
-    </div>
+    <div class="bh-torn-edge"></div>
 
-    <!-- Empty State Container -->
-    <div id="category-empty-state" class="hidden py-16 text-center bg-amber-50/50 rounded-3xl border border-dashed border-amber-300 p-8 space-y-3">
-      
-      <h3 class="text-base font-black text-gray-900">No Bikaneri snacks found matching your filter</h3>
-      <p class="text-xs text-gray-500">Try choosing a different category or clearing your search term</p>
-      <button onclick="selectCategory('all')" class="px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] rounded-xl text-xs font-black border border-[#E59819]">
-        View All 8 Signature Snacks
-      </button>
-    </div>
+    <!-- Vision -->
+    <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 text-center border-b border-amber-200/80">
+      <span class="bh-tag">Our Vision</span>
+      <h2 class="text-2xl sm:text-3xl font-black text-[#2A1D14] mt-3 mb-6 bh-heading">Aslee Bikaneri Swaad, Har Ghar Tak</h2>
+      <p class="text-sm sm:text-base text-gray-700 leading-relaxed font-medium max-w-3xl mx-auto">
+        Meerav aspires to carry the authentic taste of Bikaner into every home that misses it — without ever trading that authenticity for scale. We'd rather stay a family kitchen that grows slowly than a factory that grows fast. Every new snack we add, every new city we reach, still has to pass one test: would Nani have approved of it?
+      </p>
+    </section>
+
+    <!-- Our Values -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-amber-200/80">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="bh-tag">What We Stand For</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3 bh-heading">Our Purity Guarantees</h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="space-y-3 text-center md:text-left">
+          <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[-2deg]">
+            <img src="assets/images/feature_oil.jpg" alt="Pure & Clean Oil" class="w-full h-full object-cover" />
+          </div>
+          <h4 class="font-black text-base text-[#2A1D14]">Pure & Clean Oil</h4>
+          <p class="text-xs text-[#5A4632] leading-relaxed font-medium">Cold-pressed groundnut oil only — zero palm oil, ever, in any batch.</p>
+        </div>
+        <div class="space-y-3 text-center md:text-left">
+          <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[1.5deg]">
+            <img src="assets/images/feature_heritage.jpg" alt="Bikaneri Heritage" class="w-full h-full object-cover" />
+          </div>
+          <h4 class="font-black text-base text-[#2A1D14]">Bikaneri Heritage</h4>
+          <p class="text-xs text-[#5A4632] leading-relaxed font-medium">Authentic traditional spices, moth dal flour, and slow-fried craftsmanship from Bikaner.</p>
+        </div>
+        <div class="space-y-3 text-center md:text-left">
+          <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[-1deg]">
+            <img src="assets/images/feature_packaging.jpg" alt="Multi-Layer Airtight Pack" class="w-full h-full object-cover" />
+          </div>
+          <h4 class="font-black text-base text-[#2A1D14]">Multi-Layer Airtight Pack</h4>
+          <p class="text-xs text-[#5A4632] leading-relaxed font-medium">Food-grade nitrogen-flushed packaging guarantees crisp crunch for 6+ months.</p>
+        </div>
+        <div class="space-y-3 text-center md:text-left">
+          <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[2deg]">
+            <img src="assets/images/feature_whatsapp.jpg" alt="Live WhatsApp Alerts" class="w-full h-full object-cover" />
+          </div>
+          <h4 class="font-black text-base text-[#2A1D14]">Same-Day Dispatch</h4>
+          <p class="text-xs text-[#5A4632] leading-relaxed font-medium">Packed and shipped the same day it's fried, with live WhatsApp order updates.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Our Kitchen / Gallery -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-amber-200/80">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="bh-tag">Inside Our Kitchen</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#32040C] mt-3 bh-heading">From Bikaner, With Nothing Held Back</h2>
+        <p class="text-xs sm:text-sm text-gray-600 mt-2 font-medium">A glimpse of the process behind every packet — real photos, no stock imagery</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bh-polaroid" style="transform:rotate(-2deg);"><div class="aspect-square overflow-hidden"><img src="assets/images/cinematic_bhujia.jpg" alt="Fresh bhujia frying" class="w-full h-full object-cover" /></div></div>
+        <div class="bh-polaroid" style="transform:rotate(1.5deg);"><div class="aspect-square overflow-hidden"><img src="assets/images/cinematic_masala_peanuts.jpg" alt="Masala peanuts roasting" class="w-full h-full object-cover" /></div></div>
+        <div class="bh-polaroid" style="transform:rotate(-1deg);"><div class="aspect-square overflow-hidden"><img src="assets/images/cinematic_mixture.jpg" alt="Namkeen mixture" class="w-full h-full object-cover" /></div></div>
+        <div class="bh-polaroid" style="transform:rotate(2deg);"><div class="aspect-square overflow-hidden"><img src="assets/images/cinematic_moong_dal.jpg" alt="Moong dal namkeen" class="w-full h-full object-cover" /></div></div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+      <div class="relative bg-[#7C2E12] rounded-none p-8 sm:p-12 text-white border-3 border-[#2A1D14] shadow-[7px_7px_0_#2C4A5E] flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden">
+        <div class="space-y-1 text-center md:text-left">
+          <span class="text-xs text-[#FBBF24] font-black uppercase tracking-wider">Taste the Story</span>
+          <h3 class="text-2xl font-black text-white">Ready to try what Nani started?</h3>
+          <p class="text-xs text-amber-200/80">Fresh-fried, hand-packed, and dispatched same-day from our Bikaner kitchen.</p>
+        </div>
+        <a href="category?cat=all"
+          class="px-8 py-4 bg-[#2C4A5E] hover:bg-[#EADDBF] text-white hover:text-[#7C2E12] font-black text-sm rounded-none shadow-xl transition border-2 border-[#2A1D14] shrink-0 flex items-center gap-2">
+          Explore Our Snacks
+        </a>
+      </div>
+    </section>
 
   </main>
 
@@ -316,9 +418,9 @@ Same-Day Dispatch from Bikaner
       <i class="fas fa-house text-base"></i>
       <span class="text-[10px] font-bold">Home</span>
     </a>
-    <a href="category" class="flex flex-col items-center gap-0.5 text-[#4A0713]">
+    <a href="category" class="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
       <i class="fas fa-layer-group text-base"></i>
-      <span class="text-[10px] font-black">Categories</span>
+      <span class="text-[10px] font-bold">Categories</span>
     </a>
     <button onclick="openCartDrawer()" class="relative flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4A0713]">
       <i class="fas fa-bag-shopping text-base"></i>
@@ -348,7 +450,6 @@ Same-Day Dispatch from Bikaner
   <script defer src="js/auth.js"></script>
   <script defer src="js/map.js"></script>
   <script defer src="js/store.js"></script>
-  <script defer src="js/category-page.js"></script>
   <script defer src="js/chatbot.js"></script>
 </body>
 </html>
