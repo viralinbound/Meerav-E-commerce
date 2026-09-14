@@ -907,8 +907,8 @@ function renderStoreTrustBadges() {
       <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[-2deg] group-hover:rotate-0 transition-transform duration-300">
         <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='assets/images/feature_oil.jpg'" />
       </div>
-      <h4 class="font-black text-base text-[#F3E9D4]">${b.title}</h4>
-      <p class="text-xs text-[#EADDC5] leading-relaxed font-medium">${b.description}</p>
+      <h4 class="font-black text-base text-[#2A1D14]">${b.title}</h4>
+      <p class="text-xs text-[#5A4632] leading-relaxed font-medium">${b.description}</p>
     </div>
   `).join('');
 }
@@ -1387,9 +1387,9 @@ function renderHeroCarousel() {
     track.innerHTML = slides.map((s, idx) => `
       <div class="w-full h-full shrink-0 relative cursor-pointer" onclick="openBrandFilmModal()">
         ${s.mediaType === 'video' ? `
-          <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video" autoplay' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" preload="${idx === storeState.heroSlideIndex ? 'auto' : 'metadata'}" loop muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"></video>
+          <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video" autoplay' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" preload="${idx === storeState.heroSlideIndex ? 'auto' : 'metadata'}" loop muted playsinline class="w-full h-full object-cover"></video>
         ` : `
-          <img src="${s.mediaUrl}" alt="${s.title || ''}" ${idx === storeState.heroSlideIndex ? '' : 'loading="lazy" decoding="async"'} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+          <img src="${s.mediaUrl}" alt="${s.title || ''}" ${idx === storeState.heroSlideIndex ? '' : 'loading="lazy" decoding="async"'} class="w-full h-full object-cover" />
         `}
       </div>
     `).join('');
