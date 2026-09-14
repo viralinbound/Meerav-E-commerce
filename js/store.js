@@ -288,7 +288,7 @@ function renderCinematicVideoReels() {
     const pid = s.productId || 'p1';
 
     return `
-      <div class="reels-card relative flex flex-col justify-between group cursor-pointer shrink-0 w-64 bg-[#1F0307] rounded-3xl overflow-hidden shadow-xl border-2 border-[#E59819]/40 hover:border-[#E59819] transition-all duration-300" 
+      <div class="reels-card relative flex flex-col justify-between group cursor-pointer shrink-0 w-64 bg-[#2A1D14] rounded-3xl overflow-hidden shadow-xl border-2 border-[#E59819]/40 hover:border-[#E59819] transition-all duration-300" 
         onmouseenter="const vid=this.querySelector('video'); if(vid){vid.play().catch(()=>{});}" 
         onmouseleave="const vid=this.querySelector('video'); if(vid){vid.pause();}">
         
@@ -318,7 +318,7 @@ function renderCinematicVideoReels() {
         </div>
 
         <!-- Card Footer (Title, Price & 1-Tap Add) -->
-        <div class="p-4 bg-gradient-to-b from-[#1F0307] to-[#120104] border-t border-[#E59819]/30 flex flex-col justify-between space-y-2.5">
+        <div class="p-4 bg-gradient-to-b from-[#2A1D14] to-[#1A1109] border-t border-[#E59819]/30 flex flex-col justify-between space-y-2.5">
           <div>
             <h4 class="font-black text-xs text-white truncate group-hover:text-[#FBBF24] transition">${s.title}</h4>
             <div class="flex items-baseline gap-1.5 mt-1">

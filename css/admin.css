@@ -17,7 +17,7 @@
 body.admin-body {
   background-color: #F3E9D4;
   font-family: 'Manrope', sans-serif;
-  color: #211412;
+  color: #2A1D14;
 }
 
 /* Sidebar Styling — royal gradient with a faint Rajasthani jaali lattice overlay */
@@ -41,7 +41,7 @@ body.admin-body {
   border-radius: 16px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #D1C5C7;
+  color: #D9C9AE;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid transparent;
   cursor: pointer;
@@ -55,7 +55,7 @@ body.admin-body {
 }
 
 .admin-nav-item.active {
-  background: linear-gradient(135deg, #B5451D 0%, #670E1E 100%) !important;
+  background: linear-gradient(135deg, #B5451D 0%, #7C2E12 100%) !important;
   color: #FBBF24 !important;
   border: 1px solid #E59819 !important;
   box-shadow: 0 8px 18px rgba(74, 7, 19, 0.4);
@@ -80,7 +80,7 @@ body.admin-body {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #E59819 0%, #FBBF24 50%, #B45309 100%);
+  background: linear-gradient(90deg, #E59819 0%, #FBBF24 50%, #B5451D 100%);
 }
 
 .admin-stat-card:hover {
@@ -99,7 +99,7 @@ body.admin-body {
 }
 
 .admin-table th {
-  background: #FFF9ED;
+  background: #F3E9D4;
   color: #B5451D;
   font-size: 0.72rem;
   font-weight: 900;
@@ -111,12 +111,12 @@ body.admin-body {
 
 .admin-table td {
   padding: 16px 20px;
-  border-bottom: 1px solid #F6EFE5;
+  border-bottom: 1px solid #EADDBF;
   font-size: 0.82rem;
 }
 
 .admin-table tr:hover td {
-  background-color: #FFFDF8;
+  background-color: #F3E9D4;
 }
 
 /* Animations */
