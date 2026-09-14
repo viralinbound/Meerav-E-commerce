@@ -64,6 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderStoreCategories();
   renderStoreDietaryFilters();
   renderStoreProducts();
+  renderBhujiaSpotlight();
   renderStoreTrustBadges();
   renderStoreStoryParagraphs();
   renderStoreStats();
@@ -914,6 +915,63 @@ function renderStoreTrustBadges() {
 }
 
 /**
+ * BHUJIA SPOTLIGHT SECTION (Bikaji-style featured-category showcase) —
+ * one large floating hero pack on a bold color blob, with a small grid of
+ * that category's products below (image, name, price, wishlist, add-to-cart).
+ */
+function renderBhujiaSpotlight() {
+  const heroImg = document.getElementById('bhujia-spotlight-hero-img');
+  const grid = document.getElementById('bhujia-spotlight-grid');
+  if (!heroImg && !grid) return;
+
+  const products = (storeState.products && storeState.products.length ? storeState.products : (MIRA_DATA.products || []))
+    .filter(p => p.category === 'bhujia-sev');
+  if (!products.length) return;
+
+  const hero = products[0];
+  const heroVariant = (hero.variants && hero.variants[0]) || { price: 0, originalPrice: 0 };
+
+  if (heroImg) {
+    heroImg.src = hero.image || 'assets/images/cinematic_bhujia.jpg';
+    heroImg.alt = hero.name || 'Bhujia';
+  }
+  const heroName = document.getElementById('bhujia-spotlight-hero-name');
+  if (heroName) heroName.textContent = hero.name || 'Bikaneri Bhujia';
+
+  if (grid) {
+    const items = products.slice(1, 4).length ? products.slice(1, 4) : products.slice(0, 3);
+    grid.innerHTML = items.map(p => {
+      const variant = (p.variants && p.variants[0]) || { price: 0, originalPrice: 0 };
+      const hasDiscount = variant.originalPrice && variant.originalPrice > variant.price;
+      const isWishlisted = storeState.wishlist && storeState.wishlist.includes(p.id);
+      return `
+        <div class="text-center space-y-3 animate-fade-in">
+          <div class="relative">
+            <button onclick="toggleWishlist('${p.id}')" class="absolute -top-2 -right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md z-10 transition" title="Save to favorites">
+              <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'text-[#B5451D]' : 'text-[#2A1D14]'} text-sm"></i>
+            </button>
+            <div class="bg-white p-3 shadow-md border border-[#2A1D14]/10 cursor-pointer" onclick="window.location.href='product?id=${p.id}'">
+              <div class="aspect-square overflow-hidden flex items-center justify-center bg-amber-50">
+                <img src="${p.image || 'assets/images/cinematic_bhujia.jpg'}" alt="${p.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" />
+              </div>
+            </div>
+          </div>
+          <h4 class="font-black text-sm text-[#2A1D14] leading-snug px-1">${p.name}</h4>
+          <div class="flex items-center justify-center gap-2">
+            <span class="font-black text-[#7C2E12]">${formatPrice(variant.price)}</span>
+            ${hasDiscount ? `<span class="text-xs text-[#2A1D14]/50 line-through">${formatPrice(variant.originalPrice)}</span>` : ''}
+          </div>
+          <button onclick="addToCart('${p.id}', 0); showToast('Added to cart!', 'success');"
+            class="px-5 py-2 border-2 border-[#2A1D14] text-[#2A1D14] hover:bg-[#2A1D14] hover:text-white text-xs font-black rounded-full transition">
+            Add to Cart
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+/**
  * DYNAMIC BRAND STORY PARAGRAPHS RENDERER (admin can add/remove any number)
  */
 function renderStoreStoryParagraphs() {
@@ -1413,6 +1471,18 @@ function renderHeroCarousel() {
   const counter = document.getElementById('hero-slide-counter');
   if (counter) counter.innerHTML = ` ${storeState.heroSlideIndex + 1} / ${slides.length}`;
 
+  const dotsContainer = document.getElementById('hero-slide-dots');
+  if (dotsContainer) {
+    if (slides.length > 1) {
+      dotsContainer.innerHTML = slides.map((s, idx) => `
+        <button onclick="goToHeroSlide(${idx})" aria-label="Go to slide ${idx + 1}"
+          class="h-1.5 rounded-full transition-all duration-300 ${idx === storeState.heroSlideIndex ? 'w-7 bg-[#D98F1E]' : 'w-1.5 bg-white/50 hover:bg-white/80'}"></button>
+      `).join('');
+    } else {
+      dotsContainer.innerHTML = '';
+    }
+  }
+
   const muteBtn = document.getElementById('video-mute-btn');
   if (muteBtn) {
     muteBtn.innerHTML = '';
@@ -1433,6 +1503,14 @@ function nextHeroSlide() {
 function prevHeroSlide() {
   const slides = getHeroSlides();
   storeState.heroSlideIndex = (storeState.heroSlideIndex - 1 + slides.length) % slides.length;
+  renderHeroCarousel();
+  syncHeroFullscreenMedia();
+}
+
+function goToHeroSlide(idx) {
+  const slides = getHeroSlides();
+  if (idx < 0 || idx >= slides.length) return;
+  storeState.heroSlideIndex = idx;
   renderHeroCarousel();
   syncHeroFullscreenMedia();
 }

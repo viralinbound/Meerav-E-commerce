@@ -57,6 +57,10 @@
           <span id="whatsapp-header-number">Order on WhatsApp: +91 98765 43210</span>
         </a>
         <span class="text-[#E59819]/50 hidden sm:inline">|</span>
+        <a href="about" class="hover:text-white transition flex items-center gap-1 font-bold">
+          About Us
+        </a>
+        <span class="text-[#E59819]/50 hidden sm:inline">|</span>
         <a href="admin" class="hover:text-[#FBBF24] transition flex items-center gap-1 font-bold text-amber-300">
 Admin Portal
         </a>
@@ -184,6 +188,9 @@ Admin Portal
         EST.<br/>BIKANER
       </div>
 
+      <!-- Slide Dots Indicator (Bikaji-style) -->
+      <div id="hero-slide-dots" class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20"></div>
+
       <!-- Headline + CTA content, overlaid at the bottom of the full-bleed banner -->
       <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-12 sm:pb-16 pt-32 sm:pt-16">
         <div class="max-w-2xl text-center sm:text-left mx-auto sm:mx-0">
@@ -286,6 +293,36 @@ Admin Portal
         <a href="category?cat=all"
           class="px-8 py-4 bg-[#2C4A5E] hover:bg-[#EADDBF] text-[#7C2E12] font-black text-sm rounded-none shadow-xl transition border-2 border-[#2A1D14] shrink-0 flex items-center gap-2">
           <span id="home-total-products-btn">Explore All Products</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- BHUJIA SPOTLIGHT — Bikaji-style featured-category showcase                -->
+    <!-- ========================================================================= -->
+    <section class="relative bg-[#2C4A5E] py-16 sm:py-20 overflow-hidden">
+      <!-- Section label -->
+      <div class="text-center mb-2 relative z-10">
+        <span class="bh-tag !text-[#EADDBF] !border-[#D98F1E]">Bikaneri Bhujia</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[#F3E9D4] mt-2 bh-heading">The Royal Treat</h2>
+      </div>
+
+      <!-- Floating hero pack on a rounded color blob -->
+      <div class="relative max-w-3xl mx-auto mt-8 mb-4">
+        <div class="mx-auto w-[85%] sm:w-3/4 aspect-[16/11] bg-[#D98F1E] rounded-t-[999px] rounded-b-[40px] opacity-90"></div>
+        <img id="bhujia-spotlight-hero-img" src="assets/images/cinematic_bhujia.jpg" alt="Bikaneri Bhujia"
+          class="absolute inset-0 mx-auto my-auto w-[55%] sm:w-[42%] max-h-[85%] object-contain drop-shadow-2xl" style="top:0;left:0;right:0;bottom:0;" />
+        <p id="bhujia-spotlight-hero-name" class="text-center text-[#F3E9D4] font-bold text-sm mt-4">Meerav Authentic Aloo Bhujia</p>
+      </div>
+
+      <!-- Mini product grid -->
+      <div id="bhujia-spotlight-grid" class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10">
+        <!-- Populated dynamically by renderBhujiaSpotlight() in store.js -->
+      </div>
+
+      <div class="text-center mt-10 relative z-10">
+        <a href="category?cat=bhujia-sev" class="inline-flex items-center gap-2 px-8 py-3 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-full shadow-lg transition">
+          Explore All Bhujia
         </a>
       </div>
     </section>
@@ -399,6 +436,7 @@ Admin Portal
               <li><a href="category?cat=mathri" class="hover:text-amber-300 transition">Papad & Mathri</a></li>
               <li><a href="category?cat=roasted-diet" class="hover:text-amber-300 transition">Roasted Diet Snacks</a></li>
               <li><a href="category?cat=sweets-combos" class="hover:text-amber-300 transition">Sweets & Festive Boxes</a></li>
+              <li><a href="about" class="hover:text-amber-300 transition">About Us</a></li>
             </ul>
           </div>
 
