@@ -234,15 +234,15 @@ function renderHomeCategoryCards() {
 
         <!-- Polaroid-style photo frame, consistent with the hand-crafted hero -->
         <div class="bg-white p-2 pb-4 mx-auto mb-3 w-full max-w-[140px] shadow-md group-hover:shadow-lg transition-all duration-300" style="transform:rotate(${catTilt});">
-          <div class="w-full aspect-square overflow-hidden bg-[#EADDBF]">
+          <div class="w-full aspect-square overflow-hidden bg-[#F0E9DD]">
             <img src="${displayImg}" alt="${cat.name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" />
           </div>
         </div>
 
-        <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#7C2E12] mb-1 leading-snug">${cat.name || catStyle.name}</h4>
-        <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
+        <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#6E1423] mb-1 leading-snug">${cat.name || catStyle.name}</h4>
+        <span class="text-[10px] sm:text-[11px] text-[#6E1423] font-extrabold block mb-2">${count} Varieties</span>
 
-        <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#7C2E12] group-hover:underline">
+        <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#6E1423] group-hover:underline">
           Explore &rarr;
         </span>
       </a>
@@ -290,7 +290,7 @@ function renderCinematicVideoReels() {
     const pid = s.productId || 'p1';
 
     return `
-      <div class="reels-card relative flex flex-col justify-between group cursor-pointer shrink-0 w-64 bg-[#2A1D14] rounded-3xl overflow-hidden shadow-xl border-2 border-[#E59819]/40 hover:border-[#E59819] transition-all duration-300" 
+      <div class="reels-card relative flex flex-col justify-between group cursor-pointer shrink-0 w-64 bg-[#1F1A17] rounded-3xl overflow-hidden shadow-xl border-2 border-[#C9922E]/40 hover:border-[#C9922E] transition-all duration-300" 
         onmouseenter="const vid=this.querySelector('video'); if(vid){vid.play().catch(()=>{});}" 
         onmouseleave="const vid=this.querySelector('video'); if(vid){vid.pause();}">
         
@@ -306,7 +306,7 @@ function renderCinematicVideoReels() {
 
           <!-- Top Badges Overlay -->
           <div class="absolute top-3 left-3 right-3 flex items-center justify-between z-10 pointer-events-none">
-            <span class="px-2.5 py-1 bg-[#4A0713]/90 text-[#FBBF24] border border-[#E59819]/50 text-[10px] font-black rounded-full backdrop-blur-md shadow-xs">
+            <span class="px-2.5 py-1 bg-[#6E1423]/90 text-[#E8B75D] border border-[#C9922E]/50 text-[10px] font-black rounded-full backdrop-blur-md shadow-xs">
               ${s.tag || 'Broadcast Story'}
             </span>
             <div class="px-2 py-0.5 bg-red-600/90 text-white text-[9px] font-black rounded-full flex items-center gap-1 backdrop-blur-md animate-pulse">
@@ -320,19 +320,19 @@ function renderCinematicVideoReels() {
         </div>
 
         <!-- Card Footer (Title, Price & 1-Tap Add) -->
-        <div class="p-4 bg-gradient-to-b from-[#2A1D14] to-[#1A1109] border-t border-[#E59819]/30 flex flex-col justify-between space-y-2.5">
+        <div class="p-4 bg-gradient-to-b from-[#1F1A17] to-[#17120F] border-t border-[#C9922E]/30 flex flex-col justify-between space-y-2.5">
           <div>
-            <h4 class="font-black text-xs text-white truncate group-hover:text-[#FBBF24] transition">${s.title}</h4>
+            <h4 class="font-black text-xs text-white truncate group-hover:text-[#E8B75D] transition">${s.title}</h4>
             <div class="flex items-baseline gap-1.5 mt-1">
-              <span class="text-sm font-black text-[#FBBF24]">₹${s.price || 99}</span>
+              <span class="text-sm font-black text-[#E8B75D]">₹${s.price || 99}</span>
               ${s.originalPrice ? `<span class="text-[10px] text-gray-400 line-through">₹${s.originalPrice}</span>` : ''}
             </div>
           </div>
 
           <div class="pt-2 border-t border-white/10 flex items-center justify-between gap-2">
-            <a href="product?id=${pid}" class="text-[11px] font-bold text-amber-200 hover:underline">View Snack</a>
+            <a href="product?id=${pid}" class="text-[11px] font-bold text-[#E8B75D] hover:underline">View Snack</a>
             <button onclick="addToCart('${pid}', 0); showToast('Added to cart!', 'success');" 
-              class="px-3 py-1.5 bg-[#E59819] hover:bg-amber-500 text-[#32040C] text-[11px] font-black rounded-xl transition shadow-md flex items-center gap-1 cursor-pointer">
+              class="px-3 py-1.5 bg-[#C9922E] hover:bg-[#C9922E] text-[#4E0D18] text-[11px] font-black rounded-xl transition shadow-md flex items-center gap-1 cursor-pointer">
               + Add
             </button>
           </div>
@@ -422,10 +422,10 @@ function renderStoreCategories() {
       <button onclick="filterCategory('${cat.id}')"
         class="flex items-center gap-2.5 px-4 py-2 rounded-full text-xs font-bold transition-all shrink-0 ${
           isSel 
-            ? 'bg-[#4A0713] text-[#FBBF24] shadow-lg border border-[#E59819] transform scale-105' 
-            : 'bg-white text-gray-800 hover:bg-amber-50/80 border border-amber-200/80'
+            ? 'bg-[#6E1423] text-[#E8B75D] shadow-lg border border-[#C9922E] transform scale-105' 
+            : 'bg-white text-gray-800 hover:bg-[#FBF8F3]/80 border border-[#E8E0D4]/80'
         }">
-        <img src="${imgUrl}" alt="" class="w-5 h-5 rounded-full object-cover border border-amber-400/60" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
+        <img src="${imgUrl}" alt="" class="w-5 h-5 rounded-full object-cover border border-[#C9922E]/60" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
 
         <span>${cat.name}</span>
       </button>
@@ -442,8 +442,8 @@ function renderStoreDietaryFilters() {
     <button onclick="filterDietary('${tag}')" 
       class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
         storeState.selectedDietary === tag 
-          ? 'bg-[#4A0713] text-white shadow-sm' 
-          : 'bg-amber-100/50 text-[#4A0713] hover:bg-amber-100 border border-amber-300/60'
+          ? 'bg-[#6E1423] text-white shadow-sm' 
+          : 'bg-[#F5EFE4]/50 text-[#6E1423] hover:bg-[#F5EFE4] border border-[#DDD2BF]/60'
       }">
       ${tag === 'all' ? 'All Varieties' : tag}
     </button>
@@ -493,12 +493,12 @@ function renderStoreProducts() {
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="col-span-full py-16 text-center">
-        <div class="w-20 h-20 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center text-[#4A0713] text-3xl">
+        <div class="w-20 h-20 mx-auto mb-4 bg-[#F5EFE4] rounded-full flex items-center justify-center text-[#6E1423] text-3xl">
           
         </div>
         <h3 class="text-xl font-bold text-gray-800">No Bikaneri Namkeens Found</h3>
         <p class="text-gray-500 text-xs mt-1">Try resetting filters to explore our complete collection.</p>
-        <button onclick="filterCategory('all'); filterDietary('all');" class="mt-4 px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] rounded-xl text-xs font-bold hover:bg-[#32040C] shadow-md transition">
+        <button onclick="filterCategory('all'); filterDietary('all');" class="mt-4 px-5 py-2.5 bg-[#6E1423] text-[#E8B75D] rounded-xl text-xs font-bold hover:bg-[#4E0D18] shadow-md transition">
           View All Namkeens
         </button>
       </div>
@@ -546,7 +546,7 @@ function renderProductDetailModal(p) {
   variantsContainer.innerHTML = p.variants.map((v, idx) => `
     <button onclick="setProductVariant('${p.id}', ${idx})" 
       class="px-4 py-2 rounded-xl text-xs font-black border transition ${
-        idx === selectedIdx ? 'bg-[#4A0713] text-[#FBBF24] border-[#E59819] shadow-sm' : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-amber-50'
+        idx === selectedIdx ? 'bg-[#6E1423] text-[#E8B75D] border-[#C9922E] shadow-sm' : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-[#FBF8F3]'
       }">
       ${v.weight} - ${formatPrice(v.price)}
     </button>
@@ -682,12 +682,12 @@ function renderStoreCart() {
   if (storeState.cart.length === 0) {
     container.innerHTML = `
       <div class="py-16 text-center text-gray-500" role="status">
-        <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 rounded-full flex items-center justify-center text-[#4A0713]" aria-hidden="true">
+        <div class="w-16 h-16 mx-auto mb-3 bg-[#FBF8F3] rounded-full flex items-center justify-center text-[#6E1423]" aria-hidden="true">
           <i class="fas fa-bag-shopping text-2xl"></i>
         </div>
         <p class="font-black text-gray-800 text-base">Your Cart is Empty</p>
         <p class="text-xs text-gray-400 mt-1">Discover handcrafted authentic delicacies & savory treats!</p>
-        <button onclick="closeCartDrawer(); window.location.href='category?cat=all';" class="mt-4 px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] text-xs font-bold rounded-xl hover:bg-[#32040C] shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819] focus-visible:ring-offset-2">
+        <button onclick="closeCartDrawer(); window.location.href='category?cat=all';" class="mt-4 px-5 py-2.5 bg-[#6E1423] text-[#E8B75D] text-xs font-bold rounded-xl hover:bg-[#4E0D18] shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9922E] focus-visible:ring-offset-2">
           Start Shopping
         </button>
       </div>
@@ -706,13 +706,13 @@ function renderStoreCart() {
   let shippingBannerHtml = '';
   if (remainingForFree > 0) {
     shippingBannerHtml = `
-      <div class="mb-3 p-2.5 bg-amber-100/70 border border-amber-200 rounded-xl text-xs">
-        <div class="flex justify-between items-center font-bold text-[#4A0713] mb-1">
+      <div class="mb-3 p-2.5 bg-[#F5EFE4]/70 border border-[#E8E0D4] rounded-xl text-xs">
+        <div class="flex justify-between items-center font-bold text-[#6E1423] mb-1">
           <span>Add <strong>${formatPrice(remainingForFree)}</strong> more for <strong>FREE Delivery!</strong></span>
           <span>${progressPercent}%</span>
         </div>
-        <div class="w-full h-1.5 bg-amber-200 rounded-full overflow-hidden">
-          <div class="h-full bg-[#E59819] rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
+        <div class="w-full h-1.5 bg-[#EDE4D3] rounded-full overflow-hidden">
+          <div class="h-full bg-[#C9922E] rounded-full transition-all duration-300" style="width: ${progressPercent}%"></div>
         </div>
       </div>
     `;
@@ -726,27 +726,27 @@ function renderStoreCart() {
   }
 
   container.innerHTML = shippingBannerHtml + storeState.cart.map(item => `
-    <div class="flex items-center gap-3 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-200/70">
-      <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-contain bg-white p-1 border border-amber-200/60" />
+    <div class="flex items-center gap-3 p-3.5 bg-[#FBF8F3]/60 rounded-2xl border border-[#E8E0D4]/70">
+      <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-xl object-contain bg-white p-1 border border-[#E8E0D4]/60" />
       <div class="flex-1 min-w-0">
         <h4 class="font-bold text-xs text-gray-900 truncate">${item.name}</h4>
         <div class="flex items-center gap-2 mt-0.5">
-          <span class="text-[11px] font-black text-[#4A0713] bg-amber-100 px-2 py-0.2 rounded-md">${item.weight}</span>
+          <span class="text-[11px] font-black text-[#6E1423] bg-[#F5EFE4] px-2 py-0.2 rounded-md">${item.weight}</span>
           <span class="text-xs font-bold text-gray-900">${formatPrice(item.price)}</span>
         </div>
         
         <div class="flex items-center gap-2 mt-2">
-          <div class="flex items-center border border-amber-200 bg-white rounded-lg overflow-hidden">
-            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs font-black text-gray-700 hover:bg-amber-100 transition">
+          <div class="flex items-center border border-[#E8E0D4] bg-white rounded-lg overflow-hidden">
+            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs font-black text-gray-700 hover:bg-[#F5EFE4] transition">
   −
               −
             </button>
             <span class="w-7 text-center text-xs font-black text-gray-800">${item.qty}</span>
-            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs font-black text-gray-700 hover:bg-amber-100 transition">
+            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs font-black text-gray-700 hover:bg-[#F5EFE4] transition">
               +
             </button>
           </div>
-          <span class="text-xs font-black text-[#4A0713] ml-auto">${formatPrice(item.price * item.qty)}</span>
+          <span class="text-xs font-black text-[#6E1423] ml-auto">${formatPrice(item.price * item.qty)}</span>
         </div>
       </div>
       <button onclick="removeFromCart('${item.id}')" title="Remove Item" class="w-7 h-7 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
@@ -779,11 +779,11 @@ function renderStoreTrustBadges() {
 
   container.innerHTML = items.map(b => `
     <div class="space-y-3 group text-center md:text-left animate-fade-in">
-      <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#D98F1E] rotate-[-2deg] group-hover:rotate-0 transition-transform duration-300">
+      <div class="w-16 h-16 bg-white overflow-hidden p-1 flex items-center justify-center mx-auto md:mx-0 shadow-md border-2 border-[#C9922E] rotate-[-2deg] group-hover:rotate-0 transition-transform duration-300">
         <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" loading="lazy" decoding="async" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='assets/images/feature_oil.jpg'" />
       </div>
-      <h4 class="font-black text-base text-[#2A1D14]">${b.title}</h4>
-      <p class="text-xs text-[#5A4632] leading-relaxed font-medium">${b.description}</p>
+      <h4 class="font-black text-base text-[#1F1A17]">${b.title}</h4>
+      <p class="text-xs text-[#6B625A] leading-relaxed font-medium">${b.description}</p>
     </div>
   `).join('');
 }
@@ -820,26 +820,26 @@ function meeravProductCard(p, opts) {
           onerror="this.onerror=null;this.src='assets/images/cinematic_bhujia.jpg'" />
         ${p.video ? `<video src="${p.video}" muted loop playsinline preload="none" aria-hidden="true"></video>` : ''}
 
-        ${p.tag ? `<span class="ms-badge absolute top-2.5 left-2.5 z-10 bg-[#4A0713] text-[#FBBF24]">${p.tag}</span>` : ''}
-        ${!inStock ? `<span class="ms-badge absolute bottom-2.5 left-2.5 z-10 bg-[#2A1D14] text-[#F3E9D4]">Out of stock</span>` : ''}
+        ${p.tag ? `<span class="ms-badge absolute top-2.5 left-2.5 z-10 bg-[#6E1423] text-[#E8B75D]">${p.tag}</span>` : ''}
+        ${!inStock ? `<span class="ms-badge absolute bottom-2.5 left-2.5 z-10 bg-[#1F1A17] text-[#FBF8F3]">Out of stock</span>` : ''}
       </a>
 
       <button type="button" onclick="toggleWishlist('${p.id}')"
         class="ms-icon-btn absolute top-2.5 right-2.5 z-20"
         aria-label="${isWishlisted ? 'Remove' : 'Save'} ${p.name} ${isWishlisted ? 'from' : 'to'} wishlist"
         aria-pressed="${isWishlisted}">
-        <i class="${isWishlisted ? 'fas' : 'far'} fa-heart text-sm ${isWishlisted ? 'text-[#B5451D]' : 'text-[#5A4632]'}" aria-hidden="true"></i>
+        <i class="${isWishlisted ? 'fas' : 'far'} fa-heart text-sm ${isWishlisted ? 'text-[#8C2131]' : 'text-[#6B625A]'}" aria-hidden="true"></i>
       </button>
 
       <div class="ms-card-body">
-        <div class="flex items-center gap-1.5 text-[11px] font-bold text-[#5A4632]">
+        <div class="flex items-center gap-1.5 text-[11px] font-bold text-[#6B625A]">
           <span class="veg-indicator shrink-0" title="100% vegetarian" aria-label="100% vegetarian"><span class="veg-indicator-dot"></span></span>
-          ${p.rating ? `<span class="text-[#B5451D]" aria-hidden="true">&#9733;</span><span>${p.rating}</span>` : ''}
-          ${p.reviewsCount ? `<span class="text-[#5A4632]/60 font-medium">(${p.reviewsCount})</span>` : ''}
+          ${p.rating ? `<span class="text-[#8C2131]" aria-hidden="true">&#9733;</span><span>${p.rating}</span>` : ''}
+          ${p.reviewsCount ? `<span class="text-[#6B625A]/60 font-medium">(${p.reviewsCount})</span>` : ''}
         </div>
 
         <h3 class="ms-card-title">
-          <a href="product?id=${p.id}" class="hover:text-[#B5451D] transition-colors">${p.name}</a>
+          <a href="product?id=${p.id}" class="hover:text-[#8C2131] transition-colors">${p.name}</a>
         </h3>
 
         ${showVariants && variants.length > 1 ? `
@@ -849,22 +849,22 @@ function meeravProductCard(p, opts) {
                 onclick="setProductVariant('${p.id}', ${i})">${vr.weight}</button>
             `).join('')}
           </div>
-        ` : (v.weight ? `<p class="text-[11px] font-bold text-[#5A4632]/70">${v.weight}</p>` : '')}
+        ` : (v.weight ? `<p class="text-[11px] font-bold text-[#6B625A]/70">${v.weight}</p>` : '')}
 
         <div class="flex items-baseline gap-2 mt-auto pt-1">
-          <span class="text-lg font-black text-[#4A0713]">${formatPrice(v.price)}</span>
-          ${hasDiscount ? `<span class="text-xs text-[#5A4632]/55 line-through">${formatPrice(v.originalPrice)}</span>` : ''}
+          <span class="text-lg font-black text-[#6E1423]">${formatPrice(v.price)}</span>
+          ${hasDiscount ? `<span class="text-xs text-[#6B625A]/55 line-through">${formatPrice(v.originalPrice)}</span>` : ''}
           ${discount ? `<span class="ms-badge bg-emerald-50 text-emerald-800">${discount}% off</span>` : ''}
         </div>
 
         ${inStock ? `
           <button type="button" onclick="addToCart('${p.id}', ${selectedIdx}); showToast('Added to cart!', 'success');"
-            class="ms-btn ms-btn-block bg-[#4A0713] text-[#FBBF24] hover:bg-[#32040C]">
+            class="ms-btn ms-btn-block bg-[#6E1423] text-[#E8B75D] hover:bg-[#4E0D18]">
             Add to Cart
           </button>
         ` : `
           <button type="button" disabled
-            class="ms-btn ms-btn-block bg-[#EDE3D2] text-[#5A4632]/60 cursor-not-allowed">
+            class="ms-btn ms-btn-block bg-[#EDE3D2] text-[#6B625A]/60 cursor-not-allowed">
             Out of Stock
           </button>
         `}
@@ -962,8 +962,8 @@ function renderStoreStats() {
   }
 
   container.innerHTML = stats.map(s => `
-    <div class="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-center">
-      <div class="text-2xl font-black text-[#4A0713]">${s.val || ''}</div>
+    <div class="p-3 bg-[#FBF8F3]/80 rounded-2xl border border-[#E8E0D4] text-center">
+      <div class="text-2xl font-black text-[#6E1423]">${s.val || ''}</div>
       <div class="text-[10px] font-bold text-gray-600 uppercase">${s.label || ''}</div>
     </div>
   `).join('');
@@ -992,13 +992,13 @@ function renderStoreTestimonials() {
     const stars = ''.repeat(Math.round(item.rating || 5));
 
     return `
-      <div class="p-6 bg-white rounded-3xl border border-amber-200/80 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-300">
+      <div class="p-6 bg-white rounded-3xl border border-[#E8E0D4]/80 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition duration-300">
         <div class="space-y-3">
-          <div class="flex items-center gap-1 text-xs text-amber-500 font-black tracking-wider">${stars}</div>
+          <div class="flex items-center gap-1 text-xs text-[#C9922E] font-black tracking-wider">${stars}</div>
           <p class="text-xs text-gray-700 leading-relaxed font-medium italic">"${item.reviewText}"</p>
         </div>
-        <div class="flex items-center gap-3 pt-3 border-t border-amber-100">
-          <img src="${avatar}" alt="${item.name}" loading="lazy" decoding="async" class="w-11 h-11 rounded-full object-cover border-2 border-amber-300 shadow-sm shrink-0" />
+        <div class="flex items-center gap-3 pt-3 border-t border-[#F0E9DD]">
+          <img src="${avatar}" alt="${item.name}" loading="lazy" decoding="async" class="w-11 h-11 rounded-full object-cover border-2 border-[#DDD2BF] shadow-sm shrink-0" />
           <div>
             <h4 class="font-black text-xs text-gray-900">${item.name}</h4>
             <span class="text-[10px] text-gray-500 font-bold">${item.city || 'Verified Buyer'}</span>
@@ -1023,12 +1023,12 @@ function renderStoreFaqs() {
   }
 
   container.innerHTML = items.map((item, idx) => `
-    <div class="bg-white rounded-2xl border border-amber-200/80 shadow-xs overflow-hidden">
-      <button onclick="toggleStoreFaq(${idx})" class="w-full p-4 text-left flex items-center justify-between gap-3 font-black text-xs sm:text-sm text-gray-900 hover:text-[#4A0713] transition">
+    <div class="bg-white rounded-2xl border border-[#E8E0D4]/80 shadow-xs overflow-hidden">
+      <button onclick="toggleStoreFaq(${idx})" class="w-full p-4 text-left flex items-center justify-between gap-3 font-black text-xs sm:text-sm text-gray-900 hover:text-[#6E1423] transition">
         <span>${item.question}</span>
-        <span id="faq-icon-${idx}" class="text-amber-500 text-xs shrink-0 transition-transform font-bold">▼</span>
+        <span id="faq-icon-${idx}" class="text-[#C9922E] text-xs shrink-0 transition-transform font-bold">▼</span>
       </button>
-      <div id="faq-content-${idx}" class="hidden px-4 pb-4 text-xs text-gray-600 leading-relaxed font-medium border-t border-amber-50 pt-3">
+      <div id="faq-content-${idx}" class="hidden px-4 pb-4 text-xs text-gray-600 leading-relaxed font-medium border-t border-[#F5EFE4] pt-3">
         ${item.answer}
       </div>
     </div>
@@ -1220,7 +1220,7 @@ function closePaymentGatewayModal() {
 function selectPaymentTab(tabName) {
   document.querySelectorAll('.payment-tab-content').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.payment-tab-btn').forEach(btn => {
-    btn.classList.remove('bg-[#4A0713]', 'text-[#FBBF24]');
+    btn.classList.remove('bg-[#6E1423]', 'text-[#E8B75D]');
     btn.classList.add('bg-gray-100', 'text-gray-700');
   });
 
@@ -1229,7 +1229,7 @@ function selectPaymentTab(tabName) {
 
   if (activeContent) activeContent.classList.remove('hidden');
   if (activeBtn) {
-    activeBtn.classList.add('bg-[#4A0713]', 'text-[#FBBF24]');
+    activeBtn.classList.add('bg-[#6E1423]', 'text-[#E8B75D]');
     activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
   }
 }
@@ -1483,7 +1483,7 @@ function renderHeroCarousel() {
     if (slides.length > 1) {
       dotsContainer.innerHTML = slides.map((s, idx) => `
         <button onclick="goToHeroSlide(${idx})" aria-label="Go to slide ${idx + 1}"
-          class="h-1.5 rounded-full transition-all duration-300 ${idx === storeState.heroSlideIndex ? 'w-7 bg-[#D98F1E]' : 'w-1.5 bg-white/50 hover:bg-white/80'}"></button>
+          class="h-1.5 rounded-full transition-all duration-300 ${idx === storeState.heroSlideIndex ? 'w-7 bg-[#C9922E]' : 'w-1.5 bg-white/50 hover:bg-white/80'}"></button>
       `).join('');
     } else {
       dotsContainer.innerHTML = '';
@@ -1493,8 +1493,8 @@ function renderHeroCarousel() {
   const muteBtn = document.getElementById('video-mute-btn');
   if (muteBtn) {
     muteBtn.innerHTML = '';
-    muteBtn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
-    muteBtn.classList.add('bg-black/70', 'text-[#FBBF24]');
+    muteBtn.classList.remove('bg-[#C9922E]', 'text-[#4E0D18]');
+    muteBtn.classList.add('bg-black/70', 'text-[#E8B75D]');
   }
 
   if (!heroAutoScrollTimer) startHeroAutoScroll();
@@ -1581,11 +1581,11 @@ function toggleVideoMute() {
   video.muted = !video.muted;
   if (video.muted) {
     btn.innerHTML = '';
-    btn.classList.remove('bg-[#E59819]', 'text-[#32040C]');
-    btn.classList.add('bg-black/70', 'text-[#FBBF24]');
+    btn.classList.remove('bg-[#C9922E]', 'text-[#4E0D18]');
+    btn.classList.add('bg-black/70', 'text-[#E8B75D]');
   } else {
     btn.innerHTML = '';
-    btn.classList.remove('bg-black/70', 'text-[#FBBF24]');
-    btn.classList.add('bg-[#E59819]', 'text-[#32040C]');
+    btn.classList.remove('bg-black/70', 'text-[#E8B75D]');
+    btn.classList.add('bg-[#C9922E]', 'text-[#4E0D18]');
   }
 }

@@ -72,11 +72,11 @@ function updateView(viewName) {
   document.querySelectorAll('[data-nav-target]').forEach(btn => {
     const target = btn.getAttribute('data-nav-target');
     if (target === viewName) {
-      btn.classList.add('bg-amber-600', 'text-white', 'shadow-md');
-      btn.classList.remove('text-gray-700', 'hover:bg-amber-50');
+      btn.classList.add('bg-[#A87A22]', 'text-white', 'shadow-md');
+      btn.classList.remove('text-gray-700', 'hover:bg-[#FBF8F3]');
     } else {
-      btn.classList.remove('bg-amber-600', 'text-white', 'shadow-md');
-      btn.classList.add('text-gray-700', 'hover:bg-amber-50');
+      btn.classList.remove('bg-[#A87A22]', 'text-white', 'shadow-md');
+      btn.classList.add('text-gray-700', 'hover:bg-[#FBF8F3]');
     }
   });
 
@@ -98,8 +98,8 @@ function renderCategories() {
     <button onclick="filterCategory('${cat.id}')" 
       class="flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-all shrink-0 ${
         state.selectedCategory === cat.id 
-          ? 'bg-amber-600 text-white shadow-md transform scale-105' 
-          : 'bg-white text-gray-700 hover:bg-amber-50 border border-amber-200'
+          ? 'bg-[#A87A22] text-white shadow-md transform scale-105' 
+          : 'bg-white text-gray-700 hover:bg-[#FBF8F3] border border-[#E8E0D4]'
       }">
       
       <span>${cat.name}</span>
@@ -116,8 +116,8 @@ function renderDietaryFilters() {
     <button onclick="filterDietary('${tag}')" 
       class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shrink-0 ${
         state.selectedDietary === tag 
-          ? 'bg-amber-950 text-white shadow-sm' 
-          : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200/60'
+          ? 'bg-[#2A1410] text-white shadow-sm' 
+          : 'bg-[#FBF8F3] text-[#4E0D18] hover:bg-[#F5EFE4] border border-[#E8E0D4]/60'
       }">
       ${tag === 'all' ? 'All Diets' : tag}
     </button>
@@ -158,12 +158,12 @@ function renderProducts() {
   if (filtered.length === 0) {
     container.innerHTML = `
       <div class="col-span-full py-16 text-center">
-        <div class="w-20 h-20 mx-auto mb-4 bg-amber-100 rounded-full flex items-center justify-center text-amber-600 text-3xl">
+        <div class="w-20 h-20 mx-auto mb-4 bg-[#F5EFE4] rounded-full flex items-center justify-center text-[#A87A22] text-3xl">
           
         </div>
         <h3 class="text-xl font-bold text-gray-800">No Namkeens Found</h3>
         <p class="text-gray-500 text-sm mt-1">Try clearing your search query or selecting a different filter.</p>
-        <button onclick="filterCategory('all'); filterDietary('all');" class="mt-4 px-5 py-2 bg-amber-600 text-white rounded-lg text-sm font-semibold hover:bg-amber-700 transition">
+        <button onclick="filterCategory('all'); filterDietary('all');" class="mt-4 px-5 py-2 bg-[#A87A22] text-white rounded-lg text-sm font-semibold hover:bg-[#8C2131] transition">
           Reset Filters
         </button>
       </div>
@@ -179,7 +179,7 @@ function renderProducts() {
     return `
       <div class="product-card bg-white rounded-2xl overflow-hidden flex flex-col justify-between relative group">
         <!-- Image & Badges -->
-        <div class="relative h-48 sm:h-52 overflow-hidden bg-amber-50 cursor-pointer" onclick="openProductDetailModal('${p.id}')">
+        <div class="relative h-48 sm:h-52 overflow-hidden bg-[#FBF8F3] cursor-pointer" onclick="openProductDetailModal('${p.id}')">
           <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
           
@@ -194,7 +194,7 @@ function renderProducts() {
           </button>
 
           <div class="absolute bottom-2.5 left-3 flex flex-wrap gap-1">
-            ${p.dietary.map(d => `<span class="px-2 py-0.5 bg-black/60 backdrop-blur-sm text-amber-200 text-[10px] rounded-md font-medium">${d}</span>`).join('')}
+            ${p.dietary.map(d => `<span class="px-2 py-0.5 bg-black/60 backdrop-blur-sm text-[#E8B75D] text-[10px] rounded-md font-medium">${d}</span>`).join('')}
           </div>
         </div>
 
@@ -202,7 +202,7 @@ function renderProducts() {
         <div class="p-4 flex-1 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-1.5">
-              <div class="flex items-center gap-1 text-amber-500 text-xs font-bold">
+              <div class="flex items-center gap-1 text-[#C9922E] text-xs font-bold">
 
                 <span>${p.rating}</span>
                 <span class="text-gray-400 font-normal">(${p.reviewsCount})</span>
@@ -212,7 +212,7 @@ In Stock
               </span>
             </div>
 
-            <h3 class="font-bold text-gray-900 text-base leading-snug mb-1 line-clamp-1 group-hover:text-amber-700 transition cursor-pointer" onclick="openProductDetailModal('${p.id}')">
+            <h3 class="font-bold text-gray-900 text-base leading-snug mb-1 line-clamp-1 group-hover:text-[#6B625A] transition cursor-pointer" onclick="openProductDetailModal('${p.id}')">
               ${p.name}
             </h3>
             <p class="text-xs text-gray-500 line-clamp-2 mb-3">
@@ -227,7 +227,7 @@ In Stock
                   <button onclick="setProductVariant('${p.id}', ${idx})" 
                     class="px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
                       idx === selectedIdx 
-                        ? 'bg-amber-600 text-white shadow-sm border border-amber-600' 
+                        ? 'bg-[#A87A22] text-white shadow-sm border border-[#A87A22]' 
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
                     }">
                     ${v.weight}
@@ -240,7 +240,7 @@ In Stock
           <!-- Price & Actions -->
           <div class="pt-3 border-t border-gray-100">
             <div class="flex items-baseline gap-2 mb-2.5">
-              <span class="text-xl font-extrabold text-amber-900">₹${selectedVar.price}</span>
+              <span class="text-xl font-extrabold text-[#4E0D18]">₹${selectedVar.price}</span>
               <span class="text-xs text-gray-400 line-through">₹${selectedVar.originalPrice}</span>
               <span class="text-[11px] font-bold text-emerald-600 bg-emerald-100 px-1.5 py-0.2 rounded">${discount}% OFF</span>
             </div>
@@ -253,7 +253,7 @@ In Stock
               </button>
 
               <button onclick="addToCart('${p.id}', ${selectedIdx})" 
-                class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition shadow-sm hover:shadow-md">
+                class="flex items-center justify-center gap-1.5 py-2 px-2 rounded-xl bg-[#A87A22] hover:bg-[#8C2131] text-white text-xs font-bold transition shadow-sm hover:shadow-md">
 
                 <span>Add to Cart</span>
               </button>
@@ -304,7 +304,7 @@ function renderProductDetailModal(p) {
   variantsContainer.innerHTML = p.variants.map((v, idx) => `
     <button onclick="setProductVariant('${p.id}', ${idx})" 
       class="px-3 py-2 rounded-xl text-xs font-bold border transition ${
-        idx === selectedIdx ? 'bg-amber-600 text-white border-amber-600 shadow-sm' : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-amber-50'
+        idx === selectedIdx ? 'bg-[#A87A22] text-white border-[#A87A22] shadow-sm' : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-[#FBF8F3]'
       }">
       ${v.weight} - ₹${v.price}
     </button>
@@ -417,12 +417,12 @@ function renderCart() {
   if (state.cart.length === 0) {
     container.innerHTML = `
       <div class="py-16 text-center text-gray-500">
-        <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 text-2xl">
+        <div class="w-16 h-16 mx-auto mb-3 bg-[#FBF8F3] rounded-full flex items-center justify-center text-[#C9922E] text-2xl">
           
         </div>
         <p class="font-bold text-gray-800 text-base">Your Cart is Empty</p>
         <p class="text-xs text-gray-400 mt-1">Discover fresh crispy Namkeens and add them to cart!</p>
-        <button onclick="closeCartDrawer()" class="mt-4 px-4 py-2 bg-amber-600 text-white text-xs font-semibold rounded-lg hover:bg-amber-700">
+        <button onclick="closeCartDrawer()" class="mt-4 px-4 py-2 bg-[#A87A22] text-white text-xs font-semibold rounded-lg hover:bg-[#8C2131]">
           Start Shopping
         </button>
       </div>
@@ -434,26 +434,26 @@ function renderCart() {
   summaryContainer.classList.remove('hidden');
 
   container.innerHTML = state.cart.map(item => `
-    <div class="flex items-center gap-3 p-3 bg-amber-50/50 rounded-xl border border-amber-100">
+    <div class="flex items-center gap-3 p-3 bg-[#FBF8F3]/50 rounded-xl border border-[#F0E9DD]">
       <img src="${item.image}" alt="${item.name}" class="w-14 h-14 rounded-lg object-cover bg-white" />
       <div class="flex-1 min-w-0">
         <h4 class="font-bold text-xs text-gray-800 truncate">${item.name}</h4>
         <div class="flex items-center gap-2 mt-0.5">
-          <span class="text-[11px] font-semibold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">${item.weight}</span>
+          <span class="text-[11px] font-semibold text-[#6B625A] bg-[#F5EFE4] px-1.5 py-0.2 rounded">${item.weight}</span>
           <span class="text-xs font-bold text-gray-900">₹${item.price}</span>
         </div>
         
         <div class="flex items-center gap-2 mt-2">
-          <div class="flex items-center border border-amber-200 bg-white rounded-md overflow-hidden">
-            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
+          <div class="flex items-center border border-[#E8E0D4] bg-white rounded-md overflow-hidden">
+            <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-[#F5EFE4]">
               −
             </button>
             <span class="w-7 text-center text-xs font-bold text-gray-800">${item.qty}</span>
-            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-amber-100">
+            <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center text-xs text-gray-600 hover:bg-[#F5EFE4]">
               +
             </button>
           </div>
-          <span class="text-xs font-extrabold text-amber-900 ml-auto">₹${item.price * item.qty}</span>
+          <span class="text-xs font-extrabold text-[#4E0D18] ml-auto">₹${item.price * item.qty}</span>
         </div>
       </div>
       <button onclick="removeFromCart('${item.id}')" class="text-gray-400 hover:text-red-500 p-1">
@@ -587,7 +587,7 @@ function closePaymentGatewayModal() {
 function selectPaymentTab(tabName) {
   document.querySelectorAll('.payment-tab-content').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.payment-tab-btn').forEach(btn => {
-    btn.classList.remove('bg-amber-600', 'text-white');
+    btn.classList.remove('bg-[#A87A22]', 'text-white');
     btn.classList.add('bg-gray-100', 'text-gray-700');
   });
 
@@ -596,7 +596,7 @@ function selectPaymentTab(tabName) {
 
   if (activeContent) activeContent.classList.remove('hidden');
   if (activeBtn) {
-    activeBtn.classList.add('bg-amber-600', 'text-white');
+    activeBtn.classList.add('bg-[#A87A22]', 'text-white');
     activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
   }
 }
@@ -780,8 +780,8 @@ function renderAdminOrders() {
   if (!tbody) return;
 
   tbody.innerHTML = state.orders.map(order => `
-    <tr class="border-b border-gray-100 hover:bg-amber-50/40 transition">
-      <td class="py-3.5 px-4 font-bold text-amber-950 text-xs">#${order.id}</td>
+    <tr class="border-b border-gray-100 hover:bg-[#FBF8F3]/40 transition">
+      <td class="py-3.5 px-4 font-bold text-[#1F1A17] text-xs">#${order.id}</td>
       <td class="py-3.5 px-4">
         <div class="font-bold text-xs text-gray-900">${order.customer.name}</div>
         <div class="text-[11px] text-gray-500">${order.customer.phone}</div>
@@ -790,12 +790,12 @@ function renderAdminOrders() {
         <div class="text-xs text-gray-700 line-clamp-1">${order.items.map(i => `${i.name} (x${i.qty})`).join(', ')}</div>
         <div class="text-[11px] text-gray-400">${order.date}</div>
       </td>
-      <td class="py-3.5 px-4 font-extrabold text-xs text-amber-900">₹${order.totalAmount}</td>
+      <td class="py-3.5 px-4 font-extrabold text-xs text-[#4E0D18]">₹${order.totalAmount}</td>
       <td class="py-3.5 px-4">
         <select onchange="updateOrderStatus('${order.id}', this.value)" class="text-xs font-bold py-1 px-2.5 rounded-lg border cursor-pointer ${
           order.orderStatus === 'Delivered' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' :
           order.orderStatus === 'Dispatched' ? 'bg-blue-50 text-blue-700 border-blue-300' :
-          order.orderStatus === 'Processing' ? 'bg-amber-50 text-amber-700 border-amber-300' :
+          order.orderStatus === 'Processing' ? 'bg-[#FBF8F3] text-[#6B625A] border-[#DDD2BF]' :
           'bg-gray-50 text-gray-700 border-gray-300'
         }">
           <option value="Pending" ${order.orderStatus === 'Pending' ? 'selected' : ''}>Pending</option>
@@ -806,7 +806,7 @@ function renderAdminOrders() {
       </td>
       <td class="py-3.5 px-4">
         <div class="flex items-center gap-1.5">
-          <button onclick="openOrderTrackingView('${order.id}')" title="View Live Map" class="p-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-lg text-xs transition">
+          <button onclick="openOrderTrackingView('${order.id}')" title="View Live Map" class="p-1.5 bg-[#F5EFE4] hover:bg-[#EDE4D3] text-[#4E0D18] rounded-lg text-xs transition">
 
           </button>
           <button onclick="previewWhatsAppNotification('${order.id}')" title="Send WhatsApp Update" class="p-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs transition">
@@ -851,10 +851,10 @@ function renderAdminProducts() {
   if (!tbody) return;
 
   tbody.innerHTML = state.products.map(p => `
-    <tr class="border-b border-gray-100 hover:bg-amber-50/40 transition">
+    <tr class="border-b border-gray-100 hover:bg-[#FBF8F3]/40 transition">
       <td class="py-3 px-4">
         <div class="flex items-center gap-3">
-          <img src="${p.image}" class="w-10 h-10 rounded-lg object-cover bg-amber-100" />
+          <img src="${p.image}" class="w-10 h-10 rounded-lg object-cover bg-[#F5EFE4]" />
           <div>
             <div class="font-bold text-xs text-gray-900">${p.name}</div>
             <div class="text-[10px] text-gray-400 capitalize">${p.category}</div>
@@ -868,7 +868,7 @@ function renderAdminProducts() {
         </span>
       </td>
       <td class="py-3 px-4 text-right">
-        <button onclick="toggleProductStock('${p.id}')" class="text-xs font-bold text-amber-700 hover:text-amber-900 underline">
+        <button onclick="toggleProductStock('${p.id}')" class="text-xs font-bold text-[#6B625A] hover:text-[#4E0D18] underline">
           ${p.inStock ? 'Mark Out of Stock' : 'Mark In Stock'}
         </button>
       </td>
@@ -893,11 +893,11 @@ function renderAdminCustomers() {
   if (!tbody) return;
 
   tbody.innerHTML = state.customers.map(c => `
-    <tr class="border-b border-gray-100 hover:bg-amber-50/40 transition">
+    <tr class="border-b border-gray-100 hover:bg-[#FBF8F3]/40 transition">
       <td class="py-3 px-4 font-bold text-xs text-gray-900">${c.name}</td>
       <td class="py-3 px-4 text-xs text-gray-600">${c.phone}</td>
       <td class="py-3 px-4 text-xs text-gray-600">${c.location}</td>
-      <td class="py-3 px-4 text-xs font-bold text-amber-900">${c.ordersCount} Orders</td>
+      <td class="py-3 px-4 text-xs font-bold text-[#4E0D18]">${c.ordersCount} Orders</td>
       <td class="py-3 px-4 text-xs font-extrabold text-emerald-700">₹${c.totalSpent.toLocaleString()}</td>
     </tr>
   `).join('');
@@ -908,7 +908,7 @@ function renderNotificationLogs() {
   if (!tbody) return;
 
   tbody.innerHTML = state.notifications.map(n => `
-    <tr class="border-b border-gray-100 hover:bg-amber-50/40 transition">
+    <tr class="border-b border-gray-100 hover:bg-[#FBF8F3]/40 transition">
       <td class="py-3 px-4">
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
           n.type === 'WhatsApp' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'

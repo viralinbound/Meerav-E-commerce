@@ -173,14 +173,14 @@ function renderCategoryPickerCards() {
   const cardHtml = (id, image, name, count, isActive) => `
     <button type="button" onclick="selectCategory('${id}')"
       class="p-4 sm:p-6 bg-white rounded-3xl border-2 hover:shadow-2xl transition-all cursor-pointer text-center group transform hover:-translate-y-2 active:scale-98 ${
-        isActive ? 'border-[#E59819] shadow-xl' : 'border-amber-200/80 hover:border-[#E59819]'
+        isActive ? 'border-[#C9922E] shadow-xl' : 'border-[#E8E0D4]/80 hover:border-[#C9922E]'
       }">
-      <div class="w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#520914] shadow-lg group-hover:scale-110 transition-all duration-500 border-2 border-[#E59819]/40">
+      <div class="w-18 h-18 sm:w-22 sm:h-22 mx-auto mb-3 rounded-2xl sm:rounded-3xl overflow-hidden bg-[#4E0D18] shadow-lg group-hover:scale-110 transition-all duration-500 border-2 border-[#C9922E]/40">
         <img src="${image}" alt="${name}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-115 transition-transform duration-500" />
       </div>
-      <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#4A0713] mb-1 leading-snug">${name}</h4>
-      <span class="text-[10px] sm:text-[11px] text-amber-800 font-extrabold block mb-2">${count} Varieties</span>
-      <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#4A0713] group-hover:underline">
+      <h4 class="font-black text-xs sm:text-sm text-gray-900 group-hover:text-[#6E1423] mb-1 leading-snug">${name}</h4>
+      <span class="text-[10px] sm:text-[11px] text-[#6E1423] font-extrabold block mb-2">${count} Varieties</span>
+      <span class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black text-[#6E1423] group-hover:underline">
         Explore &rarr;
       </span>
     </button>
@@ -209,8 +209,8 @@ function renderCategoryDietaryFilters() {
     <button onclick="selectDietaryFilter('${tag}')" 
       class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
         categoryPageState.selectedDietary === tag 
-          ? 'bg-[#4A0713] text-[#FBBF24] shadow-xs' 
-          : 'bg-amber-100/50 text-[#4A0713] hover:bg-amber-100 border border-amber-300/60'
+          ? 'bg-[#6E1423] text-[#E8B75D] shadow-xs' 
+          : 'bg-[#F5EFE4]/50 text-[#6E1423] hover:bg-[#F5EFE4] border border-[#DDD2BF]/60'
       }">
       ${tag === 'all' ? 'All Dietary Tags' : tag}
     </button>

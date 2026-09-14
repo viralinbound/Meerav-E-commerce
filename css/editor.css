@@ -4,10 +4,10 @@
  */
 
 :root {
-  --ed-maroon: #B5451D;
-  --ed-maroon-dark: #7C2E12;
-  --ed-gold: #D98F1E;
-  --ed-gold-light: #EADDBF;
+  --ed-maroon: #8C2131;
+  --ed-maroon-dark: #6E1423;
+  --ed-gold: #C9922E;
+  --ed-gold-light: #F0E9DD;
 }
 
 html, body { height: 100%; overflow: hidden; }
@@ -66,7 +66,7 @@ body { background: #f3f4f6; }
   margin-left: auto;
   font-size: 10.5px;
   font-weight: 700;
-  color: #FBBF24;
+  color: #E8B75D;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -364,7 +364,7 @@ body { background: #f3f4f6; }
   top: -20px;
   left: -2px;
   background: var(--ed-maroon);
-  color: #FBBF24;
+  color: #E8B75D;
   font-size: 9.5px;
   font-weight: 800;
   padding: 2px 6px;

@@ -238,7 +238,7 @@ function renderChatbotWidget() {
   const avatarIcon = settings.chatbotAvatarIcon || 'fa-robot';
   const avatarImage = settings.chatbotAvatarImage || '';
   const avatarHtml = avatarImage ? `<img src="${avatarImage}" class="w-full h-full object-cover rounded-full" alt="${botName}" />` : ``;
-  const accent = settings.chatbotColor || settings.accentColor || '#E59819';
+  const accent = settings.chatbotColor || settings.accentColor || '#C9922E';
   const quickPrompts = (settings.chatbotQuickPrompts && settings.chatbotQuickPrompts.length)
     ? settings.chatbotQuickPrompts
     : [
@@ -259,47 +259,47 @@ function renderChatbotWidget() {
     <div class="fixed ${launcherBottomClass} right-5 z-50 flex flex-col items-end">
 
       <!-- Peek Bubble -->
-      <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#4A0713] text-[#FBBF24] text-xs font-extrabold rounded-2xl shadow-xl border border-[#E59819] flex items-center gap-2 animate-bounce">
+      <div id="chatbot-peek-bubble" class="mb-2 pl-3.5 pr-2 py-2 bg-[#6E1423] text-[#E8B75D] text-xs font-extrabold rounded-2xl shadow-xl border border-[#C9922E] flex items-center gap-2 animate-bounce">
         <span class="cursor-pointer" onclick="toggleChatbot()">Order & Taste Assistant</span>
         
         <button onclick="event.stopPropagation(); dismissChatbotPeekBubble();" title="Dismiss" class="w-4 h-4 rounded-full bg-black/20 hover:bg-black/40 flex items-center justify-center shrink-0 transition"><i class="fas fa-xmark text-[9px]"></i></button>
       </div>
 
-      <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#4A0713] via-[#670E1E] to-[${accent}] text-[#FBBF24] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#FBBF24]/80 overflow-hidden">
+      <button onclick="toggleChatbot()" class="relative w-14 h-14 rounded-full bg-gradient-to-tr from-[#6E1423] via-[#8C2131] to-[${accent}] text-[#E8B75D] shadow-2xl flex items-center justify-center text-2xl hover:scale-110 active:scale-95 transition-transform duration-300 border-2 border-[#E8B75D]/80 overflow-hidden">
         ${avatarHtml}
         <span id="chatbot-unread-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse"></span>
       </button>
 
       <!-- Chatbot Popup Window Frame -->
       <div id="meerav-chatbot-window"
-        class="hidden fixed bottom-24 sm:bottom-24 right-4 sm:right-6 w-[94vw] sm:w-[400px] max-w-sm h-[540px] max-h-[86vh] bg-white rounded-3xl shadow-2xl border-2 border-[#E59819]/60 flex flex-col overflow-hidden transition-all duration-300 z-50">
+        class="hidden fixed bottom-24 sm:bottom-24 right-4 sm:right-6 w-[94vw] sm:w-[400px] max-w-sm h-[540px] max-h-[86vh] bg-white rounded-3xl shadow-2xl border-2 border-[#C9922E]/60 flex flex-col overflow-hidden transition-all duration-300 z-50">
 
         <!-- Header -->
-        <div class="p-3.5 bg-gradient-to-r from-[#4A0713] to-[#32040C] text-white flex items-center justify-between border-b border-[#E59819]">
+        <div class="p-3.5 bg-gradient-to-r from-[#6E1423] to-[#4E0D18] text-white flex items-center justify-between border-b border-[#C9922E]">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[${accent}] to-[#FBBF24] flex items-center justify-center shadow-md shrink-0 overflow-hidden text-[#32040C] text-base">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[${accent}] to-[#E8B75D] flex items-center justify-center shadow-md shrink-0 overflow-hidden text-[#4E0D18] text-base">
               ${avatarHtml}
             </div>
             <div>
-              <div class="font-black text-xs text-[#FBBF24] flex items-center gap-1">
+              <div class="font-black text-xs text-[#E8B75D] flex items-center gap-1">
                 <span>${botName}</span>
 
               </div>
-              <span class="text-[10px] text-amber-200/80">${botSubtitle}</span>
+              <span class="text-[10px] text-[#E8B75D]/80">${botSubtitle}</span>
             </div>
           </div>
 
           <div class="flex items-center gap-1.5">
-            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#FBBF24] flex items-center justify-center transition"></button>
+            <button onclick="toggleChatbot()" title="Close" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/25 text-[#E8B75D] flex items-center justify-center transition"></button>
           </div>
         </div>
 
         <!-- Quick Action Suggestion Chips — scrollable, with a fade hint so the cut-off edge doesn't look like the last button -->
-        <div class="relative bg-amber-50/80 border-b border-amber-200/60">
-          <div id="chatbot-quick-pills" class="p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold text-[#4A0713]">
-            ${quickPrompts.map(qp => `<button data-quick-prompt="${escapeHtmlAttr(qp.prompt)}" class="chatbot-quick-pill-btn px-2.5 py-1 bg-white hover:bg-amber-100 border border-amber-200 rounded-full shrink-0 shadow-2xs">${escapeHtmlAttr(qp.label)}</button>`).join('')}
+        <div class="relative bg-[#FBF8F3]/80 border-b border-[#E8E0D4]/60">
+          <div id="chatbot-quick-pills" class="p-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar text-[11px] font-bold text-[#6E1423]">
+            ${quickPrompts.map(qp => `<button data-quick-prompt="${escapeHtmlAttr(qp.prompt)}" class="chatbot-quick-pill-btn px-2.5 py-1 bg-white hover:bg-[#F5EFE4] border border-[#E8E0D4] rounded-full shrink-0 shadow-2xs">${escapeHtmlAttr(qp.label)}</button>`).join('')}
           </div>
-          <div class="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-amber-50/90 to-transparent"></div>
+          <div class="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-[#FBF8F3]/90 to-transparent"></div>
         </div>
 
         <!-- Chat Messages Container -->
@@ -310,8 +310,8 @@ function renderChatbotWidget() {
         <!-- Input Bar -->
         <form onsubmit="handleChatbotSubmit(event)" class="p-2.5 bg-white border-t border-gray-200 flex items-center gap-2">
           <input type="text" id="chatbot-user-input" placeholder="Ask to order (e.g. 'Order Bikaneri Bhujia')..." 
-            class="flex-1 px-3.5 py-2 bg-amber-50/50 border border-amber-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#E59819] focus:bg-white" />
-          <button type="submit" class="w-9 h-9 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#E59819]"></button>
+            class="flex-1 px-3.5 py-2 bg-[#FBF8F3]/50 border border-[#E8E0D4] rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#C9922E] focus:bg-white" />
+          <button type="submit" class="w-9 h-9 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] rounded-xl flex items-center justify-center shadow-md transition shrink-0 border border-[#C9922E]"></button>
         </form>
 
       </div>
@@ -333,8 +333,8 @@ function renderChatMessages() {
     <div class="flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'} space-y-1 animate-fade-in">
       <div class="max-w-[90%] p-3 rounded-2xl ${
         msg.sender === 'user' 
-          ? 'bg-[#4A0713] text-[#FBBF24] rounded-br-none shadow-xs font-medium' 
-          : 'bg-white text-gray-800 border border-amber-200/80 rounded-bl-none shadow-xs leading-relaxed'
+          ? 'bg-[#6E1423] text-[#E8B75D] rounded-br-none shadow-xs font-medium' 
+          : 'bg-white text-gray-800 border border-[#E8E0D4]/80 rounded-bl-none shadow-xs leading-relaxed'
       } text-xs">
         ${msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}
       </div>
@@ -342,7 +342,7 @@ function renderChatMessages() {
       <!-- Compact & Professional In-Chat Snack Cards -->
       ${msg.recommendations && msg.recommendations.length > 0 ? `
         <div class="w-full space-y-1.5 mt-1.5 pt-0.5">
-          <div class="text-[10px] font-black text-[#4A0713] uppercase tracking-wider flex items-center gap-1 px-1">
+          <div class="text-[10px] font-black text-[#6E1423] uppercase tracking-wider flex items-center gap-1 px-1">
 
             <span>Recommended for You:</span>
           </div>
@@ -350,16 +350,16 @@ function renderChatMessages() {
           ${msg.recommendations.map(p => {
             const v = p.variants[0];
             return `
-              <div class="p-2 bg-white rounded-2xl border border-amber-200 hover:border-[#E59819] shadow-xs flex items-center justify-between gap-2 transition hover:shadow-md">
+              <div class="p-2 bg-white rounded-2xl border border-[#E8E0D4] hover:border-[#C9922E] shadow-xs flex items-center justify-between gap-2 transition hover:shadow-md">
                 
                 <!-- Compact Product Thumbnail & Details -->
                 <div class="flex items-center gap-2 min-w-0 flex-1">
                   <a href="product?id=${p.id}" class="shrink-0 block">
-                    <img src="${p.image}" alt="${p.name}" class="w-11 h-11 object-cover rounded-xl border border-amber-200 shadow-2xs group-hover:scale-105 transition-transform" />
+                    <img src="${p.image}" alt="${p.name}" class="w-11 h-11 object-cover rounded-xl border border-[#E8E0D4] shadow-2xs group-hover:scale-105 transition-transform" />
                   </a>
                   <div class="min-w-0 flex-1">
-                    <a href="product?id=${p.id}" class="font-black text-[11px] text-[#4A0713] truncate block hover:underline leading-tight">${p.name}</a>
-                    <div class="text-[9px] text-amber-800 font-bold truncate mt-0.5">${p.spiceLevel}</div>
+                    <a href="product?id=${p.id}" class="font-black text-[11px] text-[#6E1423] truncate block hover:underline leading-tight">${p.name}</a>
+                    <div class="text-[9px] text-[#6E1423] font-bold truncate mt-0.5">${p.spiceLevel}</div>
                     <div class="text-[11px] font-black text-gray-900 mt-0.5">₹${v.price} <span class="text-[9px] text-gray-400 line-through">₹${v.originalPrice}</span></div>
                   </div>
                 </div>
@@ -367,11 +367,11 @@ function renderChatMessages() {
                 <!-- Sleek Mini Buttons -->
                 <div class="flex items-center gap-1 shrink-0">
                   <button onclick="handleChatAddToCart('${p.id}', 0)" 
-                    class="py-1 px-2 bg-amber-100 hover:bg-amber-200 text-[#4A0713] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-amber-300" title="Add to Cart">
+                    class="py-1 px-2 bg-[#F5EFE4] hover:bg-[#EDE4D3] text-[#6E1423] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-[#DDD2BF]" title="Add to Cart">
                     + Add
                   </button>
                   <button onclick="handleChatDirectBuy('${p.id}', 0)" 
-                    class="py-1 px-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-[#E59819] shadow-2xs" title="Instant Checkout">
+                    class="py-1 px-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] rounded-lg text-[10px] font-black transition flex items-center gap-0.5 border border-[#C9922E] shadow-2xs" title="Instant Checkout">
                      Buy
                   </button>
                 </div>
@@ -385,7 +385,7 @@ function renderChatMessages() {
       <!-- Order Help Action Buttons -->
       ${msg.isOrderHelp ? `
         <div class="grid grid-cols-2 gap-1.5 w-full mt-1.5">
-          <button onclick="sendQuickPrompt('Where is my delivery van right now?')" class="p-2 bg-amber-50 hover:bg-amber-100 text-[#4A0713] border border-amber-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
+          <button onclick="sendQuickPrompt('Where is my delivery van right now?')" class="p-2 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#6E1423] border border-[#E8E0D4] rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
 <span>Live Van GPS</span>
           </button>
           <button onclick="sendQuickPrompt('Download my tax invoice receipt')" class="p-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-xl text-[10px] font-bold text-left flex items-center gap-1.5 shadow-2xs">
@@ -406,16 +406,16 @@ function renderChatMessages() {
 
   // Append Animated Thinking/Finding Indicator if active
   const thinkingHtml = chatbotState.isThinking ? `
-    <div id="chatbot-thinking-indicator" class="flex items-center gap-2 p-3 bg-white border border-amber-200 rounded-2xl rounded-bl-none shadow-xs text-xs max-w-[85%] animate-fade-in">
-      <div class="w-6 h-6 rounded-lg bg-[#4A0713] flex items-center justify-center text-[#FBBF24] text-[10px] animate-pulse shrink-0">
+    <div id="chatbot-thinking-indicator" class="flex items-center gap-2 p-3 bg-white border border-[#E8E0D4] rounded-2xl rounded-bl-none shadow-xs text-xs max-w-[85%] animate-fade-in">
+      <div class="w-6 h-6 rounded-lg bg-[#6E1423] flex items-center justify-center text-[#E8B75D] text-[10px] animate-pulse shrink-0">
         
       </div>
       <div class="flex items-center gap-1 font-bold text-gray-700 text-[11px]">
         <span>Sommelier is finding authentic snacks</span>
         <div class="flex items-center gap-0.5 ml-1">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#E59819] animate-bounce" style="animation-delay: 0ms"></span>
-          <span class="w-1.5 h-1.5 rounded-full bg-[#E59819] animate-bounce" style="animation-delay: 150ms"></span>
-          <span class="w-1.5 h-1.5 rounded-full bg-[#E59819] animate-bounce" style="animation-delay: 300ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#C9922E] animate-bounce" style="animation-delay: 0ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#C9922E] animate-bounce" style="animation-delay: 150ms"></span>
+          <span class="w-1.5 h-1.5 rounded-full bg-[#C9922E] animate-bounce" style="animation-delay: 300ms"></span>
         </div>
       </div>
     </div>

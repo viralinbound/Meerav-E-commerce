@@ -89,11 +89,11 @@ function renderCustomerAuthUI() {
     container.innerHTML = `
       <div class="space-y-4">
         <!-- Customer Profile Card with Avatar & Upload -->
-        <div class="flex items-center gap-3.5 p-3.5 bg-gradient-to-r from-amber-50 to-amber-100/60 rounded-2xl border border-amber-200">
+        <div class="flex items-center gap-3.5 p-3.5 bg-gradient-to-r from-[#FBF8F3] to-[#F5EFE4]/60 rounded-2xl border border-[#E8E0D4]">
           <div class="relative group">
             <img src="${avatarSrc}" alt="${authState.customer.name}" 
-              class="w-14 h-14 rounded-2xl object-cover border-2 border-[#E59819] shadow-md" />
-            <label class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#4A0713] text-[#FBBF24] hover:bg-[#32040C] rounded-full flex items-center justify-center cursor-pointer shadow-md border border-white text-[10px]" title="Change Photo">
+              class="w-14 h-14 rounded-2xl object-cover border-2 border-[#C9922E] shadow-md" />
+            <label class="absolute -bottom-1 -right-1 w-6 h-6 bg-[#6E1423] text-[#E8B75D] hover:bg-[#4E0D18] rounded-full flex items-center justify-center cursor-pointer shadow-md border border-white text-[10px]" title="Change Photo">
               
               <input type="file" accept="image/*" onchange="handleUserAvatarUpload(event)" class="hidden" />
             </label>
@@ -101,7 +101,7 @@ function renderCustomerAuthUI() {
           <div class="flex-1 min-w-0">
             <h3 class="text-base font-black text-gray-900 truncate">${authState.customer.name}</h3>
             <p class="text-xs text-gray-500 truncate">${authState.customer.phone} &bull; ${authState.customer.email || 'customer@meerav.com'}</p>
-            <label class="inline-flex items-center gap-1 text-[10px] font-black text-[#4A0713] hover:underline cursor-pointer mt-0.5">
+            <label class="inline-flex items-center gap-1 text-[10px] font-black text-[#6E1423] hover:underline cursor-pointer mt-0.5">
 Upload New Photo
               <input type="file" accept="image/*" onchange="handleUserAvatarUpload(event)" class="hidden" />
             </label>
@@ -120,22 +120,22 @@ Saved Delivery Address:
         </div>
 
         <!-- AI Taste Profile & Personalization Memory Box -->
-        <div class="p-3.5 bg-gradient-to-r from-[#4A0713]/5 via-amber-50 to-amber-100/40 rounded-2xl border border-[#E59819]/50 text-xs space-y-2">
+        <div class="p-3.5 bg-gradient-to-r from-[#6E1423]/5 via-[#FBF8F3] to-[#F5EFE4]/40 rounded-2xl border border-[#C9922E]/50 text-xs space-y-2">
           <div class="flex items-center justify-between">
-            <div class="font-black text-[#4A0713] flex items-center gap-1.5 text-xs">
+            <div class="font-black text-[#6E1423] flex items-center gap-1.5 text-xs">
                AI Taste Profile & Preferences
             </div>
-            <button onclick="closeCustomerAuthModal(); toggleChatbot(true);" class="text-[10px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
+            <button onclick="closeCustomerAuthModal(); toggleChatbot(true);" class="text-[10px] font-black text-[#6E1423] hover:underline flex items-center gap-0.5">
               <span>Ask Sommelier</span> &rarr;
             </button>
           </div>
 
           <div class="flex flex-wrap gap-1.5 text-[10px]">
-            <span class="px-2 py-0.5 bg-[#4A0713] text-[#FBBF24] rounded-lg font-black border border-[#E59819]">
+            <span class="px-2 py-0.5 bg-[#6E1423] text-[#E8B75D] rounded-lg font-black border border-[#C9922E]">
  ${getUserPersonalization().preferredSpice || 'Classic Bikaneri'}
             </span>
             ${getUserPersonalization().favoriteCategories.map(cat => `
-              <span class="px-2 py-0.5 bg-white text-gray-800 rounded-lg font-bold border border-amber-200 shadow-2xs">
+              <span class="px-2 py-0.5 bg-white text-gray-800 rounded-lg font-bold border border-[#E8E0D4] shadow-2xs">
  ${cat.replace('-', ' & ')}
               </span>
             `).join('')}
@@ -156,13 +156,13 @@ Saved Delivery Address:
 
           <div class="max-h-56 overflow-y-auto space-y-2 pr-1">
             ${customerOrders.length > 0 ? customerOrders.map(order => `
-              <div class="p-3 bg-white rounded-xl border border-gray-200/80 shadow-xs space-y-1.5 text-xs hover:border-amber-300 transition">
+              <div class="p-3 bg-white rounded-xl border border-gray-200/80 shadow-xs space-y-1.5 text-xs hover:border-[#DDD2BF] transition">
                 <div class="flex items-center justify-between">
-                  <span class="font-black text-amber-950 text-xs">#${order.id}</span>
+                  <span class="font-black text-[#1F1A17] text-xs">#${order.id}</span>
                   <span class="px-2 py-0.5 text-[10px] font-extrabold rounded-full ${
                     order.orderStatus === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
                     order.orderStatus === 'Dispatched' ? 'bg-blue-100 text-blue-800' :
-                    'bg-amber-100 text-amber-800'
+                    'bg-[#F5EFE4] text-[#6E1423]'
                   }">${order.orderStatus}</span>
                 </div>
 
@@ -173,10 +173,10 @@ Saved Delivery Address:
                 <div class="flex items-center justify-between pt-1 border-t border-gray-100 text-[11px]">
                   <span class="font-black text-gray-900">₹${order.totalAmount} &bull; ${order.paymentMethod}</span>
                   <div class="flex items-center gap-1.5">
-                    <button onclick="closeCustomerAuthModal(); openOrderTrackingView('${order.id}');" class="px-2 py-1 bg-amber-50 text-amber-900 font-bold rounded-lg hover:bg-amber-100 transition text-[10px] flex items-center gap-1 border border-amber-200">
+                    <button onclick="closeCustomerAuthModal(); openOrderTrackingView('${order.id}');" class="px-2 py-1 bg-[#FBF8F3] text-[#4E0D18] font-bold rounded-lg hover:bg-[#F5EFE4] transition text-[10px] flex items-center gap-1 border border-[#E8E0D4]">
 Track Map
                     </button>
-                    <button onclick="closeCustomerAuthModal(); openOrderHelpBot('${order.id}');" class="px-2 py-1 bg-[#4A0713] text-[#FBBF24] font-black rounded-lg hover:bg-[#32040C] transition text-[10px] flex items-center gap-1 shadow-2xs border border-[#E59819]" title="Ask Order Help Bot">
+                    <button onclick="closeCustomerAuthModal(); openOrderHelpBot('${order.id}');" class="px-2 py-1 bg-[#6E1423] text-[#E8B75D] font-black rounded-lg hover:bg-[#4E0D18] transition text-[10px] flex items-center gap-1 shadow-2xs border border-[#C9922E]" title="Ask Order Help Bot">
                        Help Bot
                     </button>
                   </div>
@@ -198,16 +198,16 @@ ${authState.myReviewId ? 'Your Review' : 'Write a Review'}
           </h4>
           <form onsubmit="submitCustomerReview(event)" class="p-3 bg-white rounded-xl border border-gray-200/80 space-y-2 text-xs">
             <div class="flex items-center gap-2">
-              <img src="${avatarSrc}" class="w-7 h-7 rounded-full object-cover border border-amber-300" />
+              <img src="${avatarSrc}" class="w-7 h-7 rounded-full object-cover border border-[#DDD2BF]" />
               <span class="font-bold text-gray-800">${authState.customer.name}</span>
             </div>
-            <div id="review-star-picker" class="flex items-center gap-1 text-lg text-amber-400">
+            <div id="review-star-picker" class="flex items-center gap-1 text-lg text-[#C9922E]">
               ${[1,2,3,4,5].map(n => ``).join('')}
             </div>
             <input type="hidden" id="review-rating-input" value="5" />
             <textarea id="review-text-input" rows="2" required placeholder="Tell other customers what you thought..."
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-amber-500 focus:outline-none"></textarea>
-            <button type="submit" class="w-full py-2 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5">
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs focus:ring-2 focus:ring-[#C9922E] focus:outline-none"></textarea>
+            <button type="submit" class="w-full py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5">
 Submit Review
             </button>
           </form>
@@ -218,7 +218,7 @@ Submit Review
           <button onclick="logoutCustomer()" class="py-2.5 px-4 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl text-xs font-bold transition">
             Logout
           </button>
-          <button onclick="closeCustomerAuthModal()" class="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-extrabold shadow-md transition">
+          <button onclick="closeCustomerAuthModal()" class="flex-1 py-2.5 bg-[#A87A22] hover:bg-[#8C2131] text-white rounded-xl text-xs font-extrabold shadow-md transition">
             Continue Shopping
           </button>
         </div>
@@ -231,23 +231,23 @@ Submit Review
     container.innerHTML = `
       <div class="space-y-4">
         <div class="text-center">
-          <div class="w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden border-2 border-[#E59819] shadow-md bg-amber-100 relative group">
+          <div class="w-16 h-16 mx-auto mb-2 rounded-full overflow-hidden border-2 border-[#C9922E] shadow-md bg-[#F5EFE4] relative group">
             <img id="login-preview-avatar" src="${defaultAvatar}" alt="Human Profile" class="w-full h-full object-cover" />
             <label class="absolute inset-0 bg-black/40 hover:bg-black/60 text-white flex flex-col items-center justify-center text-[10px] font-bold opacity-0 group-hover:opacity-100 transition cursor-pointer">
                Photo
               <input type="file" accept="image/*" onchange="handlePreviewAvatar(event)" class="hidden" />
             </label>
           </div>
-          <h3 class="text-xl font-black text-amber-950">Customer Account</h3>
+          <h3 class="text-xl font-black text-[#1F1A17]">Customer Account</h3>
           <p class="text-xs text-gray-500 mt-0.5">Create an account once — you'll stay signed in automatically next time</p>
         </div>
 
         <!-- Sign Up / Sign In Tabs -->
-        <div class="grid grid-cols-2 gap-1.5 p-1 bg-amber-50 rounded-2xl border border-amber-200">
-          <button type="button" onclick="switchCustomerAuthView('signup')" class="py-2 rounded-xl text-xs font-black transition ${isSignup ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm' : 'text-amber-900 hover:bg-amber-100'}">
+        <div class="grid grid-cols-2 gap-1.5 p-1 bg-[#FBF8F3] rounded-2xl border border-[#E8E0D4]">
+          <button type="button" onclick="switchCustomerAuthView('signup')" class="py-2 rounded-xl text-xs font-black transition ${isSignup ? 'bg-[#6E1423] text-[#E8B75D] shadow-sm' : 'text-[#4E0D18] hover:bg-[#F5EFE4]'}">
             Create Account
           </button>
-          <button type="button" onclick="switchCustomerAuthView('signin')" class="py-2 rounded-xl text-xs font-black transition ${!isSignup ? 'bg-[#4A0713] text-[#FBBF24] shadow-sm' : 'text-amber-900 hover:bg-amber-100'}">
+          <button type="button" onclick="switchCustomerAuthView('signin')" class="py-2 rounded-xl text-xs font-black transition ${!isSignup ? 'bg-[#6E1423] text-[#E8B75D] shadow-sm' : 'text-[#4E0D18] hover:bg-[#F5EFE4]'}">
             Sign In
           </button>
         </div>
@@ -257,43 +257,43 @@ Submit Review
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Full Name</label>
             <input type="text" id="cust-signup-name" required placeholder="e.g. Rajesh Kothari"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Email Address</label>
             <input type="email" id="cust-signup-email" required placeholder="you@example.com"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Password</label>
             <input type="password" id="cust-signup-password" required minlength="6" placeholder="Minimum 6 characters"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
           <div>
             <label class="block text-gray-600 font-semibold mb-1">WhatsApp / Phone Number</label>
             <input type="tel" id="cust-signup-phone" required placeholder="+91 98765 00000"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Delivery Address</label>
             <input type="text" id="cust-signup-address" required placeholder="Flat/House, Society, City"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label class="block text-gray-600 font-semibold mb-1">Pincode</label>
               <input type="text" id="cust-signup-pincode" required placeholder="e.g. 400050"
-                class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+                class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
             </div>
             <div>
               <label class="block text-gray-600 font-semibold mb-1">Photo Upload</label>
-              <label class="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold border border-amber-300 rounded-xl text-center block cursor-pointer truncate">
+              <label class="w-full py-2 px-3 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer truncate">
                  <span id="photo-upload-label">Choose Photo</span>
                 <input type="file" id="cust-login-photo" accept="image/*" onchange="handlePreviewAvatar(event)" class="hidden" />
               </label>
             </div>
           </div>
-          <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
+          <button type="submit" class="w-full py-3 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-md transition border border-[#C9922E]">
             Create Account & Sign In →
           </button>
         </form>
@@ -302,17 +302,17 @@ Submit Review
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Email Address</label>
             <input type="email" id="cust-signin-email" required placeholder="you@example.com"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
           <div>
             <label class="block text-gray-600 font-semibold mb-1">Password</label>
             <input type="password" id="cust-signin-password" required placeholder="Your password"
-              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+              class="w-full px-3 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
           </div>
-          <button type="submit" class="w-full py-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] font-black text-xs rounded-xl shadow-md transition border border-[#E59819]">
+          <button type="submit" class="w-full py-3 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-md transition border border-[#C9922E]">
             Sign In →
           </button>
-          <p class="text-center text-[11px] text-gray-400">New here? <button type="button" onclick="switchCustomerAuthView('signup')" class="text-[#4A0713] font-bold hover:underline">Create an account</button></p>
+          <p class="text-center text-[11px] text-gray-400">New here? <button type="button" onclick="switchCustomerAuthView('signup')" class="text-[#6E1423] font-bold hover:underline">Create an account</button></p>
         </form>
         `}
       </div>
@@ -515,14 +515,14 @@ function updateCustomerHeaderBadge() {
     const avatarSrc = authState.customer.avatar || defaultAvatar;
     btn.innerHTML = `
       <div class="flex items-center gap-2">
-        <img src="${avatarSrc}" alt="User Avatar" class="w-8 h-8 rounded-full object-cover border-2 border-[#E59819] shadow-sm" />
-        <span class="hidden sm:inline font-black text-xs text-[#4A0713] truncate max-w-[100px]">${authState.customer.name.split(' ')[0]}</span>
+        <img src="${avatarSrc}" alt="User Avatar" class="w-8 h-8 rounded-full object-cover border-2 border-[#C9922E] shadow-sm" />
+        <span class="hidden sm:inline font-black text-xs text-[#6E1423] truncate max-w-[100px]">${authState.customer.name.split(' ')[0]}</span>
       </div>
     `;
   } else {
     btn.innerHTML = `
       <div class="flex items-center gap-2 text-gray-700">
-        <img src="${defaultAvatar}" alt="Guest Avatar" class="w-7 h-7 rounded-full object-cover border border-amber-300 opacity-80" />
+        <img src="${defaultAvatar}" alt="Guest Avatar" class="w-7 h-7 rounded-full object-cover border border-[#DDD2BF] opacity-80" />
         <span class="hidden sm:inline font-bold text-xs">Sign In</span>
       </div>
     `;

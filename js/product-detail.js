@@ -148,11 +148,11 @@ function renderPDPDetails() {
     <button onclick="selectPDPVariant(${idx})" 
       class="p-3 rounded-2xl text-xs font-black border-2 transition text-center ${
         idx === pdpState.selectedVariantIdx 
-          ? 'bg-[#4A0713] text-[#FBBF24] border-[#E59819] shadow-md transform scale-102' 
-          : 'bg-white text-gray-800 border-amber-200 hover:bg-amber-50'
+          ? 'bg-[#6E1423] text-[#E8B75D] border-[#C9922E] shadow-md transform scale-102' 
+          : 'bg-white text-gray-800 border-[#E8E0D4] hover:bg-[#FBF8F3]'
       }">
       <span class="block text-sm mb-0.5">${v.weight}</span>
-      <span class="text-[11px] ${idx === pdpState.selectedVariantIdx ? 'text-amber-200' : 'text-[#4A0713]'} font-black">${formatPrice(v.price)}</span>
+      <span class="text-[11px] ${idx === pdpState.selectedVariantIdx ? 'text-[#E8B75D]' : 'text-[#6E1423]'} font-black">${formatPrice(v.price)}</span>
     </button>
   `).join('');
 
@@ -175,13 +175,13 @@ function renderPDPMediaSlider() {
   wrapper.innerHTML = pdpState.media.map((m, idx) => m.type === 'video' ? `
     <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-black">
       <video id="pdp-slide-video-${idx}" src="${m.url}" loop muted playsinline class="w-full h-full object-cover"></video>
-      <div class="absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#FBBF24] text-xs font-black flex items-center gap-1.5 border border-[#E59819]">
+      <div class="absolute bottom-12 right-4 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded-full text-[#E8B75D] text-xs font-black flex items-center gap-1.5 border border-[#C9922E]">
         ▶
         <span>4K TASTE FILM</span>
       </div>
     </div>
   ` : `
-    <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-[#1F0307]">
+    <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-[#2A1410]">
       <img src="${m.url}" alt="Product Photo" class="w-full h-full object-cover transition-transform duration-700 hover:scale-105" />
     </div>
   `).join('');
@@ -215,7 +215,7 @@ function setPDPSlide(slideIndex) {
     const thumb = document.getElementById(`pdp-thumb-${idx}`);
     if (!thumb) return;
     thumb.className = `w-16 h-16 rounded-2xl border-2 overflow-hidden shrink-0 shadow-md transition transform active:scale-95 bg-black relative flex items-center justify-center ${
-      idx === slideIndex ? 'border-[#E59819] ring-2 ring-[#E59819]/50 opacity-100' : 'border-amber-300/60 opacity-60'
+      idx === slideIndex ? 'border-[#C9922E] ring-2 ring-[#C9922E]/50 opacity-100' : 'border-[#DDD2BF]/60 opacity-60'
     }`;
   });
 
@@ -411,7 +411,7 @@ function buyNowCurrentProduct() {
 function switchPDPTab(tabName) {
   document.querySelectorAll('.pdp-tab-content').forEach(el => el.classList.add('hidden'));
   document.querySelectorAll('.pdp-tab-btn').forEach(btn => {
-    btn.classList.remove('bg-[#4A0713]', 'text-[#FBBF24]', 'border-[#E59819]');
+    btn.classList.remove('bg-[#6E1423]', 'text-[#E8B75D]', 'border-[#C9922E]');
     btn.classList.add('bg-white', 'text-gray-700', 'border-gray-200');
   });
 
@@ -420,7 +420,7 @@ function switchPDPTab(tabName) {
 
   if (targetContent) targetContent.classList.remove('hidden');
   if (targetBtn) {
-    targetBtn.classList.add('bg-[#4A0713]', 'text-[#FBBF24]', 'border-[#E59819]');
+    targetBtn.classList.add('bg-[#6E1423]', 'text-[#E8B75D]', 'border-[#C9922E]');
     targetBtn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200');
   }
 }

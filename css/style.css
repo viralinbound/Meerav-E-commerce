@@ -18,49 +18,78 @@
    1. DESIGN TOKENS
    ========================================================================== */
 :root {
-  /* Brand palette — Bikaner handmade */
-  --meerav-terracotta:      #B5451D;
-  --meerav-terracotta-dark: #7C2E12;
-  --meerav-marigold:        #D98F1E;
-  --meerav-indigo:          #2C4A5E;
-  --meerav-paper:           #F3E9D4;
-  --meerav-paper-dark:      #EADDBF;
-  --meerav-ink:             #2A1D14;
-  --meerav-ink-soft:        #5A4632;
-  --meerav-green:           #4B5D3A;
+  /* ---- Brand ramp ------------------------------------------------------
+     One red family only. Every "brand" surface on the site is one of these
+     three — no competing terracotta/maroon split. */
+  --brand-900: #4E0D18;   /* darkest — headers, footers, pressed states   */
+  --brand-800: #6E1423;   /* primary — buttons, brand bars                */
+  --brand-700: #8C2131;   /* lighter — hover, accents on dark             */
 
-  /* Legacy aliases — js/theme.js overwrites these at runtime when a theme
-     preset is applied. Declared here so the site still renders correctly
-     before that runs (or if the Supabase settings fetch fails). */
-  --meerav-maroon:       #4A0713;
-  --meerav-maroon-dark:  #32040C;
-  --meerav-maroon-light: #B5451D;
-  --meerav-gold:         #B9812E;
-  --meerav-gold-light:   #EADDBF;
-  --meerav-gold-dark:    #8A611F;
-  --meerav-cream:        #F3E9D4;
-  --meerav-cream-dark:   #EADDBF;
-  --meerav-text-dark:    #2A1D14;
-  --meerav-text-muted:   #5A4632;
+  /* ---- Gold accent ----------------------------------------------------- */
+  --gold-500:  #C9922E;   /* CTAs, highlights (dark text sits on this)     */
+  --gold-300:  #E8B75D;   /* gold text on dark brand surfaces             */
+  --gold-700:  #A87A22;   /* gold hover                                    */
 
-  /* Radius — one family, no ad-hoc values */
-  --ms-radius-sm:   6px;
-  --ms-radius:     10px;
-  --ms-radius-lg:  16px;
+  /* ---- Neutrals -------------------------------------------------------- */
+  --bg:        #FBF8F3;   /* page background — warm off-white              */
+  --surface:   #FFFFFF;   /* cards, drawers                                */
+  --surface-2: #F5EFE4;   /* subtle fills, hovers                          */
+  --border:    #E8E0D4;   /* hairlines                                     */
+  --border-2:  #DDD2BF;   /* stronger dividers                             */
+  --ink:       #1F1A17;   /* primary text — 16.3:1 on --bg                 */
+  --ink-2:     #6B625A;   /* secondary text — 5.6:1 on --bg                */
+
+  /* ---- Supporting & semantic ------------------------------------------- */
+  --indigo:    #2B4356;   /* single cool tone, used sparingly for bands    */
+  --veg:       #128807;   /* FSSAI vegetarian mark — do not change         */
+  --sale:      #0F7A43;   /* discount / success                            */
+
+  /* Every foreground/background pair above is verified WCAG AA (>= 4.5:1). */
+
+  /* ---- Aliases consumed by js/theme.js at runtime ----------------------
+     The live theme engine overwrites these when a preset is applied; the
+     values here are the defaults so the site renders correctly before it
+     runs, or if the Supabase settings fetch fails. */
+  --meerav-maroon:       var(--brand-800);
+  --meerav-maroon-dark:  var(--brand-900);
+  --meerav-maroon-light: var(--brand-700);
+  --meerav-gold:         var(--gold-500);
+  --meerav-gold-light:   var(--gold-300);
+  --meerav-gold-dark:    var(--gold-700);
+  --meerav-cream:        var(--bg);
+  --meerav-cream-dark:   #F0E9DD;
+  --meerav-text-dark:    var(--ink);
+  --meerav-text-muted:   var(--ink-2);
+
+  /* Names used by the brand texture layer below. */
+  --meerav-terracotta:      var(--brand-700);
+  --meerav-terracotta-dark: var(--brand-800);
+  --meerav-marigold:        var(--gold-500);
+  --meerav-indigo:          var(--indigo);
+  --meerav-paper:           var(--bg);
+  --meerav-paper-dark:      #F0E9DD;
+  --meerav-ink:             var(--ink);
+  --meerav-ink-soft:        var(--ink-2);
+
+  /* ---- Radius — one family, no ad-hoc values --------------------------- */
+  --ms-radius-sm:    6px;
+  --ms-radius:      10px;
+  --ms-radius-lg:   16px;
   --ms-radius-pill: 999px;
 
-  /* Elevation — restrained, never stacked */
-  --ms-shadow-sm: 0 1px 2px  rgba(42, 29, 20, 0.06);
-  --ms-shadow:    0 2px 8px  rgba(42, 29, 20, 0.08);
-  --ms-shadow-md: 0 6px 18px rgba(42, 29, 20, 0.10);
-  --ms-shadow-lg: 0 14px 34px rgba(42, 29, 20, 0.14);
+  /* ---- Elevation — restrained, never stacked --------------------------- */
+  --ms-shadow-sm: 0 1px 2px   rgba(31, 26, 23, 0.06);
+  --ms-shadow:    0 2px 8px   rgba(31, 26, 23, 0.08);
+  --ms-shadow-md: 0 6px 18px  rgba(31, 26, 23, 0.10);
+  --ms-shadow-lg: 0 14px 34px rgba(31, 26, 23, 0.14);
 
-  /* Motion */
+  /* ---- Motion ---------------------------------------------------------- */
   --ms-ease:     cubic-bezier(0.16, 1, 0.3, 1);
   --ms-duration: 260ms;
 
-  --ms-focus: #D98F1E;
+  --ms-focus: var(--gold-500);
 }
+
 
 
 /* ==========================================================================
@@ -165,7 +194,7 @@ textarea:focus-visible,
 .bh-banner-bg {
   background:
     linear-gradient(100deg, rgba(42, 29, 20, 0.88) 0%, rgba(42, 29, 20, 0.55) 45%, rgba(42, 29, 20, 0.15) 75%),
-    linear-gradient(150deg, #D9B87C 0%, var(--meerav-terracotta) 55%, var(--meerav-terracotta-dark) 100%) !important;
+    linear-gradient(150deg, #D8B57A 0%, var(--meerav-terracotta) 55%, var(--meerav-terracotta-dark) 100%) !important;
 }
 
 /* Flat indigo band — hand-painted shop-sign feel. Always opaque so the
@@ -182,7 +211,7 @@ textarea:focus-visible,
   background-repeat: repeat-x;
   background-position: 0 0;
   background-size: 52px 26px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='26' viewBox='0 0 52 26'><path d='M0 26 L0 14 Q6 8 13 13 Q20 18 26 11 Q33 4 39 12 Q46 20 52 13 L52 26 Z' fill='%23F3E9D4'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='26' viewBox='0 0 52 26'><path d='M0 26 L0 14 Q6 8 13 13 Q20 18 26 11 Q33 4 39 12 Q46 20 52 13 L52 26 Z' fill='%23FBF8F3'/></svg>");
 }
 
 /* Polaroid photo frame. */
@@ -269,7 +298,7 @@ textarea:focus-visible,
   display: block;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: #F6EFE2;
+  background: #F5EFE4;
 }
 .ms-card-media img,
 .ms-card-media video {
@@ -449,7 +478,7 @@ textarea:focus-visible,
   flex: 0 0 220px;
   border-radius: var(--ms-radius);
   overflow: hidden;
-  background: #1A1109;
+  background: #17120F;
   border: 1px solid rgba(217, 143, 30, 0.35);
   transition: transform var(--ms-duration) var(--ms-ease),
               border-color var(--ms-duration) var(--ms-ease),

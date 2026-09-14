@@ -11,22 +11,22 @@ const DEFAULT_SITE_SETTINGS = {
   tagline: 'Fried Fresh in Bikaner, Since 1983',
   logoUrl: 'assets/images/meerav_logo.png',
   faviconUrl: 'assets/images/meerav_logo.png',
-  primaryColor: '#B5451D',
-  secondaryColor: '#7C2E12',
-  accentColor: '#D98F1E',
-  accentLightColor: '#EADDBF',
+  primaryColor: '#6E1423',
+  secondaryColor: '#4E0D18',
+  accentColor: '#C9922E',
+  accentLightColor: '#E8B75D',
   backgroundType: 'solid',
-  backgroundColor: '#F3E9D4',
-  backgroundGradient: ['#F3E9D4', '#EADDBF', '#D98F1E'],
+  backgroundColor: '#FBF8F3',
+  backgroundGradient: ['#FBF8F3', '#F0E9DD', '#C9922E'],
   backgroundImageUrl: '',
   backgroundPatternOverlay: true,
   backgroundPattern: 'dots',
   backgroundPatternImageUrl: '',
-  adminPanelColor: '#2C4A5E',
+  adminPanelColor: '#2A1410',
   adminPanelType: 'gradient',
-  adminPanelGradient: ['#B5451D', '#7C2E12', '#2A1D14'],
-  textColor: '#2A1D14',
-  headingColor: '#7C2E12',
+  adminPanelGradient: ['#6E1423', '#4E0D18', '#1F1A17'],
+  textColor: '#1F1A17',
+  headingColor: '#6E1423',
   fontFamily: 'Merriweather',
   headingFontFamily: 'Playfair Display',
   baseFontSize: '16px',
@@ -57,7 +57,7 @@ const DEFAULT_SITE_SETTINGS = {
   chatbotSubtitle: 'Order Assistant & Personalization',
   chatbotAvatarIcon: 'fa-robot',
   chatbotAvatarImage: '',
-  chatbotColor: '#E59819',
+  chatbotColor: '#C9922E',
   chatbotGreeting: '',
   chatbotQuickPrompts: [
     { label: 'Order Spicy', prompt: 'Help me order spicy snacks for today' },
@@ -149,10 +149,10 @@ function digitsOnly(str) {
  */
 const THEME_PRESETS = [
   {
-    key: 'bikaner-handmade-2026',
-    name: 'Bikaner Handmade — Family Kitchen',
+    key: 'meerav-heritage-2026',
+    name: 'Meerav Heritage — Garnet & Gold',
     category: 'Signature Meerav Redesign',
-    swatches: ['#B5451D', '#D98F1E', '#2C4A5E'],
+    swatches: ['#6E1423', '#C9922E', '#FBF8F3'],
     values: {
       siteName: 'MEERAV',
       tagline: 'Fried Fresh in Bikaner, Since 1983',
@@ -160,11 +160,11 @@ const THEME_PRESETS = [
       heroCtaText: "See What's Fresh Today",
       heroSecondaryCtaText: 'Read Our Story',
       heroCtaLink: 'category',
-      primaryColor: '#B5451D', secondaryColor: '#7C2E12', accentColor: '#D98F1E', accentLightColor: '#EADDBF',
-      headingColor: '#7C2E12', textColor: '#2A1D14', backgroundType: 'solid', backgroundColor: '#F3E9D4',
-      backgroundGradient: ['#F3E9D4', '#EADDBF', '#D98F1E'], backgroundPattern: 'dots',
-      fontFamily: 'Merriweather', headingFontFamily: 'Playfair Display', borderRadius: 'rounded-none', adminPanelColor: '#2C4A5E',
-      adminPanelType: 'gradient', adminPanelGradient: ['#B5451D', '#7C2E12', '#2A1D14'],
+      primaryColor: '#6E1423', secondaryColor: '#4E0D18', accentColor: '#C9922E', accentLightColor: '#E8B75D',
+      headingColor: '#4E0D18', textColor: '#1F1A17', backgroundType: 'solid', backgroundColor: '#FBF8F3',
+      backgroundGradient: ['#FBF8F3', '#F0E9DD', '#C9922E'], backgroundPattern: 'dots',
+      fontFamily: 'Merriweather', headingFontFamily: 'Playfair Display', borderRadius: 'rounded-lg', adminPanelColor: '#2A1410',
+      adminPanelType: 'gradient', adminPanelGradient: ['#6E1423', '#4E0D18', '#1F1A17'],
       metaTitle: 'MEERAV - Fried Fresh in Bikaner Since 1983',
       metaDescription: 'A small family kitchen in Bikaner frying namkeens and sweets by hand since 1983 — pure groundnut oil, no palm oil, packed and shipped the same day.'
     },
@@ -276,7 +276,7 @@ const THEME_PRESETS = [
     key: 'bikaner-2026',
     name: 'Bikaner Royal 2026',
     category: 'Signature Meerav Redesign',
-    swatches: ['#4A0713', '#B9812E', '#FAF6EE'],
+    swatches: ['#6E1423', '#C9922E', '#FBF8F3'],
     values: {
       siteName: 'MEERAV',
       tagline: 'An Authentic Bikaneri Taste',
@@ -284,11 +284,11 @@ const THEME_PRESETS = [
       heroCtaText: 'Shop the Collection',
       heroSecondaryCtaText: 'Our Story',
       heroCtaLink: 'category',
-      primaryColor: '#4A0713', secondaryColor: '#2E0509', accentColor: '#B9812E', accentLightColor: '#E5C98C',
-      headingColor: '#2E0509', textColor: '#211412', backgroundType: 'solid', backgroundColor: '#FAF6EE',
-      backgroundGradient: ['#FAF6EE', '#F3ECDD', '#B9812E'], backgroundPattern: 'dots',
+      primaryColor: '#6E1423', secondaryColor: '#2E0509', accentColor: '#C9922E', accentLightColor: '#E8B75D',
+      headingColor: '#2E0509', textColor: '#1F1A17', backgroundType: 'solid', backgroundColor: '#FBF8F3',
+      backgroundGradient: ['#FBF8F3', '#F0E9DD', '#C9922E'], backgroundPattern: 'dots',
       fontFamily: 'Manrope', headingFontFamily: 'Newsreader', borderRadius: 'rounded-none', adminPanelColor: '#2E0509',
-      adminPanelType: 'gradient', adminPanelGradient: ['#4A0713', '#2E0509', '#1F0307'],
+      adminPanelType: 'gradient', adminPanelGradient: ['#6E1423', '#2E0509', '#2A1410'],
       metaTitle: 'MEERAV - An Authentic Bikaneri Taste',
       metaDescription: 'Moth flour, pure groundnut oil and desert rock salt — Bikaneri namkeens fried fresh in small batches and sealed airtight the same day.'
     },
@@ -307,7 +307,7 @@ const THEME_PRESETS = [
     key: 'royal-heritage',
     name: 'Royal Heritage',
     category: 'Ethnic Snacks & Sweets',
-    swatches: ['#4A0713', '#E59819', '#FFF9ED'],
+    swatches: ['#6E1423', '#C9922E', '#FBF8F3'],
     values: {
       siteName: 'MEERAV Namkeens & Sweets',
       tagline: 'From the Heart of Bikaner',
@@ -315,10 +315,10 @@ const THEME_PRESETS = [
       heroCtaText: 'Order Fresh Namkeen',
       heroSecondaryCtaText: 'Explore Categories',
       heroCtaLink: 'category',
-      primaryColor: '#4A0713', secondaryColor: '#32040C', accentColor: '#E59819', accentLightColor: '#FBBF24',
-      headingColor: '#32040C', textColor: '#1F1517', backgroundType: 'solid', backgroundColor: '#FFF9ED',
-      backgroundGradient: ['#FFF9ED', '#FDF1D0', '#E59819'], backgroundPattern: 'dots',
-      fontFamily: 'Plus Jakarta Sans', headingFontFamily: 'Outfit', borderRadius: 'rounded-2xl', adminPanelColor: '#1F0307',
+      primaryColor: '#6E1423', secondaryColor: '#4E0D18', accentColor: '#C9922E', accentLightColor: '#E8B75D',
+      headingColor: '#4E0D18', textColor: '#1F1A17', backgroundType: 'solid', backgroundColor: '#FBF8F3',
+      backgroundGradient: ['#FBF8F3', '#FDF1D0', '#C9922E'], backgroundPattern: 'dots',
+      fontFamily: 'Plus Jakarta Sans', headingFontFamily: 'Outfit', borderRadius: 'rounded-2xl', adminPanelColor: '#2A1410',
       metaTitle: 'MEERAV - Authentic Bikaneri Namkeens & Sweets',
       metaDescription: 'Handcrafted authentic Bikaneri namkeens, sweets and royal delicacies prepared in 100% pure oil.'
     },
@@ -544,13 +544,17 @@ function cssPropFor(prefix) {
 
 function applyBrandColors(s) {
   const swatches = [
-    { from: '4A0713', to: s.primaryColor },
-    { from: '32040C', to: s.secondaryColor },
-    { from: 'E59819', to: s.accentColor },
-    { from: 'FBBF24', to: s.accentLightColor },
-    { from: 'FFF9ED', to: s.backgroundColor },
-    { from: '1F1517', to: s.textColor },
-    { from: '1F0307', to: s.adminPanelColor }
+    // These anchors must match the literal hexes used in the markup's
+    // Tailwind arbitrary-value classes (bg-[#6E1423] etc). If you change a
+    // colour in the HTML you must change it here too, or live theming
+    // silently stops repainting that swatch.
+    { from: '6E1423', to: s.primaryColor },
+    { from: '4E0D18', to: s.secondaryColor },
+    { from: 'C9922E', to: s.accentColor },
+    { from: 'E8B75D', to: s.accentLightColor },
+    { from: 'FBF8F3', to: s.backgroundColor },
+    { from: '1F1A17', to: s.textColor },
+    { from: '2A1410', to: s.adminPanelColor }
   ];
 
   const prefixes = ['bg', 'text', 'border', 'ring', 'from', 'to', 'via', 'decoration', 'divide', 'outline', 'shadow', 'fill', 'stroke', 'accent', 'caret'];
@@ -583,8 +587,8 @@ function applyBrandColors(s) {
     : `${s.adminPanelColor}, ${darkenHex(s.adminPanelColor, 0.65)}`;
   css += `.admin-sidebar{background:linear-gradient(180deg, ${adminGradientStops}) !important;}\n`;
   css += `.admin-nav-item.active{background:linear-gradient(135deg, ${s.primaryColor} 0%, ${s.secondaryColor} 100%) !important;}\n`;
-  css += `.from-\\[\\#32040C\\].via-\\[\\#1F0307\\].to-gray-950{background-image:linear-gradient(to bottom right, ${adminGradientStops}) !important;}\n`;
-  css += `.bg-gradient-to-r.from-\\[\\#32040C\\].via-\\[\\#1F0307\\].to-gray-950{background-image:linear-gradient(to right, ${adminGradientStops}) !important;}\n`;
+  css += `.from-\\[\\#4E0D18\\].via-\\[\\#2A1410\\].to-gray-950{background-image:linear-gradient(to bottom right, ${adminGradientStops}) !important;}\n`;
+  css += `.bg-gradient-to-r.from-\\[\\#4E0D18\\].via-\\[\\#2A1410\\].to-gray-950{background-image:linear-gradient(to right, ${adminGradientStops}) !important;}\n`;
 
   // Root design tokens
   css += `:root{
