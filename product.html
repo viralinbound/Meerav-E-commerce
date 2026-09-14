@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEERAV - Authentic Bikaneri Namkeens & Delicacies</title>
   <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
+
+  <!-- SEO -->
+  <meta name="description" content="Authentic Bikaneri snacks from MEERAV, slow-fried in pure cold-pressed groundnut oil with zero palm oil and packed the same day." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#4A0713" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MEERAV Namkeens &amp; Sweets" />
+  <meta property="og:description" content="Authentic Bikaneri snacks from MEERAV, slow-fried in pure cold-pressed groundnut oil with zero palm oil and packed the same day." />
+  <meta property="og:image" content="assets/images/cinematic_bhujia.jpg" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +34,8 @@
 
 </head>
 <body class="pb-mobile-nav selection:bg-amber-200 selection:text-amber-950">
+
+  <a href="#main-content" class="ms-skip-link">Skip to main content</a>
 
   <!-- ========================================================================= -->
   <!-- 1. TOP UTILITY BAR                                                        -->
@@ -88,9 +101,9 @@
           </button>
 
           <!-- Wishlist -->
-          <button onclick="window.location.href='category?cat=all'"
-            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
-            <i class="far fa-heart"></i>
+          <button onclick="window.location.href='category?cat=wishlist'" aria-label="View your wishlist"
+            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819]">
+            <i class="far fa-heart" aria-hidden="true"></i>
             <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
           </button>
 
@@ -134,8 +147,22 @@
   <!-- ========================================================================= -->
   <!-- 3. FULL PRODUCT DETAIL HERO & INTERACTIVE SHOWCASE                        -->
   <!-- ========================================================================= -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-fade-in">
-    
+  <main id="main-content" tabindex="-1" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-fade-in">
+
+    <!-- Product Unavailable / Not Found State -->
+    <div id="pdp-not-found" class="hidden py-20 text-center" role="alert">
+      <div class="w-20 h-20 mx-auto mb-4 bg-amber-50 rounded-full flex items-center justify-center text-[#4A0713]" aria-hidden="true">
+        <i class="fas fa-box-open text-3xl"></i>
+      </div>
+      <h1 class="text-xl sm:text-2xl font-black text-gray-900">Product Unavailable</h1>
+      <p class="text-sm text-gray-500 mt-2 max-w-md mx-auto">This item may have been removed or the link is incorrect. Explore our full range of authentic Bikaneri snacks instead.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+        <a href="category?cat=all" class="px-6 py-3 bg-[#4A0713] text-[#FBBF24] text-sm font-black rounded-xl hover:bg-[#32040C] shadow-md transition">Browse All Products</a>
+        <a href="index" class="px-6 py-3 border-2 border-[#4A0713] text-[#4A0713] text-sm font-black rounded-xl hover:bg-amber-50 transition">Go to Homepage</a>
+      </div>
+    </div>
+
+    <div id="pdp-content">
     <!-- Breadcrumbs Navigation -->
     <nav class="flex items-center gap-2 text-xs text-gray-500 mb-4 font-medium">
       <a href="index" class="hover:text-[#4A0713] transition">Home</a>
@@ -448,12 +475,13 @@
 
       <div id="pdp-related-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
     </section>
+    </div>
 
   </main>
 
   <!-- Slide-Over Cart Drawer -->
   <div id="cart-overlay" onclick="closeCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
-  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
       <div class="flex items-center gap-2">
 
@@ -665,6 +693,7 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
+  <script defer src="js/seo.js"></script>
   <script type="module" src="js/supabase-client.js"></script>
   <script defer src="js/theme.js"></script>
   <script defer src="js/apply-editor-patches.js"></script>

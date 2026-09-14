@@ -6,6 +6,17 @@
   <title>MEERAV - An Authentic Bikaneri Taste • Namkeens & Sweets</title>
   <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
 
+  <!-- SEO -->
+  <meta name="description" content="Authentic Bikaneri namkeens, bhujia, mathri and sweets from MEERAV — fried fresh every morning in pure groundnut oil, zero palm oil, since 1983. Same-day dispatch from Bikaner." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#4A0713" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MEERAV Namkeens &amp; Sweets" />
+  <meta property="og:description" content="Authentic Bikaneri namkeens, bhujia, mathri and sweets from MEERAV — fried fresh every morning in pure groundnut oil, zero palm oil, since 1983. Same-day dispatch from Bikaner." />
+  <meta property="og:image" content="assets/images/cinematic_bhujia.jpg" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +52,8 @@
   
 </head>
 <body class="pb-mobile-nav selection:bg-amber-200 selection:text-amber-950">
+
+  <a href="#storefront-main-content" class="ms-skip-link">Skip to main content</a>
 
   <!-- ========================================================================= -->
   <!-- 1. TOP UTILITY BAR                                                        -->
@@ -106,9 +119,9 @@
           </button>
 
           <!-- Wishlist -->
-          <button onclick="window.location.href='category?cat=all'"
-            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
-            <i class="far fa-heart"></i>
+          <button onclick="window.location.href='category?cat=wishlist'" aria-label="View your wishlist"
+            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819]">
+            <i class="far fa-heart" aria-hidden="true"></i>
             <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
           </button>
 
@@ -152,7 +165,7 @@
   <!-- ========================================================================= -->
   <!-- 3. STOREFRONT HERO & CATALOG MAIN CONTENT                                 -->
   <!-- ========================================================================= -->
-  <main id="storefront-main-content" class="animate-fade-in">
+  <main id="storefront-main-content" class="animate-fade-in" tabindex="-1">
     
     <!-- Hero Banner — true full-page slideshow banner, text overlaid on top -->
     <section class="relative overflow-hidden border-b border-[#7C2E12] w-full min-h-[70vh] sm:min-h-[85vh] lg:min-h-[92vh] flex items-end sm:items-center"
@@ -260,6 +273,33 @@
       <!-- Mini product grid -->
       <div id="bhujia-spotlight-grid" class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-10">
         <!-- Populated dynamically by renderBhujiaSpotlight() in store.js -->
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
       </div>
 
       <div class="text-center mt-10 relative z-10">
@@ -330,6 +370,42 @@
       </div>
       <div id="home-bestsellers-track" class="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth pb-4">
         <!-- Populated dynamically by renderBestSellers() in store.js -->
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+        <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
       </div>
       <div class="text-center mt-8">
         <a href="category?cat=all" class="inline-flex items-center gap-2 px-8 py-3 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-full shadow-lg transition">
@@ -416,6 +492,40 @@
       </div>
     </section>
 
+    <!-- Social / Instagram-style Gallery Strip (Bikaji-style) -->
+    <section class="py-16 sm:py-20 bg-white border-b border-amber-200/80">
+      <div class="text-center mb-8">
+        <span class="bh-tag">Straight From The Kitchen</span>
+        <h2 class="text-2xl sm:text-3xl font-black text-[#B5451D] mt-3 bh-heading">Follow Us <span class="italic">@meerav.bikaner</span></h2>
+      </div>
+      <div class="grid grid-cols-3 sm:grid-cols-6 gap-1 sm:gap-2 max-w-6xl mx-auto px-1 sm:px-6">
+        <a href="https://instagram.com" target="_blank" class="group relative aspect-square overflow-hidden block">
+          <img src="assets/images/cinematic_bhujia.jpg" alt="Meerav on Instagram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center"><i class="fab fa-instagram text-white text-xl opacity-0 group-hover:opacity-100 transition"></i></div>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="group relative aspect-square overflow-hidden block">
+          <img src="assets/images/cinematic_masala_peanuts.jpg" alt="Meerav on Instagram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center"><i class="fab fa-instagram text-white text-xl opacity-0 group-hover:opacity-100 transition"></i></div>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="group relative aspect-square overflow-hidden block">
+          <img src="assets/images/cinematic_mixture.jpg" alt="Meerav on Instagram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center"><i class="fab fa-instagram text-white text-xl opacity-0 group-hover:opacity-100 transition"></i></div>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="group relative aspect-square overflow-hidden block">
+          <img src="assets/images/cinematic_moong_dal.jpg" alt="Meerav on Instagram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center"><i class="fab fa-instagram text-white text-xl opacity-0 group-hover:opacity-100 transition"></i></div>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="group relative aspect-square overflow-hidden block">
+          <img src="assets/images/cinematic_papad.jpg" alt="Meerav on Instagram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center"><i class="fab fa-instagram text-white text-xl opacity-0 group-hover:opacity-100 transition"></i></div>
+        </a>
+        <a href="https://instagram.com" target="_blank" class="group relative aspect-square overflow-hidden block">
+          <img src="assets/images/feature_heritage.jpg" alt="Meerav on Instagram" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-center justify-center"><i class="fab fa-instagram text-white text-xl opacity-0 group-hover:opacity-100 transition"></i></div>
+        </a>
+      </div>
+    </section>
+
     <!-- Frequently Asked Questions (FAQs) Section -->
     <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
       <div class="text-center mb-10">
@@ -434,8 +544,20 @@
 
     <!-- Enhanced 4-Column Footer -->
     <div class="bh-torn-edge"></div>
-    <footer class="text-gray-400 pt-16 pb-10 border-t-4 border-[#7C2E12] text-xs" style="background-color:#2A1D14;">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <footer class="text-gray-400 pt-0 pb-10 border-t-4 border-[#7C2E12] text-xs" style="background-color:#2A1D14;">
+      <!-- Newsletter Signup Bar (Bikaji-style) -->
+      <div class="bg-[#D98F1E] py-8">
+        <div class="max-w-3xl mx-auto px-4 text-center space-y-3">
+          <p class="text-[#2A1D14] font-black text-sm sm:text-base">Drop your email for offers &amp; fresh-batch alerts</p>
+          <form onsubmit="event.preventDefault(); const el=document.getElementById('footer-newsletter-email'); if(el.value){ showToast('Subscribed! Watch your inbox for offers.', 'success'); el.value=''; }" class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <input id="footer-newsletter-email" type="email" required placeholder="Enter your email address"
+              class="flex-1 px-4 py-3 border-2 border-[#2A1D14] text-sm font-medium focus:outline-none rounded-none" />
+            <button type="submit" class="px-6 py-3 bg-[#2A1D14] text-[#F3E9D4] text-xs font-black uppercase tracking-wide hover:bg-[#1A1109] transition rounded-none">Subscribe</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 pt-12">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
           
           <!-- Column 1: Brand Bio -->
@@ -899,7 +1021,7 @@
   <!-- ========================================================================= -->
   <div id="cart-overlay" onclick="closeCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
 
-  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
       <div class="flex items-center gap-2">
         <i class="fas fa-shopping-bag"></i>
@@ -1127,6 +1249,17 @@
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
+  <script defer src="js/seo.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      if (typeof meeravApplySeo !== 'function') return;
+      meeravApplySeo({
+        description: document.querySelector('meta[name="description"]').content,
+        image: 'assets/images/cinematic_bhujia.jpg'
+      });
+      meeravAddOrganizationSchema();
+    });
+  </script>
   <script type="module" src="js/supabase-client.js"></script>
   <script defer src="js/theme.js"></script>
   <script defer src="js/apply-editor-patches.js"></script>

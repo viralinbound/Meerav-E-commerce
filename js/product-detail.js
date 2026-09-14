@@ -32,16 +32,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initProductDetailPage() {
   const urlParams = new URLSearchParams(window.location.search);
-  const productId = urlParams.get('id') || 'p1';
+  const productId = urlParams.get('id');
 
-  let allProducts = await fetchProducts();
-  if (!allProducts.length) allProducts = MIRA_DATA.products;
-  const product = allProducts.find(p => p.id === productId) || allProducts[0];
+  let allProducts = [];
+  try {
+    allProducts = await fetchProducts();
+  } catch (e) {
+    allProducts = [];
+  }
+  if (!allProducts.length) allProducts = MIRA_DATA.products || [];
+
+  const product = productId
+    ? allProducts.find(p => p.id === productId)
+    : allProducts[0];
+
+  const notFoundEl = document.getElementById('pdp-not-found');
+  const contentEl = document.getElementById('pdp-content');
 
   if (!product) {
-    window.location.href = 'index';
+    if (notFoundEl) notFoundEl.classList.remove('hidden');
+    if (contentEl) contentEl.classList.add('hidden');
+    document.title = 'Product Unavailable - MEERAV Authentic Bikaneri Namkeens';
     return;
   }
+
+  if (notFoundEl) notFoundEl.classList.add('hidden');
+  if (contentEl) contentEl.classList.remove('hidden');
 
   if (typeof storeState !== 'undefined') {
     storeState.products = allProducts;
@@ -56,6 +72,22 @@ async function initProductDetailPage() {
   pdpState.currentSlide = 0;
 
   document.title = `${product.name} - MEERAV Authentic Bikaneri Namkeens`;
+
+  // SEO: real product metadata + Product/Breadcrumb structured data
+  if (typeof meeravApplySeo === 'function') {
+    meeravApplySeo({
+      title: `${product.name} - MEERAV Authentic Bikaneri Namkeens`,
+      description: product.description,
+      image: product.image,
+      type: 'product'
+    });
+    meeravAddProductSchema(product);
+    meeravAddBreadcrumbSchema([
+      { name: 'Home', path: 'index' },
+      { name: String(product.category).replace('-', ' & '), path: `category?cat=${product.category}` },
+      { name: product.name, path: `product?id=${product.id}` }
+    ]);
+  }
 
   renderPDPDetails();
   renderPDPRelatedProducts(allProducts);
@@ -425,42 +457,5 @@ function renderPDPRelatedProducts(allProducts) {
   }
   related = related.slice(0, 4);
 
-  container.innerHTML = related.map(p => {
-    const v = p.variants[0];
-
-    return `
-      <div class="product-card overflow-hidden flex flex-col justify-between relative group">
-        <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block">
-          <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="group-hover:scale-108 transition-transform duration-500" />
-          <div class="absolute top-3 left-3 flex items-center gap-1.5">
-            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-[#4A0713] text-[#FBBF24] border border-[#E59819]">
-              ${p.tag}
-            </span>
-          </div>
-          <div class="absolute top-3 right-3">
-            <div class="veg-indicator bg-white shadow-sm"><div class="veg-indicator-dot"></div></div>
-          </div>
-        </a>
-
-        <div class="p-4 flex-1 flex flex-col justify-between">
-          <div>
-            <a href="product?id=${p.id}" class="font-black text-gray-900 text-sm hover:text-[#4A0713] transition line-clamp-1 block mb-1">
-              ${p.name}
-            </a>
-            <div class="text-[11px] text-gray-500 line-clamp-1 mb-2 font-medium">${p.description}</div>
-          </div>
-
-          <div class="pt-2 border-t border-amber-100 flex items-center justify-between">
-            <div>
-              <span class="text-base font-black text-[#4A0713]">₹${v.price}</span>
-              <span class="text-[10px] text-gray-400 line-through ml-1">₹${v.originalPrice}</span>
-            </div>
-            <a href="product?id=${p.id}" class="px-3 py-1.5 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] rounded-xl text-xs font-black transition border border-[#E59819]">
-              View Details &rarr;
-            </a>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  container.innerHTML = related.map(p => meeravProductCard(p)).join('');
 }

@@ -972,11 +972,12 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 .bh-banner-bg {
   background:
     linear-gradient(100deg, rgba(42,29,20,0.88) 0%, rgba(42,29,20,0.55) 45%, rgba(42,29,20,0.15) 75%),
-    linear-gradient(150deg, #D9B87C 0%, #B5451D 55%, #7C2E12 100%);
+    linear-gradient(150deg, #D9B87C 0%, #B5451D 55%, #7C2E12 100%) !important;
 }
 
 .bh-signboard-band {
-  background: var(--bh-indigo);
+  background: var(--bh-indigo) !important;
+  background-color: var(--bh-indigo) !important;
 }
 
 /* Hand-torn paper edge — used under the hero banner */
@@ -1053,4 +1054,241 @@ h1, h2, h3, h4, h5, h6, .brand-font {
 /* Double-line rule, like a hand-ruled ledger divider */
 .bh-double-rule {
   border-bottom: 3px double var(--bh-ink);
+}
+
+/* ==========================================================================
+   MEERAV DESIGN SYSTEM (ms-*)
+   Single source of truth for spacing, radius, elevation, motion and the
+   shared product-card / button / skeleton components. Colour values stay as
+   Tailwind arbitrary-value utilities in markup so the live theme engine
+   (js/theme.js applyBrandColors) can still remap the brand palette.
+   ========================================================================== */
+
+:root {
+  /* Radius scale — one consistent family, no ad-hoc values */
+  --ms-radius-sm: 6px;
+  --ms-radius: 10px;
+  --ms-radius-lg: 16px;
+  --ms-radius-pill: 999px;
+
+  /* Elevation — restrained, never stacked */
+  --ms-shadow-sm: 0 1px 2px rgba(42, 29, 20, 0.06);
+  --ms-shadow: 0 2px 8px rgba(42, 29, 20, 0.08);
+  --ms-shadow-md: 0 6px 18px rgba(42, 29, 20, 0.10);
+  --ms-shadow-lg: 0 14px 34px rgba(42, 29, 20, 0.14);
+
+  /* Motion */
+  --ms-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ms-duration: 260ms;
+
+  /* Focus */
+  --ms-focus: #D98F1E;
+}
+
+/* --- Focus visibility (keyboard users only, never on mouse click) -------- */
+.ms-focusable:focus,
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ms-focus);
+  outline-offset: 2px;
+  border-radius: var(--ms-radius-sm);
+}
+
+/* Skip-to-content link — visible only once focused */
+.ms-skip-link {
+  position: absolute;
+  left: 12px;
+  top: -100px;
+  z-index: 100;
+  background: #2A1D14;
+  color: #F3E9D4;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 10px 16px;
+  border-radius: var(--ms-radius-sm);
+  transition: top 180ms var(--ms-ease);
+}
+.ms-skip-link:focus {
+  top: 12px;
+}
+
+/* --- Shared product card ------------------------------------------------- */
+.ms-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid rgba(42, 29, 20, 0.10);
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--ms-duration) var(--ms-ease),
+              box-shadow var(--ms-duration) var(--ms-ease),
+              border-color var(--ms-duration) var(--ms-ease);
+}
+.ms-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ms-shadow-md);
+  border-color: rgba(217, 143, 30, 0.55);
+}
+
+.ms-card-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #F6EFE2;
+}
+.ms-card-media img,
+.ms-card-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 520ms var(--ms-ease);
+}
+.ms-card:hover .ms-card-media img {
+  transform: scale(1.05);
+}
+.ms-card-media video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 260ms var(--ms-ease);
+}
+.ms-card-media:hover video {
+  opacity: 1;
+}
+
+.ms-card-body {
+  padding: 14px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.ms-card-title {
+  font-family: 'Playfair Display', 'Newsreader', Georgia, serif;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.3;
+  color: #2A1D14;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;
+}
+
+/* Badge — one flat style, used sparingly (max one per card corner) */
+.ms-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: var(--ms-radius-sm);
+  line-height: 1;
+}
+
+/* Icon action button (wishlist etc.) */
+.ms-icon-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--ms-radius-pill);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--ms-shadow-sm);
+  transition: background var(--ms-duration) var(--ms-ease),
+              transform var(--ms-duration) var(--ms-ease);
+}
+.ms-icon-btn:hover {
+  background: #fff;
+  transform: scale(1.08);
+}
+
+/* Buttons */
+.ms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+  padding: 11px 16px;
+  border-radius: var(--ms-radius-sm);
+  transition: background var(--ms-duration) var(--ms-ease),
+              color var(--ms-duration) var(--ms-ease),
+              transform 120ms var(--ms-ease);
+  cursor: pointer;
+}
+.ms-btn:active { transform: scale(0.97); }
+.ms-btn-block { width: 100%; }
+
+/* Variant pill row */
+.ms-variant {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 9px;
+  border-radius: var(--ms-radius-sm);
+  border: 1px solid rgba(42, 29, 20, 0.18);
+  background: #fff;
+  color: #5A4632;
+  transition: all 160ms var(--ms-ease);
+}
+.ms-variant:hover { border-color: #D98F1E; }
+.ms-variant[aria-pressed="true"] {
+  background: #2A1D14;
+  border-color: #2A1D14;
+  color: #F3E9D4;
+}
+
+/* --- Loading skeletons --------------------------------------------------- */
+.ms-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #EDE3D2;
+  border-radius: var(--ms-radius-sm);
+}
+.ms-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: ms-shimmer 1.4s infinite;
+}
+@keyframes ms-shimmer {
+  100% { transform: translateX(100%); }
+}
+.ms-skeleton-card {
+  border: 1px solid rgba(42, 29, 20, 0.08);
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  background: #fff;
+}
+
+/* --- Respect reduced-motion preferences ---------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .ms-card:hover { transform: none; }
+  .ms-card:hover .ms-card-media img { transform: none; }
+  .ms-skeleton::after { animation: none; }
 }

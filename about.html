@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEERAV - About Us | Our Story from Bikaner</title>
   <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
+
+  <!-- SEO -->
+  <meta name="description" content="Meerav Ki Kahani — how a small family kitchen in Bikaner has been frying namkeens by hand since 1983, with no shortcuts, no palm oil and no factory lines." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#4A0713" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MEERAV Namkeens &amp; Sweets" />
+  <meta property="og:description" content="Meerav Ki Kahani — how a small family kitchen in Bikaner has been frying namkeens by hand since 1983, with no shortcuts, no palm oil and no factory lines." />
+  <meta property="og:image" content="assets/images/feature_heritage.jpg" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +34,8 @@
 
 </head>
 <body class="pb-mobile-nav selection:bg-amber-200 selection:text-amber-950">
+
+  <a href="#main-content" class="ms-skip-link">Skip to main content</a>
 
   <!-- ========================================================================= -->
   <!-- 1. TOP UTILITY BAR                                                        -->
@@ -88,9 +101,9 @@
           </button>
 
           <!-- Wishlist -->
-          <button onclick="window.location.href='category?cat=all'"
-            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
-            <i class="far fa-heart"></i>
+          <button onclick="window.location.href='category?cat=wishlist'" aria-label="View your wishlist"
+            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819]">
+            <i class="far fa-heart" aria-hidden="true"></i>
             <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
           </button>
 
@@ -167,7 +180,7 @@ Four Decades of Aslee Bikaneri Taste
   <!-- ========================================================================= -->
   <!-- 4. ABOUT US CONTENT                                                       -->
   <!-- ========================================================================= -->
-  <main class="animate-fade-in">
+  <main id="main-content" tabindex="-1" class="animate-fade-in">
 
     <!-- Our Story -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 border-b border-amber-200/80">
@@ -317,7 +330,7 @@ Four Decades of Aslee Bikaneri Taste
 
   <!-- Slide-Over Cart Drawer -->
   <div id="cart-overlay" onclick="closeCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
-  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
       <div class="flex items-center gap-2">
 
@@ -443,6 +456,21 @@ Four Decades of Aslee Bikaneri Taste
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
+  <script defer src="js/seo.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', function () {
+      if (typeof meeravApplySeo !== 'function') return;
+      meeravApplySeo({
+        description: document.querySelector('meta[name="description"]').content,
+        image: 'assets/images/feature_heritage.jpg',
+        type: 'article'
+      });
+      meeravAddBreadcrumbSchema([
+        { name: 'Home', path: 'index' },
+        { name: 'About Us', path: 'about' }
+      ]);
+    });
+  </script>
   <script type="module" src="js/supabase-client.js"></script>
   <script defer src="js/theme.js"></script>
   <script defer src="js/apply-editor-patches.js"></script>

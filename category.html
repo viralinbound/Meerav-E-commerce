@@ -5,6 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEERAV - Bikaneri Categories & Snack Collection</title>
   <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
+
+  <!-- SEO -->
+  <meta name="description" content="Browse MEERAV’s complete range of handcrafted Bikaneri snacks — bhujia and sev, namkeen mixtures, papad and mathri, roasted diet snacks and festive sweet boxes." />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#4A0713" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="MEERAV Namkeens &amp; Sweets" />
+  <meta property="og:description" content="Browse MEERAV’s complete range of handcrafted Bikaneri snacks — bhujia and sev, namkeen mixtures, papad and mathri, roasted diet snacks and festive sweet boxes." />
+  <meta property="og:image" content="assets/images/cinematic_mixture.jpg" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary_large_image" />
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +34,8 @@
 
 </head>
 <body class="pb-mobile-nav selection:bg-amber-200 selection:text-amber-950">
+
+  <a href="#main-content" class="ms-skip-link">Skip to main content</a>
 
   <!-- ========================================================================= -->
   <!-- 1. TOP UTILITY BAR                                                        -->
@@ -88,9 +101,9 @@
           </button>
 
           <!-- Wishlist -->
-          <button onclick="window.location.href='category?cat=all'"
-            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition">
-            <i class="far fa-heart"></i>
+          <button onclick="window.location.href='category?cat=wishlist'" aria-label="View your wishlist"
+            class="relative p-2.5 rounded-xl text-gray-700 hover:text-[#4A0713] hover:bg-amber-50 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819]">
+            <i class="far fa-heart" aria-hidden="true"></i>
             <span class="wishlist-badge-count hidden absolute -top-1 -right-1 w-5 h-5 bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-sm">0</span>
           </button>
 
@@ -169,7 +182,7 @@ Same-Day Dispatch from Bikaner
   <!-- ========================================================================= -->
   <!-- 4. CATEGORY SELECTOR TABS & PRODUCTS GRID                                 -->
   <!-- ========================================================================= -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-fade-in space-y-8">
+  <main id="main-content" tabindex="-1" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 animate-fade-in space-y-8">
     
     <!-- Category Picker Cards — the only way to pick a category. Hidden once
          one is chosen, so the product list opens as its own clean page. -->
@@ -199,15 +212,53 @@ Same-Day Dispatch from Bikaner
     <!-- Products Cards Grid -->
     <div id="category-products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Populated via category-page.js -->
+      <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+      <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+      <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
+      <div class="ms-skeleton-card" aria-hidden="true">
+          <div class="ms-skeleton" style="aspect-ratio:1/1"></div>
+          <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
+            <div class="ms-skeleton" style="height:10px;width:45%"></div>
+            <div class="ms-skeleton" style="height:14px;width:90%"></div>
+            <div class="ms-skeleton" style="height:14px;width:60%"></div>
+            <div class="ms-skeleton" style="height:32px;width:100%;margin-top:6px"></div>
+          </div>
+        </div>
     </div>
 
     <!-- Empty State Container -->
-    <div id="category-empty-state" class="hidden py-16 text-center bg-amber-50/50 rounded-3xl border border-dashed border-amber-300 p-8 space-y-3">
-      
-      <h3 class="text-base font-black text-gray-900">No Bikaneri snacks found matching your filter</h3>
-      <p class="text-xs text-gray-500">Try choosing a different category or clearing your search term</p>
-      <button onclick="selectCategory('all')" class="px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] rounded-xl text-xs font-black border border-[#E59819]">
-        View All 8 Signature Snacks
+    <div id="category-empty-state" class="hidden py-16 text-center bg-amber-50/50 rounded-3xl border border-dashed border-amber-300 p-8 space-y-3" role="status">
+      <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center text-[#4A0713] shadow-sm" aria-hidden="true">
+        <i id="category-empty-icon" class="fas fa-magnifying-glass text-2xl"></i>
+      </div>
+      <h3 id="category-empty-title" class="text-base font-black text-gray-900">No Bikaneri snacks found matching your filter</h3>
+      <p id="category-empty-desc" class="text-xs text-gray-500">Try choosing a different category or clearing your search term</p>
+      <button id="category-empty-cta" onclick="selectCategory('all')" class="px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] rounded-xl text-xs font-black border border-[#E59819] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819] focus-visible:ring-offset-2">
+        View All Signature Snacks
       </button>
     </div>
 
@@ -215,7 +266,7 @@ Same-Day Dispatch from Bikaner
 
   <!-- Slide-Over Cart Drawer -->
   <div id="cart-overlay" onclick="closeCartDrawer()" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
-  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+  <div id="cart-drawer" role="dialog" aria-modal="true" aria-label="Shopping cart" aria-hidden="true" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
     <div class="p-4 border-b border-gray-100 flex items-center justify-between bg-[#4A0713] text-white">
       <div class="flex items-center gap-2">
 
@@ -341,6 +392,7 @@ Same-Day Dispatch from Bikaner
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/env-config.js"></script>
+  <script defer src="js/seo.js"></script>
   <script type="module" src="js/supabase-client.js"></script>
   <script defer src="js/theme.js"></script>
   <script defer src="js/apply-editor-patches.js"></script>

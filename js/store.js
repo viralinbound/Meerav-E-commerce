@@ -506,134 +506,7 @@ function renderStoreProducts() {
     return;
   }
 
-  container.innerHTML = filtered.map(p => {
-    const selectedIdx = storeState.selectedVariants[p.id] || 0;
-    const selectedVar = p.variants[selectedIdx] || p.variants[0];
-    const discount = Math.round(((selectedVar.originalPrice - selectedVar.price) / selectedVar.originalPrice) * 100);
-
-    const tiltClass = ['bh-tilt-1', 'bh-tilt-2', 'bh-tilt-3', 'bh-tilt-4'][filtered.indexOf(p) % 4];
-
-    return `
-      <div class="product-card bh-card ${tiltClass} bh-hard-shadow overflow-hidden flex flex-col justify-between relative group">
-        <!-- Sticker-style price tag, stuck on the corner -->
-        <span class="bh-price-tag absolute -top-2 -right-2 z-30">${formatPrice(selectedVar.price)}</span>
-
-        <!-- Packaging Visual Frame with Video Hover Preview -->
-        <a href="product?id=${p.id}" class="product-pack-frame cursor-pointer block relative"
-          onmouseenter="const v=this.querySelector('video'); if(v){v.currentTime=0; v.play().catch(()=>{});}"
-          onmouseleave="const v=this.querySelector('video'); if(v){v.pause();}">
-
-          <img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" class="group-hover:scale-108 transition-transform duration-500" />
-
-          ${p.video ? `
-            <video class="card-video-preview" src="${p.video}" muted loop playsinline preload="none"></video>
-            <div class="absolute bottom-3 right-3 z-20 px-2.5 py-1 bg-[#2A1D14]/85 text-[#EADDBF] text-[10px] font-black flex items-center gap-1 border border-[#D98F1E]/60">
-              <span>4K REEL</span>
-            </div>
-          ` : ''}
-
-          <!-- Top Left Badges — flat, hand-stamped tag look, no glossy pills -->
-          <div class="absolute top-3 left-3 z-20 flex items-center gap-1.5">
-            <span class="px-2.5 py-1 text-[10px] font-black bg-[#2A1D14]/90 text-[#EADDBF] border border-[#D98F1E]/60">
-              ${p.tag}
-            </span>
-            <span class="px-2 py-1 text-[10px] font-black bg-[#D98F1E] text-[#2A1D14]">
-              ${selectedVar.weight}
-            </span>
-          </div>
-
-          <!-- Top Right Actions -->
-          <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5">
-            <div class="veg-indicator bg-white/95 shadow-md" title="100% Pure Vegetarian">
-              <div class="veg-indicator-dot"></div>
-            </div>
-
-            <button onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${p.id}');"
-              class="w-8 h-8 bg-black/60 hover:bg-white text-white hover:text-red-600 flex items-center justify-center shadow-md transition border border-white/20">
-
-            </button>
-          </div>
-
-          <!-- Bottom Quality Banner -->
-          <div class="absolute bottom-3 left-3 z-20 flex items-center gap-1.5 text-[10px] text-[#EADDBF] font-bold bg-[#2A1D14]/85 px-2.5 py-1 border border-[#D98F1E]/40">
-            <span>Pure Oil</span>
-            <span class="text-emerald-400 font-black ml-1">100% Fresh</span>
-          </div>
-        </a>
-
-        <!-- Product Card Content -->
-        <div class="p-5 flex-1 flex flex-col justify-between bg-white">
-          <div>
-            <!-- Rating & Reviews -->
-            <div class="flex items-center justify-between mb-1.5">
-              <div class="flex items-center gap-1 text-amber-600 text-xs font-extrabold">
-
-                <span>${p.rating}</span>
-                <span class="text-gray-400 font-medium text-[11px]">(${p.reviewsCount})</span>
-              </div>
-              <span class="text-[10px] font-extrabold text-[#78350F] bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                Bikaneri Recipe
-              </span>
-            </div>
-
-            <!-- Product Title & Description -->
-            <a href="product?id=${p.id}" class="font-black text-gray-900 text-base leading-snug mb-1 line-clamp-1 hover:text-[#4A0713] transition block">
-              ${p.name}
-            </a>
-            <p class="text-xs text-gray-500 line-clamp-2 mb-3 leading-relaxed font-medium">
-              ${p.description}
-            </p>
-
-            <!-- Weight Variant Selector -->
-            <div class="mb-3.5">
-              <span class="text-[10px] font-extrabold text-gray-400 block mb-1.5 uppercase tracking-wider">Pack Weight:</span>
-              <div class="flex flex-wrap gap-1.5">
-                ${p.variants.map((v, idx) => `
-                  <button onclick="setProductVariant('${p.id}', ${idx})"
-                    class="px-2.5 py-1 text-xs font-black transition-all ${
-                      idx === selectedIdx
-                        ? 'bg-[#4A0713] text-[#FBBF24] border border-[#E59819]'
-                        : 'bg-amber-50/80 text-gray-700 hover:bg-amber-100 border border-amber-200'
-                    }">
-                    ${v.weight}
-                  </button>
-                `).join('')}
-              </div>
-            </div>
-          </div>
-
-          <!-- Price & Actions -->
-          <div class="pt-3 border-t border-amber-100">
-            <div class="flex items-baseline justify-between mb-3">
-              <div class="flex items-baseline gap-2">
-                <span class="text-2xl font-black text-[#4A0713]">${formatPrice(selectedVar.price)}</span>
-                <span class="text-xs text-gray-400 line-through">${formatPrice(selectedVar.originalPrice)}</span>
-                <span class="text-[11px] font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">${discount}% OFF</span>
-              </div>
-              <a href="product?id=${p.id}" class="text-[11px] font-black text-[#4A0713] hover:underline flex items-center gap-0.5">
-                <span>View Details</span> →
-              </a>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="grid grid-cols-2 gap-2">
-              <button onclick="addToCart('${p.id}', ${selectedIdx})"
-                class="w-full py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#4A0713] text-xs font-black transition border border-amber-300 flex items-center justify-center gap-1.5">
-
-                <span>Add to Cart</span>
-              </button>
-
-              <button onclick="quickBuy('${p.id}', ${selectedIdx})"
-                class="w-full py-2.5 px-3 bg-[#4A0713] hover:bg-[#32040C] text-[#FBBF24] text-xs font-black transition border border-[#E59819] bh-hard-shadow flex items-center justify-center gap-1.5">
-
-                <span>Express Buy</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  container.innerHTML = filtered.map(p => meeravProductCard(p)).join('');
 }
 
 function openProductDetailModal(productId) {
@@ -808,13 +681,13 @@ function renderStoreCart() {
 
   if (storeState.cart.length === 0) {
     container.innerHTML = `
-      <div class="py-16 text-center text-gray-500">
-        <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 rounded-full flex items-center justify-center text-[#4A0713] text-2xl">
-          
+      <div class="py-16 text-center text-gray-500" role="status">
+        <div class="w-16 h-16 mx-auto mb-3 bg-amber-50 rounded-full flex items-center justify-center text-[#4A0713]" aria-hidden="true">
+          <i class="fas fa-bag-shopping text-2xl"></i>
         </div>
         <p class="font-black text-gray-800 text-base">Your Cart is Empty</p>
         <p class="text-xs text-gray-400 mt-1">Discover handcrafted authentic delicacies & savory treats!</p>
-        <button onclick="closeCartDrawer()" class="mt-4 px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] text-xs font-bold rounded-xl hover:bg-[#32040C] shadow-md">
+        <button onclick="closeCartDrawer(); window.location.href='category?cat=all';" class="mt-4 px-5 py-2.5 bg-[#4A0713] text-[#FBBF24] text-xs font-bold rounded-xl hover:bg-[#32040C] shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E59819] focus-visible:ring-offset-2">
           Start Shopping
         </button>
       </div>
@@ -915,6 +788,91 @@ function renderStoreTrustBadges() {
   `).join('');
 }
 
+/* =========================================================================
+ * SHARED PRODUCT CARD COMPONENT
+ * One card, used by every grid on the site (home storefront, category page,
+ * best-sellers rail, bhujia spotlight, PDP "related"). Never duplicate this
+ * markup — pass options instead.
+ *
+ *   opts.compact  — narrow rail card (no variants / description)
+ *   opts.showVariants — weight pills (default: !compact)
+ * ========================================================================= */
+function meeravProductCard(p, opts) {
+  opts = opts || {};
+  const compact = !!opts.compact;
+  const showVariants = opts.showVariants !== undefined ? opts.showVariants : !compact;
+
+  const variants = p.variants && p.variants.length ? p.variants : [{ weight: '', price: 0, originalPrice: 0 }];
+  const selectedIdx = (typeof storeState !== 'undefined' && storeState.selectedVariants && storeState.selectedVariants[p.id]) || 0;
+  const v = variants[selectedIdx] || variants[0];
+  const hasDiscount = v.originalPrice && v.originalPrice > v.price;
+  const discount = hasDiscount ? Math.round(((v.originalPrice - v.price) / v.originalPrice) * 100) : 0;
+  const wishlist = (typeof storeState !== 'undefined' && storeState.wishlist) || [];
+  const isWishlisted = wishlist.includes(p.id);
+  const img = p.image || 'assets/images/cinematic_bhujia.jpg';
+  const inStock = p.inStock !== false;
+
+  return `
+    <article class="ms-card group" data-product-id="${p.id}">
+      <a href="product?id=${p.id}" class="ms-card-media" aria-label="View ${p.name}"
+        ${p.video ? `onmouseenter="const el=this.querySelector('video'); if(el){el.currentTime=0; el.play().catch(()=>{});}" onmouseleave="const el=this.querySelector('video'); if(el){el.pause();}"` : ''}>
+        <img src="${img}" alt="${p.name}" loading="lazy" decoding="async"
+          onerror="this.onerror=null;this.src='assets/images/cinematic_bhujia.jpg'" />
+        ${p.video ? `<video src="${p.video}" muted loop playsinline preload="none" aria-hidden="true"></video>` : ''}
+
+        ${p.tag ? `<span class="ms-badge absolute top-2.5 left-2.5 z-10 bg-[#4A0713] text-[#FBBF24]">${p.tag}</span>` : ''}
+        ${!inStock ? `<span class="ms-badge absolute bottom-2.5 left-2.5 z-10 bg-[#2A1D14] text-[#F3E9D4]">Out of stock</span>` : ''}
+      </a>
+
+      <button type="button" onclick="toggleWishlist('${p.id}')"
+        class="ms-icon-btn absolute top-2.5 right-2.5 z-20"
+        aria-label="${isWishlisted ? 'Remove' : 'Save'} ${p.name} ${isWishlisted ? 'from' : 'to'} wishlist"
+        aria-pressed="${isWishlisted}">
+        <i class="${isWishlisted ? 'fas' : 'far'} fa-heart text-sm ${isWishlisted ? 'text-[#B5451D]' : 'text-[#5A4632]'}" aria-hidden="true"></i>
+      </button>
+
+      <div class="ms-card-body">
+        <div class="flex items-center gap-1.5 text-[11px] font-bold text-[#5A4632]">
+          <span class="veg-indicator shrink-0" title="100% vegetarian" aria-label="100% vegetarian"><span class="veg-indicator-dot"></span></span>
+          ${p.rating ? `<span class="text-[#B5451D]" aria-hidden="true">&#9733;</span><span>${p.rating}</span>` : ''}
+          ${p.reviewsCount ? `<span class="text-[#5A4632]/60 font-medium">(${p.reviewsCount})</span>` : ''}
+        </div>
+
+        <h3 class="ms-card-title">
+          <a href="product?id=${p.id}" class="hover:text-[#B5451D] transition-colors">${p.name}</a>
+        </h3>
+
+        ${showVariants && variants.length > 1 ? `
+          <div class="flex flex-wrap gap-1.5" role="group" aria-label="Pack size for ${p.name}">
+            ${variants.map((vr, i) => `
+              <button type="button" class="ms-variant" aria-pressed="${i === selectedIdx}"
+                onclick="setProductVariant('${p.id}', ${i})">${vr.weight}</button>
+            `).join('')}
+          </div>
+        ` : (v.weight ? `<p class="text-[11px] font-bold text-[#5A4632]/70">${v.weight}</p>` : '')}
+
+        <div class="flex items-baseline gap-2 mt-auto pt-1">
+          <span class="text-lg font-black text-[#4A0713]">${formatPrice(v.price)}</span>
+          ${hasDiscount ? `<span class="text-xs text-[#5A4632]/55 line-through">${formatPrice(v.originalPrice)}</span>` : ''}
+          ${discount ? `<span class="ms-badge bg-emerald-50 text-emerald-800">${discount}% off</span>` : ''}
+        </div>
+
+        ${inStock ? `
+          <button type="button" onclick="addToCart('${p.id}', ${selectedIdx}); showToast('Added to cart!', 'success');"
+            class="ms-btn ms-btn-block bg-[#4A0713] text-[#FBBF24] hover:bg-[#32040C]">
+            Add to Cart
+          </button>
+        ` : `
+          <button type="button" disabled
+            class="ms-btn ms-btn-block bg-[#EDE3D2] text-[#5A4632]/60 cursor-not-allowed">
+            Out of Stock
+          </button>
+        `}
+      </div>
+    </article>
+  `;
+}
+
 /**
  * BHUJIA SPOTLIGHT SECTION (Bikaji-style featured-category showcase) —
  * one large floating hero pack on a bold color blob, with a small grid of
@@ -941,34 +899,7 @@ function renderBhujiaSpotlight() {
 
   if (grid) {
     const items = products.slice(1, 4).length ? products.slice(1, 4) : products.slice(0, 3);
-    grid.innerHTML = items.map(p => {
-      const variant = (p.variants && p.variants[0]) || { price: 0, originalPrice: 0 };
-      const hasDiscount = variant.originalPrice && variant.originalPrice > variant.price;
-      const isWishlisted = storeState.wishlist && storeState.wishlist.includes(p.id);
-      return `
-        <div class="text-center space-y-3 animate-fade-in">
-          <div class="relative">
-            <button onclick="toggleWishlist('${p.id}')" class="absolute -top-2 -right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md z-10 transition" title="Save to favorites">
-              <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'text-[#B5451D]' : 'text-[#2A1D14]'} text-sm"></i>
-            </button>
-            <div class="bg-white p-3 shadow-md border border-[#2A1D14]/10 cursor-pointer" onclick="window.location.href='product?id=${p.id}'">
-              <div class="aspect-square overflow-hidden flex items-center justify-center bg-amber-50">
-                <img src="${p.image || 'assets/images/cinematic_bhujia.jpg'}" alt="${p.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" />
-              </div>
-            </div>
-          </div>
-          <h4 class="font-black text-sm text-[#2A1D14] leading-snug px-1">${p.name}</h4>
-          <div class="flex items-center justify-center gap-2">
-            <span class="font-black text-[#7C2E12]">${formatPrice(variant.price)}</span>
-            ${hasDiscount ? `<span class="text-xs text-[#2A1D14]/50 line-through">${formatPrice(variant.originalPrice)}</span>` : ''}
-          </div>
-          <button onclick="addToCart('${p.id}', 0); showToast('Added to cart!', 'success');"
-            class="px-5 py-2 border-2 border-[#2A1D14] text-[#2A1D14] hover:bg-[#2A1D14] hover:text-white text-xs font-black rounded-full transition">
-            Add to Cart
-          </button>
-        </div>
-      `;
-    }).join('');
+    grid.innerHTML = items.map(p => meeravProductCard(p, { compact: true })).join('');
   }
 }
 
@@ -988,34 +919,9 @@ function renderBestSellers() {
   const items = sorted.slice(0, 8);
   if (!items.length) return;
 
-  container.innerHTML = items.map(p => {
-    const variant = (p.variants && p.variants[0]) || { price: 0, originalPrice: 0 };
-    const hasDiscount = variant.originalPrice && variant.originalPrice > variant.price;
-    const isWishlisted = storeState.wishlist && storeState.wishlist.includes(p.id);
-    return `
-      <div class="shrink-0 w-44 sm:w-52 text-center space-y-3">
-        <div class="relative">
-          <button onclick="toggleWishlist('${p.id}')" class="absolute -top-2 -right-2 w-8 h-8 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-md z-10 transition" title="Save to favorites">
-            <i class="${isWishlisted ? 'fas' : 'far'} fa-heart ${isWishlisted ? 'text-[#B5451D]' : 'text-[#2A1D14]'} text-sm"></i>
-          </button>
-          <div class="bg-white p-3 shadow-md border border-amber-200/80 cursor-pointer" onclick="window.location.href='product?id=${p.id}'">
-            <div class="aspect-square overflow-hidden flex items-center justify-center bg-amber-50">
-              <img src="${p.image || 'assets/images/cinematic_bhujia.jpg'}" alt="${p.name}" loading="lazy" decoding="async" class="w-full h-full object-cover" />
-            </div>
-          </div>
-        </div>
-        <h4 class="font-black text-xs sm:text-sm text-[#2A1D14] leading-snug px-1 line-clamp-2">${p.name}</h4>
-        <div class="flex items-center justify-center gap-2">
-          <span class="font-black text-[#7C2E12] text-sm">${formatPrice(variant.price)}</span>
-          ${hasDiscount ? `<span class="text-[11px] text-[#2A1D14]/50 line-through">${formatPrice(variant.originalPrice)}</span>` : ''}
-        </div>
-        <button onclick="addToCart('${p.id}', 0); showToast('Added to cart!', 'success');"
-          class="w-full px-4 py-2 border-2 border-[#2A1D14] text-[#2A1D14] hover:bg-[#2A1D14] hover:text-white text-[11px] font-black rounded-full transition">
-          Add to Cart
-        </button>
-      </div>
-    `;
-  }).join('');
+  container.innerHTML = items.map(p =>
+    `<div class="shrink-0 w-44 sm:w-52">${meeravProductCard(p, { compact: true })}</div>`
+  ).join('');
 }
 
 /**
@@ -1165,15 +1071,61 @@ function toggleWishlist(productId) {
   renderStoreProducts();
 }
 
+// Remembers what had focus before a drawer/modal opened, so it can be
+// restored on close (keyboard users otherwise lose their place entirely).
+let meeravLastFocusedEl = null;
+
 function openCartDrawer() {
-  document.getElementById('cart-drawer').classList.remove('translate-x-full');
+  meeravLastFocusedEl = document.activeElement;
+  const drawer = document.getElementById('cart-drawer');
+  drawer.classList.remove('translate-x-full');
+  drawer.setAttribute('aria-hidden', 'false');
   document.getElementById('cart-overlay').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  // Move focus into the drawer so Tab stays inside it, not behind it.
+  const firstFocusable = drawer.querySelector('button, [href], input, select, textarea');
+  if (firstFocusable) firstFocusable.focus();
 }
 
 function closeCartDrawer() {
-  document.getElementById('cart-drawer').classList.add('translate-x-full');
+  const drawer = document.getElementById('cart-drawer');
+  drawer.classList.add('translate-x-full');
+  drawer.setAttribute('aria-hidden', 'true');
   document.getElementById('cart-overlay').classList.add('hidden');
+  document.body.style.overflow = '';
+  if (meeravLastFocusedEl && typeof meeravLastFocusedEl.focus === 'function') {
+    meeravLastFocusedEl.focus();
+    meeravLastFocusedEl = null;
+  }
 }
+
+/**
+ * Global Escape handler — closes whichever overlay is open, outermost last.
+ * Registered once; each close function is individually safe to call.
+ */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+
+  const overlays = [
+    { el: document.getElementById('fullscreen-media-modal'), close: typeof closeFullscreenMedia === 'function' ? closeFullscreenMedia : null },
+    { el: document.getElementById('customer-auth-modal'), close: typeof closeCustomerAuthModal === 'function' ? closeCustomerAuthModal : null },
+    { el: document.getElementById('payment-modal'), close: typeof closePaymentModal === 'function' ? closePaymentModal : null },
+    { el: document.getElementById('checkout-modal'), close: typeof closeCheckoutModal === 'function' ? closeCheckoutModal : null },
+    { el: document.getElementById('product-detail-modal'), close: typeof closeProductDetailModal === 'function' ? closeProductDetailModal : null }
+  ];
+
+  for (const o of overlays) {
+    if (o.el && o.close && !o.el.classList.contains('hidden')) {
+      o.close();
+      return;
+    }
+  }
+
+  const drawer = document.getElementById('cart-drawer');
+  if (drawer && !drawer.classList.contains('translate-x-full')) {
+    closeCartDrawer();
+  }
+});
 
 /**
  * 5. MULTI-STEP CHECKOUT & LEAFLET MAP PICKER
