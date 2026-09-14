@@ -1,1092 +1,93 @@
 /* ==========================================================================
-   MEERAV NAMKEENS - ROYAL BIKANERI BRAND STYLESHEET
-   Matching Authentic Packaging & Logo: Deep Maroon, Royal Gold & Sandstone Cream
+   MEERAV NAMKEENS & SWEETS — STYLESHEET
+   Rebuilt from scratch. One design system, no legacy layers.
+
+   Contents
+     1. Design tokens
+     2. Base & typography
+     3. Accessibility primitives
+     4. Layout utilities
+     5. Brand texture layer      (bh-*)  — Bikaner handmade character
+     6. Component system         (ms-*)  — cards, buttons, badges, skeletons
+     7. Standalone components            — veg mark, toast, reels, admin frames
+     8. Responsive & motion preferences
    ========================================================================== */
 
-:root {
-  --meerav-maroon: #4A0713;
-  --meerav-maroon-dark: #2E0509;
-  --meerav-maroon-light: #670E1E;
-  --meerav-gold: #B9812E;
-  --meerav-gold-light: #E5C98C;
-  --meerav-gold-dark: #8a611f;
-  --meerav-cream: #FAF6EE;
-  --meerav-cream-dark: #F3ECDD;
-  --meerav-text-dark: #211412;
-  --meerav-text-muted: #6B5E61;
-}
-
-body {
-  font-family: 'Manrope', sans-serif;
-  background-color: var(--meerav-cream);
-  color: var(--meerav-text-dark);
-  overflow-x: hidden;
-}
-
-h1, h2, h3, h4, h5, h6, .brand-font {
-  font-family: 'Newsreader', serif;
-  font-weight: 500;
-}
-
-/* Italic serif accent — matches the mockup's "An Authentic Bikaneri Taste" treatment */
-.meerav-serif-italic {
-  font-family: 'Newsreader', serif;
-  font-style: italic;
-}
-
-/* Arch-shaped image frame: rounded top corners, flat bottom — the hero/category "packet" crop */
-.meerav-arch-frame {
-  border-radius: 220px 220px 8px 8px;
-  overflow: hidden;
-}
-.meerav-arch-frame-sm {
-  border-radius: 120px 120px 6px 6px;
-  overflow: hidden;
-}
-
-/* Scalloped divider strip used between hero/footer sections */
-.meerav-scallop {
-  height: 16px;
-  background: var(--meerav-maroon);
-  background-image: radial-gradient(circle at 10px 0, transparent 8px, var(--meerav-scallop-bg, var(--meerav-cream)) 9px);
-  background-size: 20px 16px;
-}
-
-/* Dashed circular "EST." stamp badge, as seen on the hero packaging shot */
-.meerav-stamp {
-  border-radius: 50%;
-  border: 1.5px dashed var(--meerav-maroon);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform: rotate(-10deg);
-  background: rgba(250, 246, 238, 0.8);
-  font-family: 'Newsreader', serif;
-  font-weight: 600;
-  color: var(--meerav-maroon);
-  text-align: center;
-  line-height: 1.35;
-  letter-spacing: 0.04em;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
-}
-::-webkit-scrollbar-track {
-  background: #fdf5e6;
-}
-::-webkit-scrollbar-thumb {
-  background: #d49a37;
-  border-radius: 6px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #b57a22;
-}
-
-/* Royal Pattern Backgrounds */
-.meerav-hero-pattern {
-  background-color: var(--meerav-cream-dark);
-  background-image: radial-gradient(#e0c48a 0.8px, transparent 0.8px);
-  background-size: 22px 22px;
-}
-
-.meerav-maroon-bg {
-  background: linear-gradient(135deg, #4A0713 0%, #32040C 100%);
-}
-
-.meerav-gold-gradient {
-  background: linear-gradient(135deg, #FBBF24 0%, #E59819 50%, #B45309 100%);
-}
-
-/* Royal Arch Badge Styling */
-.royal-arch-shape {
-  border-radius: 20px 20px 14px 14px;
-  position: relative;
-}
-
-/* Product Card - flat, editorial packaging look (2026 redesign) */
-.product-card {
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  border: none;
-  background: transparent;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.product-card:hover {
-  transform: none;
-  box-shadow: none;
-}
-
-.product-card .product-name {
-  font-family: 'Newsreader', serif;
-  color: var(--meerav-text-dark);
-}
-
-.product-card .product-price {
-  color: var(--meerav-maroon);
-  font-weight: 700;
-}
-
-/* Product Image Frame */
-.product-pack-frame {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  background: #EFE7D8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 0;
-}
-
-.product-pack-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.product-card:hover .product-pack-frame img {
-  transform: scale(1.07);
-}
-
-/* Slide-up "Add to Cart" bar on hover, matching the mockup's quick-add overlay */
-.product-pack-frame .quick-add-bar {
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  background: #211412;
-  color: var(--meerav-cream);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-align: center;
-  padding: 12px 0;
-  transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.product-card:hover .quick-add-bar,
-.product-pack-frame:hover .quick-add-bar {
-  transform: translateY(0);
-}
-
-/* Video Hover Overlay for Product Cards */
-.card-video-preview {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  pointer-events: none;
-  z-index: 10;
-}
-
-.product-card:hover .card-video-preview {
-  opacity: 1;
-}
-
-/* Auto-Scrolling Reels Carousel */
-.reels-scroll-container {
-  display: flex;
-  gap: 1.25rem;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  padding: 0.75rem 0.25rem 1.5rem 0.25rem;
-}
-
-.reels-scroll-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
-}
-
-.reels-card {
-  flex: 0 0 220px;
-  border-radius: 110px 110px 6px 6px;
-  overflow: hidden;
-  background: #23040A;
-  border: 1px solid rgba(185, 129, 46, 0.35);
-  box-shadow: none;
-  transition: all 0.35s ease;
-}
-
-.reels-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--meerav-gold);
-  box-shadow: 0 16px 35px rgba(185, 129, 46, 0.2);
-}
-
-@keyframes marqueeScroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.animate-marquee-slow {
-  display: flex;
-  width: max-content;
-  animation: marqueeScroll 45s linear infinite;
-}
-
-.animate-marquee-slow:hover {
-  animation-play-state: paused;
-}
-
-/* 100% Veg Symbol */
-.veg-indicator {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #16A34A;
-  border-radius: 3px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.veg-indicator-dot {
-  width: 7px;
-  height: 7px;
-  background-color: #16A34A;
-  border-radius: 50%;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes floatPack {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-}
-
-@keyframes scanLine {
-  0% { top: 0; }
-  50% { top: 100%; }
-  100% { top: 0; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.float-pack-animation {
-  animation: floatPack 4s ease-in-out infinite;
-}
-
-/* Interactive Maps */
-#checkout-map-picker {
-  height: 220px;
-  width: 100%;
-  border-radius: 18px;
-  z-index: 10;
-  border: 1px solid #E5E7EB;
-}
-
-#live-tracking-map-container {
-  height: 420px;
-  width: 100%;
-  border-radius: 24px;
-  z-index: 10;
-  border: 2px solid rgba(229, 152, 25, 0.4);
-}
-
-/* WhatsApp Simulator Frame */
-.whatsapp-phone-frame {
-  width: 100%;
-  max-width: 380px;
-  background-color: #EFEAE2;
-  border-radius: 32px;
-  border: 9px solid #1f2937;
-  overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.35);
-}
-
-.whatsapp-header {
-  background-color: #075E54;
-  color: white;
-}
-
-.whatsapp-chat-pattern {
-  background-color: #E5DDD5;
-  background-image: radial-gradient(#d1c7bc 1.2px, transparent 1.2px);
-  background-size: 16px 16px;
-  min-height: 380px;
-}
-
-.whatsapp-msg-bubble {
-  border-radius: 10px;
-  padding: 10px 14px;
-  max-width: 88%;
-  font-size: 0.86rem;
-  line-height: 1.45;
-  box-shadow: 0 1.5px 3px rgba(0, 0, 0, 0.14);
-}
-
-.whatsapp-msg-bubble.in {
-  background-color: #FFFFFF;
-  margin-right: auto;
-  border-top-left-radius: 0;
-}
-
-/* Email Client Frame */
-.email-client-frame {
-  background: white;
-  border: 1px solid #E5E7EB;
-  border-radius: 16px;
-  box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-}
-
-.email-header-bar {
-  background: #F9FAFB;
-  border-bottom: 1px solid #E5E7EB;
-  padding: 14px 20px;
-}
-
-.email-body-content {
-  padding: 24px;
-  background-color: #FFFFFF;
-}
-
-/* QR Scanner Bar */
-.qr-scanner-box {
-  position: relative;
-  overflow: hidden;
-}
-
-.qr-scan-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #10B981;
-  box-shadow: 0 0 10px #10B981;
-  animation: scanLine 2.2s linear infinite;
-}
-
-/* Toast Container */
-#toast-container {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 99999;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.toast {
-  animation: fadeIn 0.25s ease-out;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsive Mobile Bottom Nav & Touch Optimizations */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-@media (max-width: 767px) {
-  .mobile-bottom-nav {
-    display: flex !important;
-  }
-  .pb-mobile-nav {
-    padding-bottom: 84px !important;
-  }
-  
-  /* Touch target enlargement */
-  button, a {
-    touch-action: manipulation;
-  }
-
-  /* Chatbot on mobile as comfortable bottom sheet */
-  #meerav-chatbot-window {
-    width: 94vw !important;
-    right: 3vw !important;
-    bottom: 80px !important;
-    height: 75vh !important;
-    max-height: 520px !important;
-  }
-
-  /* Modals full width on mobile */
-  #checkout-modal > div,
-  #product-form-modal > div,
-  #payment-gateway-modal > div,
-  #category-form-modal > div {
-    max-height: 94vh !important;
-    width: 96vw !important;
-    border-radius: 20px !important;
-  }
-
-  /* Pouch frame responsive sizing */
-  .product-pack-frame {
-    height: 200px !important;
-  }
-}
-
-@media (min-width: 768px) {
-  .mobile-bottom-nav {
-    display: none !important;
-  }
-  .pb-mobile-nav {
-    padding-bottom: 0px !important;
-  }
-}
 
 /* ==========================================================================
-   RAJASTHANI HERITAGE MOTIFS — deeper theme pass on top of Bikaner Royal 2026
-   Jaali lattice, jharokha window framing, temple/paisley dividers, mandala
-   corner ornaments, bandhani dot texture. All additive/opt-in utility
-   classes — nothing above this line is modified.
+   1. DESIGN TOKENS
    ========================================================================== */
-
 :root {
-  --meerav-terracotta: #C1502E;
-  --meerav-peacock: #0B5D5D;
-  --meerav-saffron: #E08A1E;
-}
+  /* Brand palette — Bikaner handmade */
+  --meerav-terracotta:      #B5451D;
+  --meerav-terracotta-dark: #7C2E12;
+  --meerav-marigold:        #D98F1E;
+  --meerav-indigo:          #2C4A5E;
+  --meerav-paper:           #F3E9D4;
+  --meerav-paper-dark:      #EADDBF;
+  --meerav-ink:             #2A1D14;
+  --meerav-ink-soft:        #5A4632;
+  --meerav-green:           #4B5D3A;
 
-/* Jaali (carved sandstone lattice) texture — for section backgrounds */
-.meerav-jaali-bg {
-  background-color: var(--meerav-cream-dark);
-  background-image:
-    linear-gradient(45deg, rgba(185, 129, 46, 0.16) 1px, transparent 1px),
-    linear-gradient(-45deg, rgba(185, 129, 46, 0.16) 1px, transparent 1px);
-  background-size: 26px 26px;
-}
+  /* Legacy aliases — js/theme.js overwrites these at runtime when a theme
+     preset is applied. Declared here so the site still renders correctly
+     before that runs (or if the Supabase settings fetch fails). */
+  --meerav-maroon:       #4A0713;
+  --meerav-maroon-dark:  #32040C;
+  --meerav-maroon-light: #B5451D;
+  --meerav-gold:         #B9812E;
+  --meerav-gold-light:   #EADDBF;
+  --meerav-gold-dark:    #8A611F;
+  --meerav-cream:        #F3E9D4;
+  --meerav-cream-dark:   #EADDBF;
+  --meerav-text-dark:    #2A1D14;
+  --meerav-text-muted:   #5A4632;
 
-.meerav-jaali-bg-dark {
-  background-color: var(--meerav-maroon-dark);
-  background-image:
-    linear-gradient(45deg, rgba(229, 201, 140, 0.12) 1px, transparent 1px),
-    linear-gradient(-45deg, rgba(229, 201, 140, 0.12) 1px, transparent 1px);
-  background-size: 26px 26px;
-}
-
-/* Bandhani-inspired dot texture — alternate hero/section pattern */
-.meerav-bandhani-bg {
-  background-color: var(--meerav-cream-dark);
-  background-image:
-    radial-gradient(var(--meerav-maroon) 1px, transparent 1px),
-    radial-gradient(var(--meerav-gold) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: 0 0, 12px 12px;
-}
-
-/* Jharokha — ornate Rajasthani palace-window surround. Wrap an existing
-   .meerav-arch-frame (or any image block) in this to add a carved gold
-   ring, inner ivory inlay line, and a finial at the crown. */
-.meerav-jharokha-surround {
-  position: relative;
-  padding: 12px;
-  border-radius: 228px 228px 12px 12px;
-  background: linear-gradient(160deg, var(--meerav-gold) 0%, var(--meerav-gold-dark) 100%);
-  box-shadow: 0 18px 40px -12px rgba(46, 5, 9, 0.35);
-}
-
-.meerav-jharokha-surround::before {
-  content: '';
-  position: absolute;
-  top: 20px; left: 20px; right: 20px; bottom: 12px;
-  border: 1.5px solid rgba(250, 246, 238, 0.65);
-  border-radius: 200px 200px 6px 6px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.meerav-jharokha-surround::after {
-  content: '';
-  position: absolute;
-  top: -9px;
-  left: 50%;
-  width: 16px;
-  height: 16px;
-  transform: translateX(-50%) rotate(45deg);
-  background: var(--meerav-gold);
-  border: 1.5px solid var(--meerav-cream);
-  z-index: 3;
-}
-
-/* Temple/paisley zigzag divider strip — section-break ornament */
-.meerav-temple-divider {
-  height: 20px;
-  width: 100%;
-  background-repeat: repeat-x;
-  background-position: center;
-  background-size: 30px 20px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='20' viewBox='0 0 30 20'><path d='M0 0 L15 17 L30 0 Z' fill='%23B9812E'/></svg>");
-}
-
-.meerav-temple-divider-dark {
-  height: 20px;
-  width: 100%;
-  background-repeat: repeat-x;
-  background-position: center;
-  background-size: 30px 20px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='20' viewBox='0 0 30 20'><path d='M0 0 L15 17 L30 0 Z' fill='%232E0509'/></svg>");
-}
-
-/* Mandala corner ornament — decorative accent for section/card corners */
-.meerav-mandala-corner {
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  opacity: 0.55;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='none' stroke='%23B9812E' stroke-width='3'/><circle cx='50' cy='50' r='30' fill='none' stroke='%23B9812E' stroke-width='2'/><g stroke='%23B9812E' stroke-width='2'><line x1='50' y1='4' x2='50' y2='20'/><line x1='50' y1='80' x2='50' y2='96'/><line x1='4' y1='50' x2='20' y2='50'/><line x1='80' y1='50' x2='96' y2='50'/></g></svg>");
-  pointer-events: none;
-  z-index: 1;
-}
-.meerav-mandala-corner.tl { top: -10px; left: -10px; }
-.meerav-mandala-corner.tr { top: -10px; right: -10px; transform: scaleX(-1); }
-.meerav-mandala-corner.bl { bottom: -10px; left: -10px; transform: scaleY(-1); }
-.meerav-mandala-corner.br { bottom: -10px; right: -10px; transform: scale(-1, -1); }
-
-/* Rajasthani "truck-art" style gold rule — thin ornamental top/bottom border */
-.meerav-royal-rule {
-  height: 3px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--meerav-gold) 0px, var(--meerav-gold) 10px,
-    transparent 10px, transparent 14px
-  );
-}
-
-/* Section eyebrow tag styled like a Rajasthani miniature-painting cartouche */
-.meerav-cartouche {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 1rem;
-  border: 1px solid var(--meerav-gold);
-  border-radius: 999px;
-  font-family: 'Newsreader', serif;
-  font-style: italic;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: var(--meerav-maroon-dark);
-  background: rgba(185, 129, 46, 0.08);
-}
-
-/* ==========================================================================
-   THAR BAZAAR — Indigo & Marigold theme layer (v3)
-   A second, distinct Rajasthani take: Jodhpur indigo, marigold-garland
-   orange, terracotta desert clay, sandstone paper cream, bold ink borders.
-   Ink-border "postcard" frames replace arches; block-print dividers and
-   bunting-flag strips replace scallops/temple triangles. Additive classes —
-   nothing above this block is touched, so the maroon/gold theme still works.
-   ========================================================================== */
-
-:root {
-  --tb-indigo: #1E3A5F;
-  --tb-indigo-dark: #14283F;
-  --tb-indigo-ink: #0E1D2E;
-  --tb-marigold: #E8752A;
-  --tb-marigold-light: #F5B14D;
-  --tb-terracotta: #B75B3A;
-  --tb-paper: #FBF3E7;
-  --tb-paper-dark: #F3E4CE;
-  --tb-ink: #241C15;
-  --tb-ink-muted: #6E6156;
-}
-
-.tb-body {
-  font-family: 'Work Sans', 'Manrope', sans-serif;
-  background-color: var(--tb-paper);
-  color: var(--tb-ink);
-}
-
-.tb-heading, .tb-heading h1, .tb-heading h2, .tb-heading h3 {
-  font-family: 'Fraunces', 'Newsreader', serif;
-  font-weight: 600;
-}
-
-/* Ink-border "postcard" frame — thick border, single hard corner notch,
-   replaces the soft arch/jharokha shape for the new theme */
-.tb-postcard {
-  position: relative;
-  border: 3px solid var(--tb-ink);
-  background: var(--tb-paper);
-  box-shadow: 7px 7px 0 var(--tb-marigold);
-  overflow: hidden;
-}
-.tb-postcard::after {
-  content: '';
-  position: absolute;
-  top: -3px; right: -3px;
-  width: 26px; height: 26px;
-  background: var(--tb-paper);
-  border-left: 3px solid var(--tb-ink);
-  border-bottom: 3px solid var(--tb-ink);
-  clip-path: polygon(100% 0, 0 0, 100% 100%);
-}
-
-.tb-postcard-dark {
-  border-color: var(--tb-marigold-light);
-  box-shadow: 7px 7px 0 var(--tb-indigo-ink);
-  background: var(--tb-indigo-dark);
-}
-
-/* Block-print (Bagru/Sanganeri) inspired repeating border strip */
-.tb-blockprint-divider {
-  height: 18px;
-  width: 100%;
-  background-repeat: repeat-x;
-  background-position: center;
-  background-size: 22px 18px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='18' viewBox='0 0 22 18'><g fill='%23E8752A'><circle cx='11' cy='4' r='2.6'/><path d='M11 8 C 6 8, 6 16, 11 16 C 16 16, 16 8, 11 8 Z' fill='none' stroke='%231E3A5F' stroke-width='1.4'/></g></svg>");
-}
-
-/* Bunting / pataka flag strip — festive triangular garland divider */
-.tb-bunting {
-  height: 26px;
-  width: 100%;
-  background-repeat: repeat-x;
-  background-position: top center;
-  background-size: 34px 26px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='34' height='26' viewBox='0 0 34 26'><path d='M2 0 L17 20 L32 0 Z' fill='%231E3A5F'/><path d='M19 0 L30 14 L8 14 Z' fill='%23E8752A' opacity='0.85'/></svg>");
-}
-
-/* Marigold dot texture — alternate hero/section background */
-.tb-marigold-dots {
-  background-color: var(--tb-paper-dark);
-  background-image:
-    radial-gradient(var(--tb-marigold) 1.2px, transparent 1.2px),
-    radial-gradient(var(--tb-indigo) 1.2px, transparent 1.2px);
-  background-size: 26px 26px;
-  background-position: 0 0, 13px 13px;
-}
-
-/* Indigo ikat-inspired diagonal weave texture */
-.tb-ikat-bg {
-  background-color: var(--tb-indigo-dark);
-  background-image:
-    repeating-linear-gradient(45deg, rgba(245, 177, 77, 0.06) 0px, rgba(245, 177, 77, 0.06) 2px, transparent 2px, transparent 16px);
-}
-
-/* Marigold garland tag — pill badge with a ink outline, no gradient */
-.tb-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 1.1rem;
-  border: 2px solid var(--tb-ink);
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--tb-ink);
-  background: var(--tb-marigold-light);
-}
-
-/* Ink underline rule — hand-drawn-style wavy underline via SVG */
-.tb-underline {
-  display: inline-block;
-  background-repeat: repeat-x;
-  background-position: 0 100%;
-  background-size: 20px 6px;
-  padding-bottom: 6px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='6' viewBox='0 0 20 6'><path d='M0 3 Q 5 0, 10 3 T 20 3' fill='none' stroke='%23E8752A' stroke-width='2'/></svg>");
-}
-
-/* ==========================================================================
-   PUSHKAR MELA — festival theme layer (v4)
-   A third, distinct Rajasthani take: rani-pink/magenta, turquoise, mustard
-   yellow, warm cream. Mirror-work (shisha) sparkle dots, torn-paper bunting,
-   rounded festival stamp badges, layered "stacked card" depth. Additive
-   classes — nothing above this block is touched, so earlier themes still work.
-   ========================================================================== */
-
-:root {
-  --pm-pink: #C81E5C;
-  --pm-pink-dark: #8F1140;
-  --pm-turquoise: #0E7C86;
-  --pm-turquoise-dark: #0A5A62;
-  --pm-mustard: #E8A317;
-  --pm-mustard-light: #F4C452;
-  --pm-cream: #FFF8ED;
-  --pm-cream-dark: #FBEBD1;
-  --pm-ink: #2B1B2E;
-}
-
-.pm-body {
-  font-family: 'Baloo 2', 'Manrope', sans-serif;
-  background-color: var(--pm-cream);
-  color: var(--pm-ink);
-}
-
-.pm-heading, .pm-heading h1, .pm-heading h2, .pm-heading h3 {
-  font-family: 'Fredoka', 'Newsreader', serif;
-  font-weight: 600;
-}
-
-/* Mirror-work sparkle dot texture — festival mela backdrop */
-.pm-mirror-bg {
-  background-color: var(--pm-cream-dark);
-  background-image:
-    radial-gradient(var(--pm-pink) 1.4px, transparent 1.4px),
-    radial-gradient(var(--pm-turquoise) 1.4px, transparent 1.4px),
-    radial-gradient(var(--pm-mustard) 1px, transparent 1px);
-  background-size: 30px 30px, 30px 30px, 15px 15px;
-  background-position: 0 0, 15px 15px, 7px 7px;
-}
-
-.pm-mirror-bg-dark {
-  background-color: var(--pm-pink-dark);
-  background-image:
-    radial-gradient(rgba(244, 196, 82, 0.35) 1.4px, transparent 1.4px),
-    radial-gradient(rgba(14, 124, 134, 0.3) 1.4px, transparent 1.4px);
-  background-size: 26px 26px, 26px 26px;
-  background-position: 0 0, 13px 13px;
-}
-
-/* Layered "stacked card" — two offset colored panels behind the frame for
-   festive depth, replacing the ink-shadow postcard look */
-.pm-stack {
-  position: relative;
-}
-.pm-stack::before {
-  content: '';
-  position: absolute;
-  inset: 10px -10px -10px 10px;
-  background: var(--pm-mustard-light);
-  border-radius: 22px;
-  z-index: 0;
-}
-.pm-stack::after {
-  content: '';
-  position: absolute;
-  inset: 5px -5px -5px 5px;
-  background: var(--pm-turquoise);
-  border-radius: 22px;
-  z-index: 1;
-  opacity: 0.85;
-}
-.pm-stack > * {
-  position: relative;
-  z-index: 2;
-  border-radius: 22px;
-  overflow: hidden;
-}
-
-/* Torn-paper festival bunting divider — scalloped, less geometric than the
-   temple-triangle or straight bunting-flag dividers used before */
-.pm-torn-divider {
-  height: 22px;
-  width: 100%;
-  background-repeat: repeat-x;
-  background-position: center;
-  background-size: 40px 22px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='22' viewBox='0 0 40 22'><path d='M0 0 Q 5 22, 10 0 T 20 0 T 30 0 T 40 0 L40 0 L0 0 Z' fill='%23C81E5C'/></svg>");
-}
-
-/* Rounded festival stamp badge — replaces the ink-bordered tag / dashed
-   maroon stamp with a bright mustard circle badge */
-.pm-stamp {
-  border-radius: 50%;
-  background: var(--pm-mustard);
-  color: var(--pm-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Fredoka', 'Newsreader', serif;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.3;
-  box-shadow: 0 6px 18px rgba(200, 30, 92, 0.35);
-  border: 3px solid var(--pm-cream);
-}
-
-/* Festival tag/pill — rounded, high-saturation, no ink outline (contrasts
-   with the Thar Bazaar theme's ink-bordered tag) */
-.pm-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 1.2rem;
-  border-radius: 999px;
-  font-weight: 800;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: #fff;
-  background: linear-gradient(135deg, var(--pm-pink) 0%, var(--pm-pink-dark) 100%);
-  box-shadow: 0 4px 12px rgba(200, 30, 92, 0.3);
-}
-
-/* Bento tile — used for the new grid-based hero and showcase blocks */
-.pm-bento-tile {
-  border-radius: 24px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 10px 30px -8px rgba(43, 27, 46, 0.25);
-}
-
-/* =========================================================================
-   THAR DESERT GOLD — v5 signature redesign
-   Warm dune-gold-to-dusk palette, quiet serif headlines, minimal motif use.
-   Additive layer — earlier meerav-*/tb-*/pm-* classes are untouched.
-   ========================================================================= */
-:root {
-  --td-gold: #B8892B;
-  --td-gold-deep: #8A611A;
-  --td-olive: #5B6B4A;
-  --td-dune: #EFD9A8;
-  --td-night: #2B1D10;
-  --td-cream: #FBF3E0;
-}
-
-.td-body {
-  font-family: 'Nunito Sans', 'Manrope', sans-serif;
-  background-color: var(--td-cream);
-  color: var(--td-night);
-}
-
-.td-heading, .td-heading h1, .td-heading h2, .td-heading h3 {
-  font-family: 'Cormorant Garamond', 'Newsreader', serif;
-  font-weight: 600;
-}
-
-/* Dune gradient backdrop — sand-to-gold-to-dusk, replacing the mirror-work
-   dot texture with a single smooth gradient (quieter, more premium) */
-.td-dune-bg {
-  background: linear-gradient(180deg, var(--td-dune) 0%, var(--td-gold) 70%, var(--td-gold-deep) 100%);
-}
-
-.td-dune-bg-dark {
-  background: linear-gradient(180deg, var(--td-gold-deep) 0%, var(--td-night) 100%);
-}
-
-/* Dusk gradient overlay for image/media panels — a soft night-fade at the
-   base, evoking dusk falling over the dunes */
-.td-dusk-fade {
-  position: relative;
-}
-.td-dusk-fade::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; bottom: 0;
-  height: 35%;
-  background: linear-gradient(0deg, var(--td-night), transparent);
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-/* Quiet framed panel — a single hairline gold border, replacing the
-   stacked-card / postcard-shadow treatments of earlier passes */
-.td-frame {
-  position: relative;
-  border: 1px solid var(--td-gold);
-  border-radius: 4px;
-}
-.td-frame::before {
-  content: '';
-  position: absolute;
-  inset: 10px;
-  border: 1px solid rgba(184, 137, 43, 0.4);
-  border-radius: 3px;
-  pointer-events: none;
-}
-
-/* Slim divider rule — plain horizontal hairline in gold, no scallop/bunting
-   shapes, in keeping with the understated Thar Desert direction */
-.td-divider {
-  height: 1px;
-  width: 100%;
-  background: var(--td-gold);
-  opacity: 0.5;
-}
-
-/* Minimal outline tag — no fill, just a gold hairline, unlike the previous
-   filled/gradient pill tags */
-.td-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 1.1rem;
-  border: 1.5px solid var(--td-gold-deep);
-  border-radius: 2px;
-  font-weight: 700;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--td-gold-deep);
-  background: transparent;
-}
-
-/* Simple stat/trust tile — flat, bordered, no shadow */
-.td-tile {
-  border: 1px solid rgba(184, 137, 43, 0.35);
-  border-radius: 2px;
-  background: #fff;
-}
-
-/* =========================================================================
-   BIKANER HANDMADE — v6 signature redesign
-   Deliberately imperfect, hand-crafted local-shop feel: torn paper edges,
-   polaroid photo frames, tilted sticker price tags, handwritten notes.
-   Additive layer — earlier meerav-*/tb-*/pm-*/td-* classes are untouched.
-   ========================================================================= */
-:root {
-  --bh-terracotta: #B5451D;
-  --bh-terracotta-dark: #7C2E12;
-  --bh-marigold: #D98F1E;
-  --bh-indigo: #2C4A5E;
-  --bh-paper: #F3E9D4;
-  --bh-paper-dark: #EADDBF;
-  --bh-ink: #2A1D14;
-  --bh-green: #4B5D3A;
-}
-
-.bh-body {
-  font-family: 'Merriweather', 'Georgia', serif;
-  background-color: var(--bh-paper);
-  color: var(--bh-ink);
-  background-image: radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
-  background-size: 3px 3px;
-}
-
-.bh-heading, .bh-heading h1, .bh-heading h2, .bh-heading h3 {
-  font-family: 'Playfair Display', 'Georgia', serif;
-  font-weight: 700;
-}
-
-.bh-handwritten {
-  font-family: 'Caveat', 'Comic Sans MS', cursive;
-}
-
-/* Full-bleed textured hero banner background, replacing flat gradients with
-   a warm sun-baked terracotta gradient + dark readability overlay */
-.bh-banner-bg {
-  background:
-    linear-gradient(100deg, rgba(42,29,20,0.88) 0%, rgba(42,29,20,0.55) 45%, rgba(42,29,20,0.15) 75%),
-    linear-gradient(150deg, #D9B87C 0%, #B5451D 55%, #7C2E12 100%) !important;
-}
-
-.bh-signboard-band {
-  background: var(--bh-indigo) !important;
-  background-color: var(--bh-indigo) !important;
-}
-
-/* Hand-torn paper edge — used under the hero banner */
-.bh-torn-edge {
-  height: 26px;
-  width: 100%;
-  background-repeat: repeat-x;
-  background-position: 0 0;
-  background-size: 52px 26px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='26' viewBox='0 0 52 26'><path d='M0 0 L6 9 L13 2 L19 12 L26 3 L33 11 L39 1 L46 10 L52 0 L52 26 L0 26 Z' fill='%23F3E9D4'/></svg>");
-}
-
-/* Polaroid-style photo frame — white border, slight rotation, drop shadow,
-   replacing the hairline "quiet frame" and stacked-card treatments */
-.bh-polaroid {
-  background: #fff;
-  padding: 8px 8px 26px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  transform: rotate(-2deg);
-  position: relative;
-}
-.bh-polaroid > * { position: relative; }
-
-.bh-photo-shadow {
-  position: relative;
-}
-
-/* Hand-drawn shadow border — offset flat shadow instead of soft box-shadow,
-   like a printed flyer or hand-cut card */
-.bh-hard-shadow {
-  box-shadow: 3px 3px 0 var(--bh-ink);
-}
-
-/* Sticker-style price tag — rotated badge stuck on a card corner */
-.bh-price-tag {
-  background: var(--bh-marigold);
-  color: var(--bh-ink);
-  font-family: Arial, sans-serif;
-  font-weight: 800;
-  font-size: 11px;
-  padding: 5px 9px;
-  transform: rotate(6deg);
-  box-shadow: 2px 2px 0 var(--bh-ink);
-  display: inline-block;
-}
-
-/* Outline tag/badge — no fill, hairline border, hand-stamped look */
-.bh-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 1rem;
-  border-bottom: 1.5px solid var(--bh-marigold);
-  font-family: Arial, sans-serif;
-  font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--bh-terracotta-dark);
-}
-
-/* Slightly tilted card — apply with nth-child rotation variance in markup
-   via inline style or utility classes below for a hand-arranged grid */
-.bh-card {
-  background: #fff;
-  border: 1px solid rgba(0,0,0,0.15);
-  position: relative;
-}
-.bh-tilt-1 { transform: rotate(-0.8deg); }
-.bh-tilt-2 { transform: rotate(0.5deg); }
-.bh-tilt-3 { transform: rotate(-0.4deg); }
-.bh-tilt-4 { transform: rotate(0.9deg); }
-
-/* Double-line rule, like a hand-ruled ledger divider */
-.bh-double-rule {
-  border-bottom: 3px double var(--bh-ink);
-}
-
-/* ==========================================================================
-   MEERAV DESIGN SYSTEM (ms-*)
-   Single source of truth for spacing, radius, elevation, motion and the
-   shared product-card / button / skeleton components. Colour values stay as
-   Tailwind arbitrary-value utilities in markup so the live theme engine
-   (js/theme.js applyBrandColors) can still remap the brand palette.
-   ========================================================================== */
-
-:root {
-  /* Radius scale — one consistent family, no ad-hoc values */
-  --ms-radius-sm: 6px;
-  --ms-radius: 10px;
-  --ms-radius-lg: 16px;
+  /* Radius — one family, no ad-hoc values */
+  --ms-radius-sm:   6px;
+  --ms-radius:     10px;
+  --ms-radius-lg:  16px;
   --ms-radius-pill: 999px;
 
   /* Elevation — restrained, never stacked */
-  --ms-shadow-sm: 0 1px 2px rgba(42, 29, 20, 0.06);
-  --ms-shadow: 0 2px 8px rgba(42, 29, 20, 0.08);
+  --ms-shadow-sm: 0 1px 2px  rgba(42, 29, 20, 0.06);
+  --ms-shadow:    0 2px 8px  rgba(42, 29, 20, 0.08);
   --ms-shadow-md: 0 6px 18px rgba(42, 29, 20, 0.10);
   --ms-shadow-lg: 0 14px 34px rgba(42, 29, 20, 0.14);
 
   /* Motion */
-  --ms-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ms-ease:     cubic-bezier(0.16, 1, 0.3, 1);
   --ms-duration: 260ms;
 
-  /* Focus */
   --ms-focus: #D98F1E;
 }
 
-/* --- Focus visibility (keyboard users only, never on mouse click) -------- */
-.ms-focusable:focus,
+
+/* ==========================================================================
+   2. BASE & TYPOGRAPHY
+   ========================================================================== */
+body {
+  font-family: 'Merriweather', 'Manrope', Georgia, serif;
+  background-color: var(--meerav-paper);
+  color: var(--meerav-ink);
+  overflow-x: hidden;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', 'Newsreader', Georgia, serif;
+  font-weight: 700;
+}
+
+img { max-width: 100%; }
+
+
+/* ==========================================================================
+   3. ACCESSIBILITY PRIMITIVES
+   ========================================================================== */
+
+/* Keyboard focus only — never a ring on mouse click. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -1098,25 +99,153 @@ textarea:focus-visible,
   border-radius: var(--ms-radius-sm);
 }
 
-/* Skip-to-content link — visible only once focused */
+/* Skip link — hidden until focused. */
 .ms-skip-link {
   position: absolute;
   left: 12px;
   top: -100px;
   z-index: 100;
-  background: #2A1D14;
-  color: #F3E9D4;
+  background: var(--meerav-ink);
+  color: var(--meerav-paper);
   font-weight: 800;
   font-size: 12px;
   padding: 10px 16px;
   border-radius: var(--ms-radius-sm);
   transition: top 180ms var(--ms-ease);
 }
-.ms-skip-link:focus {
-  top: 12px;
+.ms-skip-link:focus { top: 12px; }
+
+/* Screen-reader-only text. */
+.ms-sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
-/* --- Shared product card ------------------------------------------------- */
+
+/* ==========================================================================
+   4. LAYOUT UTILITIES
+   ========================================================================== */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.35s var(--ms-ease) forwards;
+}
+
+
+/* ==========================================================================
+   5. BRAND TEXTURE LAYER (bh-*)
+   The handmade Bikaner character: torn paper, polaroids, sticker price
+   tags, flat hard shadows. Deliberately imperfect — not template-smooth.
+   ========================================================================== */
+
+.bh-heading,
+.bh-heading h1, .bh-heading h2, .bh-heading h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+}
+
+.bh-handwritten {
+  font-family: 'Caveat', 'Comic Sans MS', cursive;
+}
+
+/* Sun-baked terracotta hero gradient + dark readability overlay. */
+.bh-banner-bg {
+  background:
+    linear-gradient(100deg, rgba(42, 29, 20, 0.88) 0%, rgba(42, 29, 20, 0.55) 45%, rgba(42, 29, 20, 0.15) 75%),
+    linear-gradient(150deg, #D9B87C 0%, var(--meerav-terracotta) 55%, var(--meerav-terracotta-dark) 100%) !important;
+}
+
+/* Flat indigo band — hand-painted shop-sign feel. Always opaque so the
+   light text on it can never lose contrast. */
+.bh-signboard-band {
+  background: var(--meerav-indigo) !important;
+  background-color: var(--meerav-indigo) !important;
+}
+
+/* Hand-torn paper edge between sections. */
+.bh-torn-edge {
+  height: 26px;
+  width: 100%;
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  background-size: 52px 26px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='52' height='26' viewBox='0 0 52 26'><path d='M0 26 L0 14 Q6 8 13 13 Q20 18 26 11 Q33 4 39 12 Q46 20 52 13 L52 26 Z' fill='%23F3E9D4'/></svg>");
+}
+
+/* Polaroid photo frame. */
+.bh-polaroid {
+  background: #fff;
+  padding: 8px 8px 26px;
+  box-shadow: var(--ms-shadow-lg);
+  transform: rotate(-2deg);
+  position: relative;
+}
+.bh-polaroid > * { position: relative; }
+
+/* Flat hard shadow — no soft glossy blur. */
+.bh-hard-shadow { box-shadow: 3px 3px 0 var(--meerav-ink); }
+
+/* Sticker price tag, stuck on at an angle. */
+.bh-price-tag {
+  background: var(--meerav-marigold);
+  color: var(--meerav-ink);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 5px 9px;
+  transform: rotate(6deg);
+  box-shadow: 2px 2px 0 var(--meerav-ink);
+  display: inline-block;
+}
+
+/* Section eyebrow label. */
+.bh-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 1rem;
+  border-bottom: 1.5px solid var(--meerav-marigold);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--meerav-terracotta-dark);
+}
+
+.bh-card {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+/* Slight per-item rotation so grids never look machine-set. */
+.bh-tilt-1 { transform: rotate(-0.8deg); }
+.bh-tilt-2 { transform: rotate( 0.5deg); }
+.bh-tilt-3 { transform: rotate(-0.4deg); }
+.bh-tilt-4 { transform: rotate( 0.9deg); }
+
+
+/* ==========================================================================
+   6. COMPONENT SYSTEM (ms-*)
+   The shared product card, buttons, badges and skeletons. Rendered by
+   meeravProductCard() in js/store.js — every grid on the site uses it.
+   ========================================================================== */
+
+/* --- Product card ------------------------------------------------------- */
 .ms-card {
   position: relative;
   background: #fff;
@@ -1150,18 +279,16 @@ textarea:focus-visible,
   display: block;
   transition: transform 520ms var(--ms-ease);
 }
-.ms-card:hover .ms-card-media img {
-  transform: scale(1.05);
-}
+.ms-card:hover .ms-card-media img { transform: scale(1.05); }
+
+/* Video preview fades in over the still on hover. */
 .ms-card-media video {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 260ms var(--ms-ease);
+  transition: opacity var(--ms-duration) var(--ms-ease);
 }
-.ms-card-media:hover video {
-  opacity: 1;
-}
+.ms-card-media:hover video { opacity: 1; }
 
 .ms-card-body {
   padding: 14px 14px 16px;
@@ -1176,15 +303,16 @@ textarea:focus-visible,
   font-weight: 700;
   font-size: 15px;
   line-height: 1.3;
-  color: #2A1D14;
+  color: var(--meerav-ink);
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 2.6em;
 }
 
-/* Badge — one flat style, used sparingly (max one per card corner) */
+/* --- Badges ------------------------------------------------------------- */
 .ms-badge {
   display: inline-flex;
   align-items: center;
@@ -1198,7 +326,25 @@ textarea:focus-visible,
   line-height: 1;
 }
 
-/* Icon action button (wishlist etc.) */
+/* --- Buttons ------------------------------------------------------------ */
+.ms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 12px;
+  line-height: 1;
+  padding: 11px 16px;
+  border-radius: var(--ms-radius-sm);
+  cursor: pointer;
+  transition: background var(--ms-duration) var(--ms-ease),
+              color var(--ms-duration) var(--ms-ease),
+              transform 120ms var(--ms-ease);
+}
+.ms-btn:active { transform: scale(0.97); }
+.ms-btn-block { width: 100%; }
+
 .ms-icon-btn {
   width: 32px;
   height: 32px;
@@ -1216,26 +362,7 @@ textarea:focus-visible,
   transform: scale(1.08);
 }
 
-/* Buttons */
-.ms-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-weight: 800;
-  font-size: 12px;
-  line-height: 1;
-  padding: 11px 16px;
-  border-radius: var(--ms-radius-sm);
-  transition: background var(--ms-duration) var(--ms-ease),
-              color var(--ms-duration) var(--ms-ease),
-              transform 120ms var(--ms-ease);
-  cursor: pointer;
-}
-.ms-btn:active { transform: scale(0.97); }
-.ms-btn-block { width: 100%; }
-
-/* Variant pill row */
+/* --- Variant selector --------------------------------------------------- */
 .ms-variant {
   font-size: 11px;
   font-weight: 800;
@@ -1243,17 +370,17 @@ textarea:focus-visible,
   border-radius: var(--ms-radius-sm);
   border: 1px solid rgba(42, 29, 20, 0.18);
   background: #fff;
-  color: #5A4632;
+  color: var(--meerav-ink-soft);
   transition: all 160ms var(--ms-ease);
 }
-.ms-variant:hover { border-color: #D98F1E; }
+.ms-variant:hover { border-color: var(--meerav-marigold); }
 .ms-variant[aria-pressed="true"] {
-  background: #2A1D14;
-  border-color: #2A1D14;
-  color: #F3E9D4;
+  background: var(--meerav-ink);
+  border-color: var(--meerav-ink);
+  color: var(--meerav-paper);
 }
 
-/* --- Loading skeletons --------------------------------------------------- */
+/* --- Loading skeletons -------------------------------------------------- */
 .ms-skeleton {
   position: relative;
   overflow: hidden;
@@ -1278,11 +405,194 @@ textarea:focus-visible,
   background: #fff;
 }
 
-/* --- Respect reduced-motion preferences ---------------------------------- */
+
+/* ==========================================================================
+   7. STANDALONE COMPONENTS
+   ========================================================================== */
+
+/* 100% vegetarian mark (FSSAI green square). */
+.veg-indicator {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid #128807;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+.veg-indicator-dot {
+  width: 8px;
+  height: 8px;
+  background: #128807;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Toasts. */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  animation: fadeIn 0.25s var(--ms-ease);
+  box-shadow: var(--ms-shadow-lg);
+}
+
+/* Video reel cards (homepage broadcast rail). */
+.reels-card {
+  flex: 0 0 220px;
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  background: #1A1109;
+  border: 1px solid rgba(217, 143, 30, 0.35);
+  transition: transform var(--ms-duration) var(--ms-ease),
+              border-color var(--ms-duration) var(--ms-ease),
+              box-shadow var(--ms-duration) var(--ms-ease);
+}
+.reels-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--meerav-marigold);
+  box-shadow: var(--ms-shadow-md);
+}
+
+/* Legacy product-card hook — kept because admin previews still emit it. */
+.product-card {
+  background: #fff;
+  border: 1px solid rgba(42, 29, 20, 0.10);
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  transition: transform var(--ms-duration) var(--ms-ease),
+              box-shadow var(--ms-duration) var(--ms-ease);
+}
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ms-shadow-md);
+}
+
+/* --- Admin / chatbot simulator frames ----------------------------------- */
+.whatsapp-phone-frame {
+  background: #E5DDD5;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 8px solid #111;
+  box-shadow: var(--ms-shadow-lg);
+}
+.whatsapp-header {
+  background: #075E54;
+  color: #fff;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.whatsapp-chat-pattern {
+  background-color: #E5DDD5;
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-size: 12px 12px;
+  padding: 14px;
+}
+.whatsapp-msg-bubble {
+  background: #DCF8C6;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  max-width: 85%;
+  margin-left: auto;
+  box-shadow: var(--ms-shadow-sm);
+}
+.whatsapp-msg-bubble.in {
+  background: #fff;
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.email-client-frame {
+  border: 1px solid #E2E0DC;
+  border-radius: var(--ms-radius);
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--ms-shadow);
+}
+.email-header-bar {
+  background: #F5F3F0;
+  border-bottom: 1px solid #E2E0DC;
+  padding: 10px 14px;
+  font-size: 12px;
+}
+.email-body-content {
+  padding: 16px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.qr-scanner-box {
+  position: relative;
+  overflow: hidden;
+  border: 2px dashed var(--meerav-marigold);
+  border-radius: var(--ms-radius);
+}
+.qr-scan-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--meerav-terracotta);
+  animation: ms-scan 2.2s linear infinite;
+}
+@keyframes ms-scan {
+  0%   { top: 0%; }
+  100% { top: 100%; }
+}
+
+
+/* ==========================================================================
+   8. RESPONSIVE & MOTION PREFERENCES
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  .mobile-bottom-nav { display: flex !important; }
+  .pb-mobile-nav     { padding-bottom: 84px !important; }
+
+  /* Comfortable touch targets. */
+  button, a { touch-action: manipulation; }
+
+  /* Chatbot becomes a bottom sheet. */
+  #meerav-chatbot-window {
+    width: 94vw !important;
+    right: 3vw !important;
+    bottom: 80px !important;
+    height: 75vh !important;
+    max-height: 520px !important;
+  }
+
+  /* Modals go near-full-width. */
+  #checkout-modal > div,
+  #product-form-modal > div,
+  #payment-gateway-modal > div,
+  #category-form-modal > div {
+    max-height: 94vh !important;
+    width: 96vw !important;
+    border-radius: var(--ms-radius-lg) !important;
+  }
+
+  /* Tilts read as misalignment on narrow screens — straighten them. */
+  .bh-tilt-1, .bh-tilt-2, .bh-tilt-3, .bh-tilt-4 { transform: none; }
+}
+
+@media (min-width: 768px) {
+  .mobile-bottom-nav { display: none !important; }
+  .pb-mobile-nav     { padding-bottom: 0 !important; }
+}
+
+/* Honour reduced-motion: kill movement, keep everything legible. */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
@@ -1290,5 +600,6 @@ textarea:focus-visible,
   }
   .ms-card:hover { transform: none; }
   .ms-card:hover .ms-card-media img { transform: none; }
+  .reels-card:hover { transform: none; }
   .ms-skeleton::after { animation: none; }
 }

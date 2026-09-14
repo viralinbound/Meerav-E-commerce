@@ -1106,13 +1106,21 @@ function closeCartDrawer() {
 document.addEventListener('keydown', function (e) {
   if (e.key !== 'Escape') return;
 
+  // Innermost overlays first, so Escape peels them back one layer at a time.
   const overlays = [
-    { el: document.getElementById('fullscreen-media-modal'), close: typeof closeFullscreenMedia === 'function' ? closeFullscreenMedia : null },
-    { el: document.getElementById('customer-auth-modal'), close: typeof closeCustomerAuthModal === 'function' ? closeCustomerAuthModal : null },
-    { el: document.getElementById('payment-modal'), close: typeof closePaymentModal === 'function' ? closePaymentModal : null },
-    { el: document.getElementById('checkout-modal'), close: typeof closeCheckoutModal === 'function' ? closeCheckoutModal : null },
-    { el: document.getElementById('product-detail-modal'), close: typeof closeProductDetailModal === 'function' ? closeProductDetailModal : null }
-  ];
+    ['pdp-fullscreen-modal',  'closeFullscreenMedia'],
+    ['brand-film-modal',      'closeBrandFilmModal'],
+    ['master-film-modal',     'closeMasterFilmModal'],
+    ['payment-gateway-modal', 'closePaymentGatewayModal'],
+    ['customer-auth-modal',   'closeCustomerAuthModal'],
+    ['checkout-modal',        'closeCheckoutModal'],
+    ['product-detail-modal',  'closeProductDetailModal']
+  ].map(function (pair) {
+    return {
+      el: document.getElementById(pair[0]),
+      close: typeof window[pair[1]] === 'function' ? window[pair[1]] : null
+    };
+  });
 
   for (const o of overlays) {
     if (o.el && o.close && !o.el.classList.contains('hidden')) {

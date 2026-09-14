@@ -49,6 +49,7 @@ async function initCategoryPage() {
   renderCategoryPickerCards();
   renderCategoryDietaryFilters();
   renderCategoryProducts();
+  setupCategorySearchInputs();
 
   // 2. Asynchronous Cloud Sync from Supabase — this is the real source of
   // truth (a newly admin-added category/product only exists here); the
@@ -243,6 +244,31 @@ function selectDietaryFilter(tag) {
   renderCategoryProducts();
 }
 
+/**
+ * Binds the header search boxes to this page's own filter. The shared nav
+ * uses store-search-input, which store.js wires to the homepage grid — that
+ * grid doesn't exist here, so the category page binds its own handler.
+ */
+function setupCategorySearchInputs() {
+  ['store-search-input', 'store-search-input-mobile', 'category-page-search'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (!el || el.dataset.categoryBound) return;
+    el.dataset.categoryBound = '1';
+    el.addEventListener('input', function (e) {
+      handleCategorySearch(e.target.value);
+    });
+  });
+}
+
+/** Clears the search box (whichever of the two inputs is on screen) and re-renders. */
+function clearCategorySearch() {
+  ['store-search-input', 'store-search-input-mobile', 'category-page-search'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  handleCategorySearch('');
+}
+
 function handleCategorySearch(query) {
   categoryPageState.searchQuery = query.toLowerCase().trim();
   renderCategoryProducts();
@@ -317,7 +343,7 @@ function renderCategoryProducts() {
         if (icon) icon.className = 'fas fa-magnifying-glass text-2xl';
         if (title) title.textContent = 'No Snacks Match Your Search';
         if (desc) desc.textContent = 'Try a different keyword, or clear the search to see everything.';
-        if (cta) { cta.textContent = 'Clear Search'; cta.setAttribute('onclick', "handleCategorySearch(''); document.getElementById('category-page-search') && (document.getElementById('category-page-search').value='');"); }
+        if (cta) { cta.textContent = 'Clear Search'; cta.setAttribute('onclick', 'clearCategorySearch()'); }
       } else {
         if (icon) icon.className = 'fas fa-magnifying-glass text-2xl';
         if (title) title.textContent = 'No Bikaneri Snacks Found Matching Your Filter';
