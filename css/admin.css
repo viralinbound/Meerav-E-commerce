@@ -20,9 +20,14 @@ body.admin-body {
   color: #211412;
 }
 
-/* Sidebar Styling */
+/* Sidebar Styling — royal gradient with a faint Rajasthani jaali lattice overlay */
 .admin-sidebar {
-  background: linear-gradient(180deg, #4A0713 0%, #1F0307 100%);
+  background-color: #1F0307;
+  background-image:
+    linear-gradient(45deg, rgba(229, 201, 140, 0.05) 1px, transparent 1px),
+    linear-gradient(-45deg, rgba(229, 201, 140, 0.05) 1px, transparent 1px),
+    linear-gradient(180deg, #4A0713 0%, #1F0307 100%);
+  background-size: 26px 26px, 26px 26px, 100% 100%;
   color: #F3ECDD;
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
   border-right: 1px solid rgba(185, 129, 46, 0.35);

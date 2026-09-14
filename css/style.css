@@ -442,3 +442,139 @@ h1, h2, h3, h4, h5, h6, .brand-font {
     padding-bottom: 0px !important;
   }
 }
+
+/* ==========================================================================
+   RAJASTHANI HERITAGE MOTIFS — deeper theme pass on top of Bikaner Royal 2026
+   Jaali lattice, jharokha window framing, temple/paisley dividers, mandala
+   corner ornaments, bandhani dot texture. All additive/opt-in utility
+   classes — nothing above this line is modified.
+   ========================================================================== */
+
+:root {
+  --meerav-terracotta: #C1502E;
+  --meerav-peacock: #0B5D5D;
+  --meerav-saffron: #E08A1E;
+}
+
+/* Jaali (carved sandstone lattice) texture — for section backgrounds */
+.meerav-jaali-bg {
+  background-color: var(--meerav-cream-dark);
+  background-image:
+    linear-gradient(45deg, rgba(185, 129, 46, 0.16) 1px, transparent 1px),
+    linear-gradient(-45deg, rgba(185, 129, 46, 0.16) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+.meerav-jaali-bg-dark {
+  background-color: var(--meerav-maroon-dark);
+  background-image:
+    linear-gradient(45deg, rgba(229, 201, 140, 0.12) 1px, transparent 1px),
+    linear-gradient(-45deg, rgba(229, 201, 140, 0.12) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* Bandhani-inspired dot texture — alternate hero/section pattern */
+.meerav-bandhani-bg {
+  background-color: var(--meerav-cream-dark);
+  background-image:
+    radial-gradient(var(--meerav-maroon) 1px, transparent 1px),
+    radial-gradient(var(--meerav-gold) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* Jharokha — ornate Rajasthani palace-window surround. Wrap an existing
+   .meerav-arch-frame (or any image block) in this to add a carved gold
+   ring, inner ivory inlay line, and a finial at the crown. */
+.meerav-jharokha-surround {
+  position: relative;
+  padding: 12px;
+  border-radius: 228px 228px 12px 12px;
+  background: linear-gradient(160deg, var(--meerav-gold) 0%, var(--meerav-gold-dark) 100%);
+  box-shadow: 0 18px 40px -12px rgba(46, 5, 9, 0.35);
+}
+
+.meerav-jharokha-surround::before {
+  content: '';
+  position: absolute;
+  top: 20px; left: 20px; right: 20px; bottom: 12px;
+  border: 1.5px solid rgba(250, 246, 238, 0.65);
+  border-radius: 200px 200px 6px 6px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.meerav-jharokha-surround::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateX(-50%) rotate(45deg);
+  background: var(--meerav-gold);
+  border: 1.5px solid var(--meerav-cream);
+  z-index: 3;
+}
+
+/* Temple/paisley zigzag divider strip — section-break ornament */
+.meerav-temple-divider {
+  height: 20px;
+  width: 100%;
+  background-repeat: repeat-x;
+  background-position: center;
+  background-size: 30px 20px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='20' viewBox='0 0 30 20'><path d='M0 0 L15 17 L30 0 Z' fill='%23B9812E'/></svg>");
+}
+
+.meerav-temple-divider-dark {
+  height: 20px;
+  width: 100%;
+  background-repeat: repeat-x;
+  background-position: center;
+  background-size: 30px 20px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='20' viewBox='0 0 30 20'><path d='M0 0 L15 17 L30 0 Z' fill='%232E0509'/></svg>");
+}
+
+/* Mandala corner ornament — decorative accent for section/card corners */
+.meerav-mandala-corner {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  opacity: 0.55;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='46' fill='none' stroke='%23B9812E' stroke-width='3'/><circle cx='50' cy='50' r='30' fill='none' stroke='%23B9812E' stroke-width='2'/><g stroke='%23B9812E' stroke-width='2'><line x1='50' y1='4' x2='50' y2='20'/><line x1='50' y1='80' x2='50' y2='96'/><line x1='4' y1='50' x2='20' y2='50'/><line x1='80' y1='50' x2='96' y2='50'/></g></svg>");
+  pointer-events: none;
+  z-index: 1;
+}
+.meerav-mandala-corner.tl { top: -10px; left: -10px; }
+.meerav-mandala-corner.tr { top: -10px; right: -10px; transform: scaleX(-1); }
+.meerav-mandala-corner.bl { bottom: -10px; left: -10px; transform: scaleY(-1); }
+.meerav-mandala-corner.br { bottom: -10px; right: -10px; transform: scale(-1, -1); }
+
+/* Rajasthani "truck-art" style gold rule — thin ornamental top/bottom border */
+.meerav-royal-rule {
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--meerav-gold) 0px, var(--meerav-gold) 10px,
+    transparent 10px, transparent 14px
+  );
+}
+
+/* Section eyebrow tag styled like a Rajasthani miniature-painting cartouche */
+.meerav-cartouche {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 1rem;
+  border: 1px solid var(--meerav-gold);
+  border-radius: 999px;
+  font-family: 'Newsreader', serif;
+  font-style: italic;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--meerav-maroon-dark);
+  background: rgba(185, 129, 46, 0.08);
+}
