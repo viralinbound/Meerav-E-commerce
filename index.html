@@ -143,103 +143,86 @@ Admin Portal
   <!-- ========================================================================= -->
   <main id="storefront-main-content" class="animate-fade-in">
     
-    <!-- Hero Banner with Authentic Packaging Visuals — true full-bleed, min-height near full viewport -->
-    <section class="relative overflow-hidden bh-banner-bg border-b border-[#7C2E12] w-full min-h-0 sm:min-h-[80vh] lg:min-h-[88vh] flex items-center py-12 sm:py-20">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <!-- Hero Banner — true full-page slideshow banner, text overlaid on top -->
+    <section class="relative overflow-hidden border-b border-[#7C2E12] w-full min-h-[70vh] sm:min-h-[85vh] lg:min-h-[92vh] flex items-end sm:items-center"
+             onmouseenter="pauseHeroAutoScroll()" onmouseleave="resumeHeroAutoScroll()">
 
-        <!-- Quiet asymmetric hero: media on the left in a single hairline frame, text and CTA stacked on the right -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <!-- Full-bleed Media Slide Track — populated live from admin's Broadcast Stories (falls back to the single Hero Video/Image if none are added) -->
+      <div id="hero-slides-wrapper" class="absolute inset-0 w-full h-full flex transition-transform duration-500 ease-out bg-black"></div>
 
-          <div class="lg:col-span-6 flex justify-center relative">
-            <div class="bh-polaroid max-w-lg w-full bh-photo-shadow">
-            <div class="relative meerav-arch-frame overflow-hidden w-full aspect-[16/10] bg-black group !rounded-none"
-                 onmouseenter="pauseHeroAutoScroll()" onmouseleave="resumeHeroAutoScroll()">
+      <!-- Readability gradient overlay over the slideshow -->
+      <div class="absolute inset-0 bh-banner-bg opacity-80 pointer-events-none"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#1A1109] via-[#1A1109]/40 to-transparent pointer-events-none"></div>
 
-              <!-- Media Slide Track — populated live from admin's Broadcast Stories (falls back to the single Hero Video/Image if none are added) -->
-              <div id="hero-slides-wrapper" class="w-full h-full flex transition-transform duration-500 ease-out"></div>
+      <!-- Left / Right Arrows -->
+      <button onclick="prevHeroSlide()" class="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-[#B5451D] text-white flex items-center justify-center transition border border-white/20 z-20" title="Previous">
+        <i class="fas fa-chevron-left text-sm"></i>
+      </button>
+      <button onclick="nextHeroSlide()" class="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-[#B5451D] text-white flex items-center justify-center transition border border-white/20 z-20" title="Next">
+        <i class="fas fa-chevron-right text-sm"></i>
+      </button>
 
-              <!-- Left / Right Arrows -->
-              <button onclick="prevHeroSlide()" class="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-[#B5451D] text-white flex items-center justify-center transition border border-white/20 z-20" title="Previous">
-                <i class="fas fa-chevron-left text-xs"></i>
-              </button>
-              <button onclick="nextHeroSlide()" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black/60 hover:bg-[#B5451D] text-white flex items-center justify-center transition border border-white/20 z-20" title="Next">
-                <i class="fas fa-chevron-right text-xs"></i>
-              </button>
-
-              <!-- Top Badge Overlay -->
-              <div class="absolute top-3 left-3 px-3 py-1 bg-[#2A1D14]/85 border border-[#D98F1E]/60 text-[#EADDBF] text-[11px] font-black flex items-center gap-1.5 z-20 pointer-events-none">
-                <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                <span id="hero-slide-badge">FRESH FROM THE KITCHEN • ALL PRODUCTS</span>
-              </div>
-
-              <!-- Bottom Overlay Controls -->
-              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20">
-                <span id="hero-slide-counter" class="text-[10px] text-amber-200 font-bold bg-black/60 px-2.5 py-1 border border-amber-400/30">
-                  <i class="fas fa-images"></i> 1 / 1
-                </span>
-
-                <div class="flex items-center gap-2">
-                  <button onclick="toggleVideoMute()" id="video-mute-btn"
-                    class="p-2.5 bg-black/70 hover:bg-[#B5451D] text-[#EADDBF] border border-[#B5451D]/50 transition text-xs" title="Toggle Sound">
-                    <i class="fas fa-volume-xmark"></i>
-                  </button>
-                  <button onclick="openBrandFilmModal()"
-                    class="px-3.5 py-2 bg-[#2A1D14]/90 hover:bg-[#1A1109] text-[#EADDBF] border border-[#B5451D] transition text-xs font-black flex items-center gap-1" title="Expand Fullscreen">
-                    <i class="fas fa-expand"></i>
-                    <span>Fullscreen</span>
-                  </button>
-                </div>
-              </div>
-
-            </div>
-            </div>
-
-            <!-- "EST." mark, restyled as a quiet outlined roundel rather than a bright stamp -->
-            <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-[#F3E9D4] border border-[#B5451D] text-[#7C2E12] text-[10px] hidden sm:flex items-center justify-center text-center font-bold leading-tight" aria-hidden="true">
-              EST.<br/>BIKANER
-            </div>
-          </div>
-
-          <!-- Headline + CTA column: single flowing block, no tiling -->
-          <div class="lg:col-span-6 text-center lg:text-left">
-            <span class="inline-block font-serif italic text-[11px] sm:text-xs tracking-[0.14em] uppercase text-[#D98F1E] border-b-[1.5px] border-[#D98F1E] pb-1 mb-4 sm:mb-5">
-              <span data-ck="home.hero.badge">A small kitchen in Bikaner, since 1983</span>
-            </span>
-
-            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] bh-heading" style="text-shadow:0 2px 12px rgba(0,0,0,0.35);">
-              <span data-ck="home.hero.title_line1">We still fry it</span> <br/>
-              the way <span data-ck="home.hero.title_highlight" class="italic text-[#D98F1E]">Nani</span> did.
-            </h1>
-
-            <p data-ck="home.hero.subtitle" class="text-[#EADDC5] text-sm sm:text-base max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium mt-4 sm:mt-5">
-              No shortcuts, no palm oil, no factory lines — just moth flour, pure groundnut oil and desert rock salt, fried in small batches every morning and packed the same day.
-            </p>
-
-            <p class="bh-handwritten text-[#D98F1E] text-base sm:text-lg mt-3" style="transform:rotate(-1.5deg);">— packed by hand, every single time</p>
-
-            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center lg:justify-start">
-              <a href="category?cat=all" id="hero-cta-btn"
-                class="px-6 sm:px-7 py-3.5 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-none bh-hard-shadow transition inline-flex items-center justify-center gap-2">
-                <span id="hero-cta-text">See What's Fresh Today</span>
-              </a>
-
-              <button onclick="openBrandFilmModal()"
-                class="px-6 py-3.5 border-2 border-[#F3E9D4] text-[#F3E9D4] hover:bg-white/10 text-sm font-black rounded-none transition flex items-center justify-center gap-2 cursor-pointer">
-                <span id="hero-secondary-cta-text">Read Our Story</span>
-              </button>
-            </div>
-
-            <!-- Trust badges as a simple inline row, no tiles -->
-            <div class="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-2.5 sm:gap-y-3 mt-8 sm:mt-9 justify-center lg:justify-start text-xs font-bold text-[#EADDC5]">
-              <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> Pure & Clean Oil</span>
-              <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> 100% Vegetarian</span>
-              <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> Same-Day Dispatch</span>
-            </div>
-          </div>
-
+      <!-- Top Badge + Slide Counter + Mute -->
+      <div class="absolute top-4 sm:top-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between z-20">
+        <div class="px-3 py-1 bg-[#2A1D14]/85 border border-[#D98F1E]/60 text-[#EADDBF] text-[11px] font-black flex items-center gap-1.5 pointer-events-none">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+          <span id="hero-slide-badge">FRESH FROM THE KITCHEN • ALL PRODUCTS</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="hero-slide-counter" class="text-[10px] text-amber-200 font-bold bg-black/60 px-2.5 py-1 border border-amber-400/30">
+            <i class="fas fa-images"></i> 1 / 1
+          </span>
+          <button onclick="toggleVideoMute()" id="video-mute-btn"
+            class="p-2.5 bg-black/60 hover:bg-[#B5451D] text-[#EADDBF] border border-[#B5451D]/50 transition text-xs" title="Toggle Sound">
+            <i class="fas fa-volume-xmark"></i>
+          </button>
         </div>
       </div>
-      <div class="bh-torn-edge"></div>
+
+      <!-- "EST." mark -->
+      <div class="absolute right-5 sm:right-8 top-20 sm:top-24 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#F3E9D4] border border-[#B5451D] text-[#7C2E12] text-[10px] hidden sm:flex items-center justify-center text-center font-bold leading-tight z-20" aria-hidden="true">
+        EST.<br/>BIKANER
+      </div>
+
+      <!-- Headline + CTA content, overlaid at the bottom of the full-bleed banner -->
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-12 sm:pb-16 pt-32 sm:pt-16">
+        <div class="max-w-2xl text-center sm:text-left mx-auto sm:mx-0">
+          <span class="inline-block font-serif italic text-[11px] sm:text-xs tracking-[0.14em] uppercase text-[#D98F1E] border-b-[1.5px] border-[#D98F1E] pb-1 mb-4 sm:mb-5">
+            <span data-ck="home.hero.badge">A small kitchen in Bikaner, since 1983</span>
+          </span>
+
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight leading-[1.05] bh-heading" style="text-shadow:0 2px 12px rgba(0,0,0,0.45);">
+            <span data-ck="home.hero.title_line1">We still fry it</span> <br/>
+            the way <span data-ck="home.hero.title_highlight" class="italic text-[#D98F1E]">Nani</span> did.
+          </h1>
+
+          <p data-ck="home.hero.subtitle" class="text-[#EADDC5] text-sm sm:text-base max-w-xl mx-auto sm:mx-0 leading-relaxed font-medium mt-4 sm:mt-5" style="text-shadow:0 1px 6px rgba(0,0,0,0.5);">
+            No shortcuts, no palm oil, no factory lines — just moth flour, pure groundnut oil and desert rock salt, fried in small batches every morning and packed the same day.
+          </p>
+
+          <p class="bh-handwritten text-[#D98F1E] text-base sm:text-lg mt-3" style="transform:rotate(-1.5deg);">— packed by hand, every single time</p>
+
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 sm:mt-8 justify-center sm:justify-start">
+            <a href="category?cat=all" id="hero-cta-btn"
+              class="px-6 sm:px-7 py-3.5 bg-[#D98F1E] hover:bg-[#c17d15] text-[#2A1D14] text-sm font-black rounded-none bh-hard-shadow transition inline-flex items-center justify-center gap-2">
+              <span id="hero-cta-text">See What's Fresh Today</span>
+            </a>
+
+            <a href="#home-story-section"
+              class="px-6 py-3.5 border-2 border-[#F3E9D4] text-[#F3E9D4] hover:bg-white/10 text-sm font-black rounded-none transition flex items-center justify-center gap-2 cursor-pointer">
+              <span id="hero-secondary-cta-text">Read Our Story</span>
+            </a>
+          </div>
+
+          <!-- Trust badges as a simple inline row, no tiles -->
+          <div class="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-2.5 sm:gap-y-3 mt-8 sm:mt-9 justify-center sm:justify-start text-xs font-bold text-[#EADDC5]">
+            <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> Pure & Clean Oil</span>
+            <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> 100% Vegetarian</span>
+            <span class="flex items-center gap-1.5"><i class="fas fa-check text-[#D98F1E]"></i> Same-Day Dispatch</span>
+          </div>
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 bh-torn-edge z-10"></div>
     </section>
 
     <!-- Signboard strip — flat indigo bar, hand-painted shop-sign feel -->
@@ -318,7 +301,7 @@ Admin Portal
     </section>
 
     <!-- Brand Story & Milestone Stats Section -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-18 border-b border-amber-200/80">
+    <section id="home-story-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-18 border-b border-amber-200/80">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div class="lg:col-span-6 space-y-6">
           <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-amber-100 text-[#7C2E12] text-xs font-black border border-[#D98F1E]">
@@ -344,11 +327,11 @@ Admin Portal
         <div class="lg:col-span-6 flex justify-center">
           <div class="bh-polaroid max-w-md w-full">
           <div class="relative overflow-hidden w-full aspect-4/3 bg-amber-50">
-            <img id="home-story-image" src="assets/images/commercial_scene_3.jpg" alt="Heritage Kitchen" class="w-full h-full object-cover" />
+            <img id="home-story-image" src="assets/images/feature_heritage.jpg" alt="Amber Fort, Rajasthan" class="w-full h-full object-cover" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-6">
               <div class="text-white space-y-1">
-                <span class="bh-tag !bg-[#2C4A5E]">Authentic Kitchen</span>
-                <p class="text-xs font-bold text-amber-200">Slow-Fried in Pure Groundnut Oil with Bikaner Desert Spices</p>
+                <span class="bh-tag !bg-[#2C4A5E]">Rajasthan, Our Home</span>
+                <p class="text-xs font-bold text-amber-200">The Same Desert Land That Gives Us Our Spices &amp; Salt</p>
               </div>
             </div>
           </div>
