@@ -1387,9 +1387,9 @@ function renderHeroCarousel() {
     track.innerHTML = slides.map((s, idx) => `
       <div class="w-full h-full shrink-0 relative cursor-pointer" onclick="openBrandFilmModal()">
         ${s.mediaType === 'video' ? `
-          <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video" autoplay' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" preload="${idx === storeState.heroSlideIndex ? 'auto' : 'metadata'}" loop muted playsinline class="w-full h-full object-cover"></video>
+          <video ${idx === storeState.heroSlideIndex ? 'id="hero-active-video" autoplay' : ''} src="${s.mediaUrl}" poster="${s.posterUrl || ''}" preload="${idx === storeState.heroSlideIndex ? 'auto' : 'metadata'}" loop muted playsinline class="w-full h-full object-contain"></video>
         ` : `
-          <img src="${s.mediaUrl}" alt="${s.title || ''}" ${idx === storeState.heroSlideIndex ? '' : 'loading="lazy" decoding="async"'} class="w-full h-full object-cover" />
+          <img src="${s.mediaUrl}" alt="${s.title || ''}" ${idx === storeState.heroSlideIndex ? '' : 'loading="lazy" decoding="async"'} class="w-full h-full object-contain" />
         `}
       </div>
     `).join('');
