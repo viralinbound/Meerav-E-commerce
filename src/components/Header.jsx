@@ -94,6 +94,42 @@ export default function Header() {
           </span>
         </Link>
 
+        <nav className={`navbar-links ${open ? "open" : ""}`}>
+          <div
+            className="nav-cat-dropdown"
+            onMouseEnter={() => setCatOpen(true)}
+            onMouseLeave={() => setCatOpen(false)}
+          >
+            <NavLink to="/shop" className={({ isActive }) => (isActive ? "active nav-caret" : "nav-caret")}>
+              Shop All
+            </NavLink>
+            <div className={`cat-dropdown-panel ${catOpen ? "show" : ""}`}>
+              {categories
+                .filter((c) => c.id !== "all")
+                .map((c) => (
+                  <Link key={c.id} to={`/category/${c.id}`} onClick={() => { setOpen(false); setCatOpen(false); }}>
+                    <img src={c.image} alt="" />
+                    <span>
+                      <strong>{c.name}</strong>
+                      <small>{c.description}</small>
+                    </span>
+                  </Link>
+                ))}
+            </div>
+          </div>
+          {links.map((l) => (
+            <NavLink
+              key={l.to}
+              to={l.to}
+              end={l.to === "/"}
+              className={({ isActive }) => (isActive ? "active" : "")}
+              onClick={() => setOpen(false)}
+            >
+              {l.label}
+            </NavLink>
+          ))}
+        </nav>
+
         <form className="navbar-search-bar" onSubmit={handleSearch}>
           <SearchIcon />
           <input
@@ -130,43 +166,6 @@ export default function Header() {
           </button>
         </div>
       </div>
-
-      <nav className={`navbar-subnav ${open ? "open" : ""}`}>
-        <div
-          className="nav-cat-dropdown"
-          onMouseEnter={() => setCatOpen(true)}
-          onMouseLeave={() => setCatOpen(false)}
-        >
-          <NavLink to="/shop" className={({ isActive }) => (isActive ? "active nav-caret" : "nav-caret")}>
-            Shop All
-          </NavLink>
-          <div className={`cat-dropdown-panel ${catOpen ? "show" : ""}`}>
-            {categories
-              .filter((c) => c.id !== "all")
-              .map((c) => (
-                <Link key={c.id} to={`/category/${c.id}`} onClick={() => { setOpen(false); setCatOpen(false); }}>
-                  <img src={c.image} alt="" />
-                  <span>
-                    <strong>{c.name}</strong>
-                    <small>{c.description}</small>
-                  </span>
-                </Link>
-              ))}
-          </div>
-        </div>
-        {links.map((l) => (
-          <NavLink
-            key={l.to}
-            to={l.to}
-            end={l.to === "/"}
-            className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={() => setOpen(false)}
-          >
-            {l.label}
-          </NavLink>
-        ))}
-      </nav>
-
     </header>
   );
 }
