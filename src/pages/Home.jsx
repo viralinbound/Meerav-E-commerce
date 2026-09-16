@@ -35,7 +35,7 @@ export default function Home() {
   }
 
   const shopCategories = categories.filter((c) => c.id !== "all");
-  const best = bestSellers(8);
+  const best = bestSellers(7);
   const spotlightProduct = best[0];
 
   return (
