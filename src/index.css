@@ -1,4 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --navy: #0b132b;
@@ -135,7 +139,7 @@ img {
   font-weight: 400;
   line-height: 1.3;
 }
-@media (max-width: 900px) {
+@media (max-width: 860px) {
   .cat-dropdown-panel {
     position: static;
     transform: none;
@@ -149,16 +153,15 @@ img {
     display: grid;
   }
 }
-/* ---------- Single-line brand/nav/search/account row ---------- */
+/* ---------- Main white brand/search/account row ---------- */
 .navbar-main {
   background: #fff;
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 12px 24px;
-  max-width: 1280px;
+  gap: 24px;
+  padding: 14px 24px;
+  max-width: 1180px;
   margin: 0 auto;
-  flex-wrap: nowrap;
 }
 @media (max-width: 900px) {
   .navbar-main {
@@ -210,16 +213,16 @@ img {
 }
 
 .navbar-search-bar {
-  flex: 1 1 220px;
+  flex: 1;
   display: flex;
   align-items: center;
   gap: 10px;
   background: var(--cream-dark);
   border: 1px solid #e2cf9d;
   border-radius: 999px;
-  padding: 9px 18px;
+  padding: 10px 18px;
   color: #8a7862;
-  min-width: 120px;
+  min-width: 160px;
 }
 .navbar-search-bar input {
   flex: 1;
@@ -336,53 +339,53 @@ img {
   opacity: 0.8;
 }
 
-/* ---------- Nav links (inline in the single navbar row on desktop) ---------- */
-.navbar-links {
+/* ---------- Secondary category/links row ---------- */
+.navbar-subnav {
+  background: var(--navy);
   display: flex;
-  gap: 22px;
+  gap: 28px;
   align-items: center;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.88rem;
-  color: var(--maroon-dark);
-  flex-shrink: 0;
-  white-space: nowrap;
+  color: var(--cream);
+  padding: 10px 24px;
+  max-width: 1180px;
+  margin: 0 auto;
 }
-.navbar-links a {
+.navbar-subnav a {
   position: relative;
   padding: 4px 0;
   transition: color 0.2s;
 }
-.navbar-links a:hover,
-.navbar-links a.active {
-  color: var(--maroon);
+.navbar-subnav a:hover,
+.navbar-subnav a.active {
+  color: var(--gold-light);
 }
-.navbar-links a.active::after {
+.navbar-subnav a.active::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: -2px;
   height: 2px;
-  background: var(--gold);
+  background: var(--gold-light);
   border-radius: 2px;
 }
 
-@media (max-width: 900px) {
-  .navbar-links {
+@media (max-width: 860px) {
+  .navbar-subnav {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background: #fff;
     flex-direction: column;
     align-items: flex-start;
     padding: 16px 24px 24px;
     gap: 16px;
     display: none;
     z-index: 40;
-    box-shadow: var(--shadow);
   }
-  .navbar-links.open {
+  .navbar-subnav.open {
     display: flex;
   }
   .menu-toggle {
@@ -825,27 +828,11 @@ img {
   color: var(--maroon);
 }
 
-/* ---------- Product grid & cards (horizontal scroll, one row) ---------- */
+/* ---------- Product grid & cards ---------- */
 .product-grid {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 20px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 10px;
-}
-.product-grid::-webkit-scrollbar {
-  height: 8px;
-}
-.product-grid::-webkit-scrollbar-thumb {
-  background: var(--gold);
-  border-radius: 999px;
-}
-.product-grid .product-card {
-  flex: 0 0 240px;
-  scroll-snap-align: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 26px;
 }
 .product-card {
   position: relative;
@@ -2461,4 +2448,48 @@ img {
     width: 12px;
     height: 12px;
   }
+}
+
+/* ==========================================================================
+   Meerav2.0 UI port — Tailwind-based homepage redesign utility classes
+   ========================================================================== */
+@layer components {
+  .font-serif {
+    font-family: "Playfair Display", Georgia, serif;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-maroon-700 text-cream-50 font-medium rounded-lg transition-all duration-300 hover:bg-maroon-800 hover:shadow-lg active:scale-95;
+  }
+
+  .card-hover {
+    @apply transition-all duration-500 hover:shadow-2xl hover:-translate-y-1;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .text-shadow-lg {
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

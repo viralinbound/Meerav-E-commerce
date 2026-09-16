@@ -1,50 +1,14 @@
 import { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
+import { Search, ShoppingCart, Menu, X, Heart, User } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useCatalog } from "../context/CatalogContext";
 import { useAuth } from "../context/AuthContext";
-import { brand } from "../data/staticContent";
-
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-      <circle cx="11" cy="11" r="7" />
-      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="8" r="4" />
-      <path d="M4 20c0-4 3.5-6 8-6s8 2 8 6" />
-    </svg>
-  );
-}
-
-function HeartIcon({ filled }) {
-  return (
-    <svg viewBox="0 0 24 24" width="19" height="19" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
-      <path d="M12 20.5s-7.5-4.6-10-9.3C.4 7.8 2 4 5.6 4c2 0 3.5 1 4.4 2.4.9-1.4 2.4-2.4 4.4-2.4C18 4 19.6 7.8 18 11.2c-2.5 4.7-6 9.3-6 9.3Z" />
-    </svg>
-  );
-}
-
-function BagIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M6 8h12l-1 12H7L6 8Z" />
-      <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-    </svg>
-  );
-}
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
-  const [catOpen, setCatOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { totalItems } = useCart();
   const { ids: wishlistIds } = useWishlist();
   const { categories, coupons } = useCatalog();
@@ -52,120 +16,242 @@ export default function Header() {
   const navigate = useNavigate();
   const topCoupon = coupons[0];
 
-  const links = [
-    { to: "/", label: "Home" },
-    { to: "/about", label: "Our Story" },
-    { to: "/contact", label: "Contact" },
-  ];
+  const shopCategories = categories.filter((c) => c.id !== "all");
 
   function handleSearch(e) {
     e.preventDefault();
-    if (!searchTerm.trim()) return;
-    navigate(`/shop?q=${encodeURIComponent(searchTerm.trim())}`);
-    setOpen(false);
+    if (!searchQuery.trim()) return;
+    navigate(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
+    setMobileMenuOpen(false);
   }
 
   return (
-    <header className="navbar">
-      <div className="topbar">
-        <div className="topbar-inner">
-          {topCoupon ? (
-            <span>
-              Use coupon <strong>{topCoupon.code}</strong> — {topCoupon.description || `${topCoupon.discountVal}${topCoupon.discountType === "percentage" ? "%" : "₹"} off`}
-            </span>
-          ) : (
-            <span>Fresh Bikaneri snacks, dispatched same-day from our Bikaner kitchen</span>
-          )}
-          <div className="topbar-links">
-            <a href="https://wa.me/919876543210" target="_blank" rel="noreferrer">WhatsApp Order</a>
-            <a href="/admin.html">Admin Portal</a>
-          </div>
+    <>
+      {/* Announcement Bar */}
+      <div className="bg-maroon-800 text-cream-50 text-[11px]">
+        <div className="container-max section-padding py-1.5 flex items-center justify-center gap-4 relative">
+          <span className="text-center">
+            {topCoupon ? (
+              <>
+                Use coupon <strong>{topCoupon.code}</strong> — {topCoupon.description || `${topCoupon.discountVal}${topCoupon.discountType === "percentage" ? "%" : "₹"} off`}
+              </>
+            ) : (
+              "Fresh Bikaneri snacks, dispatched same-day from our Bikaner kitchen"
+            )}
+          </span>
+          <a
+            href="/admin.html"
+            className="hidden sm:inline absolute right-4 text-cream-200 hover:text-saffron-300 transition-colors whitespace-nowrap"
+          >
+            Admin Login
+          </a>
         </div>
       </div>
 
-      <div className="navbar-main">
-        <Link to="/" className="brand-lockup" onClick={() => setOpen(false)}>
-          <span className="brand-logo-badge">
-            <img src="/images/meerav_logo.png" alt={brand.name} />
-          </span>
-          <span className="brand-lockup-text">
-            <strong>{brand.name} NAMKEENS &amp; SWEETS</strong>
-            <small>Fried Fresh in Bikaner, Since 1983</small>
-          </span>
-        </Link>
+      {/* Main Header */}
+      <header className="sticky top-0 z-40 bg-cream-50 shadow-sm">
+        <div className="container-max section-padding">
+          <div className="flex items-center flex-nowrap py-1.5 gap-1 xl:gap-1.5">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-1 shrink-0" onClick={() => setMobileMenuOpen(false)}>
+              <img src="/images/meerav_logo.png" alt="Meerav" className="w-7 h-7 rounded-full object-cover shrink-0" />
+              <div className="text-left hidden xl:block">
+                <h1 className="font-serif text-sm font-bold text-maroon-800 leading-none whitespace-nowrap">Meerav</h1>
+                <p className="text-[7px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap">Bikaneri Namkeens</p>
+              </div>
+            </Link>
 
-        <nav className={`navbar-links ${open ? "open" : ""}`}>
-          <div
-            className="nav-cat-dropdown"
-            onMouseEnter={() => setCatOpen(true)}
-            onMouseLeave={() => setCatOpen(false)}
-          >
-            <NavLink to="/shop" className={({ isActive }) => (isActive ? "active nav-caret" : "nav-caret")}>
-              Shop All
-            </NavLink>
-            <div className={`cat-dropdown-panel ${catOpen ? "show" : ""}`}>
-              {categories
-                .filter((c) => c.id !== "all")
-                .map((c) => (
-                  <Link key={c.id} to={`/category/${c.id}`} onClick={() => { setOpen(false); setCatOpen(false); }}>
-                    <img src={c.image} alt="" />
-                    <span>
-                      <strong>{c.name}</strong>
-                      <small>{c.description}</small>
-                    </span>
-                  </Link>
-                ))}
+            {/* Category Nav - inline, one line */}
+            <nav className="hidden lg:flex items-center gap-0.5 shrink-0">
+              <NavLink
+                to="/"
+                end
+                className={({ isActive }) =>
+                  `px-1.5 py-1 text-[11px] xl:text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+                    isActive ? "text-maroon-700 bg-cream-100" : "text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100"
+                  }`
+                }
+              >
+                Home
+              </NavLink>
+              {shopCategories.map((cat) => (
+                <NavLink
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) =>
+                    `px-1.5 py-1 text-[11px] xl:text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+                      isActive ? "text-maroon-700 bg-cream-100" : "text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100"
+                    }`
+                  }
+                >
+                  {cat.name}
+                </NavLink>
+              ))}
+              <NavLink
+                to="/about"
+                className={({ isActive }) =>
+                  `px-1.5 py-1 text-[11px] xl:text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+                    isActive ? "text-maroon-700 bg-cream-100" : "text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100"
+                  }`
+                }
+              >
+                Our Story
+              </NavLink>
+              <NavLink
+                to="/contact"
+                className={({ isActive }) =>
+                  `px-1.5 py-1 text-[11px] xl:text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+                    isActive ? "text-maroon-700 bg-cream-100" : "text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100"
+                  }`
+                }
+              >
+                Contact
+              </NavLink>
+            </nav>
+
+            {/* Search Bar - Desktop */}
+            <form onSubmit={handleSearch} className="hidden md:flex flex-1 min-w-0 max-w-[180px] xl:max-w-[220px]">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search..."
+                  className="w-full pl-3 pr-8 py-1 border-2 border-cream-300 rounded-full focus:border-saffron-400 focus:outline-none transition-colors text-[11px]"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-0.5 top-1/2 -translate-y-1/2 w-6 h-6 bg-saffron-500 rounded-full flex items-center justify-center text-white hover:bg-saffron-600 transition-colors"
+                >
+                  <Search className="w-3 h-3" />
+                </button>
+              </div>
+            </form>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-1 xl:gap-1.5 shrink-0 ml-auto">
+              <NavLink
+                to="/account"
+                className="hidden lg:flex items-center gap-1 text-[11px] text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
+              >
+                {customer?.avatar ? (
+                  <img src={customer.avatar} alt="" className="w-4 h-4 rounded-full object-cover" />
+                ) : (
+                  <User className="w-3 h-3" />
+                )}
+                {customer ? customer.name.split(" ")[0] : "Sign In"}
+              </NavLink>
+
+              <NavLink to="/wishlist" className="relative flex items-center text-charcoal-600 hover:text-maroon-700 transition-colors">
+                <Heart className="w-4 h-4" />
+                {wishlistIds.length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-saffron-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {wishlistIds.length}
+                  </span>
+                )}
+              </NavLink>
+
+              <NavLink
+                to="/cart"
+                className="relative flex items-center gap-1 px-2 py-1 bg-maroon-700 text-cream-50 rounded-full hover:bg-maroon-800 transition-colors shrink-0"
+              >
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline text-[11px] font-medium whitespace-nowrap">Cart</span>
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-saffron-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </NavLink>
+
+              <button
+                onClick={() => setMobileMenuOpen((o) => !o)}
+                className="lg:hidden p-1 text-charcoal-700 shrink-0"
+                aria-label="Menu"
+              >
+                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              </button>
             </div>
           </div>
-          {links.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              end={l.to === "/"}
-              className={({ isActive }) => (isActive ? "active" : "")}
-              onClick={() => setOpen(false)}
-            >
-              {l.label}
-            </NavLink>
-          ))}
-        </nav>
-
-        <form className="navbar-search-bar" onSubmit={handleSearch}>
-          <SearchIcon />
-          <input
-            type="text"
-            placeholder="Search Aloo Bhujia, Ratlami Sev, Mathri, Makhana..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </form>
-
-        <div className="navbar-actions">
-          <NavLink to="/account" className="navbar-account-btn" onClick={() => setOpen(false)}>
-            {customer?.avatar ? (
-              <img src={customer.avatar} alt="" className="navbar-account-avatar" />
-            ) : (
-              <UserIcon />
-            )}
-            <span>{customer ? customer.name.split(" ")[0] : "Sign In"}</span>
-          </NavLink>
-
-          <NavLink to="/wishlist" className="navbar-icon-btn" onClick={() => setOpen(false)}>
-            <HeartIcon />
-            {wishlistIds.length > 0 && <span className="cart-badge">{wishlistIds.length}</span>}
-          </NavLink>
-
-          <NavLink to="/cart" className="navbar-cart-btn" onClick={() => setOpen(false)}>
-            <BagIcon />
-            <span>Cart</span>
-            {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
-          </NavLink>
-
-          <button className="menu-toggle" onClick={() => setOpen((o) => !o)}>
-            {open ? "Close" : "Menu"}
-          </button>
         </div>
-      </div>
-    </header>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-cream-50 border-t border-cream-200">
+            <div className="container-max section-padding py-4 space-y-1">
+              <form onSubmit={handleSearch} className="mb-3">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    className="w-full pl-4 pr-12 py-2.5 border-2 border-cream-300 rounded-full focus:border-saffron-400 focus:outline-none text-sm"
+                  />
+                  <button type="submit" className="absolute right-1 top-1/2 -translate-y-1/2 w-9 h-9 bg-saffron-500 rounded-full flex items-center justify-center text-white">
+                    <Search className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+              <NavLink
+                to="/"
+                end
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
+              >
+                Home
+              </NavLink>
+              {shopCategories.map((cat) => (
+                <NavLink
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
+                >
+                  {cat.name}
+                </NavLink>
+              ))}
+              <NavLink
+                to="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
+              >
+                Our Story
+              </NavLink>
+              <NavLink
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
+              >
+                Contact
+              </NavLink>
+              <div className="flex gap-2 pt-2 border-t border-cream-200 mt-2">
+                <NavLink
+                  to="/wishlist"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-charcoal-600 border border-cream-300 rounded-md"
+                >
+                  <Heart className="w-4 h-4" /> Wishlist
+                </NavLink>
+                <NavLink
+                  to="/account"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-charcoal-600 border border-cream-300 rounded-md"
+                >
+                  <User className="w-4 h-4" /> {customer ? "Account" : "Sign In"}
+                </NavLink>
+              </div>
+              <a
+                href="/admin.html"
+                className="block text-center mt-2 pt-2 text-xs text-charcoal-400 hover:text-maroon-700"
+              >
+                Admin Login
+              </a>
+            </div>
+          </div>
+        )}
+      </header>
+    </>
   );
 }

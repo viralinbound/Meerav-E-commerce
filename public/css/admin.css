@@ -1,34 +1,40 @@
 /* ==========================================================================
    MEERAV NAMKEENS - ROYAL BIKANERI ADMIN COMMAND CENTER STYLES
-   Matching Authentic Brand Theme: Deep Maroon (#8C2131), Royal Gold (#C9922E) & Sandstone Cream
+   Matching the storefront brand theme: Deep Maroon (#92232a), Saffron (#ff7a0a) & Sandstone Cream
    ========================================================================== */
 
 :root {
-  --admin-maroon: #8C2131;
-  --admin-maroon-dark: #6E1423;
-  --admin-maroon-night: #1F1A17;
-  --admin-gold: #2B4356;
-  --admin-gold-light: #F0E9DD;
-  --admin-cream: #FBF8F3;
-  --admin-cream-dark: #F0E9DD;
+  --admin-maroon: #92232a;
+  --admin-maroon-dark: #7a2026;
+  --admin-maroon-night: #312f29;
+  --admin-gold: #ff7a0a;
+  --admin-gold-light: #ff9a33;
+  --admin-cream: #fefdfb;
+  --admin-cream-dark: #faf0dc;
   --admin-card-bg: #FFFFFF;
 }
 
 body.admin-body {
-  background-color: #FBF8F3;
-  font-family: 'Manrope', sans-serif;
-  color: #1F1A17;
+  background-color: #fefdfb;
+  font-family: 'Poppins', sans-serif;
+  color: #312f29;
+}
+
+body.admin-body h1,
+body.admin-body h2,
+body.admin-body h3 {
+  font-family: 'Playfair Display', serif;
 }
 
 /* Sidebar Styling — royal gradient with a faint Rajasthani jaali lattice overlay */
 .admin-sidebar {
-  background-color: #1F1A17;
+  background-color: #312f29;
   background-image:
     linear-gradient(45deg, rgba(229, 201, 140, 0.05) 1px, transparent 1px),
     linear-gradient(-45deg, rgba(229, 201, 140, 0.05) 1px, transparent 1px),
-    linear-gradient(180deg, #8C2131 0%, #1F1A17 100%);
+    linear-gradient(180deg, #92232a 0%, #312f29 100%);
   background-size: 26px 26px, 26px 26px, 100% 100%;
-  color: #F0E9DD;
+  color: #faf0dc;
   box-shadow: 4px 0 25px rgba(0, 0, 0, 0.25);
   border-right: 1px solid rgba(185, 129, 46, 0.35);
 }
@@ -49,15 +55,15 @@ body.admin-body {
 
 .admin-nav-item:hover {
   background: rgba(229, 152, 25, 0.15);
-  color: #E8B75D;
+  color: #ff9a33;
   border-color: rgba(229, 152, 25, 0.3);
   transform: translateX(4px);
 }
 
 .admin-nav-item.active {
-  background: linear-gradient(135deg, #8C2131 0%, #6E1423 100%) !important;
-  color: #E8B75D !important;
-  border: 1px solid #C9922E !important;
+  background: linear-gradient(135deg, #92232a 0%, #7a2026 100%) !important;
+  color: #ff9a33 !important;
+  border: 1px solid #ff7a0a !important;
   box-shadow: 0 8px 18px rgba(74, 7, 19, 0.4);
 }
 
@@ -80,7 +86,7 @@ body.admin-body {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #C9922E 0%, #E8B75D 50%, #8C2131 100%);
+  background: linear-gradient(90deg, #ff7a0a 0%, #ff9a33 50%, #92232a 100%);
 }
 
 .admin-stat-card:hover {
@@ -99,8 +105,8 @@ body.admin-body {
 }
 
 .admin-table th {
-  background: #FBF8F3;
-  color: #8C2131;
+  background: #fefdfb;
+  color: #92232a;
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -111,12 +117,12 @@ body.admin-body {
 
 .admin-table td {
   padding: 16px 20px;
-  border-bottom: 1px solid #F0E9DD;
+  border-bottom: 1px solid #faf0dc;
   font-size: 0.82rem;
 }
 
 .admin-table tr:hover td {
-  background-color: #FBF8F3;
+  background-color: #fefdfb;
 }
 
 /* Animations */
