@@ -18,8 +18,8 @@ const MiraEditor = (function () {
 
   const PAGES = {
     home: { file: 'index.html', label: 'Home' },
-    category: { file: 'category.html', label: 'Category Explorer' },
-    product: { file: 'product.html?id=p1', label: 'Product Detail' }
+    category: { file: '/shop', label: 'Shop / Category Explorer' },
+    product: { file: '/product/p1', label: 'Product Detail' }
   };
 
   const LOCKED_SELECTORS = [
@@ -32,7 +32,13 @@ const MiraEditor = (function () {
     '#category-picker-cards-grid', '#category-dietary-container', '#category-products-grid',
     '#category-empty-state', '#pdp-variants-container', '#pdp-slides-wrapper',
     '#pdp-thumbnails-row', '#pdp-related-grid', '#pdp-fullscreen-modal',
-    '#live-tracking-view', '#order-tracking-map', '#checkout-map', '#address-map'
+    '#live-tracking-view', '#order-tracking-map', '#checkout-map', '#address-map',
+    // New React homepage — sections generated from live Supabase data (products,
+    // testimonials, broadcast stories, FAQs). Edit their content from the CRM
+    // pages instead; only the surrounding static copy/design is editable here.
+    '#home-hero', '#home-bestsellers-track', '#home-allproducts-track',
+    '#home-testimonials-grid', '#home-kitchenstories-grid', '#home-instagram-grid',
+    '#home-faq-list', '.product-grid'
   ];
 
   const state = {

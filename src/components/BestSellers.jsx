@@ -55,6 +55,7 @@ export default function BestSellers({ onViewAll }) {
             <ChevronRight className="w-5 h-5" />
           </button>
           <div
+            id="home-bestsellers-track"
             ref={scrollerRef}
             className="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x snap-mandatory no-scrollbar"
           >

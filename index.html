@@ -16,5 +16,13 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Exposes window.MiraDB and re-applies any saved Design Editor patches
+         (local draft + published Supabase `page_design_patches` row) on top
+         of the React-rendered page — same mechanism the legacy pages use. -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/js/env-config.js"></script>
+    <script type="module" src="/js/supabase-client.js"></script>
+    <script defer src="/js/apply-editor-patches.js"></script>
   </body>
 </html>
