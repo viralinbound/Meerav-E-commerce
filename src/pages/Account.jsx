@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import JaaliDivider from "../components/JaaliDivider";
 
 export default function Account() {
   const { customer, loading, signIn, signUp, signOut } = useAuth();
@@ -45,7 +44,6 @@ export default function Account() {
             <h1>Your Account</h1>
           </div>
         </div>
-        <JaaliDivider tone="light" />
         <div className="container section">
           <div className="account-card">
             <div className="team-initials">{customer.name?.slice(0, 2).toUpperCase()}</div>
@@ -79,7 +77,6 @@ export default function Account() {
           <h1>{mode === "signin" ? "Sign In" : "Create Your Account"}</h1>
         </div>
       </div>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="account-auth-grid">

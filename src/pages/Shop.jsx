@@ -4,7 +4,6 @@ import ProductCard from "../components/ProductCard";
 import Toast from "../components/Toast";
 import { useCart } from "../context/CartContext";
 import { useCatalog } from "../context/CatalogContext";
-import JaaliDivider from "../components/JaaliDivider";
 
 const SORTS = [
   { id: "popular", label: "Most Popular" },
@@ -73,7 +72,6 @@ export default function Shop() {
           {category && <p className="page-header-desc">{category.description}</p>}
         </div>
       </div>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="category-strip">

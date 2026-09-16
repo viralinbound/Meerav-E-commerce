@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Toast from "../components/Toast";
 import { brand } from "../data/staticContent";
-import JaaliDivider from "../components/JaaliDivider";
 
 export default function Contact() {
   const [toast, setToast] = useState("");
@@ -21,7 +20,6 @@ export default function Contact() {
           <h1>Get in Touch</h1>
         </div>
       </div>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="contact-grid">

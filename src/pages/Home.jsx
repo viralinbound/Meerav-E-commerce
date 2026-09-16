@@ -10,7 +10,6 @@ import StarRating from "../components/StarRating";
 import Toast from "../components/Toast";
 import { useCart } from "../context/CartContext";
 import { useCatalog } from "../context/CatalogContext";
-import JaaliDivider from "../components/JaaliDivider";
 
 export default function Home() {
   const { addItem } = useCart();
@@ -59,7 +58,6 @@ export default function Home() {
         <CategoryShowcase key={c.id} category={c} index={i} onAdd={handleAdd} />
       ))}
 
-      <JaaliDivider tone="light" />
 
       <section className="section">
         <div className="container">
@@ -168,7 +166,6 @@ export default function Home() {
         </div>
       </section>
 
-      <JaaliDivider tone="light" />
 
       <InstagramGallery />
 

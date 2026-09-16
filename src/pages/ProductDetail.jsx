@@ -5,7 +5,6 @@ import StarRating from "../components/StarRating";
 import Toast from "../components/Toast";
 import { useCart } from "../context/CartContext";
 import { useCatalog } from "../context/CatalogContext";
-import JaaliDivider from "../components/JaaliDivider";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -62,7 +61,6 @@ export default function ProductDetail() {
           <h1>{product.name}</h1>
         </div>
       </div>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="detail-grid">

@@ -2306,34 +2306,6 @@ img {
   flex-wrap: wrap;
 }
 
-/* ---------- Jaali (lattice) section divider ---------- */
-.jaali-divider {
-  width: 100%;
-  height: 20px;
-  overflow: hidden;
-  line-height: 0;
-}
-.jaali-divider svg {
-  width: 100%;
-  height: 100%;
-}
-.jaali-divider-light path,
-.jaali-divider-light circle {
-  stroke: var(--gold);
-  fill: var(--gold);
-}
-.jaali-divider-light {
-  background: var(--cream);
-}
-.jaali-divider-dark path,
-.jaali-divider-dark circle {
-  stroke: var(--gold-light);
-  fill: var(--gold-light);
-}
-.jaali-divider-dark {
-  background: var(--maroon-dark);
-}
-
 /* ---------- Hindi subheading accent ---------- */
 .hindi-accent {
   display: block;

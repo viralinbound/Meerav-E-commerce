@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import JaaliDivider from "../components/JaaliDivider";
 
 export default function Cart() {
   const { items, updateQty, removeItem, totalPrice, totalSavings, clearCart } = useCart();
@@ -28,7 +27,6 @@ export default function Cart() {
           <h1>Your Cart</h1>
         </div>
       </div>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="cart-table-wrap">

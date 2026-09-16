@@ -4,7 +4,6 @@ import { useCart } from "../context/CartContext";
 import { useCatalog } from "../context/CatalogContext";
 import ProductCard from "../components/ProductCard";
 import Toast from "../components/Toast";
-import JaaliDivider from "../components/JaaliDivider";
 import { useState } from "react";
 
 export default function Wishlist() {
@@ -32,7 +31,6 @@ export default function Wishlist() {
           <h1>Your Wishlist</h1>
         </div>
       </div>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         {items.length === 0 ? (

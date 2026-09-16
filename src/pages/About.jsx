@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCatalog } from "../context/CatalogContext";
 import { heroBanners } from "../data/realPhotos";
-import JaaliDivider from "../components/JaaliDivider";
 
 const MILESTONES = [
   {
@@ -43,7 +42,6 @@ export default function About() {
           <p>Four decades of honest Bikaneri snacking, one family recipe at a time.</p>
         </div>
       </section>
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="story-grid about-founder-grid">
@@ -87,7 +85,6 @@ export default function About() {
         </div>
       </div>
 
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="section-head">
@@ -128,7 +125,6 @@ export default function About() {
         </div>
       </div>
 
-      <JaaliDivider tone="light" />
 
       <div className="container section">
         <div className="section-head">
