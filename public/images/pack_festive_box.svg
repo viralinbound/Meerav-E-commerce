@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="boxMaroonBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5C0617"/>
+      <stop offset="50%" stop-color="#4A0713"/>
+      <stop offset="100%" stop-color="#2D040B"/>
+    </linearGradient>
+    <linearGradient id="goldSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="50%" stop-color="#E59819"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <filter id="packShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#32040C" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Royal Keepsake Gift Box Frame -->
+  <rect x="15" y="15" width="370" height="570" rx="28" fill="url(#boxMaroonBg)" stroke="url(#goldSheen)" stroke-width="5" filter="url(#packShadow)"/>
+
+  <!-- Ornate Golden Filigree Corners -->
+  <g stroke="url(#goldSheen)" stroke-width="2" fill="none">
+    <path d="M 30 55 L 70 55 M 30 55 L 30 95"/>
+    <path d="M 370 55 L 330 55 M 370 55 L 370 95"/>
+    <path d="M 30 545 L 70 545 M 30 545 L 30 505"/>
+    <path d="M 370 545 L 330 545 M 370 545 L 370 505"/>
+  </g>
+
+  <!-- Top Badges -->
+  <g transform="translate(35, 55)">
+    <rect x="0" y="0" width="75" height="22" rx="11" fill="#E59819"/>
+    <text x="37" y="14" font-family="'Plus Jakarta Sans', sans-serif" font-size="7" font-weight="900" fill="#32040C" text-anchor="middle">ROYAL HAMPER</text>
+  </g>
+
+  <g transform="translate(335, 55)">
+    <rect x="0" y="0" width="26" height="26" rx="4" fill="#FFFFFF" stroke="#16A34A" stroke-width="2"/>
+    <circle cx="13" cy="13" r="6" fill="#16A34A"/>
+    <text x="13" y="33" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="800" fill="#16A34A" text-anchor="middle">100% VEG</text>
+  </g>
+
+  <!-- MEERAV Brand Arch Badge -->
+  <g transform="translate(200, 125)">
+    <path d="M -85 30 C -85 -15 -45 -40 0 -40 C 45 -40 85 -15 85 30 C 85 45 -85 45 -85 30 Z" fill="#32040C" stroke="url(#goldSheen)" stroke-width="3.5"/>
+    <path d="M -30 -15 L -30 -22 L -25 -25 L -20 -22 L -20 -15 L -10 -15 L -10 -28 L 0 -34 L 10 -28 L 10 -15 L 20 -15 L 20 -22 L 25 -25 L 30 -22 L 30 -15 Z" fill="none" stroke="#FBBF24" stroke-width="1.5"/>
+    <text x="0" y="18" font-family="'Outfit', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="1.5" text-anchor="middle">meerav</text>
+    <text x="0" y="27" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="800" fill="#FBBF24" letter-spacing="3" text-anchor="middle">CELEBRATION BOX</text>
+  </g>
+
+  <text x="200" y="195" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="700" fill="#FBBF24" text-anchor="middle">From the Heart of Bikaner</text>
+
+  <!-- Product Title -->
+  <text x="200" y="235" font-family="'Outfit', sans-serif" font-size="24" font-weight="900" fill="#FFFFFF" letter-spacing="0.5" text-anchor="middle">GRAND CELEBRATION BOX</text>
+  <text x="200" y="252" font-family="'Plus Jakarta Sans', sans-serif" font-size="8" font-weight="800" fill="#FDE68A" letter-spacing="1" text-anchor="middle">ASSORTMENT OF 6 ROYAL BIKANERI DELICACIES</text>
+
+  <!-- Keepsake Hamper Graphic -->
+  <g transform="translate(200, 360)">
+    <!-- Main Keepsake Box 3D -->
+    <polygon points="-90,-40 90,-40 110,-10 -110,-10" fill="#FBBF24" stroke="#B45309" stroke-width="2"/>
+    <rect x="-110" y="-10" width="220" height="90" rx="8" fill="#FFFDF8" stroke="url(#goldSheen)" stroke-width="3"/>
+    
+    <!-- Mini Packets in Box -->
+    <rect x="-95" y="5" width="40" height="65" rx="4" fill="#4A0713" stroke="#E59819" stroke-width="1.5"/>
+    <rect x="-45" y="5" width="40" height="65" rx="4" fill="#670E1E" stroke="#E59819" stroke-width="1.5"/>
+    <rect x="5" y="5" width="40" height="65" rx="4" fill="#4A0713" stroke="#E59819" stroke-width="1.5"/>
+    <rect x="55" y="5" width="40" height="65" rx="4" fill="#670E1E" stroke="#E59819" stroke-width="1.5"/>
+
+    <text x="-75" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="900" fill="#FBBF24" text-anchor="middle">BHUJIA</text>
+    <text x="-25" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="900" fill="#FBBF24" text-anchor="middle">SEV</text>
+    <text x="25" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="900" fill="#FBBF24" text-anchor="middle">KAJU</text>
+    <text x="75" y="42" font-family="'Plus Jakarta Sans', sans-serif" font-size="5" font-weight="900" fill="#FBBF24" text-anchor="middle">MATHRI</text>
+  </g>
+
+  <!-- Bottom Section -->
+  <g transform="translate(200, 525)">
+    <rect x="-60" y="-22" width="120" height="44" rx="14" fill="#32040C" stroke="url(#goldSheen)" stroke-width="3"/>
+    <text x="0" y="-1" font-family="'Outfit', sans-serif" font-size="18" font-weight="900" fill="#FBBF24" text-anchor="middle">1.2 kg Box</text>
+    <text x="0" y="13" font-family="'Plus Jakarta Sans', sans-serif" font-size="7" font-weight="800" fill="#FFFFFF" text-anchor="middle">FESTIVE HAMPER</text>
+  </g>
+</svg>

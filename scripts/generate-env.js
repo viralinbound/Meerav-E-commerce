@@ -2,17 +2,28 @@
 /**
  * Reads SUPABASE_URL / SUPABASE_ANON_KEY from the environment (populated
  * from .env locally, or injected directly by Vercel's Environment Variables
- * in production) and writes js/env-config.js — the one file the browser
- * loads to learn its own Supabase connection details.
+ * in production) and writes public/js/env-config.js — the one file the
+ * legacy admin.html / design-editor.html pages load to learn their own
+ * Supabase connection details.
  *
- * This keeps real values out of source control while still working with
- * plain static HTML/JS (no bundler needed): Vercel runs this as the build
- * step, so the generated file only ever exists in the deployed output, not
- * in the repo.
+ * UPDATED for the React rebuild: the site now builds via Vite into dist/,
+ * so this writes into public/js/ (which Vite copies verbatim into dist/js/)
+ * instead of the old js/ path at the repo root. The React app itself does
+ * NOT use this file — it reads import.meta.env.VITE_SUPABASE_URL /
+ * VITE_SUPABASE_ANON_KEY directly (see src/lib/supabase.js), which Vite
+ * populates natively from .env or from Vercel's Environment Variables as
+ * long as they're prefixed VITE_.
+ *
+ * Rewritten as an ES module (import/export) because package.json now has
+ * "type": "module" for Vite — require()/module.exports are not available
+ * in that mode.
  */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
 
 // Minimal .env loader (no dependency). Only used for local dev — Vercel
@@ -31,11 +42,14 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+// Accept either the legacy names or the VITE_-prefixed ones, so one .env
+// file (with both sets of lines) can serve the legacy pages and the React
+// app at once.
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-  console.error('[generate-env] Missing SUPABASE_URL or SUPABASE_ANON_KEY.');
+  console.error('[generate-env] Missing SUPABASE_URL/VITE_SUPABASE_URL or SUPABASE_ANON_KEY/VITE_SUPABASE_ANON_KEY.');
   console.error('[generate-env] Local dev: copy .env.example to .env and fill in real values.');
   console.error('[generate-env] Vercel: set them in Project Settings -> Environment Variables.');
   process.exit(1);
@@ -48,5 +62,6 @@ window.__ENV__ = {
 };
 `;
 
-fs.writeFileSync(path.join(rootDir, 'js', 'env-config.js'), output);
-console.log('[generate-env] Wrote js/env-config.js for', SUPABASE_URL);
+fs.mkdirSync(path.join(rootDir, 'public', 'js'), { recursive: true });
+fs.writeFileSync(path.join(rootDir, 'public', 'js', 'env-config.js'), output);
+console.log('[generate-env] Wrote public/js/env-config.js for', SUPABASE_URL);

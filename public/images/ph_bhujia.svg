@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <linearGradient id="bg-bhujia" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a1a2e"/>
+      <stop offset="100%" stop-color="#560919"/>
+    </linearGradient>
+    <radialGradient id="glow-bhujia" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#e9c873" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#e9c873" stop-opacity="0"/>
+    </radialGradient>
+    
+  <pattern id="jaali-bhujia" width="46" height="46" patternUnits="userSpaceOnUse">
+    <path d="M23 2 L44 23 L23 44 L2 23 Z" fill="none" stroke="#e9c873" stroke-width="1" opacity="0.35"/>
+    <circle cx="23" cy="23" r="3" fill="#e9c873" opacity="0.3"/>
+  </pattern>
+    <filter id="grain-bhujia">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.03 0"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg-bhujia)"/>
+  <rect width="800" height="800" fill="url(#jaali-bhujia)"/>
+  <rect width="800" height="800" fill="url(#glow-bhujia)"/>
+  <rect x="18" y="18" width="764" height="764" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.5" rx="6"/>
+  <path d="M0,800 V754 Q44.44444444444444,710 88.88888888888889,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M88.88888888888889,800 V754 Q133.33333333333331,710 177.77777777777777,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M177.77777777777777,800 V754 Q222.22222222222223,710 266.66666666666663,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M266.66666666666663,800 V754 Q311.1111111111111,710 355.55555555555554,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M355.55555555555554,800 V754 Q400,710 444.44444444444446,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M444.44444444444446,800 V754 Q488.8888888888889,710 533.3333333333334,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M533.3333333333333,800 V754 Q577.7777777777777,710 622.2222222222222,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M622.2222222222222,800 V754 Q666.6666666666666,710 711.1111111111111,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M711.1111111111111,800 V754 Q755.5555555555555,710 800,754 V800" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/>
+  <g transform="translate(400, 370)">
+    <g fill="none" stroke="#e9c873" stroke-width="5" stroke-linecap="round">
+      <path d="M-70,40 C-50,-10 -20,-60 0,-60 C20,-60 50,-10 70,40" />
+      <path d="M-55,50 C-35,10 -10,-40 0,-40 C10,-40 35,10 55,50" />
+      <path d="M-40,55 C-25,25 -5,-15 5,-15 C15,-15 30,20 40,55" />
+    </g>
+    <circle r="8" fill="#e9c873" opacity="0.85"/>
+  </g>
+  <text x="400" y="530" text-anchor="middle" font-family="Georgia, 'Playfair Display', serif" font-size="30" font-weight="700" fill="#e9c873" letter-spacing="1">BHUJIA & SEV</text>
+  <text x="778" y="778" text-anchor="end" font-family="Georgia, 'Playfair Display', serif" font-size="22" font-style="italic" font-weight="700" fill="#e9c873" opacity="0.75">Meerav</text>
+  <rect width="800" height="800" filter="url(#grain-bhujia)" opacity="0.6"/>
+</svg>

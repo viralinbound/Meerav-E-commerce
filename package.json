@@ -1,15 +1,28 @@
 {
   "name": "meerav-namkeens",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "MEERAV Namkeens & Sweets - Bikaneri e-commerce storefront with a real-time Supabase backend",
+  "type": "module",
+  "description": "MEERAV Namkeens & Sweets - React storefront (Phase 1) + legacy admin/design-editor/chatbot/GPS-tracking, real-time Supabase backend",
   "scripts": {
-    "build": "node scripts/generate-env.js",
-    "dev": "node scripts/generate-env.js && node scripts/dev-server.js",
+    "build": "node scripts/generate-env.js && vite build",
+    "dev": "node scripts/generate-env.js && vite",
+    "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest"
   },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.2",
+    "@supabase/supabase-js": "^2.45.4"
+  },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "vite": "^5.4.8",
     "vitest": "^3.2.4"
   }
 }

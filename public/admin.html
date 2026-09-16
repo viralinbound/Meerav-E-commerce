@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEERAV - Multi-Page Admin Operations Command Portal</title>
+  <link rel="icon" id="site-favicon" href="assets/images/meerav_logo.png">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Admin Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+
+</head>
+<body class="admin-body">
+
+  <!-- ========================================================================= -->
+  <!-- 1. PROTECTED ADMIN LOGIN GATE SCREEN                                      -->
+  <!-- ========================================================================= -->
+  <div id="admin-login-gate" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#4E0D18] via-[#2A1410] to-gray-950">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-fade-in border-2 border-[#C9922E]/50">
+      
+      <div class="text-center space-y-2 mb-6">
+        <img src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="h-16 w-auto mx-auto object-contain filter drop-shadow-md" />
+        <h2 class="text-2xl font-black text-gray-900 tracking-tight">Admin Operations Hub</h2>
+        <p class="text-xs text-gray-500 font-medium">MEERAV Namkeens &bull; Central Bikaner Dispatch Portal</p>
+      </div>
+
+      <div id="admin-login-error" class="hidden p-3 bg-red-50 rounded-xl border border-red-200 mb-4 text-xs text-red-700 font-bold"></div>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-gray-700 font-bold mb-1.5">Admin Email</label>
+          <input type="email" id="admin-login-email" required placeholder="you@meerav.com" autocomplete="username"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none text-sm" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1.5">Password</label>
+          <input type="password" id="admin-login-password" required placeholder="Your password" autocomplete="current-password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none text-sm" />
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-lg shadow-[#6E1423]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#C9922E]">
+          <span>Authorize & Enter Portal</span>
+          →
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-gray-100 text-center">
+        <a href="index" class="text-xs font-bold text-gray-500 hover:text-[#6E1423] transition flex items-center justify-center gap-1.5">
+          ← Return to Customer Storefront
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 1B. FORCED PASSWORD CHANGE (first login with a temp password, or after   -->
+  <!--     root issues a new one) — dashboard stays locked until this is done.  -->
+  <!-- ========================================================================= -->
+  <div id="admin-force-password-gate" class="hidden min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#4E0D18] via-[#2A1410] to-gray-950">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-fade-in border-2 border-[#C9922E]/50">
+
+      <div class="text-center space-y-2 mb-6">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-[#F5EFE4] text-[#6E1423] flex items-center justify-center text-2xl">
+          
+        </div>
+        <h2 class="text-xl font-black text-gray-900 tracking-tight">Set Your Password</h2>
+        <p class="text-xs text-gray-500 font-medium">You're using a temporary password. Choose a new one to continue — you'll use it every time from now on.</p>
+      </div>
+
+      <div id="force-pw-error" class="hidden p-3 bg-red-50 rounded-xl border border-red-200 mb-4 text-xs text-red-700 font-bold"></div>
+
+      <form onsubmit="handleForcePasswordChange(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-gray-700 font-bold mb-1.5">New Password</label>
+          <input type="password" id="force-pw-new" required minlength="8" placeholder="Minimum 8 characters" autocomplete="new-password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none text-sm" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1.5">Confirm New Password</label>
+          <input type="password" id="force-pw-confirm" required minlength="8" placeholder="Re-enter password" autocomplete="new-password"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none text-sm" />
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-lg shadow-[#6E1423]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#C9922E]">
+          Set New Password & Continue
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-gray-100 text-center">
+        <button onclick="logoutAdmin()" class="text-xs font-bold text-gray-500 hover:text-[#6E1423] transition">
+          Cancel and sign out
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 2. MULTI-PAGE ADMIN DASHBOARD CONTAINER                                   -->
+  <!-- ========================================================================= -->
+  <div id="admin-dashboard-container" class="hidden min-h-screen flex flex-col lg:flex-row">
+    
+    <!-- Left Navigation Sidebar (Multi-Page Tabs) — desktop only; phones/tablets use the horizontal tab bar in the main workspace below -->
+    <aside class="admin-sidebar hidden lg:flex lg:w-64 p-5 flex-col justify-between shrink-0 border-r border-gray-800 bg-[#2A1410]">
+      <div class="space-y-6">
+        
+        <!-- Admin Header -->
+        <div class="flex items-center gap-3 pb-5 border-b border-gray-800">
+          <img id="admin-sidebar-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-11 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm border border-[#E8E0D4]" />
+          <div>
+            <span class="font-black text-sm text-white tracking-wider block">MEERAV OPS</span>
+            <span class="text-[10px] text-[#E8B75D] font-bold block">Bikaner Dispatch Hub</span>
+          </div>
+        </div>
+
+        <!-- Multi-Page Navigation Menu with Required Symbols -->
+        <nav class="space-y-1.5">
+          <button onclick="showAdminPage('overview')" data-page="overview" class="admin-nav-item w-full text-left active flex items-center gap-2.5">
+            <i class="fas fa-gauge-high"></i> <span>Overview & KPIs</span>
+          </button>
+          <button onclick="showAdminPage('orders')" data-page="orders" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-box"></i> <span>Orders & Dispatch</span>
+          </button>
+          <button onclick="showAdminPage('catalog')" data-page="catalog" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-bag-shopping"></i> <span>Product Catalog</span>
+          </button>
+          <button onclick="showAdminPage('categories')" data-page="categories" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-layer-group"></i> <span>Categories</span>
+          </button>
+          <button onclick="showAdminPage('customers')" data-page="customers" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-users"></i> <span>Customer CRM</span>
+          </button>
+          <button onclick="showAdminPage('notifications')" data-page="notifications" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-bell"></i> <span>Notification Hub</span>
+          </button>
+          <button onclick="showAdminPage('settings')" data-page="settings" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-gear"></i> <span>Store Settings & CMS</span>
+          </button>
+          <a href="design-editor.html" class="admin-nav-item w-full text-left flex items-center gap-2.5">
+            <i class="fas fa-object-group"></i> <span>Design Editor <span class="text-[9px] font-black text-emerald-300 align-top">NEW</span></span>
+          </a>
+          <button id="admin-nav-admins-btn" onclick="showAdminPage('admins')" data-page="admins" class="admin-nav-item w-full text-left hidden flex items-center gap-2.5">
+            <i class="fas fa-shield-halved"></i> <span>Admin Accounts</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Sidebar Footer Actions -->
+      <div class="pt-5 border-t border-gray-800 space-y-2">
+        <div id="admin-identity-badge" class="px-3 py-2 text-[11px] text-gray-400"></div>
+        <a href="index" class="flex items-center gap-2 px-3 py-2 text-xs font-bold text-gray-400 hover:text-white transition">
+          <i class="fas fa-eye"></i> <span>View Storefront</span> <i class="fas fa-arrow-right text-[10px]"></i>
+        </a>
+        <button onclick="logoutAdmin()" class="w-full py-2.5 bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800/60 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+          <i class="fas fa-right-from-bracket"></i> <span>Logout Admin</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Workspace -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto space-y-8">
+
+      <!-- Warnings from the root admin (if any) — shown to whoever is signed in -->
+      <div id="admin-warning-banner"></div>
+
+      <!-- Top Navigation Header -->
+      <div class="pb-6 border-b border-gray-200 flex items-start justify-between gap-3">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold mb-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Bikaner Kitchen Dispatch Online</span>
+          </div>
+          <h1 class="text-3xl font-black text-gray-900">MEERAV Command Center</h1>
+        </div>
+
+        <!-- Sign Out — phones/tablets only; desktop already has it in the sidebar.
+             Lives in this shared header (not inside any single page view), so it's
+             reachable from every admin page without scrolling back to the top. -->
+        <button onclick="logoutAdmin()" title="Sign out"
+          class="lg:hidden shrink-0 flex items-center gap-1.5 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-black transition">
+          <i class="fas fa-right-from-bracket"></i> <span>Sign Out</span>
+        </button>
+      </div>
+
+      <!-- Mobile Horizontal Tab Bar (Visible on phones & tablets) -->
+      <div class="flex lg:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-[#E8E0D4]/80">
+        <button onclick="showAdminPage('overview')" data-page="overview" class="admin-mobile-nav-item active px-3.5 py-2 rounded-xl text-xs font-black bg-[#6E1423] text-[#E8B75D] border border-[#C9922E] shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-gauge-high"></i> Overview
+        </button>
+        <button onclick="showAdminPage('orders')" data-page="orders" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-box"></i> Orders
+        </button>
+        <button onclick="showAdminPage('catalog')" data-page="catalog" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-bag-shopping"></i> Products
+        </button>
+        <button onclick="showAdminPage('categories')" data-page="categories" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-layer-group"></i> Categories
+        </button>
+        <button onclick="showAdminPage('customers')" data-page="customers" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-users"></i> CRM
+        </button>
+        <button onclick="showAdminPage('notifications')" data-page="notifications" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-bell"></i> Alerts
+        </button>
+        <button onclick="showAdminPage('settings')" data-page="settings" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-gear"></i> Settings
+        </button>
+        <a href="design-editor.html" class="admin-mobile-nav-item px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-object-group"></i> Design Editor
+        </a>
+        <button id="admin-mobile-admins-btn" onclick="showAdminPage('admins')" data-page="admins" class="admin-mobile-nav-item hidden px-3.5 py-2 rounded-xl text-xs font-bold bg-white text-gray-800 border border-gray-200 shrink-0 flex items-center gap-1.5 whitespace-nowrap">
+          <i class="fas fa-shield-halved"></i> Admins
+        </button>
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 1: OVERVIEW & KPIS                                               -->
+      <!-- ===================================================================== -->
+      <div id="view-overview" class="admin-page-view space-y-8">
+        
+        <!-- KPI Stat Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="admin-stat-card">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Sales</span>
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm"></div>
+            </div>
+            <div id="admin-kpi-revenue" class="text-3xl font-black text-gray-900">₹0</div>
+            <div class="text-[11px] text-emerald-600 font-bold mt-1.5"> Real-time calculated</div>
+          </div>
+
+          <div class="admin-stat-card">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Orders</span>
+              <div class="w-9 h-9 rounded-xl bg-[#FBF8F3] text-[#6B625A] flex items-center justify-center text-sm"></div>
+            </div>
+            <div id="admin-kpi-orders" class="text-3xl font-black text-gray-900">0</div>
+            <div class="text-[11px] text-[#6E1423] font-bold mt-1.5">Processed orders</div>
+          </div>
+
+          <div class="admin-stat-card">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Catalog Items</span>
+              <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm"></div>
+            </div>
+            <div id="admin-kpi-products" class="text-3xl font-black text-gray-900">14</div>
+            <div class="text-[11px] text-blue-600 font-bold mt-1.5">Active signature snacks</div>
+          </div>
+
+          <div class="admin-stat-card">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Categories</span>
+              <div class="w-9 h-9 rounded-xl bg-[#FBF8F3] text-[#6E1423] flex items-center justify-center text-sm"></div>
+            </div>
+            <div id="admin-kpi-categories" class="text-3xl font-black text-gray-900">5</div>
+            <div class="text-[11px] text-[#6E1423] font-bold mt-1.5">Active Snack Categories</div>
+          </div>
+        </div>
+
+        <!-- Overview Quick Table -->
+        <div class="admin-table-wrap">
+          <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+            <h3 class="font-black text-base text-gray-900">Recent Customer Activity</h3>
+            <button onclick="showAdminPage('orders')" class="text-xs font-bold text-[#6E1423] hover:underline">
+              View All Orders &rarr;
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="overview-recent-orders-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 2: ORDERS & DISPATCH MANAGEMENT                                  -->
+      <!-- ===================================================================== -->
+      <div id="view-orders" class="admin-page-view hidden space-y-6">
+        
+        <div class="admin-table-wrap">
+          <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-lg text-gray-900">Live Customer Orders & Status Updater</h3>
+              <p class="text-xs text-gray-500">Updating status automatically triggers simulated WhatsApp & Email notifications to the customer</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex items-center gap-1.5">
+              <button onclick="filterAdminOrders('all')" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold">All</button>
+              <button onclick="filterAdminOrders('processing')" class="px-3 py-1.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#6E1423] rounded-lg text-xs font-bold">Processing</button>
+              <button onclick="filterAdminOrders('dispatched')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg text-xs font-bold">Dispatched</button>
+              <button onclick="filterAdminOrders('delivered')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">Delivered</button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer & Address</th>
+                  <th>Items Ordered</th>
+                  <th>Total</th>
+                  <th>Status (Auto-Notifies)</th>
+                  <th>Instant Alerts</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 3: PRODUCT CATALOG CRUD MANAGEMENT (WITH FILE UPLOAD)             -->
+      <!-- ===================================================================== -->
+      <div id="view-catalog" class="admin-page-view hidden space-y-6">
+        
+        <div class="admin-table-wrap">
+          <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-black text-lg text-gray-900">Bikaneri Product Catalog & Pouch Image Manager</h3>
+              <p class="text-xs text-gray-500">Upload packaging packet pictures, modify variant prices, update discount % or delete items</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <input type="text" oninput="searchAdminProducts(this.value)" placeholder="Search products..." 
+                class="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+              <button onclick="openAddProductModal()" class="px-5 py-2.5 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#C9922E] shrink-0">
+                <i class="fas fa-plus"></i> Add Product
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Product Details & Packaging</th>
+                  <th>Variant Pricing & Discount</th>
+                  <th>Stock Availability</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 4: CATEGORY MANAGEMENT CRUD                                      -->
+      <!-- ===================================================================== -->
+      <div id="view-categories" class="admin-page-view hidden space-y-6">
+        
+        <div class="admin-table-wrap">
+          <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-black text-lg text-gray-900">Snack Categories Management</h3>
+              <p class="text-xs text-gray-500">Create new snack categories, update titles, descriptions and icons</p>
+            </div>
+
+            <button onclick="openAddCategoryModal()" class="px-5 py-2.5 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#C9922E]">
+              <i class="fas fa-plus"></i> Add New Category
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Category Name & Slug</th>
+                  <th>Description</th>
+                  <th>Active Products</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-categories-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 5: CUSTOMER CRM DIRECTORY                                        -->
+      <!-- ===================================================================== -->
+      <div id="view-customers" class="admin-page-view hidden space-y-6">
+        
+        <div class="admin-table-wrap">
+          <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-black text-lg text-gray-900">Customer CRM & Lifetime Value</h3>
+              <p class="text-xs text-gray-500">Client contact directory, order frequencies, and direct WhatsApp chat triggers</p>
+            </div>
+
+            <!-- Customer Search -->
+            <div class="w-full sm:w-64">
+              <input type="text" oninput="searchCustomers(this.value)" placeholder="Search name or phone..." 
+                class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Customer Profile</th>
+                  <th>Phone Number</th>
+                  <th>Orders Count</th>
+                  <th>Lifetime Spend</th>
+                  <th class="text-right">Quick Contact</th>
+                </tr>
+              </thead>
+              <tbody id="admin-customers-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 6: NOTIFICATION HUB & BROADCAST                                  -->
+      <!-- ===================================================================== -->
+      <div id="view-notifications" class="admin-page-view hidden space-y-8">
+        
+        <div>
+          <h3 class="font-black text-xl text-gray-900">Multi-Channel Customer Notification Center</h3>
+          <p class="text-xs text-gray-500">Real-time simulation of automated WhatsApp dispatch messages and printable HTML receipts</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          <!-- WhatsApp Mockup -->
+          <div class="lg:col-span-6 flex flex-col items-center">
+            <div class="text-center mb-3">
+              <span class="font-bold text-xs text-gray-800 flex items-center justify-center gap-1.5">
+                <i class="fab fa-whatsapp text-emerald-600"></i> WhatsApp Customer Preview
+              </span>
+            </div>
+
+            <div class="whatsapp-phone-frame w-full max-w-md">
+              <div class="whatsapp-header p-3 flex items-center gap-3">
+                <img src="assets/images/meerav_logo.png" alt="Logo" class="w-9 h-9 object-contain bg-white rounded-full p-0.5" />
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-1">
+                    <span class="font-bold text-xs">MEERAV Official</span>
+                    
+                  </div>
+                  <span class="text-[10px] text-emerald-200">Verified Business Account</span>
+                </div>
+              </div>
+
+              <div class="whatsapp-chat-pattern p-4 space-y-3">
+                <div class="whatsapp-msg-bubble in">
+                  <p class="font-bold text-emerald-800 text-[11px] mb-1">MEERAV Dispatch Alert</p>
+                  <p>Namaste <strong>Pooja Sharma</strong>!</p>
+                  <p class="mt-1">Your order <strong>#MEERAV-8801</strong> of <strong>₹467</strong> is en route with live GPS tracking!</p>
+                  <div class="p-2 bg-[#FBF8F3] rounded-lg border border-[#E8E0D4] mt-2 text-[11px] text-gray-700">
+ <strong>Items:</strong> Meerav Authentic Aloo Bhujia (200g) x2, Moth Bhujia (500g) x1<br/>
+ <strong>Courier:</strong> DTDC (AWB: 88492019)<br/>
+ <strong>Live Map:</strong> https://meerav.com/track/8801
+                  </div>
+                  <div class="text-right text-[10px] text-gray-400 mt-1">11:30 AM </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email Mockup -->
+          <div class="lg:col-span-6 flex flex-col">
+            <div class="text-center mb-3">
+              <span class="font-bold text-xs text-gray-800 flex items-center justify-center gap-1.5">
+                <i class="fas fa-envelope text-blue-600"></i> Email Invoice Layout
+              </span>
+            </div>
+
+            <div class="email-client-frame flex-1">
+              <div class="email-header-bar flex items-center justify-between text-xs text-gray-600">
+                <div><strong>From:</strong> orders@meeravnamkeens.com</div>
+                <div><strong>Subject:</strong> Invoice for Order #MEERAV-8801</div>
+              </div>
+
+              <div class="email-body-content space-y-4 text-xs">
+                <div class="flex items-center justify-between border-b pb-3">
+                  <div>
+                    <h4 class="font-black text-[#6E1423] text-base">MEERAV NAMKEENS</h4>
+                    <p class="text-[10px] text-gray-500">Tax Invoice & Dispatch Note</p>
+                  </div>
+                  <span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">PAID (UPI)</span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-[11px] bg-gray-50 p-2.5 rounded-lg">
+                  <div>
+                    <span class="text-gray-400 block">Billed To:</span>
+                    <strong>Pooja Sharma</strong><br/>
+                    Flat 402, Sea Breeze Apts, Bandra West, Mumbai
+                  </div>
+                  <div>
+                    <span class="text-gray-400 block">Order ID & Date:</span>
+                    <strong>#MEERAV-8801</strong><br/>
+                    21 Aug 2026, 11:30 AM
+                  </div>
+                </div>
+
+                <div class="flex justify-between items-center pt-2 font-bold text-sm text-[#6E1423] border-t">
+                  <span>Total Amount Paid:</span>
+                  <span class="text-base text-[#6E1423] font-black">₹467.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Custom Notification Dispatcher -->
+        <div class="bg-gradient-to-r from-[#4E0D18] via-[#2A1410] to-gray-950 rounded-3xl p-6 text-white shadow-xl border border-[#C9922E]/40">
+          <h4 class="text-lg font-black text-[#E8B75D] mb-1">Dispatch Custom Alert / Broadcast</h4>
+          <p class="text-xs text-gray-300 mb-4">Send a simulation alert to test customer recipient channels</p>
+
+          <form onsubmit="triggerCustomNotification(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <div class="sm:col-span-3">
+              <label class="block text-[11px] text-gray-300 mb-1 font-semibold">Channel</label>
+              <select id="custom-notif-type" class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white focus:outline-none">
+                <option value="WhatsApp">WhatsApp Message</option>
+                <option value="Email">Email Notification</option>
+              </select>
+            </div>
+
+            <div class="sm:col-span-4">
+              <label class="block text-[11px] text-gray-300 mb-1 font-semibold">Recipient (Phone / Email)</label>
+              <input type="text" id="custom-notif-target" placeholder="+91 98765 00000 or client@domain.com" required 
+                class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none" />
+            </div>
+
+            <div class="sm:col-span-5">
+              <label class="block text-[11px] text-gray-300 mb-1 font-semibold">Custom Message</label>
+              <div class="flex gap-2">
+                <input type="text" id="custom-notif-msg" placeholder="e.g. 10% discount on Bikaneri Aloo Bhujia!" required
+                  class="flex-1 min-w-0 px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-xs text-white placeholder-gray-500 focus:outline-none" />
+                <button type="submit" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shrink-0 transition">
+                  <i class="fas fa-paper-plane"></i> Send
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Notification Logs Table -->
+        <div class="admin-table-wrap">
+          <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+            <h4 class="font-black text-sm text-gray-900">Notification Activity Logs</h4>
+            <span class="text-xs text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-full">100% Operational</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Channel</th>
+                  <th>Recipient</th>
+                  <th>Template / Event</th>
+                  <th>Time Sent</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="notification-logs-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 7: STORE SETTINGS (branding, theme, payment gateway — stored in  -->
+      <!-- the `site_settings` Supabase table and applied live storefront-wide) -->
+      <!-- ===================================================================== -->
+      <!-- ===================================================================== -->
+      <!-- PAGE 7: BRAND TRANSFORMATION STUDIO & CMS STORE SETTINGS              -->
+      <!-- ===================================================================== -->
+      <div id="view-settings" class="admin-page-view hidden space-y-8">
+
+        <!-- Sticky page header — Save/Reset always visible, no scrolling to the bottom of the form -->
+        <div class="sticky top-0 z-30 -mx-6 px-6 py-3 bg-[#FBF8F3]/95 backdrop-blur-md border-b border-[#E8E0D4] flex flex-wrap items-center justify-between gap-3">
+          <h2 class="font-black text-gray-900 text-base">Store Settings</h2>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-4 py-2.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer">
+              ↻ Reset to Default Brand (MEERAV)
+            </button>
+            <button type="button" onclick="document.getElementById('settings-form').requestSubmit();" id="settings-save-btn" class="px-6 py-2.5 bg-[#C9922E] hover:bg-[#A87A22] text-[#4E0D18] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
+              <i class="fas fa-check"></i> Save All Store Settings
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Brand Identity & Logo -->
+        <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+            <i class="fas fa-crown text-[#C9922E]"></i> Brand Identity & Logos
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Site / Brand Name *</label>
+              <input type="text" id="settings-site-name" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" required />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Tagline</label>
+              <input type="text" id="settings-tagline" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Logo (PNG/SVG with transparency)</label>
+              <div class="flex items-center gap-3 flex-wrap">
+                <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-[#FBF8F3] border border-[#E8E0D4] p-1 shadow-xs shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+                  <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
+                </div>
+                <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
+              <div class="flex items-center gap-3 flex-wrap">
+                <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-[#FBF8F3] border border-[#E8E0D4] p-1 shadow-xs shrink-0" />
+                <div class="flex-1 min-w-0">
+                  <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+                  <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
+                </div>
+                <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 0. Broadcast Stories & 4K Video Reels CMS (incl. pinned Master Brand Film + Hero Buttons) -->
+        <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span> Broadcast Stories & 4K Video Reels (Watch & Shop)
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Add as many videos or photos to the horizontal auto-scrolling reels showcase with live product buy buttons.</p>
+            </div>
+            <button type="button" onclick="openStoryModal()" class="px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+              <i class="fas fa-cloud-arrow-up"></i> Upload Video / Photo
+            </button>
+          </div>
+          <p class="text-[10px] text-gray-400">Numbered in play order — set a lower "Sort Order" in the editor to push a story earlier; everything after it shifts down automatically.</p>
+          <div id="admin-stories-table-body" class="space-y-2">
+            <!-- Populated via admin.js -->
+          </div>
+
+          <div class="pt-4 mt-1 border-t border-[#F0E9DD]">
+            <h4 class="text-xs font-black text-gray-700 mb-3 flex items-center gap-1.5"><i class="fas fa-arrow-pointer text-[#C9922E]"></i> Hero Buttons (beside the video/photo)</h4>
+            <input type="hidden" id="settings-hero-video-url" />
+            <input type="hidden" id="settings-hero-image-url" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero CTA Button Text</label>
+                <input type="text" id="settings-hero-cta-text" placeholder="Order Online Now" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Hero Secondary CTA Button Text</label>
+                <input type="text" id="settings-hero-secondary-cta-text" placeholder="Watch All-Products Film" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Form -->
+        <form id="settings-form" onsubmit="saveSiteSettingsForm(event)" class="space-y-8">
+
+          <!-- 1. 1-Click Brand Transformation Kits -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                  <i class="fas fa-wand-magic-sparkles text-[#C9922E]"></i> 1-Click Brand Transformation Kits
+                </h3>
+                <p class="text-xs text-gray-500 mt-0.5">Instantly re-themes the entire site (colors, fonts, border radius, background) with 1 click.</p>
+              </div>
+              <span class="text-[11px] font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">7 Curated Styles</span>
+            </div>
+            <div id="theme-presets-gallery" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2"></div>
+          </div>
+
+          <!-- 4. Theme — Colors, Typography & UI Border Radius -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+              <i class="fas fa-palette text-[#C9922E]"></i> Theme — Colors, Typography & UI Border Radius
+            </h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Primary Brand Color</label>
+                <input type="color" id="settings-color-primary" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Secondary Brand Color</label>
+                <input type="color" id="settings-color-secondary" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent Color</label>
+                <input type="color" id="settings-color-accent" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Accent Light Color</label>
+                <input type="color" id="settings-color-accent-light" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Heading Color</label>
+                <input type="color" id="settings-color-heading" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Body Text Color</label>
+                <input type="color" id="settings-color-text" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+            </div>
+
+            <!-- Typography & Radius -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 pt-2">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Heading / Display Font</label>
+                <select id="settings-heading-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Body Font</label>
+                <select id="settings-font-family" class="settings-font-select w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm"></select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">UI Border Radius</label>
+                <select id="settings-border-radius" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold">
+                  <option value="rounded-2xl">Rounded (Standard / Royal)</option>
+                  <option value="rounded-3xl">Pill / Soft Organic (Curved)</option>
+                  <option value="rounded-lg">Subtle Rounded (Modern)</option>
+                  <option value="rounded-none">Square / Sharp (Minimalist)</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Base Font Size</label>
+              <select id="settings-base-font-size" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
+                <option value="14px">Small (14px)</option>
+                <option value="16px">Default (16px)</option>
+                <option value="18px">Large (18px)</option>
+                <option value="20px">Extra Large (20px)</option>
+              </select>
+            </div>
+
+            <!-- Page Background Engine -->
+            <div class="pt-4 border-t border-gray-100 space-y-4">
+              <label class="block text-xs font-bold text-gray-600">Page Background Engine</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="setBackgroundType('solid')" data-bg-type-btn="solid" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
+                <button type="button" onclick="setBackgroundType('gradient')" data-bg-type-btn="gradient" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Multi-Color Gradient</button>
+                <button type="button" onclick="setBackgroundType('image')" data-bg-type-btn="image" class="bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Full Image</button>
+              </div>
+
+              <div id="bg-solid-fields" class="hidden">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Color</label>
+                <input type="color" id="settings-color-background" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+
+              <div id="bg-gradient-fields" class="hidden space-y-2">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Gradient Colors (2–4 stops)</label>
+                <div class="grid grid-cols-4 gap-2">
+                  <input type="color" id="settings-gradient-1" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-2" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-3" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-gradient-4" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                </div>
+              </div>
+
+              <div id="bg-image-fields" class="hidden">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Image</label>
+                <div class="flex items-center gap-3 flex-wrap">
+                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-[#FBF8F3] border border-[#E8E0D4] hidden shrink-0" />
+                  <div class="flex-1 min-w-0">
+                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+                    <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
+                  </div>
+                  <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
+                    <i class="fas fa-trash-can"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Decorative CSS Pattern Overlay</label>
+                <div id="pattern-style-buttons" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+              </div>
+            </div>
+
+            <!-- Admin Sidebar Customizer -->
+            <div class="pt-4 border-t border-gray-100 space-y-3">
+              <label class="block text-xs font-bold text-gray-600">Admin Operations Sidebar Background</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="setAdminPanelType('solid')" data-admin-bg-type-btn="solid" class="admin-bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Solid Color</button>
+                <button type="button" onclick="setAdminPanelType('gradient')" data-admin-bg-type-btn="gradient" class="admin-bg-type-btn flex-1 py-2 rounded-xl text-xs font-bold border transition">Gradient</button>
+              </div>
+              <div id="admin-bg-solid-fields" class="hidden">
+                <input type="color" id="settings-color-admin-panel" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+              </div>
+              <div id="admin-bg-gradient-fields" class="hidden space-y-2">
+                <div class="grid grid-cols-3 gap-2">
+                  <input type="color" id="settings-admin-gradient-1" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-admin-gradient-2" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                  <input type="color" id="settings-admin-gradient-3" class="w-full h-10 rounded-xl border border-gray-200 cursor-pointer" />
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 5. Commercials, Currency & Shipping Rules -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+              <i class="fas fa-coins text-[#C9922E]"></i> Global Currency & Shipping Rules
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Currency Symbol *</label>
+                <input type="text" id="settings-currency-symbol" placeholder="₹" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-base font-black text-center" required />
+                <span class="text-[10px] text-gray-400 mt-1 block">e.g. ₹, $, €, £, AED, SAR, CAD</span>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Currency Code</label>
+                <input type="text" id="settings-currency-code" placeholder="INR" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold uppercase text-center" />
+                <span class="text-[10px] text-gray-400 mt-1 block">e.g. INR, USD, EUR, GBP, AED</span>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Free Shipping Threshold</label>
+                <input type="number" id="settings-free-shipping-threshold" placeholder="499" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" />
+                <span class="text-[10px] text-gray-400 mt-1 block">Orders above this get free shipping</span>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Flat Shipping Fee</label>
+                <input type="number" id="settings-shipping-flat-fee" placeholder="50" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-bold" />
+                <span class="text-[10px] text-gray-400 mt-1 block">Charged on orders below threshold</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Payment Gateways -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base"> Payment Gateways & Methods</h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex items-center justify-between p-3.5 bg-[#FBF8F3]/50 rounded-xl border border-[#F0E9DD]">
+                <div>
+                  <div class="text-xs font-bold text-gray-800">UPI QR Payment</div>
+                  <input type="text" id="settings-upi-id" placeholder="yourstore@upi" class="mt-1.5 w-48 px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-upi-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-[#FBF8F3]/50 rounded-xl border border-[#F0E9DD]">
+                <div class="text-xs font-bold text-gray-800">Cash on Delivery (COD)</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-cod-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-[#FBF8F3]/50 rounded-xl border border-[#F0E9DD]">
+                <div class="text-xs font-bold text-gray-800">Credit / Debit Card</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-card-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-[#FBF8F3]/50 rounded-xl border border-[#F0E9DD]">
+                <div class="text-xs font-bold text-gray-800">NetBanking</div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="settings-netbanking-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+              <div class="flex items-center justify-between p-3.5 bg-blue-50/50 rounded-xl border border-blue-100">
+                <div class="flex-1 mr-3">
+                  <div class="text-xs font-bold text-gray-800">Razorpay Key ID</div>
+                  <input type="text" id="settings-razorpay-key" placeholder="rzp_live_..." class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" id="settings-razorpay-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+
+              <div class="flex items-center justify-between p-3.5 bg-blue-50/50 rounded-xl border border-blue-100">
+                <div class="flex-1 mr-3">
+                  <div class="text-xs font-bold text-gray-800">Stripe Publishable Key</div>
+                  <input type="text" id="settings-stripe-key" placeholder="pk_live_..." class="mt-1.5 w-full px-2.5 py-1.5 border border-gray-200 rounded-lg text-xs" />
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input type="checkbox" id="settings-stripe-enabled" class="sr-only peer" />
+                  <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                  <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. SEO & Social Metadata -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+               SEO & Social Metadata
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Meta Browser Title</label>
+                <input type="text" id="settings-meta-title" placeholder="Brand Name - Signature Delicacies" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Meta Keywords</label>
+                <input type="text" id="settings-meta-keywords" placeholder="namkeen, bhujia, snacks, pure oil" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Meta Description</label>
+              <textarea id="settings-meta-desc" rows="2" placeholder="Handcrafted delicacies made with authentic recipes..." class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs"></textarea>
+            </div>
+          </div>
+
+          <!-- 8. Contact & Social Channels -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+              <i class="fas fa-address-book text-[#C9922E]"></i> Contact & Social Channels
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">WhatsApp Order Number</label>
+                <input type="text" id="settings-whatsapp" placeholder="+919876543210" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Contact Email</label>
+                <input type="email" id="settings-contact-email" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Contact Phone</label>
+                <input type="text" id="settings-contact-phone" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Dispatch Hub Address</label>
+                <input type="text" id="settings-contact-address" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Instagram URL</label>
+                <input type="text" id="settings-instagram" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Facebook URL</label>
+                <input type="text" id="settings-facebook" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Top Announcement Bar Text</label>
+              <input type="text" id="settings-announcement" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Footer Copyright Text</label>
+              <input type="text" id="settings-footer-text" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <!-- 8a2. Order Number Branding -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+              <i class="fas fa-hashtag text-[#C9922E]"></i> Order Number Branding
+            </h3>
+            <p class="text-[11px] text-gray-500 -mt-2">Customers see this instead of the internal order key. Numbering always counts up 1, 2, 3... in the exact order orders arrive — only the prefix, starting number and padding are yours to brand.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Order ID Prefix</label>
+                <input type="text" id="settings-order-id-prefix" oninput="updateOrderIdExample()" placeholder="MEERAV-" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Starting Number</label>
+                <input type="number" id="settings-order-id-start" oninput="updateOrderIdExample()" min="1" placeholder="1001" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Pad Digits (0 = off)</label>
+                <input type="number" id="settings-order-id-pad" oninput="updateOrderIdExample()" min="0" max="10" placeholder="0" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+            </div>
+            <div class="text-[11px] text-gray-400">Example: <span id="settings-order-id-example" class="font-black text-[#6E1423]">MEERAV-1001</span></div>
+          </div>
+
+          <!-- 8b. AI Chatbot Customization -->
+          <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+            <div class="flex items-center justify-between">
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                 AI Chatbot Customization
+              </h3>
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                <input type="checkbox" id="settings-chatbot-enabled" class="sr-only peer" checked />
+                <div class="w-10 h-5 bg-gray-200 peer-checked:bg-emerald-500 rounded-full transition"></div>
+                <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow transition peer-checked:translate-x-5"></div>
+              </label>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Display Name</label>
+                <input type="text" id="settings-chatbot-name" placeholder="Meerav AI Sommelier" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Subtitle</label>
+                <input type="text" id="settings-chatbot-subtitle" placeholder="Order Assistant & Personalization" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Avatar Icon (used unless a custom image is uploaded)</label>
+                <select id="settings-chatbot-avatar-icon" class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm">
+                  <option value="fa-robot">Robot</option>
+                  <option value="fa-comment-dots">Chat Bubble</option>
+                  <option value="fa-headset">Headset</option>
+                  <option value="fa-wand-magic-sparkles">Magic Wand</option>
+                  <option value="fa-user-tie">Concierge</option>
+                  <option value="fa-mug-hot">Mug</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Chatbot Accent Color</label>
+                <input type="color" id="settings-chatbot-color" class="w-full h-10 border border-gray-200 rounded-xl cursor-pointer" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-bold text-gray-600 mb-1.5">Or Upload Your Own Brand Avatar Image</label>
+                <div class="flex items-center gap-3">
+                  <div id="settings-chatbot-avatar-preview-wrap" class="hidden">
+                    <img id="settings-chatbot-avatar-preview" class="w-12 h-12 rounded-full object-cover border border-[#E8E0D4] shrink-0" />
+                  </div>
+                  <label class="flex-1 py-2.5 px-3.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer text-xs">
+                     <span id="settings-chatbot-avatar-status">Upload Custom Avatar</span>
+                    <input type="file" accept="image/*" onchange="handleChatbotAvatarUpload(event)" class="hidden" />
+                  </label>
+                  <button type="button" onclick="removeChatbotAvatarImage()" class="px-3 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition">
+                    <i class="fas fa-trash-can"></i>
+                  </button>
+                </div>
+                <input type="hidden" id="settings-chatbot-avatar-image" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1.5">Custom Greeting Line (leave blank to use the default personalized greeting)</label>
+              <textarea id="settings-chatbot-greeting" rows="2" placeholder="Namaste! Welcome to our store..." class="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-xs"></textarea>
+            </div>
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <label class="block text-xs font-bold text-gray-600">Quick Prompt Buttons</label>
+                <button type="button" onclick="addChatbotQuickPromptRow()" class="px-2.5 py-1 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-lg text-[10px] font-bold transition flex items-center gap-1">
+                  + Add Quick Prompt
+                </button>
+              </div>
+              <div class="space-y-2" id="settings-chatbot-quick-prompts">
+                <!-- Populated via admin.js renderChatbotQuickPromptRows() -->
+              </div>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- 9. Promotional Coupons Manager CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <i class="fas fa-tags text-[#C9922E]"></i> Promotional Discount Coupons
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Create and manage coupon codes with percentage or flat discounts.</p>
+            </div>
+            <button type="button" onclick="openCouponModal()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+              <i class="fas fa-plus"></i> Add Coupon
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-[#FBF8F3]/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Coupon Code</th>
+                  <th class="p-3">Discount</th>
+                  <th class="p-3">Min Order</th>
+                  <th class="p-3">Description</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-coupons-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 10. Customer Testimonials & Reviews CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <i class="fas fa-star text-[#C9922E]"></i> Customer Reviews & Testimonials
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Real reviews submitted by signed-in customers. You can moderate (hide) or remove a review, but can't write one yourself.</p>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-[#FBF8F3]/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Customer</th>
+                  <th class="p-3">City</th>
+                  <th class="p-3">Rating</th>
+                  <th class="p-3">Review</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-testimonials-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 11. Frequently Asked Questions (FAQs) CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <i class="fas fa-circle-question text-[#C9922E]"></i> Frequently Asked Questions (FAQs)
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Manage questions and answers displayed in the help center accordion.</p>
+            </div>
+            <button type="button" onclick="openFaqModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5">
+              <i class="fas fa-plus"></i> Add FAQ
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-[#FBF8F3]/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Question</th>
+                  <th class="p-3">Category</th>
+                  <th class="p-3">Sort Order</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-faqs-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 12. Trust & Guarantee Feature Badges CMS -->
+        <div class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#C9922E]"></span> Trust & Guarantee Feature Badges (Homepage Banner)
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">Customize the 4 horizontal guarantee badges with real-time images, titles, descriptions, and section colors.</p>
+            </div>
+            <button type="button" onclick="openTrustBadgeModal()" class="px-4 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5 border border-[#C9922E]">
+              + Add Feature Badge
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="border-b bg-[#FBF8F3]/70 text-gray-700 font-black text-[11px]">
+                  <th class="p-3">Real Image</th>
+                  <th class="p-3">Feature Title</th>
+                  <th class="p-3">Description</th>
+                  <th class="p-3">Order</th>
+                  <th class="p-3">Visible</th>
+                  <th class="p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-trust-badges-table-body">
+                <!-- Populated via admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 12. Full Website Text Content CMS (Grouped by section) -->
+        <form id="page-content-form" onsubmit="savePageContentForm(event)" class="bg-white rounded-3xl shadow-sm border border-[#F0E9DD] p-6 space-y-5">
+          <div>
+            <h3 class="font-black text-gray-900 flex items-center gap-2 text-base">Storefront Section Text CMS</h3>
+            <p class="text-xs text-gray-500 mt-1">Edit every heading, subheading, badge, and paragraph across all storefront sections.</p>
+          </div>
+          <div id="page-content-fields" class="space-y-4"></div>
+          <div class="flex justify-end pt-2">
+            <button type="submit" id="page-content-save-btn" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-2xl shadow-md transition flex items-center gap-2">
+Save Section Text
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+      <!-- ===================================================================== -->
+      <!-- PAGE 8: ADMIN ACCOUNTS (root can register / remove admins)            -->
+      <!-- ===================================================================== -->
+      <div id="view-admins" class="admin-page-view hidden space-y-6">
+
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h3 class="font-black text-xl text-gray-900">Admin Accounts</h3>
+            <p class="text-xs text-gray-500">Everyone with access to this portal. Backed by real Supabase Auth accounts — not a shared password.</p>
+          </div>
+          <button onclick="openAddAdminModal()" class="px-4 py-2.5 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 border border-[#C9922E]">
+Register New Admin
+          </button>
+        </div>
+
+        <div class="admin-table-wrap">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Added</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-accounts-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-black text-base text-gray-900">Admin Activity Log</h4>
+          <p class="text-xs text-gray-500">Every catalog, order, and notification change made by any admin — so you can spot and revoke anything wrong.</p>
+        </div>
+
+        <div class="admin-table-wrap">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse admin-table">
+              <thead>
+                <tr>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Target</th>
+                  <th>When</th>
+                </tr>
+              </thead>
+              <tbody id="admin-activity-log-table"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- REGISTER NEW ADMIN MODAL                                                  -->
+  <!-- ========================================================================= -->
+  <div id="admin-form-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-[#E8E0D4]">
+
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div class="flex items-center gap-2">
+          
+          <h3 class="font-black text-sm text-[#E8B75D]">Register New Admin</h3>
+        </div>
+        <button onclick="closeAdminFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveAdminForm(event)" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Full Name *</label>
+          <input type="text" id="admin-form-name" required placeholder="e.g. Rakesh Sharma"
+            class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Email *</label>
+          <input type="email" id="admin-form-email" required placeholder="rakesh@meerav.com"
+            class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+        </div>
+        <p class="text-[10px] text-gray-400">A secure one-time password is generated automatically — you'll see it right after creating the account, to share with them. They'll set their own password the first time they sign in.</p>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAdminFormModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
+            Cancel
+          </button>
+          <button type="submit" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">
+            Create Admin Account
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- ONE-TIME TEMPORARY PASSWORD DISPLAY (new admin, or a password reset)     -->
+  <!-- ========================================================================= -->
+  <div id="temp-password-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-[#E8E0D4]">
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div class="flex items-center gap-2">
+          
+          <h3 class="font-black text-sm text-[#E8B75D]">One-Time Temporary Password</h3>
+        </div>
+        <button onclick="closeTempPasswordModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4 text-xs">
+        <p id="temp-pw-message" class="text-gray-600"></p>
+        <p id="temp-pw-name-email" class="text-[11px] text-gray-400 font-bold"></p>
+        <div class="flex items-center gap-2">
+          <div id="temp-pw-value" class="flex-1 px-4 py-3 bg-[#FBF8F3] border-2 border-[#DDD2BF] rounded-xl font-mono text-sm font-black text-[#6E1423] tracking-wide select-all"></div>
+          <button onclick="copyTempPassword()" class="w-11 h-11 shrink-0 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] rounded-xl flex items-center justify-center transition" title="Copy">
+            <i class="fas fa-copy"></i>
+          </button>
+        </div>
+        <p class="text-[10px] text-red-500 font-bold"> This is shown once and cannot be retrieved again — copy it now.</p>
+        <button onclick="closeTempPasswordModal()" class="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- PER-ADMIN DETAIL MODAL (activity + undo, warnings, ban/reset/remove)     -->
+  <!-- ========================================================================= -->
+  <div id="admin-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[92vh] flex flex-col border border-[#E8E0D4]">
+
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div class="min-w-0">
+          <h3 id="admin-detail-name" class="font-black text-sm text-[#E8B75D] truncate"></h3>
+          <p id="admin-detail-meta" class="text-[11px] text-gray-300 truncate"></p>
+        </div>
+        <button onclick="closeAdminDetailModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white shrink-0">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto space-y-6 text-xs">
+        <div id="admin-detail-badge" class="flex items-center gap-2"></div>
+
+        <div id="admin-detail-actions" class="flex flex-wrap gap-2"></div>
+
+        <div>
+          <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"> Send a Warning</h4>
+          <form onsubmit="sendWarningToAdmin(event)" class="flex gap-2">
+            <input type="text" id="admin-warning-message" placeholder="e.g. Please confirm order statuses before dispatch" required
+              class="flex-1 min-w-0 px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+            <button type="submit" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shrink-0">Send</button>
+          </form>
+          <div id="admin-detail-warnings" class="space-y-2 mt-3"></div>
+        </div>
+
+        <div>
+          <h4 class="font-black text-gray-900 mb-2 flex items-center gap-1.5"> Activity — what changed on the site</h4>
+          <div id="admin-detail-activity" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 3. ADD / EDIT PRODUCT FORM MODAL WITH FILE IMAGE UPLOAD                   -->
+  <!-- ========================================================================= -->
+  <div id="product-form-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[92vh] flex flex-col border border-[#E8E0D4]">
+      
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="product-modal-title" class="font-black text-sm text-[#E8B75D]">Product & Packaging Editor</h3>
+        </div>
+        <button onclick="closeProductFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveProductForm(event)" class="p-6 overflow-y-auto space-y-4 text-xs">
+        <input type="hidden" id="prod-form-id" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="sm:col-span-2">
+            <label class="block text-gray-700 font-bold mb-1">Product Title *</label>
+            <input type="text" id="prod-form-name" required placeholder="e.g. Meerav Royal Bikaneri Sev" 
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Category *</label>
+            <select id="prod-form-category" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none">
+              <!-- Dynamically populated from adminState.categories -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Badge Tag</label>
+            <input type="text" id="prod-form-tag" placeholder="e.g. Signature Bikaneri, Best Seller" 
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Spice Level</label>
+            <input type="text" id="prod-form-spice" placeholder="e.g. Medium-Hot" 
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Preset Pouch Packaging</label>
+            <select id="prod-form-image" class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none">
+              <option value="assets/images/meerav_aloo_bhujia_pack.png">Meerav Aloo Bhujia (Official Pouch PNG)</option>
+              <option value="assets/images/pack_bikaneri_bhujia.svg">Bikaneri Moth Bhujia SVG</option>
+              <option value="assets/images/pack_ratlami_sev.svg">Ratlami Laung Sev SVG</option>
+              <option value="assets/images/pack_hing_sev.svg">Royal Hing Sev SVG</option>
+              <option value="assets/images/pack_moong_dal.svg">Salted Moong Dal SVG</option>
+              <option value="assets/images/pack_kaju_mixture.svg">Shahi Kaju Mixture SVG</option>
+              <option value="assets/images/pack_khatta_meetha.svg">Khatta Meetha Mixture SVG</option>
+              <option value="assets/images/pack_navratan_mixture.svg">Shahi Navratan Mixture SVG</option>
+              <option value="assets/images/pack_makhana.svg">Himalayan Makhana SVG</option>
+              <option value="assets/images/pack_chana_jor.svg">Chana Jor Garam SVG</option>
+              <option value="assets/images/pack_methi_mathri.svg">Kasuri Methi Mathri SVG</option>
+              <option value="assets/images/pack_masala_karela.svg">Masala Karela Mathri SVG</option>
+              <option value="assets/images/pack_bikaneri_rasgulla.svg">Bikaneri Rasgulla Tin SVG</option>
+              <option value="assets/images/pack_festive_box.svg">Celebration Gift Box SVG</option>
+            </select>
+          </div>
+
+          <!-- Product Photo Gallery — unlimited photos, uploads to Supabase Storage. First photo is the cover shown everywhere. -->
+          <div class="sm:col-span-2 p-3.5 bg-[#FBF8F3]/70 rounded-2xl border border-[#E8E0D4] space-y-2">
+            <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
+               Product Photo Gallery (add as many as you like — first one is the cover)
+            </label>
+            <input type="file" accept="image/*" multiple onchange="handleProductPhotosUpload(event)"
+              class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#6E1423] file:text-[#E8B75D] hover:file:bg-[#4E0D18] cursor-pointer text-xs text-gray-500" />
+            <span id="prod-photos-upload-status" class="text-[10px] text-gray-400 block"></span>
+            <div id="prod-photos-grid" class="flex flex-wrap gap-2 pt-1"></div>
+          </div>
+
+          <!-- Product Video Gallery — unlimited videos, uploads to Supabase Storage. First video plays on hover/reels. -->
+          <div class="sm:col-span-2 p-3.5 bg-[#FBF8F3]/70 rounded-2xl border border-[#E8E0D4] space-y-2">
+            <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
+               Product Video Gallery (optional, add as many as you like)
+            </label>
+            <input type="file" accept="video/*" multiple onchange="handleProductVideosUpload(event)"
+              class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#6E1423] file:text-[#E8B75D] hover:file:bg-[#4E0D18] cursor-pointer text-xs text-gray-500" />
+            <span id="prod-videos-upload-status" class="text-[10px] text-gray-400 block"></span>
+            <div id="prod-videos-grid" class="flex flex-wrap gap-2 pt-1"></div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-gray-700 font-bold mb-1">Product Description</label>
+            <textarea id="prod-form-desc" rows="2" placeholder="Crafted with authentic spices..." 
+              class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none"></textarea>
+          </div>
+        </div>
+
+        <!-- Variant Pricing & Discount Modifier -->
+        <div class="p-4 bg-[#FBF8F3] rounded-2xl border border-[#E8E0D4] space-y-3">
+          <h4 class="font-black text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+             Pack Size Variant Pricing & Discounts
+          </h4>
+
+          <div class="grid grid-cols-3 gap-3">
+            <div class="p-2.5 bg-white rounded-xl border">
+              <span class="font-bold text-gray-800 block mb-1">200 g Variant</span>
+              <label class="text-[10px] text-gray-400 block">Offer Price (₹)</label>
+              <input type="number" id="prod-form-p200" required class="w-full px-2 py-1.5 border rounded-lg mb-1 font-bold text-[#6E1423]" />
+              <label class="text-[10px] text-gray-400 block">Original Price (₹)</label>
+              <input type="number" id="prod-form-orig200" required class="w-full px-2 py-1.5 border rounded-lg text-gray-500" />
+            </div>
+
+            <div class="p-2.5 bg-white rounded-xl border">
+              <span class="font-bold text-gray-800 block mb-1">500 g Variant</span>
+              <label class="text-[10px] text-gray-400 block">Offer Price (₹)</label>
+              <input type="number" id="prod-form-p500" required class="w-full px-2 py-1.5 border rounded-lg mb-1 font-bold text-[#6E1423]" />
+              <label class="text-[10px] text-gray-400 block">Original Price (₹)</label>
+              <input type="number" id="prod-form-orig500" required class="w-full px-2 py-1.5 border rounded-lg text-gray-500" />
+            </div>
+
+            <div class="p-2.5 bg-white rounded-xl border">
+              <span class="font-bold text-gray-800 block mb-1">1 kg Variant</span>
+              <label class="text-[10px] text-gray-400 block">Offer Price (₹)</label>
+              <input type="number" id="prod-form-p1kg" required class="w-full px-2 py-1.5 border rounded-lg mb-1 font-bold text-[#6E1423]" />
+              <label class="text-[10px] text-gray-400 block">Original Price (₹)</label>
+              <input type="number" id="prod-form-orig1kg" required class="w-full px-2 py-1.5 border rounded-lg text-gray-500" />
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeProductFormModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
+            Cancel
+          </button>
+          <button type="submit" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">
+            Save Product to Catalog
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- 4. ADD / EDIT CATEGORY MODAL                                              -->
+  <!-- ========================================================================= -->
+  <div id="category-form-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+      
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="cat-modal-title" class="font-black text-sm text-[#E8B75D]">Category Editor</h3>
+        </div>
+        <button onclick="closeCategoryFormModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="saveCategoryForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="cat-form-id" />
+
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Category Title *</label>
+          <input type="text" id="cat-form-name" required placeholder="e.g. Roasted Diet & Makhana" 
+            class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Category Image / Photo (Real Showcase)</label>
+          <div class="flex items-center gap-3 mb-2">
+            <div class="relative shrink-0">
+              <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#DDD2BF] shadow-sm" alt="Category Image" />
+              <button type="button" onclick="removeCategoryImage()" title="Remove Image" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
+            </div>
+            <div class="flex-1 min-w-0 space-y-1.5">
+              <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+              <p id="cat-form-image-status" class="text-[10px] text-gray-400"></p>
+              <input type="text" id="cat-form-image" placeholder="or paste an image URL: assets/images/cinematic_bhujia.jpg or https://..."
+                oninput="document.getElementById('cat-form-img-preview').src = this.value || 'assets/images/cinematic_bhujia.jpg'"
+                class="w-full px-3 py-2 border rounded-xl text-xs font-mono focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+              <div class="flex gap-1.5 mt-1.5 flex-wrap">
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_bhujia.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_bhujia.jpg'" class="px-2 py-0.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#6E1423] rounded-lg border border-[#E8E0D4]">Bhujia</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_mixture.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_mixture.jpg'" class="px-2 py-0.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#6E1423] rounded-lg border border-[#E8E0D4]">Mixture</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_papad.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_papad.jpg'" class="px-2 py-0.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#6E1423] rounded-lg border border-[#E8E0D4]">Mathri</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_moong_dal.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_moong_dal.jpg'" class="px-2 py-0.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#6E1423] rounded-lg border border-[#E8E0D4]">Diet</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/commercial_scene_4.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/commercial_scene_4.jpg'" class="px-2 py-0.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#6E1423] rounded-lg border border-[#E8E0D4]">Sweets</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">FontAwesome Fallback Icon Class</label>
+          <input type="text" id="cat-form-icon" placeholder="e.g. fas fa-fire, fas fa-seedling, fas fa-sun" 
+            class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none" />
+          <span class="text-[10px] text-gray-400 mt-1 block">Example: <code>fas fa-fire</code>, <code>fas fa-sun</code>, <code>fas fa-gift</code></span>
+        </div>
+
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Description</label>
+          <textarea id="cat-form-desc" rows="2" placeholder="Authentic Bikaneri recipe prepared in pure oil..." 
+            class="w-full px-3 py-2 border rounded-xl focus:ring-2 focus:ring-[#C9922E] focus:outline-none"></textarea>
+        </div>
+
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeCategoryFormModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
+            Cancel
+          </button>
+          <button type="submit" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">
+            Save Category
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Preview Modals (WhatsApp & Email) in Admin -->
+  <div id="whatsapp-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+      <div class="whatsapp-header p-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <img src="assets/images/meerav_logo.png" alt="Logo" class="w-8 h-8 object-contain bg-white rounded-full p-0.5" />
+          <div>
+            <div class="font-bold text-xs">MEERAV Official</div>
+            <div class="text-[10px] text-emerald-200">Customer: <span id="wa-preview-name"></span></div>
+          </div>
+        </div>
+        <button onclick="closeWhatsAppPreviewModal()" class="text-white hover:text-gray-200"><i class="fas fa-xmark"></i></button>
+      </div>
+
+      <div class="whatsapp-chat-pattern p-4 min-h-[300px] flex flex-col justify-end">
+        <div class="whatsapp-msg-bubble in shadow-md">
+          <div id="wa-preview-body" class="text-xs text-gray-800 leading-relaxed"></div>
+          <div class="text-right text-[10px] text-gray-400 mt-1.5 flex items-center justify-end gap-1">
+            <span id="wa-preview-time"></span>
+            
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gray-100 text-center border-t">
+        <button onclick="closeWhatsAppPreviewModal()" class="px-4 py-1.5 bg-gray-800 text-white rounded-lg text-xs font-bold">
+          Close Preview
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="email-preview-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
+      <div class="p-4 bg-gray-800 text-white flex items-center justify-between">
+        <h4 class="font-bold text-xs"><i class="fas fa-envelope"></i> Email Invoice Simulator</h4>
+        <button onclick="closeEmailPreviewModal()" class="text-gray-300 hover:text-white"><i class="fas fa-xmark"></i></button>
+      </div>
+
+      <div class="p-5 overflow-y-auto space-y-3 text-xs flex-1">
+        <div class="bg-gray-50 p-3 rounded-xl border space-y-1 text-[11px]">
+          <div><strong>Subject:</strong> <span id="email-preview-subject"></span></div>
+          <div><strong>To:</strong> <span id="email-preview-to"></span></div>
+          <div><strong>Date:</strong> <span id="email-preview-date"></span></div>
+        </div>
+
+        <div class="p-4 border rounded-2xl space-y-3">
+          <div class="flex justify-between items-center border-b pb-2">
+            <h3 class="font-black text-[#6E1423] text-base">MEERAV NAMKEENS</h3>
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">OFFICIAL RECEIPT</span>
+          </div>
+
+          <div class="text-[11px] text-gray-600">
+            <strong>Customer:</strong> <span id="email-preview-customer-name"></span><br/>
+            <strong>Address:</strong> <span id="email-preview-address"></span><br/>
+            <strong>Order ID:</strong> #<span id="email-preview-order-id"></span> | Tracking: <span id="email-preview-tracking" class="text-blue-600 font-bold"></span>
+          </div>
+
+          <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b text-gray-400 text-[10px]">
+                <th class="py-1.5">Item</th>
+                <th class="py-1.5 text-center">Qty</th>
+                <th class="py-1.5 text-right">Price</th>
+              </tr>
+            </thead>
+            <tbody id="email-preview-items"></tbody>
+          </table>
+          </div>
+
+          <div class="flex justify-between items-center pt-2 font-black text-sm text-[#6E1423] border-t">
+            <span>Grand Total:</span>
+            <span id="email-preview-total" class="text-[#6E1423]"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-gray-50 border-t text-right">
+        <button onclick="closeEmailPreviewModal()" class="px-4 py-2 bg-gray-800 text-white rounded-xl text-xs font-bold">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coupon Form Modal -->
+  <div id="coupon-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-emerald-200">
+      <div class="p-4 bg-emerald-800 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="coupon-modal-title" class="font-black text-sm text-white">Coupon Editor</h3>
+        </div>
+        <button onclick="closeCouponModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+      <form onsubmit="saveCouponForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="coupon-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Coupon Code *</label>
+          <input type="text" id="coupon-form-code" required placeholder="e.g. MEERAV10" class="w-full px-3 py-2 border rounded-xl font-black uppercase text-gray-800" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Discount Type *</label>
+            <select id="coupon-form-type" class="w-full px-3 py-2 border rounded-xl font-bold">
+              <option value="percentage">Percentage (%)</option>
+              <option value="flat">Flat Amount</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Discount Value *</label>
+            <input type="number" id="coupon-form-val" required placeholder="10 or 50" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Minimum Order Amount</label>
+          <input type="number" id="coupon-form-min-order" placeholder="299" class="w-full px-3 py-2 border rounded-xl" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Description</label>
+          <input type="text" id="coupon-form-desc" placeholder="10% Off on orders above ₹299" class="w-full px-3 py-2 border rounded-xl" />
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="coupon-form-active" checked class="w-4 h-4 text-emerald-600 rounded" />
+          <label for="coupon-form-active" class="font-bold text-gray-700">Active (Accept on storefront)</label>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeCouponModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-black rounded-xl shadow-md">Save Coupon</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Testimonial Form Modal -->
+  <div id="testimonial-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div class="flex items-center gap-2">
+
+          <h3 id="testimonial-modal-title" class="font-black text-sm text-[#E8B75D]">Review Editor</h3>
+        </div>
+        <button onclick="closeTestimonialModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+      <form onsubmit="saveTestimonialForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="testimonial-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Customer Name *</label>
+          <input type="text" id="testimonial-form-name" required placeholder="e.g. Pooja Sharma" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">City / Location</label>
+            <input type="text" id="testimonial-form-city" placeholder="Mumbai, MH" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Rating (1 to 5 Stars)</label>
+            <select id="testimonial-form-rating" class="w-full px-3 py-2 border rounded-xl font-bold">
+              <option value="5">(5 Stars)</option>
+              <option value="4">(4 Stars)</option>
+              <option value="3">(3 Stars)</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Review Text *</label>
+          <textarea id="testimonial-form-review" required rows="3" placeholder="The authentic crunch is unforgettable..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Customer Avatar URL / Path</label>
+          <input type="text" id="testimonial-form-avatar" placeholder="assets/images/drive_1.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="testimonial-form-visible" checked class="w-4 h-4 text-[#A87A22] rounded" />
+          <label for="testimonial-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeTestimonialModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">Save Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAQ Form Modal -->
+  <div id="faq-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-blue-200">
+      <div class="p-4 bg-blue-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          
+          <h3 id="faq-modal-title" class="font-black text-sm text-white">FAQ Editor</h3>
+        </div>
+        <button onclick="closeFaqModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+          <i class="fas fa-xmark"></i>
+        </button>
+      </div>
+      <form onsubmit="saveFaqForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="faq-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Question *</label>
+          <input type="text" id="faq-form-question" required placeholder="e.g. Do you use Palm Oil?" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Answer *</label>
+          <textarea id="faq-form-answer" required rows="3" placeholder="Never. All snacks are made in 100% pure oil..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Category</label>
+            <input type="text" id="faq-form-category" placeholder="quality, shipping, dietary" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Sort Order</label>
+            <input type="number" id="faq-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl" />
+          </div>
+        </div>
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="faq-form-visible" checked class="w-4 h-4 text-blue-600 rounded" />
+          <label for="faq-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeFaqModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-blue-800 hover:bg-blue-900 text-white font-black rounded-xl shadow-md">Save FAQ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Trust / Feature Badge Modal -->
+  <div id="trust-badge-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div>
+          <h3 id="trust-badge-modal-title" class="font-black text-sm text-[#E8B75D]">Feature Badge Editor</h3>
+          <span class="text-[10px] text-[#E8B75D]">Real-Time Image & Guarantee Card</span>
+        </div>
+        <button onclick="closeTrustBadgeModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white" title="Close"><i class="fas fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveTrustBadgeForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="trust-badge-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Feature Title *</label>
+          <input type="text" id="trust-badge-form-title" required placeholder="e.g. Pure & Clean Oil" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Description *</label>
+          <textarea id="trust-badge-form-desc" required rows="2" placeholder="Prepared exclusively in pure cold-pressed oil..." class="w-full px-3 py-2 border rounded-xl"></textarea>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Feature Image *</label>
+          <div class="flex items-center gap-3">
+            <img id="trust-badge-form-preview" src="assets/images/feature_oil.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#E8E0D4] shrink-0" />
+            <div class="flex-1">
+              <label class="w-full py-2 px-3 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+                 <span id="trust-badge-form-image-status">Upload Image</span>
+                <input type="file" accept="image/*" onchange="handleTrustBadgeImageUpload(event)" class="hidden" />
+              </label>
+            </div>
+          </div>
+          <input type="hidden" id="trust-badge-form-image" required />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Sort Order</label>
+            <input type="number" id="trust-badge-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+          <div class="flex items-center gap-2 pt-5">
+            <input type="checkbox" id="trust-badge-form-visible" checked class="w-4 h-4 text-[#A87A22] rounded" />
+            <label for="trust-badge-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+          </div>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeTrustBadgeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">Save Feature Badge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Broadcast Story & Video Reel Modal -->
+  <div id="story-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-red-200">
+      <div class="p-4 bg-[#4E0D18] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div>
+          <h3 id="story-modal-title" class="font-black text-sm text-[#E8B75D]">Video Story & Reel Editor</h3>
+          <span class="text-[10px] text-[#E8B75D]">Watch & Shop Broadcast Carousel</span>
+        </div>
+        <button onclick="closeStoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white" title="Close"><i class="fas fa-xmark"></i></button>
+      </div>
+      <form onsubmit="saveStoryForm(event)" class="p-6 space-y-4 text-xs">
+        <input type="hidden" id="story-form-id" />
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Story Title *</label>
+          <input type="text" id="story-form-title" required placeholder="e.g. Royal Aloo Bhujia Slow Crunch" class="w-full px-3 py-2 border rounded-xl font-bold" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Media Type</label>
+            <select id="story-form-media-type" class="w-full px-3 py-2 border rounded-xl font-bold">
+              <option value="video">4K Video (.mp4)</option>
+              <option value="photo">High-Res Photo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Badge Tag</label>
+            <input type="text" id="story-form-tag" placeholder="e.g. 4K Signature Reel" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Video / Photo Upload *</label>
+          <label class="w-full py-2 px-3 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+             <span id="story-form-media-status">Upload Video / Photo</span>
+            <input type="file" accept="video/*,image/*" onchange="handleStoryMediaUpload(event)" class="hidden" />
+          </label>
+          <input type="hidden" id="story-form-media-url" required />
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Poster Thumbnail Image</label>
+          <div class="flex items-center gap-3">
+            <img id="story-form-poster-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#E8E0D4] shrink-0" />
+            <label class="flex-1 py-2 px-3 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+               <span id="story-form-poster-status">Upload Thumbnail</span>
+              <input type="file" accept="image/*" onchange="handleStoryPosterUpload(event)" class="hidden" />
+            </label>
+          </div>
+          <input type="hidden" id="story-form-poster-url" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Linked Product ID</label>
+            <input type="text" id="story-form-product-id" placeholder="p1" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Selling Price (₹)</label>
+            <input type="number" id="story-form-price" placeholder="99" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">Sort Order</label>
+            <input type="number" id="story-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl font-bold" />
+          </div>
+          <div class="flex items-center gap-2 pt-5">
+            <input type="checkbox" id="story-form-visible" checked class="w-4 h-4 text-red-600 rounded" />
+            <label for="story-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
+          </div>
+        </div>
+        <div class="pt-3 border-t flex justify-end gap-2">
+          <button type="button" onclick="closeStoryModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
+          <button type="submit" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">Save Story Reel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Master Brand Film Editor — slide #1 in the hero carousel, always first, always visible -->
+  <div id="master-film-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+      <div class="p-4 bg-[#6E1423] text-white flex items-center justify-between border-b border-[#C9922E]">
+        <div>
+          <h3 class="font-black text-sm text-[#E8B75D]">Master Brand Film</h3>
+          <span class="text-[10px] text-[#E8B75D]">Always slide #1 — plays before every story</span>
+        </div>
+        <button onclick="closeMasterFilmModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition" title="Close"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Hero Cinematic Video</label>
+          <label class="w-full py-2.5 px-3.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+             <span id="master-film-video-status">Upload Video</span>
+            <input type="file" accept="video/*" onchange="handleMasterFilmVideoUpload(event)" class="hidden" />
+          </label>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-bold mb-1">Poster / Fallback Image</label>
+          <div class="flex items-center gap-3">
+            <img id="master-film-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#E8E0D4] shrink-0" />
+            <label class="flex-1 py-2.5 px-3.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+               <span id="master-film-image-status">Upload Image</span>
+              <input type="file" accept="image/*" onchange="handleMasterFilmImageUpload(event)" class="hidden" />
+            </label>
+          </div>
+        </div>
+        <div class="pt-3 border-t flex justify-end">
+          <button type="button" onclick="closeMasterFilmModal()" class="px-6 py-2 bg-[#6E1423] hover:bg-[#4E0D18] text-[#E8B75D] font-black rounded-xl shadow-md border border-[#C9922E]">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/env-config.js"></script>
+  <script type="module" src="js/supabase-client.js"></script>
+  <script defer src="js/theme.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/admin.js"></script>
+</body>
+</html>

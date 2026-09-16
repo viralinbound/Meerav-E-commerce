@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <linearGradient id="bg-badge-oil" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9a6a12"/>
+      <stop offset="100%" stop-color="#5c3f0a"/>
+    </linearGradient>
+    <radialGradient id="glow-badge-oil" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#e9c873" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#e9c873" stop-opacity="0"/>
+    </radialGradient>
+    
+  <pattern id="jaali-badge-oil" width="46" height="46" patternUnits="userSpaceOnUse">
+    <path d="M23 2 L44 23 L23 44 L2 23 Z" fill="none" stroke="#e9c873" stroke-width="1" opacity="0.35"/>
+    <circle cx="23" cy="23" r="3" fill="#e9c873" opacity="0.3"/>
+  </pattern>
+    <filter id="grain-badge-oil">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.03 0"/>
+    </filter>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg-badge-oil)"/>
+  <rect width="400" height="400" fill="url(#jaali-badge-oil)"/>
+  <rect width="400" height="400" fill="url(#glow-badge-oil)"/>
+  <rect x="18" y="18" width="364" height="364" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.5" rx="6"/>
+  <path d="M0,400 V354 Q50,310 100,354 V400" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M100,400 V354 Q150,310 200,354 V400" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M200,400 V354 Q250,310 300,354 V400" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/><path d="M300,400 V354 Q350,310 400,354 V400" fill="none" stroke="#e9c873" stroke-width="2" opacity="0.55"/>
+  <g transform="translate(200, 170)">
+    <path d="M0,-60 C30,-20 45,10 45,35 C45,65 25,80 0,80 C-25,80 -45,65 -45,35 C-45,10 -30,-20 0,-60 Z"
+      fill="none" stroke="#e9c873" stroke-width="6"/>
+    <circle cy="30" r="14" fill="#e9c873" opacity="0.85"/>
+  </g>
+  
+  <text x="378" y="378" text-anchor="end" font-family="Georgia, 'Playfair Display', serif" font-size="22" font-style="italic" font-weight="700" fill="#e9c873" opacity="0.75">Meerav</text>
+  <rect width="400" height="400" filter="url(#grain-badge-oil)" opacity="0.6"/>
+</svg>
