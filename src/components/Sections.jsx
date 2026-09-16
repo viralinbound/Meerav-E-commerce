@@ -31,7 +31,7 @@ export function Testimonials() {
           </p>
         </div>
 
-        <div id="home-testimonials-grid" className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {testimonials.map((t) => (
             <div key={t.id} className="bg-white rounded-2xl p-6 shadow-md card-hover relative">
               <Quote className="absolute top-4 right-4 w-8 h-8 text-cream-300" />
@@ -78,7 +78,7 @@ export function KitchenStories() {
           </p>
         </div>
 
-        <div id="home-kitchenstories-grid" className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
           {broadcastStories.map((story) => (
             <Link
               to={`/product/${story.productId}`}
@@ -134,7 +134,7 @@ export function InstagramFeed() {
           </p>
         </div>
 
-        <div id="home-instagram-grid" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {INSTAGRAM_IMAGES.map((img, idx) => (
             <div key={idx} className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer">
               <img
@@ -180,7 +180,7 @@ export function FAQSection() {
           </p>
         </div>
 
-        <div id="home-faq-list" className="max-w-3xl mx-auto space-y-3">
+        <div className="max-w-3xl mx-auto space-y-3">
           {faqs.map((faq, idx) => (
             <div key={faq.id} className="bg-white rounded-xl shadow-sm overflow-hidden border border-cream-200">
               <button

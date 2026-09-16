@@ -20,14 +20,8 @@
   const STORAGE_KEY = 'mira_editor_patches_v1';
 
   function currentPageKey() {
-    const path = location.pathname;
-    const file = (path.split('/').pop() || 'index.html');
-    // React Router client-side routes (the live SPA) — checked first since
-    // the same index.html document serves all of them.
-    if (/^\/category(\/|$)/.test(path)) return 'category';
-    if (/^\/product(\/|$)/.test(path)) return 'product';
-    if (path === '/' || file === '' || file === 'index.html') return 'home';
-    // Legacy standalone pages, kept for backwards compatibility.
+    const file = (location.pathname.split('/').pop() || 'index.html');
+    if (file === '' || file === 'index.html') return 'home';
     if (file === 'category.html') return 'category';
     if (file === 'product.html') return 'product';
     return null;
@@ -48,22 +42,15 @@
   // elements just get their style/attrs/text re-set (harmless), and an
   // already-inserted block is recognized by its data-ed-id and skipped
   // rather than duplicated.
-  //
-  // Returns true once every non-insert key resolved to a real element, so
-  // callers on pages that render asynchronously (e.g. the React homepage,
-  // which paints its sections only after its own Supabase fetch resolves)
-  // know whether to keep retrying.
   function applyForPage(pagePatches) {
-    if (!pagePatches || !Object.keys(pagePatches).length) return true;
-
-    let allResolved = true;
+    if (!pagePatches || !Object.keys(pagePatches).length) return;
 
     Object.keys(pagePatches).forEach((key) => {
       if (key.indexOf('__insert_') === 0) return;
       const p = pagePatches[key];
       let el;
       try { el = document.querySelector(key); } catch (e) { return; }
-      if (!el) { allResolved = false; return; }
+      if (!el) return;
       if (p.deleted) { el.remove(); return; }
       if (p.style) Object.assign(el.style, p.style);
       if (p.attrs) Object.entries(p.attrs).forEach(([k, v]) => el.setAttribute(k, v));
@@ -76,26 +63,12 @@
       const p = pagePatches[key];
       let parent;
       try { parent = document.querySelector(p.parentPath); } catch (e) { return; }
-      if (!parent) { allResolved = false; return; }
+      if (!parent) return;
       const wrap = document.createElement('div');
       wrap.innerHTML = p.html;
       const node = wrap.firstElementChild;
       if (node) parent.appendChild(node);
     });
-
-    return allResolved;
-  }
-
-  // Pages whose content renders asynchronously (the React SPA fetches its
-  // catalog from Supabase before painting) may not have the target elements
-  // in the DOM yet the moment this script runs. Retry briefly instead of
-  // silently dropping those patches — a no-op on pages where everything is
-  // already present, since applyForPage returns true on the first try there.
-  function applyWithRetry(pagePatches, attemptsLeft) {
-    if (attemptsLeft === undefined) attemptsLeft = 20;
-    const resolved = applyForPage(pagePatches);
-    if (resolved || attemptsLeft <= 0) return;
-    setTimeout(() => applyWithRetry(pagePatches, attemptsLeft - 1), 150);
   }
 
   async function syncFromCloud(pageKey) {
@@ -105,7 +78,7 @@
       const cloud = await MiraDB.fetchPageDesignPatches(pageKey);
       if (cloud && Object.keys(cloud).length) {
         writeLocalPatches(pageKey, cloud);
-        applyWithRetry(cloud);
+        applyForPage(cloud);
       }
     } catch (e) {
       console.warn('Design Editor cloud sync note:', e);
@@ -117,7 +90,7 @@
         if (!row || row.page_key !== pageKey) return;
         const patches = row.patches || {};
         writeLocalPatches(pageKey, patches);
-        applyWithRetry(patches);
+        applyForPage(patches);
       });
     }
   }
@@ -127,7 +100,7 @@
     if (!pageKey) return;
     window.__miraPatchesApplied = true;
 
-    applyWithRetry(readLocalPatches(pageKey));
+    applyForPage(readLocalPatches(pageKey));
     syncFromCloud(pageKey);
   }
 
