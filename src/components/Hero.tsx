@@ -56,14 +56,14 @@ export function Hero({ onShopNow }: HeroProps) {
       {/* Navigation Arrows */}
       <button
         onClick={prev}
-        className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-cream-50/30 backdrop-blur-sm rounded-full items-center justify-center text-white hover:bg-cream-50/50 transition-colors z-10"
+        className="hidden sm:flex absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-charcoal-900/40 backdrop-blur-sm rounded-full items-center justify-center text-white hover:bg-charcoal-900/60 transition-colors z-10"
         aria-label="Previous slide"
       >
         <ChevronLeft className="w-6 h-6" />
       </button>
       <button
         onClick={next}
-        className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-cream-50/30 backdrop-blur-sm rounded-full items-center justify-center text-white hover:bg-cream-50/50 transition-colors z-10"
+        className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-charcoal-900/40 backdrop-blur-sm rounded-full items-center justify-center text-white hover:bg-charcoal-900/60 transition-colors z-10"
         aria-label="Next slide"
       >
         <ChevronRight className="w-6 h-6" />
