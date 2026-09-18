@@ -472,8 +472,13 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
       id: data.user.id, name, phone, email, address, pincode,
       avatar: null, wishlist: [], savedAddresses: []
     };
-    const saved = await dbUpsertCustomer(profile);
-    if (!saved) return { error: { message: 'Could not save customer profile' } };
+    // With "Confirm email" enabled, signUp() returns no session yet, so RLS
+    // rightly blocks this insert (auth.uid() is null) — getOrCreateCustomerProfile
+    // saves it once the user confirms and actually signs in.
+    if (data.session) {
+      const saved = await dbUpsertCustomer(profile);
+      if (!saved) return { error: { message: 'Could not save customer profile' } };
+    }
 
     return { user: data.user, session: data.session, needsConfirmation: !data.session, profile };
   }
