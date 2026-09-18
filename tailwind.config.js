@@ -1,6 +1,17 @@
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+// Absolute paths: relative content globs resolve against process.cwd(),
+// which some launchers set to a different directory than this project —
+// that silently produces zero matches and an unstyled page.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    path.join(__dirname, 'index.html'),
+    path.join(__dirname, 'src/**/*.{js,jsx,ts,tsx}'),
+  ],
   theme: {
     extend: {
       colors: {
