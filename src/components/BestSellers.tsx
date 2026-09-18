@@ -63,11 +63,11 @@ export function BestSellers({ onProductClick, onViewAll }: BestSellersProps) {
               className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md card-hover flex-none snap-start w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-3rem)/3)] lg:w-[calc((100%-4.5rem)/4)]"
             >
               {/* Image */}
-              <div className="relative aspect-square overflow-hidden bg-cream-100">
+              <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-700"
                 />
                 {/* Badges */}
                 <div className="absolute top-2 left-2 flex flex-col gap-1.5">

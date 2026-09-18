@@ -50,7 +50,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
         <div className="grid md:grid-cols-2 gap-0">
           {/* Image */}
           <div className="relative aspect-square md:aspect-auto md:h-full overflow-hidden bg-cream-100">
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+            <img src={product.image} alt={product.name} className="w-full h-full object-contain p-6" />
             <div className="absolute top-4 left-4 flex flex-col gap-1.5">
               {product.isBestseller && (
                 <span className="px-3 py-1 bg-saffron-500 text-white text-xs font-bold rounded-full shadow-sm">

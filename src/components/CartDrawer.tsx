@@ -99,7 +99,7 @@ export function CartDrawer({ onCheckout }: CartDrawerProps) {
                   <img
                     src={item.product.image}
                     alt={item.product.name}
-                    className="w-20 h-20 rounded-lg object-cover shrink-0"
+                    className="w-20 h-20 rounded-lg object-contain bg-cream-100 p-1 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm text-charcoal-800 leading-snug mb-1 line-clamp-2">
