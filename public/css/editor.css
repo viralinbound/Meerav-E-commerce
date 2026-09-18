@@ -28,7 +28,7 @@ body { background: #f3f4f6; }
   background: var(--ed-maroon-dark);
   color: #fff;
   border-bottom: 3px solid transparent;
-  border-image: repeating-linear-gradient(90deg, var(--ed-gold) 0px, var(--ed-gold) 10px, #7a5620 10px, #7a5620 14px) 3;
+  border-image: repeating-linear-gradient(90deg, var(--ed-gold) 0px, var(--ed-gold) 10px, #a44f0c 10px, #a44f0c 14px) 3;
   z-index: 40;
 }
 .ed-topbar .ed-btn { color: #fff; }

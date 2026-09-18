@@ -1,6 +1,6 @@
-import { Flame, Leaf, ShieldCheck, Truck } from "lucide-react";
+import { Flame, Leaf, ShieldCheck, Truck } from 'lucide-react';
 
-export default function BrandStory() {
+export function BrandStory() {
   return (
     <section className="py-20 bg-cream-50">
       <div className="container-max section-padding">
@@ -68,7 +68,7 @@ export default function BrandStory() {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="/images/products/meerav_1.jpg"
+                src="https://images.pexels.com/photos/37330104/pexels-photo-37330104.jpeg?auto=compress&cs=tinysrgb&h=800&w=600"
                 alt="Traditional Bikaneri kitchen"
                 className="w-full h-[500px] object-cover"
               />

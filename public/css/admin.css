@@ -47,7 +47,7 @@ body.admin-body h3 {
   border-radius: 16px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #D9C9AE;
+  color: #f5e0bb;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid transparent;
   cursor: pointer;

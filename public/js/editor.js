@@ -17,22 +17,18 @@ const MiraEditor = (function () {
   const UNDO_LIMIT = 100;
 
   const PAGES = {
-    home: { file: 'index.html', label: 'Home' },
-    category: { file: 'category.html', label: 'Category Explorer' },
-    product: { file: 'product.html?id=p1', label: 'Product Detail' }
+    home: { file: 'index.html', label: 'Home' }
   };
 
   const LOCKED_SELECTORS = [
-    '#products-grid', '#categories-container', '#dietary-container',
-    '#home-category-showcase', '#reels-scroll-track', '#cart-items-container',
-    '#cart-summary-container', '#home-testimonials-container', '#home-faqs-container',
-    '#home-trust-badges-grid', '#home-stats-grid', '#home-story-paragraphs',
     '#toast-container', '#product-detail-modal', '#checkout-modal',
     '#payment-gateway-modal', '#wa-preview-body', '#email-preview-modal',
-    '#category-picker-cards-grid', '#category-dietary-container', '#category-products-grid',
-    '#category-empty-state', '#pdp-variants-container', '#pdp-slides-wrapper',
-    '#pdp-thumbnails-row', '#pdp-related-grid', '#pdp-fullscreen-modal',
-    '#live-tracking-view', '#order-tracking-map', '#checkout-map', '#address-map'
+    '#live-tracking-view', '#order-tracking-map', '#checkout-map', '#address-map',
+    // React homepage — sections generated from live Supabase data (products,
+    // testimonials, broadcast stories, FAQs). Edit their content from the CRM
+    // pages instead; only the surrounding static copy/design is editable here.
+    '#home-hero', '#home-bestsellers-track', '#home-allproducts-track',
+    '#home-testimonials-grid', '#home-faq-list'
   ];
 
   const state = {
@@ -517,16 +513,16 @@ const MiraEditor = (function () {
   function ELEMENT_TEMPLATES(win) {
     const doc = win.document;
     return {
-      heading: () => { const el = doc.createElement('h2'); el.textContent = 'New Heading'; el.style.cssText = 'font-weight:900;font-size:28px;color:#4A0713;margin:12px 0;'; return el; },
+      heading: () => { const el = doc.createElement('h2'); el.textContent = 'New Heading'; el.style.cssText = 'font-weight:900;font-size:28px;color:#681e23;margin:12px 0;'; return el; },
       text: () => { const el = doc.createElement('p'); el.textContent = 'Edit this text…'; el.style.cssText = 'font-size:14px;color:#374151;margin:8px 0;line-height:1.6;'; return el; },
-      button: () => { const el = doc.createElement('a'); el.textContent = 'Click Me'; el.setAttribute('href', 'index.html'); el.style.cssText = 'display:inline-block;padding:10px 20px;background:#4A0713;color:#FBBF24;border-radius:12px;font-weight:800;text-decoration:none;margin:8px 0;'; return el; },
+      button: () => { const el = doc.createElement('a'); el.textContent = 'Click Me'; el.setAttribute('href', 'index.html'); el.style.cssText = 'display:inline-block;padding:10px 20px;background:#681e23;color:#FBBF24;border-radius:12px;font-weight:800;text-decoration:none;margin:8px 0;'; return el; },
       image: () => { const el = doc.createElement('img'); el.setAttribute('src', 'assets/images/cinematic_bhujia.jpg'); el.setAttribute('alt', 'New image'); el.style.cssText = 'width:220px;height:160px;object-fit:cover;border-radius:14px;margin:8px 0;display:block;'; return el; },
       container: () => { const el = doc.createElement('div'); el.style.cssText = 'padding:24px;border:2px dashed #E59819;border-radius:16px;min-height:70px;margin:12px 0;'; return el; },
       spacer: () => { const el = doc.createElement('div'); el.style.cssText = 'height:40px;'; return el; },
       divider: () => { const el = doc.createElement('hr'); el.style.cssText = 'border:none;border-top:3px solid #E59819;margin:16px 0;width:100%;'; return el; },
-      rectangle: () => { const el = doc.createElement('div'); el.style.cssText = 'width:200px;height:100px;background:#4A0713;border-radius:8px;margin:8px 0;'; return el; },
+      rectangle: () => { const el = doc.createElement('div'); el.style.cssText = 'width:200px;height:100px;background:#681e23;border-radius:8px;margin:8px 0;'; return el; },
       circle: () => { const el = doc.createElement('div'); el.style.cssText = 'width:100px;height:100px;background:#E59819;border-radius:50%;margin:8px 0;'; return el; },
-      icon: () => { const el = doc.createElement('span'); el.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#4A0713;color:#FBBF24;border-radius:50%;font-size:22px;margin:8px 0;'; el.innerHTML = '<i class="fas fa-star"></i>'; return el; }
+      icon: () => { const el = doc.createElement('span'); el.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:#681e23;color:#FBBF24;border-radius:50%;font-size:22px;margin:8px 0;'; el.innerHTML = '<i class="fas fa-star"></i>'; return el; }
     };
   }
 
@@ -546,21 +542,21 @@ const MiraEditor = (function () {
         img.style.cssText = 'width:100%;height:160px;object-fit:cover;display:block;';
         const body = doc.createElement('div');
         body.style.cssText = 'padding:16px;';
-        const h = doc.createElement('h3'); h.textContent = 'Card Title'; h.style.cssText = 'font-weight:900;font-size:16px;color:#4A0713;margin:0 0 6px;';
+        const h = doc.createElement('h3'); h.textContent = 'Card Title'; h.style.cssText = 'font-weight:900;font-size:16px;color:#681e23;margin:0 0 6px;';
         const p = doc.createElement('p'); p.textContent = 'Short description goes here — double-click to edit.'; p.style.cssText = 'font-size:12px;color:#6b7280;margin:0 0 12px;line-height:1.5;';
         const btn = doc.createElement('a'); btn.textContent = 'Learn More'; btn.setAttribute('href', 'index.html');
-        btn.style.cssText = 'display:inline-block;padding:8px 16px;background:#4A0713;color:#FBBF24;border-radius:10px;font-weight:800;font-size:11px;text-decoration:none;';
+        btn.style.cssText = 'display:inline-block;padding:8px 16px;background:#681e23;color:#FBBF24;border-radius:10px;font-weight:800;font-size:11px;text-decoration:none;';
         body.appendChild(h); body.appendChild(p); body.appendChild(btn);
         card.appendChild(img); card.appendChild(body);
         return card;
       },
       ctaBanner: () => {
         const wrap = doc.createElement('div');
-        wrap.style.cssText = 'background:linear-gradient(135deg,#4A0713,#E59819);border-radius:20px;padding:32px 24px;text-align:center;margin:16px 0;color:#fff;';
+        wrap.style.cssText = 'background:linear-gradient(135deg,#681e23,#E59819);border-radius:20px;padding:32px 24px;text-align:center;margin:16px 0;color:#fff;';
         const h = doc.createElement('h2'); h.textContent = 'Limited Time Offer'; h.style.cssText = 'font-weight:900;font-size:24px;margin:0 0 8px;color:#fff;';
         const p = doc.createElement('p'); p.textContent = 'Edit this banner text to promote your best deal.'; p.style.cssText = 'font-size:13px;margin:0 0 16px;opacity:.9;color:#fff;';
         const btn = doc.createElement('a'); btn.textContent = 'Shop Now'; btn.setAttribute('href', 'category.html');
-        btn.style.cssText = 'display:inline-block;padding:10px 24px;background:#fff;color:#4A0713;border-radius:999px;font-weight:900;font-size:12px;text-decoration:none;';
+        btn.style.cssText = 'display:inline-block;padding:10px 24px;background:#fff;color:#681e23;border-radius:999px;font-weight:900;font-size:12px;text-decoration:none;';
         wrap.appendChild(h); wrap.appendChild(p); wrap.appendChild(btn);
         return wrap;
       },
@@ -569,7 +565,7 @@ const MiraEditor = (function () {
         wrap.style.cssText = 'max-width:300px;background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:18px;margin:12px 0;';
         const stars = doc.createElement('div'); stars.textContent = '★★★★★'; stars.style.cssText = 'color:#E59819;font-size:14px;margin-bottom:8px;';
         const quote = doc.createElement('p'); quote.textContent = '"Double-click to edit this customer quote."'; quote.style.cssText = 'font-size:12px;color:#374151;font-style:italic;margin:0 0 10px;line-height:1.5;';
-        const name = doc.createElement('p'); name.textContent = 'Customer Name'; name.style.cssText = 'font-size:11px;font-weight:900;color:#4A0713;margin:0;';
+        const name = doc.createElement('p'); name.textContent = 'Customer Name'; name.style.cssText = 'font-size:11px;font-weight:900;color:#681e23;margin:0;';
         wrap.appendChild(stars); wrap.appendChild(quote); wrap.appendChild(name);
         return wrap;
       },
@@ -577,7 +573,7 @@ const MiraEditor = (function () {
         const wrap = doc.createElement('div');
         wrap.style.cssText = 'display:flex;align-items:center;gap:14px;padding:14px;background:#fff;border-radius:14px;border:1px solid #f3f4f6;margin:8px 0;';
         const icon = doc.createElement('span'); icon.innerHTML = '<i class="fas fa-check"></i>';
-        icon.style.cssText = 'display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#4A0713;color:#FBBF24;border-radius:50%;font-size:16px;flex-shrink:0;';
+        icon.style.cssText = 'display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:#681e23;color:#FBBF24;border-radius:50%;font-size:16px;flex-shrink:0;';
         const text = doc.createElement('div');
         const h = doc.createElement('h4'); h.textContent = 'Feature Title'; h.style.cssText = 'font-weight:900;font-size:13px;color:#111827;margin:0 0 2px;';
         const p = doc.createElement('p'); p.textContent = 'Short feature description.'; p.style.cssText = 'font-size:11px;color:#6b7280;margin:0;';
@@ -892,7 +888,7 @@ const MiraEditor = (function () {
   function populateSwatches() {
     const box = document.getElementById('ed-swatches');
     if (!box) return;
-    let swatches = ['#4A0713', '#E59819', '#FBBF24', '#32040C', '#FFF9ED', '#111827', '#ffffff'];
+    let swatches = ['#681e23', '#E59819', '#FBBF24', '#681e23', '#FFF9ED', '#111827', '#ffffff'];
     try {
       if (state.win && state.win.THEME_PRESETS) {
         const fromPresets = state.win.THEME_PRESETS.flatMap((p) => p.swatches || []);

@@ -307,7 +307,7 @@ function renderAdminIdentityBadge() {
   const a = adminState.currentAdmin;
   badge.innerHTML = `
     <div class="font-bold text-white truncate">${a.name}</div>
-    <div class="truncate">${a.email} &bull; <span class="text-[#E8B75D] font-bold uppercase">${roleDisplayName(a.role)}</span></div>
+    <div class="truncate">${a.email} &bull; <span class="text-[#ff9a33] font-bold uppercase">${roleDisplayName(a.role)}</span></div>
   `;
 
   // Admin account management (register/remove/activity log) is root-only.
@@ -390,10 +390,10 @@ function showAdminPage(pageId) {
   document.querySelectorAll('.admin-nav-item').forEach(item => {
     const target = item.getAttribute('data-page');
     if (target === pageId) {
-      item.classList.add('active', 'bg-[#C9922E]', 'text-[#4E0D18]');
+      item.classList.add('active', 'bg-[#ff7a0a]', 'text-[#681e23]');
       item.classList.remove('text-gray-400');
     } else {
-      item.classList.remove('active', 'bg-[#C9922E]', 'text-[#4E0D18]');
+      item.classList.remove('active', 'bg-[#ff7a0a]', 'text-[#681e23]');
       item.classList.add('text-gray-400');
     }
   });
@@ -402,10 +402,10 @@ function showAdminPage(pageId) {
   document.querySelectorAll('.admin-mobile-nav-item').forEach(item => {
     const target = item.getAttribute('data-page');
     if (target === pageId) {
-      item.classList.add('active', 'bg-[#6E1423]', 'text-[#E8B75D]', 'border-[#C9922E]', 'font-black');
+      item.classList.add('active', 'bg-[#7a2026]', 'text-[#ff9a33]', 'border-[#ff7a0a]', 'font-black');
       item.classList.remove('bg-white', 'text-gray-800', 'border-gray-200', 'font-bold');
     } else {
-      item.classList.remove('active', 'bg-[#6E1423]', 'text-[#E8B75D]', 'border-[#C9922E]', 'font-black');
+      item.classList.remove('active', 'bg-[#7a2026]', 'text-[#ff9a33]', 'border-[#ff7a0a]', 'font-black');
       item.classList.add('bg-white', 'text-gray-800', 'border-gray-200', 'font-bold');
     }
   });
@@ -470,14 +470,14 @@ function renderOverviewRecentOrders() {
 
   const recent = adminState.orders.slice(0, 5);
   tbody.innerHTML = recent.map(order => `
-    <tr class="hover:bg-[#FBF8F3]/40 transition">
-      <td class="font-black text-[#6E1423] text-xs">#${formatOrderDisplayId(order)}</td>
+    <tr class="hover:bg-[#fefdfb]/40 transition">
+      <td class="font-black text-[#7a2026] text-xs">#${formatOrderDisplayId(order)}</td>
       <td class="text-xs font-bold text-gray-900">${order.customer.name}</td>
       <td class="font-black text-emerald-800 text-xs">${formatPrice(order.totalAmount)}</td>
       <td>
         <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${
           order.orderStatus === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
-          order.orderStatus === 'Dispatched' ? 'bg-blue-100 text-blue-800' : 'bg-[#F5EFE4] text-[#6E1423]'
+          order.orderStatus === 'Dispatched' ? 'bg-blue-100 text-blue-800' : 'bg-[#fdf9f0] text-[#7a2026]'
         }">${order.orderStatus}</span>
       </td>
       <td class="text-xs text-gray-400">${order.date}</td>
@@ -503,8 +503,8 @@ function renderAdminOrders() {
   }
 
   tbody.innerHTML = filtered.map(order => `
-    <tr class="hover:bg-[#FBF8F3]/40 transition">
-      <td class="font-black text-[#6E1423] text-xs">#${formatOrderDisplayId(order)}</td>
+    <tr class="hover:bg-[#fefdfb]/40 transition">
+      <td class="font-black text-[#7a2026] text-xs">#${formatOrderDisplayId(order)}</td>
       <td>
         <div class="font-black text-xs text-gray-900">${order.customer.name}</div>
         <div class="text-[11px] text-gray-500 font-medium">${order.customer.phone}</div>
@@ -514,12 +514,12 @@ function renderAdminOrders() {
         <div class="text-xs text-gray-700 font-semibold line-clamp-1">${order.items ? order.items.map(i => `${i.name} (x${i.qty})`).join(', ') : 'Signature Namkeens'}</div>
         <div class="text-[10px] text-gray-400 mt-0.5">${order.date} &bull; ${order.paymentMethod}</div>
       </td>
-      <td class="font-black text-[#6E1423] text-xs">${formatPrice(order.totalAmount)}</td>
+      <td class="font-black text-[#7a2026] text-xs">${formatPrice(order.totalAmount)}</td>
       <td>
         <select onchange="updateOrderStatus('${order.id}', this.value)" class="text-xs font-black py-1 px-2.5 rounded-xl border cursor-pointer ${
           order.orderStatus === 'Delivered' ? 'bg-emerald-50 text-emerald-800 border-emerald-300' :
           order.orderStatus === 'Dispatched' ? 'bg-blue-50 text-blue-800 border-blue-300' :
-          order.orderStatus === 'Processing' ? 'bg-[#FBF8F3] text-[#6E1423] border-[#DDD2BF]' :
+          order.orderStatus === 'Processing' ? 'bg-[#fefdfb] text-[#7a2026] border-[#f5e0bb]' :
           'bg-gray-50 text-gray-700 border-gray-300'
         }">
           <option value="Pending" ${order.orderStatus === 'Pending' ? 'selected' : ''}>Pending</option>
@@ -596,13 +596,13 @@ function renderAdminProducts() {
     const discount = Math.round(((v.originalPrice - v.price) / v.originalPrice) * 100);
 
     return `
-      <tr class="hover:bg-[#FBF8F3]/40 transition">
+      <tr class="hover:bg-[#fefdfb]/40 transition">
         <td>
           <div class="flex items-center gap-3">
-            <img src="${p.image}" class="w-12 h-12 rounded-xl object-contain bg-[#FBF8F3] p-1 border border-[#E8E0D4]" />
+            <img src="${p.image}" class="w-12 h-12 rounded-xl object-contain bg-[#fefdfb] p-1 border border-[#faf0dc]" />
             <div>
               <div class="font-black text-xs text-gray-900">${p.name}</div>
-              <div class="text-[10px] text-gray-400 capitalize">${p.category} &bull; <span class="text-[#6B625A] font-bold">${p.tag}</span></div>
+              <div class="text-[10px] text-gray-400 capitalize">${p.category} &bull; <span class="text-[#6e6b62] font-bold">${p.tag}</span></div>
             </div>
           </div>
         </td>
@@ -623,7 +623,7 @@ function renderAdminProducts() {
         </td>
         <td>
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+            <button onclick="openEditProductModal('${p.id}')" title="Edit Product & Upload Image" class="px-3 py-1.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
             <button onclick="deleteProduct('${p.id}')" title="Delete Product" class="px-2.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
           </div>
         </td>
@@ -696,9 +696,9 @@ function renderProductPhotosGrid() {
   const grid = document.getElementById('prod-photos-grid');
   if (!grid) return;
   grid.innerHTML = adminState.productGalleryPhotos.map((url, idx) => `
-    <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#C9922E]' : 'border-[#E8E0D4]'} bg-white shrink-0">
+    <div class="relative w-16 h-16 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#ff7a0a]' : 'border-[#faf0dc]'} bg-white shrink-0">
       <img src="${url}" class="w-full h-full object-contain" />
-      ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#6E1423] text-[#E8B75D] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
+      ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#7a2026] text-[#ff9a33] text-[8px] font-black text-center py-0.5">COVER</span>' : ''}
       <button type="button" onclick="removeProductPhoto(${idx})" title="Remove Photo" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"></button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No photos yet — upload at least one.</p>';
@@ -708,9 +708,9 @@ function renderProductVideosGrid() {
   const grid = document.getElementById('prod-videos-grid');
   if (!grid) return;
   grid.innerHTML = adminState.productGalleryVideos.map((url, idx) => `
-    <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#C9922E]' : 'border-[#E8E0D4]'} bg-black shrink-0">
+    <div class="relative w-20 h-14 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-[#ff7a0a]' : 'border-[#faf0dc]'} bg-black shrink-0">
       <video src="${url}" class="w-full h-full object-cover" muted loop playsinline onmouseenter="this.play()" onmouseleave="this.pause()"></video>
-      ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#6E1423] text-[#E8B75D] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
+      ${idx === 0 ? '<span class="absolute bottom-0 left-0 right-0 bg-[#7a2026] text-[#ff9a33] text-[8px] font-black text-center py-0.5">MAIN REEL</span>' : ''}
       <button type="button" onclick="removeProductVideo(${idx})" title="Remove Video" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"></button>
     </div>
   `).join('') || '<p class="text-[11px] text-gray-400">No videos — optional.</p>';
@@ -904,10 +904,10 @@ function renderAdminCategories() {
     const catImg = cat.image || 'assets/images/cinematic_bhujia.jpg';
 
     return `
-      <tr class="hover:bg-[#FBF8F3]/40 transition">
+      <tr class="hover:bg-[#fefdfb]/40 transition">
         <td>
           <div class="flex items-center gap-3">
-            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-tr from-[#6E1423] to-[#8C2131] text-[#E8B75D] flex items-center justify-center text-lg shadow-sm border border-[#DDD2BF]/50">
+            <div class="w-12 h-12 rounded-2xl overflow-hidden bg-gradient-to-tr from-[#7a2026] to-[#92232a] text-[#ff9a33] flex items-center justify-center text-lg shadow-sm border border-[#f5e0bb]/50">
               <img src="${catImg}" class="w-full h-full object-cover" onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden');" />
               
             </div>
@@ -919,13 +919,13 @@ function renderAdminCategories() {
         </td>
         <td class="text-xs text-gray-600 font-medium">${cat.description || 'Authentic Bikaneri traditional category'}</td>
         <td>
-          <span class="px-2.5 py-0.5 bg-[#F5EFE4] text-[#6E1423] text-xs font-black rounded-full border border-[#E8E0D4]">
+          <span class="px-2.5 py-0.5 bg-[#fdf9f0] text-[#7a2026] text-xs font-black rounded-full border border-[#faf0dc]">
             ${count} Products
           </span>
         </td>
         <td>
           <div class="flex items-center justify-end gap-2">
-            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+            <button onclick="openEditCategoryModal('${cat.id}')" title="Edit Category" class="px-3 py-1 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
             <button onclick="deleteCategory('${cat.id}')" title="Delete Category" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
           </div>
         </td>
@@ -1086,10 +1086,10 @@ function renderAdminCustomers() {
       : c.avatar;
 
     return `
-    <tr class="hover:bg-[#FBF8F3]/40 transition">
+    <tr class="hover:bg-[#fefdfb]/40 transition">
       <td>
         <div class="flex items-center gap-3">
-          <img src="${avatar}" alt="${c.name}" class="w-9 h-9 rounded-full object-cover border-2 border-[#DDD2BF] shadow-sm shrink-0" />
+          <img src="${avatar}" alt="${c.name}" class="w-9 h-9 rounded-full object-cover border-2 border-[#f5e0bb] shadow-sm shrink-0" />
           <div>
             <div class="font-black text-xs text-gray-900">${c.name}</div>
             <div class="text-[10px] text-gray-400">${c.email || 'customer@meerav.com'}</div>
@@ -1098,7 +1098,7 @@ function renderAdminCustomers() {
       </td>
       <td class="text-xs font-bold text-gray-700">${c.phone}</td>
       <td>
-        <span class="px-2.5 py-0.5 bg-[#F5EFE4] text-[#6E1423] text-xs font-black rounded-full border border-[#E8E0D4]">
+        <span class="px-2.5 py-0.5 bg-[#fdf9f0] text-[#7a2026] text-xs font-black rounded-full border border-[#faf0dc]">
           ${c.ordersCount} Orders
         </span>
       </td>
@@ -1131,7 +1131,7 @@ function renderAdminNotificationLogs() {
   if (!tbody) return;
 
   tbody.innerHTML = adminState.notifications.map(n => `
-    <tr class="hover:bg-[#FBF8F3]/40 transition">
+    <tr class="hover:bg-[#fefdfb]/40 transition">
       <td>
         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
           n.type === 'WhatsApp' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'
@@ -1221,16 +1221,16 @@ function renderSettingsForm() {
   if (heroSecCtaInput) heroSecCtaInput.value = s.heroSecondaryCtaText || '';
 
   // Brand Theme Colors
-  document.getElementById('settings-color-primary').value = s.primaryColor || '#6E1423';
-  document.getElementById('settings-color-secondary').value = s.secondaryColor || '#4E0D18';
-  document.getElementById('settings-color-accent').value = s.accentColor || '#C9922E';
-  document.getElementById('settings-color-accent-light').value = s.accentLightColor || '#E8B75D';
-  document.getElementById('settings-color-heading').value = s.headingColor || '#4E0D18';
-  document.getElementById('settings-color-text').value = s.textColor || '#1F1A17';
-  document.getElementById('settings-color-admin-panel').value = s.adminPanelColor || '#2A1410';
-  const adminGradient = (s.adminPanelGradient && s.adminPanelGradient.length ? s.adminPanelGradient : ['#4E0D18', '#2A1410', '#030712']);
-  document.getElementById('settings-admin-gradient-1').value = adminGradient[0] || '#4E0D18';
-  document.getElementById('settings-admin-gradient-2').value = adminGradient[1] || '#2A1410';
+  document.getElementById('settings-color-primary').value = s.primaryColor || '#7a2026';
+  document.getElementById('settings-color-secondary').value = s.secondaryColor || '#681e23';
+  document.getElementById('settings-color-accent').value = s.accentColor || '#ff7a0a';
+  document.getElementById('settings-color-accent-light').value = s.accentLightColor || '#ff9a33';
+  document.getElementById('settings-color-heading').value = s.headingColor || '#681e23';
+  document.getElementById('settings-color-text').value = s.textColor || '#312f29';
+  document.getElementById('settings-color-admin-panel').value = s.adminPanelColor || '#681e23';
+  const adminGradient = (s.adminPanelGradient && s.adminPanelGradient.length ? s.adminPanelGradient : ['#681e23', '#681e23', '#030712']);
+  document.getElementById('settings-admin-gradient-1').value = adminGradient[0] || '#681e23';
+  document.getElementById('settings-admin-gradient-2').value = adminGradient[1] || '#681e23';
   document.getElementById('settings-admin-gradient-3').value = adminGradient[2] || '#030712';
   setAdminPanelType(s.adminPanelType || 'solid');
 
@@ -1253,12 +1253,12 @@ function renderSettingsForm() {
   if (flatFeeInput) flatFeeInput.value = s.shippingFlatFee !== undefined ? s.shippingFlatFee : 50;
 
   // Background Engine
-  document.getElementById('settings-color-background').value = s.backgroundColor || '#FBF8F3';
-  const gradient = (s.backgroundGradient && s.backgroundGradient.length ? s.backgroundGradient : ['#FBF8F3', '#FDF1D0', '#C9922E']);
-  document.getElementById('settings-gradient-1').value = gradient[0] || '#FBF8F3';
+  document.getElementById('settings-color-background').value = s.backgroundColor || '#fefdfb';
+  const gradient = (s.backgroundGradient && s.backgroundGradient.length ? s.backgroundGradient : ['#fefdfb', '#FDF1D0', '#ff7a0a']);
+  document.getElementById('settings-gradient-1').value = gradient[0] || '#fefdfb';
   document.getElementById('settings-gradient-2').value = gradient[1] || '#FDF1D0';
-  document.getElementById('settings-gradient-3').value = gradient[2] || '#C9922E';
-  document.getElementById('settings-gradient-4').value = gradient[3] || gradient[2] || '#C9922E';
+  document.getElementById('settings-gradient-3').value = gradient[2] || '#ff7a0a';
+  document.getElementById('settings-gradient-4').value = gradient[3] || gradient[2] || '#ff7a0a';
   const bgPreview = document.getElementById('settings-bg-image-preview');
   if (s.backgroundImageUrl) { bgPreview.src = s.backgroundImageUrl; bgPreview.classList.remove('hidden'); } else { bgPreview.classList.add('hidden'); }
   document.getElementById('settings-bg-image-status').textContent = '';
@@ -1309,7 +1309,7 @@ function renderSettingsForm() {
   document.getElementById('settings-chatbot-name').value = s.chatbotName || 'Meerav AI Sommelier';
   document.getElementById('settings-chatbot-subtitle').value = s.chatbotSubtitle || 'Order Assistant & Personalization';
   document.getElementById('settings-chatbot-avatar-icon').value = s.chatbotAvatarIcon || 'fa-robot';
-  document.getElementById('settings-chatbot-color').value = s.chatbotColor || s.accentColor || '#C9922E';
+  document.getElementById('settings-chatbot-color').value = s.chatbotColor || s.accentColor || '#ff7a0a';
   document.getElementById('settings-chatbot-greeting').value = s.chatbotGreeting || '';
   document.getElementById('settings-chatbot-avatar-image').value = s.chatbotAvatarImage || '';
   document.getElementById('settings-chatbot-avatar-status').textContent = 'Upload Custom Avatar';
@@ -1417,9 +1417,9 @@ function setBackgroundType(type) {
   adminState.selectedBackgroundType = type;
   document.querySelectorAll('.bg-type-btn').forEach(btn => {
     const active = btn.dataset.bgTypeBtn === type;
-    btn.classList.toggle('bg-[#6E1423]', active);
-    btn.classList.toggle('text-[#E8B75D]', active);
-    btn.classList.toggle('border-[#C9922E]', active);
+    btn.classList.toggle('bg-[#7a2026]', active);
+    btn.classList.toggle('text-[#ff9a33]', active);
+    btn.classList.toggle('border-[#ff7a0a]', active);
     btn.classList.toggle('bg-gray-50', !active);
     btn.classList.toggle('text-gray-700', !active);
     btn.classList.toggle('border-gray-200', !active);
@@ -1433,9 +1433,9 @@ function setAdminPanelType(type) {
   adminState.selectedAdminPanelType = type;
   document.querySelectorAll('.admin-bg-type-btn').forEach(btn => {
     const active = btn.dataset.adminBgTypeBtn === type;
-    btn.classList.toggle('bg-[#6E1423]', active);
-    btn.classList.toggle('text-[#E8B75D]', active);
-    btn.classList.toggle('border-[#C9922E]', active);
+    btn.classList.toggle('bg-[#7a2026]', active);
+    btn.classList.toggle('text-[#ff9a33]', active);
+    btn.classList.toggle('border-[#ff7a0a]', active);
     btn.classList.toggle('bg-gray-50', !active);
     btn.classList.toggle('text-gray-700', !active);
     btn.classList.toggle('border-gray-200', !active);
@@ -1469,9 +1469,9 @@ function setBackgroundPattern(pattern) {
   adminState.selectedBackgroundPattern = pattern;
   document.querySelectorAll('.pattern-style-btn').forEach(btn => {
     const active = btn.dataset.patternBtn === pattern;
-    btn.classList.toggle('bg-[#6E1423]', active);
-    btn.classList.toggle('text-[#E8B75D]', active);
-    btn.classList.toggle('border-[#C9922E]', active);
+    btn.classList.toggle('bg-[#7a2026]', active);
+    btn.classList.toggle('text-[#ff9a33]', active);
+    btn.classList.toggle('border-[#ff7a0a]', active);
     btn.classList.toggle('bg-gray-50', !active);
     btn.classList.toggle('text-gray-700', !active);
     btn.classList.toggle('border-gray-200', !active);
@@ -1828,15 +1828,15 @@ async function resetToOriginalBrandDefaults() {
     tagline: 'From the Heart of Bikaner',
     logoUrl: 'assets/images/meerav_logo.png',
     faviconUrl: 'assets/images/meerav_logo.png',
-    primaryColor: '#6E1423',
-    secondaryColor: '#4E0D18',
-    accentColor: '#C9922E',
-    accentLightColor: '#E8B75D',
-    headingColor: '#4E0D18',
-    textColor: '#1F1A17',
-    adminPanelColor: '#2A1410',
+    primaryColor: '#7a2026',
+    secondaryColor: '#681e23',
+    accentColor: '#ff7a0a',
+    accentLightColor: '#ff9a33',
+    headingColor: '#681e23',
+    textColor: '#312f29',
+    adminPanelColor: '#681e23',
     adminPanelType: 'solid',
-    adminPanelGradient: ['#4E0D18', '#2A1410', '#030712'],
+    adminPanelGradient: ['#681e23', '#681e23', '#030712'],
     fontFamily: 'Outfit',
     headingFontFamily: 'Outfit',
     baseFontSize: '16px',
@@ -1846,8 +1846,8 @@ async function resetToOriginalBrandDefaults() {
     freeShippingThreshold: 499,
     shippingFlatFee: 50,
     backgroundType: 'solid',
-    backgroundColor: '#FBF8F3',
-    backgroundGradient: ['#FBF8F3', '#FDF1D0', '#C9922E'],
+    backgroundColor: '#fefdfb',
+    backgroundGradient: ['#fefdfb', '#FDF1D0', '#ff7a0a'],
     backgroundImageUrl: '',
     backgroundPattern: 'none',
     heroVideoUrl: 'assets/videos/meerav_brand_film.mp4',
@@ -1909,8 +1909,8 @@ function renderAdminCoupons() {
   }
 
   tbody.innerHTML = coupons.map(c => `
-    <tr class="border-b hover:bg-[#FBF8F3]/40 transition">
-      <td class="p-3 font-black text-[#6E1423] text-xs">${c.code}</td>
+    <tr class="border-b hover:bg-[#fefdfb]/40 transition">
+      <td class="p-3 font-black text-[#7a2026] text-xs">${c.code}</td>
       <td class="p-3 text-xs font-bold text-gray-800">${c.discountType === 'percentage' ? `${c.discountVal}% OFF` : `Flat ${formatPrice(c.discountVal)} OFF`}</td>
       <td class="p-3 text-xs text-gray-600">${c.minOrderAmount ? formatPrice(c.minOrderAmount) : 'No Min'}</td>
       <td class="p-3 text-xs text-gray-500 truncate max-w-xs">${c.description || '—'}</td>
@@ -1921,7 +1921,7 @@ function renderAdminCoupons() {
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="px-2.5 py-1 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="openCouponModal('${c.id}')" title="Edit Coupon" class="px-2.5 py-1 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
         <button onclick="deleteCoupon('${c.id}')" title="Delete Coupon" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
@@ -2029,16 +2029,16 @@ function renderAdminTestimonials() {
 
   tbody.innerHTML = items.map(t => {
     return `
-    <tr class="border-b hover:bg-[#FBF8F3]/40 transition">
+    <tr class="border-b hover:bg-[#fefdfb]/40 transition">
       <td class="p-3 flex items-center gap-3">
-        <img src="${t.avatar || 'assets/images/avatar_default.jpg'}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border-2 border-[#DDD2BF] shadow-sm shrink-0" />
+        <img src="${t.avatar || 'assets/images/avatar_default.jpg'}" alt="${t.name}" class="w-8 h-8 rounded-full object-cover border-2 border-[#f5e0bb] shadow-sm shrink-0" />
         <div>
           <span class="font-bold text-xs text-gray-900 block">${t.name}</span>
           <span class="text-[10px] text-gray-400 font-medium">${t.city || 'Verified Customer'}</span>
         </div>
       </td>
       <td class="p-3 text-xs text-gray-600">${t.city || '—'}</td>
-      <td class="p-3 text-xs text-[#C9922E] font-black tracking-wider">${'<i class="fas fa-star"></i>'.repeat(Math.round(t.rating || 5))}</td>
+      <td class="p-3 text-xs text-[#ff7a0a] font-black tracking-wider">${'<i class="fas fa-star"></i>'.repeat(Math.round(t.rating || 5))}</td>
       <td class="p-3 text-xs text-gray-600 truncate max-w-xs">${t.reviewText}</td>
       <td class="p-3">
         <button onclick="toggleTestimonialVisible('${t.id}')" title="${t.isVisible !== false ? 'Click to hide from homepage' : 'Click to show on homepage'}" class="px-2 py-0.5 rounded-full text-[10px] font-black flex items-center gap-1 ${t.isVisible !== false ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-500'}">
@@ -2153,7 +2153,7 @@ function renderAdminFaqs() {
   }
 
   tbody.innerHTML = items.map(f => `
-    <tr class="border-b hover:bg-[#FBF8F3]/40 transition">
+    <tr class="border-b hover:bg-[#fefdfb]/40 transition">
       <td class="p-3 font-bold text-xs text-gray-900 max-w-sm">${f.question}</td>
       <td class="p-3 text-xs text-gray-600 capitalize">${f.category || 'General'}</td>
       <td class="p-3 text-xs text-gray-500 font-mono">${f.sortOrder || 1}</td>
@@ -2163,7 +2163,7 @@ function renderAdminFaqs() {
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="px-2.5 py-1 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="openFaqModal('${f.id}')" title="Edit FAQ" class="px-2.5 py-1 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
         <button onclick="deleteFaq('${f.id}')" title="Delete FAQ" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
@@ -2273,7 +2273,7 @@ function renderPageContentForm() {
   });
 
   container.innerHTML = Object.entries(grouped).map(([page, pageRows]) => `
-    <div class="p-5 bg-[#FBF8F3]/50 rounded-2xl border border-[#E8E0D4]/80 space-y-4">
+    <div class="p-5 bg-[#fefdfb]/50 rounded-2xl border border-[#faf0dc]/80 space-y-4">
       <div class="text-xs font-black text-indigo-700 uppercase tracking-wider flex items-center gap-1.5">
         
         <span>${page.toUpperCase()} SECTION TEXT</span>
@@ -2310,8 +2310,8 @@ function renderPageContentForm() {
               <div>
                 <label class="block text-xs font-bold text-gray-700 mb-1">${row.label} <code class="text-[10px] text-gray-400 font-normal">(${row.key})</code></label>
                 <div class="flex items-center gap-3">
-                  <img src="${row.value || 'assets/images/feature_oil.jpg'}" class="w-12 h-12 rounded-xl object-cover border border-[#E8E0D4] shrink-0" data-content-image-preview="${row.key}" />
-                  <label class="flex-1 py-2 px-3 bg-white hover:bg-[#FBF8F3] text-[#4E0D18] font-bold border border-gray-200 rounded-xl text-center block cursor-pointer text-[11px]">
+                  <img src="${row.value || 'assets/images/feature_oil.jpg'}" class="w-12 h-12 rounded-xl object-cover border border-[#faf0dc] shrink-0" data-content-image-preview="${row.key}" />
+                  <label class="flex-1 py-2 px-3 bg-white hover:bg-[#fefdfb] text-[#681e23] font-bold border border-gray-200 rounded-xl text-center block cursor-pointer text-[11px]">
                      <span data-content-image-status="${row.key}">Upload Image</span>
                     <input type="file" accept="image/*" onchange="handlePageContentImageUpload(event, '${row.key}')" class="hidden" />
                   </label>
@@ -2465,7 +2465,7 @@ async function renderAdminAccounts() {
   const logTbody = document.getElementById('admin-activity-log-table');
   if (logTbody) {
     logTbody.innerHTML = activityLog.length ? activityLog.map(entry => `
-      <tr class="hover:bg-[#FBF8F3]/40 transition">
+      <tr class="hover:bg-[#fefdfb]/40 transition">
         <td class="text-xs font-bold text-gray-900">${entry.admin_name} <span class="text-[10px] text-gray-400 uppercase">(${entry.admin_role})</span></td>
         <td class="text-xs text-gray-700 font-mono">${entry.action}${entry.undone ? ' <span class="text-[9px] text-gray-400 font-sans">(undone)</span>' : ''}</td>
         <td class="text-xs text-gray-600">${entry.target || '—'}</td>
@@ -2477,16 +2477,16 @@ async function renderAdminAccounts() {
   }
 
   tbody.innerHTML = adminState.admins.map(a => `
-    <tr class="hover:bg-[#FBF8F3]/40 transition">
+    <tr class="hover:bg-[#fefdfb]/40 transition">
       <td>
-        <button onclick="openAdminDetailModal('${a.id}')" class="font-black text-xs text-gray-900 hover:text-[#6E1423] hover:underline transition">
-          ${a.name}${a.id === meId ? ' <span class="text-[10px] text-[#A87A22] font-bold">(you)</span>' : ''}
+        <button onclick="openAdminDetailModal('${a.id}')" class="font-black text-xs text-gray-900 hover:text-[#7a2026] hover:underline transition">
+          ${a.name}${a.id === meId ? ' <span class="text-[10px] text-[#c74600] font-bold">(you)</span>' : ''}
         </button>
         ${a.banned ? '<span class="ml-1.5 px-1.5 py-0.2 text-[9px] font-black rounded bg-red-100 text-red-700">BANNED</span>' : ''}
       </td>
       <td class="text-xs text-gray-600">${a.email}</td>
       <td>
-        <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#6E1423] text-[#E8B75D]' : 'bg-[#F5EFE4] text-[#6E1423]'}">
+        <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#7a2026] text-[#ff9a33]' : 'bg-[#fdf9f0] text-[#7a2026]'}">
           ${roleDisplayName(a.role).toUpperCase()}
         </span>
       </td>
@@ -2495,7 +2495,7 @@ async function renderAdminAccounts() {
         ${a.role === 'root' || a.id === meId ? `
           <span class="text-[10px] text-gray-300 font-bold">—</span>
         ` : `
-          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-lg text-xs font-bold transition flex items-center gap-1 ml-auto whitespace-nowrap">
+          <button onclick="openAdminDetailModal('${a.id}')" class="px-2.5 py-1 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-lg text-xs font-bold transition flex items-center gap-1 ml-auto whitespace-nowrap">
             <i class="fas fa-eye"></i> View
           </button>
         `}
@@ -2611,7 +2611,7 @@ async function openAdminDetailModal(adminId) {
   document.getElementById('admin-detail-name').textContent = a.name;
   document.getElementById('admin-detail-meta').textContent = `${a.email} · joined ${new Date(a.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`;
   document.getElementById('admin-detail-badge').innerHTML = `
-    <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#6E1423] text-[#E8B75D]' : 'bg-[#F5EFE4] text-[#6E1423]'}">${roleDisplayName(a.role).toUpperCase()}</span>
+    <span class="px-2.5 py-0.5 text-[10px] font-black rounded-full ${a.role === 'root' ? 'bg-[#7a2026] text-[#ff9a33]' : 'bg-[#fdf9f0] text-[#7a2026]'}">${roleDisplayName(a.role).toUpperCase()}</span>
     ${a.banned ? '<span class="px-2.5 py-0.5 text-[10px] font-black rounded-full bg-red-100 text-red-700">BANNED</span>' : ''}
   `;
 
@@ -2658,7 +2658,7 @@ async function renderAdminDetailActivity(adminId) {
         <div class="text-[10px] text-gray-400">${new Date(entry.created_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}</div>
       </div>
       ${UNDOABLE_ACTIONS.has(entry.action) && !entry.undone ? `
-        <button onclick="undoActivity('${entry.id}')" class="px-2.5 py-1.5 bg-white hover:bg-[#FBF8F3] text-[#6E1423] border border-[#DDD2BF] rounded-lg text-[11px] font-black transition shrink-0">
+        <button onclick="undoActivity('${entry.id}')" class="px-2.5 py-1.5 bg-white hover:bg-[#fefdfb] text-[#7a2026] border border-[#f5e0bb] rounded-lg text-[11px] font-black transition shrink-0">
            Undo
         </button>
       ` : ''}
@@ -2842,10 +2842,10 @@ function showToast(message, type = 'info') {
   if (!container) return;
 
   const toast = document.createElement('div');
-  const bgColor = type === 'success' ? 'bg-emerald-700' : type === 'error' ? 'bg-red-700' : 'bg-[#4E0D18]';
+  const bgColor = type === 'success' ? 'bg-emerald-700' : type === 'error' ? 'bg-red-700' : 'bg-[#681e23]';
   const icon = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle';
 
-  toast.className = `toast flex items-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-semibold ${bgColor} border border-[#C9922E]/40 shadow-xl`;
+  toast.className = `toast flex items-center gap-2 px-4 py-3 rounded-xl text-white text-xs font-semibold ${bgColor} border border-[#ff7a0a]/40 shadow-xl`;
   toast.innerHTML = `<span>${message}</span>`;
 
   container.appendChild(toast);
@@ -2873,9 +2873,9 @@ function renderAdminTrustBadges() {
   }
 
   tbody.innerHTML = items.map(b => `
-    <tr class="border-b hover:bg-[#FBF8F3]/40 transition">
+    <tr class="border-b hover:bg-[#fefdfb]/40 transition">
       <td class="p-3">
-        <div class="w-11 h-11 rounded-xl bg-[#C9922E] overflow-hidden p-0.5 border border-[#DDD2BF] shadow-sm shrink-0">
+        <div class="w-11 h-11 rounded-xl bg-[#ff7a0a] overflow-hidden p-0.5 border border-[#f5e0bb] shadow-sm shrink-0">
           <img src="${b.image || 'assets/images/feature_oil.jpg'}" alt="${b.title}" class="w-full h-full object-cover rounded-lg" onerror="this.src='assets/images/feature_oil.jpg'" />
         </div>
       </td>
@@ -2888,7 +2888,7 @@ function renderAdminTrustBadges() {
         </button>
       </td>
       <td class="p-3 text-right space-x-1">
-        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-[#FBF8F3] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
+        <button onclick="openTrustBadgeModal('${b.id}')" title="Edit Badge" class="px-2.5 py-1 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-pen"></i> Edit</button>
         <button onclick="deleteTrustBadge('${b.id}')" title="Delete Badge" class="px-2.5 py-1 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-lg text-xs font-bold transition whitespace-nowrap"><i class="fas fa-trash-can"></i> Delete</button>
       </td>
     </tr>
@@ -3030,9 +3030,9 @@ function renderAdminStories() {
 
   const s = { ...window.SITE_SETTINGS, ...(adminState.siteSettings || {}) };
   const masterFilmRow = `
-    <div class="flex items-center gap-3 p-3 bg-[#6E1423]/5 border-2 border-[#6E1423]/20 rounded-2xl">
-      <div class="w-8 h-8 rounded-full bg-[#6E1423] text-[#E8B75D] flex items-center justify-center shrink-0" title="Always plays first"></div>
-      <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-[#DDD2BF] shadow-sm shrink-0 relative flex items-center justify-center">
+    <div class="flex items-center gap-3 p-3 bg-[#7a2026]/5 border-2 border-[#7a2026]/20 rounded-2xl">
+      <div class="w-8 h-8 rounded-full bg-[#7a2026] text-[#ff9a33] flex items-center justify-center shrink-0" title="Always plays first"></div>
+      <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-[#f5e0bb] shadow-sm shrink-0 relative flex items-center justify-center">
         <video src="${s.heroVideoUrl || 'assets/videos/meerav_brand_film.mp4'}" poster="${s.heroImageUrl || ''}" muted class="w-full h-full object-cover"></video>
         <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs">▶</span>
       </div>
@@ -3047,9 +3047,9 @@ function renderAdminStories() {
   const items = (adminState.broadcastStories || []).slice().sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
   container.innerHTML = masterFilmRow + items.map((s, idx) => `
-    <div class="flex items-center gap-3 p-3 bg-[#FBF8F3]/40 border border-[#F0E9DD] rounded-2xl hover:border-[#DDD2BF] transition">
-      <div class="w-8 h-8 rounded-full bg-[#6E1423] text-[#E8B75D] flex items-center justify-center font-black text-xs shrink-0" title="Play order">${idx + 2}</div>
-      <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-[#DDD2BF] shadow-sm shrink-0 relative flex items-center justify-center">
+    <div class="flex items-center gap-3 p-3 bg-[#fefdfb]/40 border border-[#faf0dc] rounded-2xl hover:border-[#f5e0bb] transition">
+      <div class="w-8 h-8 rounded-full bg-[#7a2026] text-[#ff9a33] flex items-center justify-center font-black text-xs shrink-0" title="Play order">${idx + 2}</div>
+      <div class="w-14 h-18 rounded-xl bg-black overflow-hidden border border-[#f5e0bb] shadow-sm shrink-0 relative flex items-center justify-center">
         ${s.mediaType === 'video' ? `
           <video src="${s.mediaUrl}" poster="${s.posterUrl || ''}" muted class="w-full h-full object-cover"></video>
           <span class="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-xs">▶</span>

@@ -1,16 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from 'lucide-react';
 
-export default function HeritageSection() {
-  const navigate = useNavigate();
+interface HeritageSectionProps {
+  onShopNow: () => void;
+}
 
+export function HeritageSection({ onShopNow }: HeritageSectionProps) {
   return (
     <section className="relative py-24 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="/images/hero/hero_roasted_trio.jpg"
-          alt="Heritage of Bikaner"
+          src="https://images.pexels.com/photos/31339268/pexels-photo-31339268.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600"
+          alt="Junagarh Fort, Bikaner"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-maroon-900/90 via-maroon-800/80 to-saffron-700/60" />
@@ -34,7 +35,7 @@ export default function HeritageSection() {
             of life that is slowly disappearing.
           </p>
           <button
-            onClick={() => navigate("/shop")}
+            onClick={onShopNow}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95"
           >
             Explore Our Snacks

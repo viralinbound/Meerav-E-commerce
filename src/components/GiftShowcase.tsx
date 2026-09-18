@@ -1,42 +1,33 @@
-import { useNavigate } from "react-router-dom";
-import { Gift, Sparkles, Crown, ArrowRight } from "lucide-react";
-import { useCatalog } from "../context/CatalogContext";
+import { Gift, Sparkles, Crown, ArrowRight } from 'lucide-react';
 
-const collections = [
-  {
-    icon: Gift,
-    title: "Gift Boxes",
-    description: "Choose from our stunning range of curated gift boxes and find the right gift to enhance any occasion.",
-    image: "/images/products/meerav_6.jpg",
-    color: "from-maroon-600 to-maroon-800",
-    category: "gifts",
-  },
-  {
-    icon: Crown,
-    title: "Handmade Gourmet",
-    description: "In each piece you will discover an exquisitely smooth velvety taste of our individually crafted gourmet snacks.",
-    image: "/images/products/meerav_7.jpg",
-    color: "from-saffron-500 to-saffron-700",
-    category: "sweets",
-  },
-  {
-    icon: Sparkles,
-    title: "Festive Specials",
-    description: "Discover the exquisitely smooth velvety taste of our limited-edition festive collections, made only during celebrations.",
-    image: "/images/products/meerav_2.jpg",
-    color: "from-mustard-500 to-mustard-700",
-    category: "namkeen",
-  },
-];
+interface GiftShowcaseProps {
+  onShopGifts: () => void;
+}
 
-export default function GiftShowcase() {
-  const navigate = useNavigate();
-  const { categories } = useCatalog();
-
-  function goToCollection(preferredCategory) {
-    const exists = categories.some((c) => c.id === preferredCategory);
-    navigate(exists ? `/category/${preferredCategory}` : "/shop");
-  }
+export function GiftShowcase({ onShopGifts }: GiftShowcaseProps) {
+  const collections = [
+    {
+      icon: Gift,
+      title: 'Gift Boxes',
+      description: 'Choose from our stunning range of curated gift boxes and find the right gift to enhance any occasion.',
+      image: 'https://images.pexels.com/photos/28769884/pexels-photo-28769884.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+      color: 'from-maroon-600 to-maroon-800',
+    },
+    {
+      icon: Crown,
+      title: 'Handmade Gourmet',
+      description: 'In each piece you will discover an exquisitely smooth velvety taste of our individually crafted gourmet snacks.',
+      image: 'https://images.pexels.com/photos/8887061/pexels-photo-8887061.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+      color: 'from-saffron-500 to-saffron-700',
+    },
+    {
+      icon: Sparkles,
+      title: 'Festive Specials',
+      description: 'Discover the exquisitely smooth velvety taste of our limited-edition festive collections, made only during celebrations.',
+      image: 'https://images.pexels.com/photos/8887011/pexels-photo-8887011.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+      color: 'from-mustard-500 to-mustard-700',
+    },
+  ];
 
   return (
     <section className="py-20 bg-gradient-to-b from-cream-100 to-cream-50">
@@ -57,7 +48,7 @@ export default function GiftShowcase() {
           {collections.map((item) => (
             <div
               key={item.title}
-              onClick={() => goToCollection(item.category)}
+              onClick={onShopGifts}
               className="group cursor-pointer rounded-2xl overflow-hidden bg-white shadow-md card-hover"
             >
               <div className="relative h-64 overflow-hidden">

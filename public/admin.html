@@ -27,7 +27,7 @@
   <!-- ========================================================================= -->
   <!-- 1. PROTECTED ADMIN LOGIN GATE SCREEN                                      -->
   <!-- ========================================================================= -->
-  <div id="admin-login-gate" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#4E0D18] via-[#2A1410] to-gray-950">
+  <div id="admin-login-gate" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#681e23] via-[#681e23] to-gray-950">
     <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-fade-in border-2 border-[#ff7a0a]/50">
       
       <div class="text-center space-y-2 mb-6">
@@ -50,7 +50,7 @@
             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff7a0a] focus:outline-none text-sm" />
         </div>
 
-        <button type="submit" class="w-full py-3.5 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black text-xs rounded-xl shadow-lg shadow-[#7a2026]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#ff7a0a]">
+        <button type="submit" class="w-full py-3.5 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black text-xs rounded-xl shadow-lg shadow-[#7a2026]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#ff7a0a]">
           <span>Authorize & Enter Portal</span>
           →
         </button>
@@ -69,11 +69,11 @@
   <!-- 1B. FORCED PASSWORD CHANGE (first login with a temp password, or after   -->
   <!--     root issues a new one) — dashboard stays locked until this is done.  -->
   <!-- ========================================================================= -->
-  <div id="admin-force-password-gate" class="hidden min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#4E0D18] via-[#2A1410] to-gray-950">
+  <div id="admin-force-password-gate" class="hidden min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#681e23] via-[#681e23] to-gray-950">
     <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 animate-fade-in border-2 border-[#ff7a0a]/50">
 
       <div class="text-center space-y-2 mb-6">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-[#F5EFE4] text-[#7a2026] flex items-center justify-center text-2xl">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-[#fdf9f0] text-[#7a2026] flex items-center justify-center text-2xl">
           
         </div>
         <h2 class="text-xl font-black text-gray-900 tracking-tight">Set Your Password</h2>
@@ -94,7 +94,7 @@
             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#ff7a0a] focus:outline-none text-sm" />
         </div>
 
-        <button type="submit" class="w-full py-3.5 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black text-xs rounded-xl shadow-lg shadow-[#7a2026]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#ff7a0a]">
+        <button type="submit" class="w-full py-3.5 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black text-xs rounded-xl shadow-lg shadow-[#7a2026]/30 transition transform active:scale-98 flex items-center justify-center gap-2 border border-[#ff7a0a]">
           Set New Password & Continue
         </button>
       </form>
@@ -114,12 +114,12 @@
   <div id="admin-dashboard-container" class="hidden min-h-screen flex flex-col lg:flex-row">
     
     <!-- Left Navigation Sidebar (Multi-Page Tabs) — desktop only; phones/tablets use the horizontal tab bar in the main workspace below -->
-    <aside class="admin-sidebar hidden lg:flex lg:w-64 p-5 flex-col justify-between shrink-0 border-r border-gray-800 bg-[#2A1410]">
+    <aside class="admin-sidebar hidden lg:flex lg:w-64 p-5 flex-col justify-between shrink-0 border-r border-gray-800 bg-[#681e23]">
       <div class="space-y-6">
         
         <!-- Admin Header -->
         <div class="flex items-center gap-3 pb-5 border-b border-gray-800">
-          <img id="admin-sidebar-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-11 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm border border-[#E8E0D4]" />
+          <img id="admin-sidebar-logo" src="assets/images/meerav_logo.png" alt="MEERAV Logo" class="brand-logo-img h-11 w-auto object-contain bg-white rounded-xl p-1.5 shadow-sm border border-[#faf0dc]" />
           <div>
             <span class="font-black text-sm text-white tracking-wider block">MEERAV OPS</span>
             <span class="text-[10px] text-[#ff9a33] font-bold block">Bikaner Dispatch Hub</span>
@@ -196,7 +196,7 @@
       </div>
 
       <!-- Mobile Horizontal Tab Bar (Visible on phones & tablets) -->
-      <div class="flex lg:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-[#E8E0D4]/80">
+      <div class="flex lg:hidden items-center gap-2 overflow-x-auto pb-2 no-scrollbar border-b border-[#faf0dc]/80">
         <button onclick="showAdminPage('overview')" data-page="overview" class="admin-mobile-nav-item active px-3.5 py-2 rounded-xl text-xs font-black bg-[#7a2026] text-[#ff9a33] border border-[#ff7a0a] shrink-0 flex items-center gap-1.5 whitespace-nowrap">
           <i class="fas fa-gauge-high"></i> Overview
         </button>
@@ -245,7 +245,7 @@
           <div class="admin-stat-card">
             <div class="flex items-center justify-between mb-2">
               <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Orders</span>
-              <div class="w-9 h-9 rounded-xl bg-[#fefdfb] text-[#6B625A] flex items-center justify-center text-sm"></div>
+              <div class="w-9 h-9 rounded-xl bg-[#fefdfb] text-[#6e6b62] flex items-center justify-center text-sm"></div>
             </div>
             <div id="admin-kpi-orders" class="text-3xl font-black text-gray-900">0</div>
             <div class="text-[11px] text-[#7a2026] font-bold mt-1.5">Processed orders</div>
@@ -311,7 +311,7 @@
             <!-- Filter Buttons -->
             <div class="flex items-center gap-1.5">
               <button onclick="filterAdminOrders('all')" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-xs font-bold">All</button>
-              <button onclick="filterAdminOrders('processing')" class="px-3 py-1.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#7a2026] rounded-lg text-xs font-bold">Processing</button>
+              <button onclick="filterAdminOrders('processing')" class="px-3 py-1.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#7a2026] rounded-lg text-xs font-bold">Processing</button>
               <button onclick="filterAdminOrders('dispatched')" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg text-xs font-bold">Dispatched</button>
               <button onclick="filterAdminOrders('delivered')" class="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold">Delivered</button>
             </div>
@@ -351,7 +351,7 @@
             <div class="flex items-center gap-3">
               <input type="text" oninput="searchAdminProducts(this.value)" placeholder="Search products..." 
                 class="px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#ff7a0a] focus:outline-none" />
-              <button onclick="openAddProductModal()" class="px-5 py-2.5 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#ff7a0a] shrink-0">
+              <button onclick="openAddProductModal()" class="px-5 py-2.5 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#ff7a0a] shrink-0">
                 <i class="fas fa-plus"></i> Add Product
               </button>
             </div>
@@ -386,7 +386,7 @@
               <p class="text-xs text-gray-500">Create new snack categories, update titles, descriptions and icons</p>
             </div>
 
-            <button onclick="openAddCategoryModal()" class="px-5 py-2.5 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#ff7a0a]">
+            <button onclick="openAddCategoryModal()" class="px-5 py-2.5 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black text-xs rounded-xl shadow-md transition flex items-center gap-2 border border-[#ff7a0a]">
               <i class="fas fa-plus"></i> Add New Category
             </button>
           </div>
@@ -482,7 +482,7 @@
                   <p class="font-bold text-emerald-800 text-[11px] mb-1">MEERAV Dispatch Alert</p>
                   <p>Namaste <strong>Pooja Sharma</strong>!</p>
                   <p class="mt-1">Your order <strong>#MEERAV-8801</strong> of <strong>₹467</strong> is en route with live GPS tracking!</p>
-                  <div class="p-2 bg-[#fefdfb] rounded-lg border border-[#E8E0D4] mt-2 text-[11px] text-gray-700">
+                  <div class="p-2 bg-[#fefdfb] rounded-lg border border-[#faf0dc] mt-2 text-[11px] text-gray-700">
  <strong>Items:</strong> Meerav Authentic Aloo Bhujia (200g) x2, Moth Bhujia (500g) x1<br/>
  <strong>Courier:</strong> DTDC (AWB: 88492019)<br/>
  <strong>Live Map:</strong> https://meerav.com/track/8801
@@ -540,7 +540,7 @@
         </div>
 
         <!-- Custom Notification Dispatcher -->
-        <div class="bg-gradient-to-r from-[#4E0D18] via-[#2A1410] to-gray-950 rounded-3xl p-6 text-white shadow-xl border border-[#ff7a0a]/40">
+        <div class="bg-gradient-to-r from-[#681e23] via-[#681e23] to-gray-950 rounded-3xl p-6 text-white shadow-xl border border-[#ff7a0a]/40">
           <h4 class="text-lg font-black text-[#ff9a33] mb-1">Dispatch Custom Alert / Broadcast</h4>
           <p class="text-xs text-gray-300 mb-4">Send a simulation alert to test customer recipient channels</p>
 
@@ -606,13 +606,13 @@
       <div id="view-settings" class="admin-page-view hidden space-y-8">
 
         <!-- Sticky page header — Save/Reset always visible, no scrolling to the bottom of the form -->
-        <div class="sticky top-0 z-30 -mx-6 px-6 py-3 bg-[#fefdfb]/95 backdrop-blur-md border-b border-[#E8E0D4] flex flex-wrap items-center justify-between gap-3">
+        <div class="sticky top-0 z-30 -mx-6 px-6 py-3 bg-[#fefdfb]/95 backdrop-blur-md border-b border-[#faf0dc] flex flex-wrap items-center justify-between gap-3">
           <h2 class="font-black text-gray-900 text-base">Store Settings</h2>
           <div class="flex items-center gap-3">
             <button type="button" onclick="resetToOriginalBrandDefaults()" class="px-4 py-2.5 bg-red-950/70 hover:bg-red-900 text-red-200 border border-red-500/50 font-bold text-xs rounded-2xl shadow-md transition flex items-center gap-2 cursor-pointer">
               ↻ Reset to Default Brand (MEERAV)
             </button>
-            <button type="button" onclick="document.getElementById('settings-form').requestSubmit();" id="settings-save-btn" class="px-6 py-2.5 bg-[#ff7a0a] hover:bg-[#A87A22] text-[#4E0D18] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
+            <button type="button" onclick="document.getElementById('settings-form').requestSubmit();" id="settings-save-btn" class="px-6 py-2.5 bg-[#ff7a0a] hover:bg-[#c74600] text-[#681e23] font-black text-sm rounded-2xl shadow-xl transition transform hover:scale-105 flex items-center gap-2 cursor-pointer">
               <i class="fas fa-check"></i> Save All Store Settings
             </button>
           </div>
@@ -638,9 +638,9 @@
             <div>
               <label class="block text-xs font-bold text-gray-600 mb-1.5">Brand Logo (PNG/SVG with transparency)</label>
               <div class="flex items-center gap-3 flex-wrap">
-                <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-[#fefdfb] border border-[#E8E0D4] p-1 shadow-xs shrink-0" />
+                <img id="settings-logo-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-[#fefdfb] border border-[#faf0dc] p-1 shadow-xs shrink-0" />
                 <div class="flex-1 min-w-0">
-                  <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+                  <input type="file" accept="image/*" id="settings-logo-upload" onchange="handleSettingsLogoUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#fdf9f0] file:text-[#681e23] file:text-[11px] file:font-bold hover:file:bg-[#faf0dc] file:cursor-pointer cursor-pointer" />
                   <p id="settings-logo-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
                 </div>
                 <button type="button" onclick="removeSettingsImage('logo')" title="Reset to default logo" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
@@ -651,9 +651,9 @@
             <div>
               <label class="block text-xs font-bold text-gray-600 mb-1.5">Favicon</label>
               <div class="flex items-center gap-3 flex-wrap">
-                <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-[#fefdfb] border border-[#E8E0D4] p-1 shadow-xs shrink-0" />
+                <img id="settings-favicon-preview" src="assets/images/meerav_logo.png" class="w-14 h-14 rounded-xl object-contain bg-[#fefdfb] border border-[#faf0dc] p-1 shadow-xs shrink-0" />
                 <div class="flex-1 min-w-0">
-                  <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+                  <input type="file" accept="image/*" id="settings-favicon-upload" onchange="handleSettingsFaviconUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#fdf9f0] file:text-[#681e23] file:text-[11px] file:font-bold hover:file:bg-[#faf0dc] file:cursor-pointer cursor-pointer" />
                   <p id="settings-favicon-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
                 </div>
                 <button type="button" onclick="removeSettingsImage('favicon')" title="Reset to default favicon" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
@@ -808,9 +808,9 @@
               <div id="bg-image-fields" class="hidden">
                 <label class="block text-xs font-bold text-gray-600 mb-1.5">Background Image</label>
                 <div class="flex items-center gap-3 flex-wrap">
-                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-[#fefdfb] border border-[#E8E0D4] hidden shrink-0" />
+                  <img id="settings-bg-image-preview" src="" class="w-14 h-14 rounded-xl object-cover bg-[#fefdfb] border border-[#faf0dc] hidden shrink-0" />
                   <div class="flex-1 min-w-0">
-                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+                    <input type="file" accept="image/*" id="settings-bg-image-upload" onchange="handleSettingsBgImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#fdf9f0] file:text-[#681e23] file:text-[11px] file:font-bold hover:file:bg-[#faf0dc] file:cursor-pointer cursor-pointer" />
                     <p id="settings-bg-image-status" class="text-[10px] text-gray-400 mt-1 truncate"></p>
                   </div>
                   <button type="button" onclick="removeSettingsImage('bg-image')" title="Remove background image" class="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition shrink-0">
@@ -1072,9 +1072,9 @@
                 <label class="block text-xs font-bold text-gray-600 mb-1.5">Or Upload Your Own Brand Avatar Image</label>
                 <div class="flex items-center gap-3">
                   <div id="settings-chatbot-avatar-preview-wrap" class="hidden">
-                    <img id="settings-chatbot-avatar-preview" class="w-12 h-12 rounded-full object-cover border border-[#E8E0D4] shrink-0" />
+                    <img id="settings-chatbot-avatar-preview" class="w-12 h-12 rounded-full object-cover border border-[#faf0dc] shrink-0" />
                   </div>
-                  <label class="flex-1 py-2.5 px-3.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer text-xs">
+                  <label class="flex-1 py-2.5 px-3.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] font-bold border border-[#f5e0bb] rounded-xl text-center block cursor-pointer text-xs">
                      <span id="settings-chatbot-avatar-status">Upload Custom Avatar</span>
                     <input type="file" accept="image/*" onchange="handleChatbotAvatarUpload(event)" class="hidden" />
                   </label>
@@ -1092,7 +1092,7 @@
             <div>
               <div class="flex items-center justify-between mb-2">
                 <label class="block text-xs font-bold text-gray-600">Quick Prompt Buttons</label>
-                <button type="button" onclick="addChatbotQuickPromptRow()" class="px-2.5 py-1 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] border border-[#DDD2BF] rounded-lg text-[10px] font-bold transition flex items-center gap-1">
+                <button type="button" onclick="addChatbotQuickPromptRow()" class="px-2.5 py-1 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] border border-[#f5e0bb] rounded-lg text-[10px] font-bold transition flex items-center gap-1">
                   + Add Quick Prompt
                 </button>
               </div>
@@ -1205,7 +1205,7 @@
               </h3>
               <p class="text-xs text-gray-500 mt-0.5">Customize the 4 horizontal guarantee badges with real-time images, titles, descriptions, and section colors.</p>
             </div>
-            <button type="button" onclick="openTrustBadgeModal()" class="px-4 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5 border border-[#ff7a0a]">
+            <button type="button" onclick="openTrustBadgeModal()" class="px-4 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black text-xs rounded-xl shadow-sm flex items-center gap-1.5 border border-[#ff7a0a]">
               + Add Feature Badge
             </button>
           </div>
@@ -1254,7 +1254,7 @@ Save Section Text
             <h3 class="font-black text-xl text-gray-900">Admin Accounts</h3>
             <p class="text-xs text-gray-500">Everyone with access to this portal. Backed by real Supabase Auth accounts — not a shared password.</p>
           </div>
-          <button onclick="openAddAdminModal()" class="px-4 py-2.5 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 border border-[#ff7a0a]">
+          <button onclick="openAddAdminModal()" class="px-4 py-2.5 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 border border-[#ff7a0a]">
 Register New Admin
           </button>
         </div>
@@ -1306,7 +1306,7 @@ Register New Admin
   <!-- REGISTER NEW ADMIN MODAL                                                  -->
   <!-- ========================================================================= -->
   <div id="admin-form-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-[#faf0dc]">
 
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div class="flex items-center gap-2">
@@ -1335,7 +1335,7 @@ Register New Admin
           <button type="button" onclick="closeAdminFormModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
             Cancel
           </button>
-          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">
+          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">
             Create Admin Account
           </button>
         </div>
@@ -1347,7 +1347,7 @@ Register New Admin
   <!-- ONE-TIME TEMPORARY PASSWORD DISPLAY (new admin, or a password reset)     -->
   <!-- ========================================================================= -->
   <div id="temp-password-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in border border-[#faf0dc]">
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div class="flex items-center gap-2">
           
@@ -1361,8 +1361,8 @@ Register New Admin
         <p id="temp-pw-message" class="text-gray-600"></p>
         <p id="temp-pw-name-email" class="text-[11px] text-gray-400 font-bold"></p>
         <div class="flex items-center gap-2">
-          <div id="temp-pw-value" class="flex-1 px-4 py-3 bg-[#fefdfb] border-2 border-[#DDD2BF] rounded-xl font-mono text-sm font-black text-[#7a2026] tracking-wide select-all"></div>
-          <button onclick="copyTempPassword()" class="w-11 h-11 shrink-0 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] rounded-xl flex items-center justify-center transition" title="Copy">
+          <div id="temp-pw-value" class="flex-1 px-4 py-3 bg-[#fefdfb] border-2 border-[#f5e0bb] rounded-xl font-mono text-sm font-black text-[#7a2026] tracking-wide select-all"></div>
+          <button onclick="copyTempPassword()" class="w-11 h-11 shrink-0 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] rounded-xl flex items-center justify-center transition" title="Copy">
             <i class="fas fa-copy"></i>
           </button>
         </div>
@@ -1378,7 +1378,7 @@ Register New Admin
   <!-- PER-ADMIN DETAIL MODAL (activity + undo, warnings, ban/reset/remove)     -->
   <!-- ========================================================================= -->
   <div id="admin-detail-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[92vh] flex flex-col border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[92vh] flex flex-col border border-[#faf0dc]">
 
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div class="min-w-0">
@@ -1417,7 +1417,7 @@ Register New Admin
   <!-- 3. ADD / EDIT PRODUCT FORM MODAL WITH FILE IMAGE UPLOAD                   -->
   <!-- ========================================================================= -->
   <div id="product-form-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[92vh] flex flex-col border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-fade-in max-h-[92vh] flex flex-col border border-[#faf0dc]">
       
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div class="flex items-center gap-2">
@@ -1479,23 +1479,23 @@ Register New Admin
           </div>
 
           <!-- Product Photo Gallery — unlimited photos, uploads to Supabase Storage. First photo is the cover shown everywhere. -->
-          <div class="sm:col-span-2 p-3.5 bg-[#fefdfb]/70 rounded-2xl border border-[#E8E0D4] space-y-2">
+          <div class="sm:col-span-2 p-3.5 bg-[#fefdfb]/70 rounded-2xl border border-[#faf0dc] space-y-2">
             <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
                Product Photo Gallery (add as many as you like — first one is the cover)
             </label>
             <input type="file" accept="image/*" multiple onchange="handleProductPhotosUpload(event)"
-              class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#7a2026] file:text-[#ff9a33] hover:file:bg-[#4E0D18] cursor-pointer text-xs text-gray-500" />
+              class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#7a2026] file:text-[#ff9a33] hover:file:bg-[#681e23] cursor-pointer text-xs text-gray-500" />
             <span id="prod-photos-upload-status" class="text-[10px] text-gray-400 block"></span>
             <div id="prod-photos-grid" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
 
           <!-- Product Video Gallery — unlimited videos, uploads to Supabase Storage. First video plays on hover/reels. -->
-          <div class="sm:col-span-2 p-3.5 bg-[#fefdfb]/70 rounded-2xl border border-[#E8E0D4] space-y-2">
+          <div class="sm:col-span-2 p-3.5 bg-[#fefdfb]/70 rounded-2xl border border-[#faf0dc] space-y-2">
             <label class="block text-gray-800 font-bold text-xs flex items-center gap-1.5">
                Product Video Gallery (optional, add as many as you like)
             </label>
             <input type="file" accept="video/*" multiple onchange="handleProductVideosUpload(event)"
-              class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#7a2026] file:text-[#ff9a33] hover:file:bg-[#4E0D18] cursor-pointer text-xs text-gray-500" />
+              class="file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#7a2026] file:text-[#ff9a33] hover:file:bg-[#681e23] cursor-pointer text-xs text-gray-500" />
             <span id="prod-videos-upload-status" class="text-[10px] text-gray-400 block"></span>
             <div id="prod-videos-grid" class="flex flex-wrap gap-2 pt-1"></div>
           </div>
@@ -1508,7 +1508,7 @@ Register New Admin
         </div>
 
         <!-- Variant Pricing & Discount Modifier -->
-        <div class="p-4 bg-[#fefdfb] rounded-2xl border border-[#E8E0D4] space-y-3">
+        <div class="p-4 bg-[#fefdfb] rounded-2xl border border-[#faf0dc] space-y-3">
           <h4 class="font-black text-gray-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
              Pack Size Variant Pricing & Discounts
           </h4>
@@ -1544,7 +1544,7 @@ Register New Admin
           <button type="button" onclick="closeProductFormModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
             Cancel
           </button>
-          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">
+          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">
             Save Product to Catalog
           </button>
         </div>
@@ -1557,7 +1557,7 @@ Register New Admin
   <!-- 4. ADD / EDIT CATEGORY MODAL                                              -->
   <!-- ========================================================================= -->
   <div id="category-form-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#faf0dc]">
       
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div class="flex items-center gap-2">
@@ -1582,21 +1582,21 @@ Register New Admin
           <label class="block text-gray-700 font-bold mb-1">Category Image / Photo (Real Showcase)</label>
           <div class="flex items-center gap-3 mb-2">
             <div class="relative shrink-0">
-              <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#DDD2BF] shadow-sm" alt="Category Image" />
+              <img id="cat-form-img-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-2xl object-cover border-2 border-[#f5e0bb] shadow-sm" alt="Category Image" />
               <button type="button" onclick="removeCategoryImage()" title="Remove Image" class="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center text-[10px] shadow-md"><i class="fas fa-xmark"></i></button>
             </div>
             <div class="flex-1 min-w-0 space-y-1.5">
-              <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#F5EFE4] file:text-[#4E0D18] file:text-[11px] file:font-bold hover:file:bg-[#EDE4D3] file:cursor-pointer cursor-pointer" />
+              <input type="file" accept="image/*" id="cat-form-image-upload" onchange="handleCategoryImageUpload(event)" class="block w-full max-w-full text-[11px] text-gray-500 file:mr-2 file:px-3 file:py-1.5 file:rounded-lg file:border-0 file:bg-[#fdf9f0] file:text-[#681e23] file:text-[11px] file:font-bold hover:file:bg-[#faf0dc] file:cursor-pointer cursor-pointer" />
               <p id="cat-form-image-status" class="text-[10px] text-gray-400"></p>
               <input type="text" id="cat-form-image" placeholder="or paste an image URL: assets/images/cinematic_bhujia.jpg or https://..."
                 oninput="document.getElementById('cat-form-img-preview').src = this.value || 'assets/images/cinematic_bhujia.jpg'"
                 class="w-full px-3 py-2 border rounded-xl text-xs font-mono focus:ring-2 focus:ring-[#ff7a0a] focus:outline-none" />
               <div class="flex gap-1.5 mt-1.5 flex-wrap">
-                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_bhujia.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_bhujia.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#E8E0D4]">Bhujia</button>
-                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_mixture.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_mixture.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#E8E0D4]">Mixture</button>
-                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_papad.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_papad.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#E8E0D4]">Mathri</button>
-                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_moong_dal.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_moong_dal.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#E8E0D4]">Diet</button>
-                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/commercial_scene_4.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/commercial_scene_4.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#E8E0D4]">Sweets</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_bhujia.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_bhujia.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#faf0dc]">Bhujia</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_mixture.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_mixture.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#faf0dc]">Mixture</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_papad.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_papad.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#faf0dc]">Mathri</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/cinematic_moong_dal.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/cinematic_moong_dal.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#faf0dc]">Diet</button>
+                <button type="button" onclick="document.getElementById('cat-form-image').value='assets/images/commercial_scene_4.jpg'; document.getElementById('cat-form-img-preview').src='assets/images/commercial_scene_4.jpg'" class="px-2 py-0.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[10px] font-bold text-[#7a2026] rounded-lg border border-[#faf0dc]">Sweets</button>
               </div>
             </div>
           </div>
@@ -1619,7 +1619,7 @@ Register New Admin
           <button type="button" onclick="closeCategoryFormModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">
             Cancel
           </button>
-          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">
+          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">
             Save Category
           </button>
         </div>
@@ -1767,7 +1767,7 @@ Register New Admin
 
   <!-- Testimonial Form Modal -->
   <div id="testimonial-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#faf0dc]">
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div class="flex items-center gap-2">
 
@@ -1806,12 +1806,12 @@ Register New Admin
           <input type="text" id="testimonial-form-avatar" placeholder="assets/images/drive_1.jpg" class="w-full px-3 py-2 border rounded-xl font-mono text-xs" />
         </div>
         <div class="flex items-center gap-2 pt-1">
-          <input type="checkbox" id="testimonial-form-visible" checked class="w-4 h-4 text-[#A87A22] rounded" />
+          <input type="checkbox" id="testimonial-form-visible" checked class="w-4 h-4 text-[#c74600] rounded" />
           <label for="testimonial-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeTestimonialModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Save Review</button>
+          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Save Review</button>
         </div>
       </form>
     </div>
@@ -1864,7 +1864,7 @@ Register New Admin
   
   <!-- Trust / Feature Badge Modal -->
   <div id="trust-badge-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#faf0dc]">
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div>
           <h3 id="trust-badge-modal-title" class="font-black text-sm text-[#ff9a33]">Feature Badge Editor</h3>
@@ -1885,9 +1885,9 @@ Register New Admin
         <div>
           <label class="block text-gray-700 font-bold mb-1">Feature Image *</label>
           <div class="flex items-center gap-3">
-            <img id="trust-badge-form-preview" src="assets/images/feature_oil.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#E8E0D4] shrink-0" />
+            <img id="trust-badge-form-preview" src="assets/images/feature_oil.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#faf0dc] shrink-0" />
             <div class="flex-1">
-              <label class="w-full py-2 px-3 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+              <label class="w-full py-2 px-3 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] font-bold border border-[#f5e0bb] rounded-xl text-center block cursor-pointer">
                  <span id="trust-badge-form-image-status">Upload Image</span>
                 <input type="file" accept="image/*" onchange="handleTrustBadgeImageUpload(event)" class="hidden" />
               </label>
@@ -1901,13 +1901,13 @@ Register New Admin
             <input type="number" id="trust-badge-form-sort" placeholder="1" class="w-full px-3 py-2 border rounded-xl font-bold" />
           </div>
           <div class="flex items-center gap-2 pt-5">
-            <input type="checkbox" id="trust-badge-form-visible" checked class="w-4 h-4 text-[#A87A22] rounded" />
+            <input type="checkbox" id="trust-badge-form-visible" checked class="w-4 h-4 text-[#c74600] rounded" />
             <label for="trust-badge-form-visible" class="font-bold text-gray-700">Visible on Storefront</label>
           </div>
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeTrustBadgeModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Save Feature Badge</button>
+          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Save Feature Badge</button>
         </div>
       </form>
     </div>
@@ -1917,7 +1917,7 @@ Register New Admin
   <!-- Broadcast Story & Video Reel Modal -->
   <div id="story-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-red-200">
-      <div class="p-4 bg-[#4E0D18] text-white flex items-center justify-between border-b border-[#ff7a0a]">
+      <div class="p-4 bg-[#681e23] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div>
           <h3 id="story-modal-title" class="font-black text-sm text-[#ff9a33]">Video Story & Reel Editor</h3>
           <span class="text-[10px] text-[#ff9a33]">Watch & Shop Broadcast Carousel</span>
@@ -1945,7 +1945,7 @@ Register New Admin
         </div>
         <div>
           <label class="block text-gray-700 font-bold mb-1">Video / Photo Upload *</label>
-          <label class="w-full py-2 px-3 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+          <label class="w-full py-2 px-3 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] font-bold border border-[#f5e0bb] rounded-xl text-center block cursor-pointer">
              <span id="story-form-media-status">Upload Video / Photo</span>
             <input type="file" accept="video/*,image/*" onchange="handleStoryMediaUpload(event)" class="hidden" />
           </label>
@@ -1954,8 +1954,8 @@ Register New Admin
         <div>
           <label class="block text-gray-700 font-bold mb-1">Poster Thumbnail Image</label>
           <div class="flex items-center gap-3">
-            <img id="story-form-poster-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#E8E0D4] shrink-0" />
-            <label class="flex-1 py-2 px-3 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+            <img id="story-form-poster-preview" src="assets/images/cinematic_bhujia.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#faf0dc] shrink-0" />
+            <label class="flex-1 py-2 px-3 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] font-bold border border-[#f5e0bb] rounded-xl text-center block cursor-pointer">
                <span id="story-form-poster-status">Upload Thumbnail</span>
               <input type="file" accept="image/*" onchange="handleStoryPosterUpload(event)" class="hidden" />
             </label>
@@ -1984,7 +1984,7 @@ Register New Admin
         </div>
         <div class="pt-3 border-t flex justify-end gap-2">
           <button type="button" onclick="closeStoryModal()" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl">Cancel</button>
-          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Save Story Reel</button>
+          <button type="submit" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Save Story Reel</button>
         </div>
       </form>
     </div>
@@ -1992,7 +1992,7 @@ Register New Admin
 
   <!-- Master Brand Film Editor — slide #1 in the hero carousel, always first, always visible -->
   <div id="master-film-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#E8E0D4]">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-fade-in flex flex-col border border-[#faf0dc]">
       <div class="p-4 bg-[#7a2026] text-white flex items-center justify-between border-b border-[#ff7a0a]">
         <div>
           <h3 class="font-black text-sm text-[#ff9a33]">Master Brand Film</h3>
@@ -2003,7 +2003,7 @@ Register New Admin
       <div class="p-6 space-y-4 text-xs">
         <div>
           <label class="block text-gray-700 font-bold mb-1">Hero Cinematic Video</label>
-          <label class="w-full py-2.5 px-3.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+          <label class="w-full py-2.5 px-3.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] font-bold border border-[#f5e0bb] rounded-xl text-center block cursor-pointer">
              <span id="master-film-video-status">Upload Video</span>
             <input type="file" accept="video/*" onchange="handleMasterFilmVideoUpload(event)" class="hidden" />
           </label>
@@ -2011,15 +2011,15 @@ Register New Admin
         <div>
           <label class="block text-gray-700 font-bold mb-1">Poster / Fallback Image</label>
           <div class="flex items-center gap-3">
-            <img id="master-film-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#E8E0D4] shrink-0" />
-            <label class="flex-1 py-2.5 px-3.5 bg-[#fefdfb] hover:bg-[#F5EFE4] text-[#4E0D18] font-bold border border-[#DDD2BF] rounded-xl text-center block cursor-pointer">
+            <img id="master-film-image-preview" src="assets/images/commercial_scene_1.jpg" class="w-14 h-14 rounded-xl object-cover border border-[#faf0dc] shrink-0" />
+            <label class="flex-1 py-2.5 px-3.5 bg-[#fefdfb] hover:bg-[#fdf9f0] text-[#681e23] font-bold border border-[#f5e0bb] rounded-xl text-center block cursor-pointer">
                <span id="master-film-image-status">Upload Image</span>
               <input type="file" accept="image/*" onchange="handleMasterFilmImageUpload(event)" class="hidden" />
             </label>
           </div>
         </div>
         <div class="pt-3 border-t flex justify-end">
-          <button type="button" onclick="closeMasterFilmModal()" class="px-6 py-2 bg-[#7a2026] hover:bg-[#4E0D18] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Done</button>
+          <button type="button" onclick="closeMasterFilmModal()" class="px-6 py-2 bg-[#7a2026] hover:bg-[#681e23] text-[#ff9a33] font-black rounded-xl shadow-md border border-[#ff7a0a]">Done</button>
         </div>
       </div>
     </div>
