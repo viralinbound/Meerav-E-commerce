@@ -116,7 +116,7 @@ export default {
         },
       },
       backgroundImage: {
-        'hero-pattern': "linear-gradient(135deg, rgba(146,35,42,0.85) 0%, rgba(199,70,0,0.7) 100%)",
+        'hero-pattern': "linear-gradient(135deg, rgba(146,35,42,0.55) 0%, rgba(199,70,0,0.35) 100%)",
         'royal-gradient': "linear-gradient(135deg, #7a2026 0%, #92232a 50%, #c74600 100%)",
       },
     },

@@ -18,7 +18,7 @@ export function Hero({ onShopNow }: HeroProps) {
   }, [next]);
 
   return (
-    <section id="home-hero" className="relative h-[70vh] min-h-[500px] overflow-hidden">
+    <section id="home-hero" className="relative h-screen min-h-[600px] overflow-hidden">
       {heroBanners.map((banner, idx) => (
         <div
           key={banner.id}
@@ -28,16 +28,19 @@ export function Hero({ onShopNow }: HeroProps) {
         >
           <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-hero-pattern" />
+          {/* Extra darkening only behind the text column, so the rest of the
+              photo stays bright and clearly visible while copy stays legible. */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="container-max section-padding w-full">
               <div className="max-w-2xl">
-                <span className="inline-block px-4 py-1.5 bg-saffron-500/90 text-white text-sm font-medium rounded-full mb-6 animate-slide-up">
+                <span className="inline-block px-4 py-1.5 bg-saffron-500/90 text-white text-sm font-medium rounded-full mb-6 animate-slide-up text-shadow-lg">
                   Authentic Bikaneri Taste Since 1984
                 </span>
                 <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-cream-50 leading-tight mb-6 text-shadow-lg animate-slide-up">
                   {banner.title}
                 </h2>
-                <p className="text-lg text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up">
+                <p className="text-lg text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up text-shadow-lg">
                   {banner.subtitle}
                 </p>
                 <button
