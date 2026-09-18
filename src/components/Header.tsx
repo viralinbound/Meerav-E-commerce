@@ -88,37 +88,6 @@ export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) 
               </div>
             </button>
 
-            {/* Category Nav - inline, one line */}
-            <nav className="hidden lg:flex items-center gap-0.5 shrink-0">
-              <button
-                onClick={() => onNavigate('home')}
-                className="px-1.5 py-1 text-[11px] xl:text-xs font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors whitespace-nowrap"
-              >
-                Home
-              </button>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => handleCategoryClick(cat.id)}
-                  className="px-1.5 py-1 text-[11px] xl:text-xs font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors whitespace-nowrap"
-                >
-                  {cat.name}
-                </button>
-              ))}
-              <button
-                onClick={() => onNavigate('story')}
-                className="px-1.5 py-1 text-[11px] xl:text-xs font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors whitespace-nowrap"
-              >
-                Our Story
-              </button>
-              <button
-                onClick={() => onNavigate('faq')}
-                className="px-1.5 py-1 text-[11px] xl:text-xs font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors whitespace-nowrap"
-              >
-                FAQ
-              </button>
-            </nav>
-
             {/* Search Bar - Desktop */}
             <form onSubmit={handleSearch} className="hidden xl:flex flex-1 min-w-0 max-w-[160px] 2xl:max-w-[200px]">
               <div className="relative w-full">
