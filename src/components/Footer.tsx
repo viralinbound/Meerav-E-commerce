@@ -72,7 +72,7 @@ export function Footer({ onNavigate, onCategorySelect }: FooterProps) {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <img src="/images/meerav_logo.png" alt="Meerav" className="w-10 h-10 rounded-full object-cover" />
+              <img src="/images/meerav_logo.png" alt="Meerav" className="h-12 w-auto object-contain" />
               <div>
                 <h4 className="font-serif text-xl font-bold text-cream-50">Meerav</h4>
                 <p className="text-[10px] text-cream-400 tracking-widest uppercase">Bikaneri Namkeens</p>
