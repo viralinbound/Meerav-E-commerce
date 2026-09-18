@@ -70,7 +70,14 @@ export function DynamicTheme() {
       .fill-saffron-400 { fill: var(--color-accent-light) !important; }
     ` : ''}
     ${headingColor ? `
-      h1, h2, h3, .font-serif { color: var(--color-heading); }
+      /* Excludes headings already styled light-on-dark (text-cream-*/text-white)
+         for photo overlays, footer, cards, etc. — otherwise the admin's chosen
+         heading color silently overrides them and they become unreadable
+         against their dark background. */
+      h1:not([class*="text-cream"]):not([class*="text-white"]),
+      h2:not([class*="text-cream"]):not([class*="text-white"]),
+      h3:not([class*="text-cream"]):not([class*="text-white"]),
+      .font-serif:not([class*="text-cream"]):not([class*="text-white"]) { color: var(--color-heading); }
     ` : ''}
     ${textColor ? `body { color: var(--color-text); }` : ''}
     ${backgroundColor ? `body { background-color: var(--color-bg); }` : ''}

@@ -80,11 +80,11 @@ export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) 
         <div className="container-max section-padding">
           <div className="flex items-center flex-nowrap py-2.5 gap-1.5 xl:gap-2">
             {/* Logo */}
-            <button onClick={() => onNavigate('home')} className="flex items-center gap-1.5 shrink-0">
-              <img src="/images/meerav_logo.png" alt="Meerav" className="w-8 h-8 rounded-full object-cover shrink-0" />
+            <button onClick={() => onNavigate('home')} className="flex items-center gap-2 shrink-0">
+              <img src="/images/meerav_logo.png" alt="Meerav" className="w-12 h-12 rounded-full object-cover shrink-0 shadow-md ring-2 ring-saffron-400/60" />
               <div className="text-left hidden xl:block">
-                <h1 className="font-serif text-base font-bold text-maroon-800 leading-none whitespace-nowrap">{settings?.siteName || 'Meerav'}</h1>
-                <p className="text-[8px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap">{settings?.tagline || 'Bikaneri Namkeens'}</p>
+                <h1 className="font-serif text-lg font-bold text-maroon-800 leading-none whitespace-nowrap">{settings?.siteName || 'Meerav'}</h1>
+                <p className="text-[9px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap">{settings?.tagline || 'Bikaneri Namkeens'}</p>
               </div>
             </button>
 
