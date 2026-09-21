@@ -102,6 +102,13 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
             {/* Right Actions */}
             <div className="flex items-center gap-1.5 lg:gap-3 shrink-0 ml-auto lg:ml-0">
               <button
+                onClick={() => onNavigate('track')}
+                className="hidden lg:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                Your Orders
+              </button>
+              <button
                 onClick={() => onNavigate('account')}
                 className="hidden lg:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
               >
@@ -177,7 +184,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                   onClick={() => { onNavigate('track'); setMobileMenuOpen(false); }}
                   className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-charcoal-600 border border-cream-300 rounded-md"
                 >
-                  <MapPin className="w-4 h-4" /> Track Order
+                  <MapPin className="w-4 h-4" /> Your Orders
                 </button>
                 <button
                   onClick={() => { onNavigate('account'); setMobileMenuOpen(false); }}
