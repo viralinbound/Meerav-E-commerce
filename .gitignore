@@ -24,3 +24,4 @@ public/js/env-config.js
 node_modules/
 .vercel
 
+dist/
