@@ -10,10 +10,12 @@ interface AuthModalProps {
 type Mode = 'signin' | 'signup';
 
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { customer, signIn, signUp, signOut } = useAuth();
+  const { customer, signIn, signUp, signOut, resendConfirmationEmail } = useAuth();
   const [mode, setMode] = useState<Mode>('signin');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [needsConfirmation, setNeedsConfirmation] = useState(false);
+  const [resendStatus, setResendStatus] = useState('');
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', pincode: '', password: '' });
 
   if (!isOpen) return null;
@@ -25,17 +27,33 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    setResendStatus('');
+    setNeedsConfirmation(false);
     setBusy(true);
     const res = mode === 'signin' ? await signIn(form.email, form.password) : await signUp(form);
     setBusy(false);
     if (res.error) {
-      setError(res.error.message || 'Something went wrong. Please try again.');
+      const message: string = res.error.message || 'Something went wrong. Please try again.';
+      if (/email.*not.*confirmed/i.test(message)) {
+        setError('Your email address hasn’t been confirmed yet.');
+        setNeedsConfirmation(true);
+      } else {
+        setError(message);
+      }
     } else if (res.needsConfirmation) {
       setError('Check your email to confirm your account, then sign in.');
       setMode('signin');
     } else {
       onClose();
     }
+  }
+
+  async function handleResend() {
+    setResendStatus('');
+    setBusy(true);
+    const res = await resendConfirmationEmail(form.email);
+    setBusy(false);
+    setResendStatus(res.error ? res.error.message || 'Could not resend email.' : 'Confirmation email sent — check your inbox.');
   }
 
   return (
@@ -152,6 +170,17 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 </div>
 
                 {error && <p className="text-sm text-red-600">{error}</p>}
+                {needsConfirmation && (
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    disabled={busy}
+                    className="text-sm text-maroon-700 font-medium hover:underline"
+                  >
+                    Resend confirmation email
+                  </button>
+                )}
+                {resendStatus && <p className="text-sm text-charcoal-500">{resendStatus}</p>}
 
                 <button type="submit" disabled={busy} className="btn-primary w-full justify-center">
                   {busy ? 'Please wait…' : mode === 'signin' ? 'Sign In' : 'Create Account'}

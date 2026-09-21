@@ -27,6 +27,7 @@ interface AuthContextValue {
   signUp: (fields: SignUpFields) => Promise<{ error?: any; needsConfirmation?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error?: any }>;
   signOut: () => Promise<void>;
+  resendConfirmationEmail: (email: string) => Promise<{ error?: any }>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -83,8 +84,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setCustomer(null);
   }
 
+  async function resendConfirmationEmail(email: string) {
+    return MiraDB.resendConfirmationEmail(email);
+  }
+
   return (
-    <AuthContext.Provider value={{ customer, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ customer, loading, signUp, signIn, signOut, resendConfirmationEmail }}>
       {children}
     </AuthContext.Provider>
   );

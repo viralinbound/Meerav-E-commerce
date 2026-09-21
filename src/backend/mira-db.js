@@ -510,6 +510,11 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     await supabaseClient.auth.signOut();
   }
 
+  async function resendConfirmationEmail(email) {
+    const { error } = await supabaseClient.auth.resend({ type: 'signup', email });
+    return { error };
+  }
+
   async function getCurrentSession() {
     const { data } = await supabaseClient.auth.getSession();
     return data.session;
@@ -674,7 +679,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchBroadcastStories, dbUpsertStory, dbDeleteStory,
     subscribeTable,
     uploadMedia, deleteMedia,
-    signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange,
+    signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange, resendConfirmationEmail,
     adminClient: adminSupabaseClient,
     signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
     fetchAdmins, registerAdmin, removeAdmin,
