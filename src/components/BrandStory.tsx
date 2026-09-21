@@ -70,18 +70,17 @@ export function BrandStory() {
           </div>
 
           {/* Image */}
-          <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+          <div>
+            <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src="https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/sections/our-tradition-banner.webp"
                 alt="Bikaner lives in every bite — traditional bhujia frying setup"
                 className="w-full h-[500px] object-cover object-top"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-maroon-900/60 via-transparent to-transparent" />
             </div>
-            <div className="absolute -bottom-10 -left-6 bg-cream-50 rounded-2xl shadow-xl p-6 w-[calc(100%-1rem)] max-w-sm hidden md:block">
+            <div className="bg-cream-50 rounded-2xl shadow-xl p-6 mt-6">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 bg-royal-gradient rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-royal-gradient rounded-full flex items-center justify-center shrink-0">
                   <ShieldCheck className="w-6 h-6 text-cream-50" />
                 </div>
                 <div>
