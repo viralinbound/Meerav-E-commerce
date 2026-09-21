@@ -13,7 +13,8 @@ import {
   dbTestimonialToApp, appTestimonialToDb,
   dbFaqToApp, appFaqToDb,
   dbTrustBadgeToApp, appTrustBadgeToDb,
-  dbBroadcastStoryToApp, appBroadcastStoryToDb
+  dbBroadcastStoryToApp, appBroadcastStoryToDb,
+  dbHeroBannerToApp, appHeroBannerToDb
 } from './mappers.js';
 
 export const MEDIA_BUCKET = 'meerav-media';
@@ -296,6 +297,36 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
       const list = (await fetchCoupons(client)).filter(c => c.id !== couponId);
       localStorage.setItem('mira_coupons', JSON.stringify(list));
     } catch(e) {}
+    return true;
+  }
+
+  async function fetchHeroBanners(client = supabaseClient) {
+    // No localStorage fallback here (unlike testimonials/faqs below) --
+    // if the table doesn't exist yet (migration not run), the storefront
+    // falls back to the hardcoded heroBanners in data/products.ts instead,
+    // so an empty/error result here is meaningful, not something to mask.
+    const { data, error } = await client.from('hero_banners').select('*').order('sort_order', { ascending: true });
+    if (error) { console.error('fetchHeroBanners', error); return []; }
+    return (data || []).map(dbHeroBannerToApp);
+  }
+
+  async function dbUpsertHeroBanner(banner, client = supabaseClient) {
+    const { error } = await client.from('hero_banners').upsert(appHeroBannerToDb(banner));
+    if (error) { console.error('dbUpsertHeroBanner', error); return false; }
+    return true;
+  }
+
+  async function dbDeleteHeroBanner(bannerId, client = supabaseClient) {
+    const { error } = await client.from('hero_banners').delete().eq('id', bannerId);
+    if (error) { console.error('dbDeleteHeroBanner', error); return false; }
+    return true;
+  }
+
+  async function reorderHeroBanners(orderedIds, client = supabaseClient) {
+    for (let i = 0; i < orderedIds.length; i++) {
+      const { error } = await client.from('hero_banners').update({ sort_order: i + 1 }).eq('id', orderedIds[i]);
+      if (error) { console.error('reorderHeroBanners', error); return false; }
+    }
     return true;
   }
 
@@ -717,6 +748,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchPageContent, dbUpsertPageContent,
     fetchPageDesignPatches, dbUpsertPageDesignPatches,
     fetchCoupons, dbUpsertCoupon, dbDeleteCoupon,
+    fetchHeroBanners, dbUpsertHeroBanner, dbDeleteHeroBanner, reorderHeroBanners,
     fetchTestimonials, dbUpsertTestimonial, dbDeleteTestimonial,
     fetchFaqs, dbUpsertFaq, dbDeleteFaq,
     fetchTrustBadges, dbUpsertTrustBadge, dbDeleteTrustBadge,

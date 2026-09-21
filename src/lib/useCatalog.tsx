@@ -2,6 +2,15 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { MiraDB } from './supabase.js';
 import { resolveImagePath } from './resolveImage.js';
 import type { Product } from '@/data/products';
+import { heroBanners as staticHeroBanners } from '@/data/products';
+
+export interface HeroBanner {
+  id: string;
+  image: string;
+  title: string;
+  subtitle: string;
+  cta: string;
+}
 
 export interface Testimonial {
   id: string;
@@ -28,6 +37,7 @@ export interface KitchenStory {
 
 interface CatalogValue {
   products: Product[];
+  heroBanners: HeroBanner[];
   testimonials: Testimonial[];
   faqs: Faq[];
   kitchenStories: KitchenStory[];
@@ -68,6 +78,7 @@ function toProduct(row: any): Product {
 
 export function CatalogProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
+  const [heroBanners, setHeroBanners] = useState<HeroBanner[]>(staticHeroBanners);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [faqs, setFaqs] = useState<Faq[]>([]);
   const [kitchenStories, setKitchenStories] = useState<KitchenStory[]>([]);
@@ -78,13 +89,24 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
     Promise.all([
       MiraDB.fetchProducts(),
+      MiraDB.fetchHeroBanners(),
       MiraDB.fetchTestimonials(),
       MiraDB.fetchFaqs(),
       MiraDB.fetchBroadcastStories(),
     ])
-      .then(([prods, testi, faqRows, stories]) => {
+      .then(([prods, banners, testi, faqRows, stories]) => {
         if (cancelled) return;
         setProducts(prods.map(toProduct));
+        // Falls back to the hardcoded banners (see useState above) if the
+        // hero_banners table doesn't exist yet or is empty, so the hero
+        // carousel never goes blank.
+        if (banners && banners.length) {
+          setHeroBanners(
+            banners
+              .filter((b: any) => b.isVisible)
+              .map((b: any) => ({ id: b.id, image: resolveImagePath(b.image), title: b.title, subtitle: b.subtitle, cta: b.cta }))
+          );
+        }
         setTestimonials(
           testi
             .filter((t: any) => t.isVisible)
@@ -118,7 +140,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <CatalogContext.Provider value={{ products, testimonials, faqs, kitchenStories, loading, error }}>
+    <CatalogContext.Provider value={{ products, heroBanners, testimonials, faqs, kitchenStories, loading, error }}>
       {children}
     </CatalogContext.Provider>
   );

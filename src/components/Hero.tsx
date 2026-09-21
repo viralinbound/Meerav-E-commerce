@@ -1,21 +1,29 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
-import { heroBanners } from '@/data/products';
+import { useCatalog } from '@/lib/useCatalog';
 
 interface HeroProps {
   onShopNow: () => void;
 }
 
 export function Hero({ onShopNow }: HeroProps) {
+  const { heroBanners } = useCatalog();
   const [current, setCurrent] = useState(0);
 
-  const next = useCallback(() => setCurrent((p) => (p + 1) % heroBanners.length), []);
-  const prev = useCallback(() => setCurrent((p) => (p - 1 + heroBanners.length) % heroBanners.length), []);
+  const next = useCallback(() => setCurrent((p) => (p + 1) % heroBanners.length), [heroBanners.length]);
+  const prev = useCallback(() => setCurrent((p) => (p - 1 + heroBanners.length) % heroBanners.length), [heroBanners.length]);
 
   useEffect(() => {
+    if (current >= heroBanners.length) setCurrent(0);
+  }, [heroBanners.length, current]);
+
+  useEffect(() => {
+    if (heroBanners.length < 2) return;
     const interval = setInterval(next, 6000);
     return () => clearInterval(interval);
-  }, [next]);
+  }, [next, heroBanners.length]);
+
+  if (heroBanners.length === 0) return null;
 
   return (
     <section
@@ -77,7 +85,7 @@ export function Hero({ onShopNow }: HeroProps) {
           onClick={onShopNow}
           className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
         >
-          {heroBanners[current].cta}
+          {heroBanners[current]?.cta || heroBanners[0].cta}
           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>

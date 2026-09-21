@@ -372,6 +372,30 @@ export function appTrustBadgeToDb(b) {
   };
 }
 
+export function dbHeroBannerToApp(row) {
+  return {
+    id: row.id,
+    image: row.image,
+    title: row.title || '',
+    subtitle: row.subtitle || '',
+    cta: row.cta || 'Shop Now',
+    sortOrder: Number(row.sort_order) || 0,
+    isVisible: row.is_visible !== false
+  };
+}
+
+export function appHeroBannerToDb(b) {
+  return {
+    id: b.id,
+    image: b.image,
+    title: b.title || '',
+    subtitle: b.subtitle || '',
+    cta: b.cta || 'Shop Now',
+    sort_order: Number(b.sortOrder) || 0,
+    is_visible: b.isVisible !== false
+  };
+}
+
 export function dbBroadcastStoryToApp(row) {
   return {
     id: row.id,
