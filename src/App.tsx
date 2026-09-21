@@ -92,7 +92,21 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   };
 
-  const handleShopNow = () => goToShop();
+  // "Shop Now" / "Explore Our Snacks" scroll to the Our Collection section
+  // on this same page instead of navigating to the separate all-products
+  // Shop page — no page redirect.
+  const handleShopNow = () => {
+    if (page !== 'home') {
+      setPage('home');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById('bestsellers')?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+      return;
+    }
+    document.getElementById('bestsellers')?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleCheckout = () => {
     if (!customer) {
