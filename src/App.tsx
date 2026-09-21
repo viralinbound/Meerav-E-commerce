@@ -12,18 +12,19 @@ import { BrandStory } from '@/components/BrandStory';
 import { HeritageSection } from '@/components/HeritageSection';
 import { GiftShowcase } from '@/components/GiftShowcase';
 import { BestSellers } from '@/components/BestSellers';
-import { ProductGrid } from '@/components/ProductGrid';
 import { ProductModal } from '@/components/ProductModal';
 import { CartDrawer } from '@/components/CartDrawer';
 import { CheckoutModal } from '@/components/CheckoutModal';
 import { OrderTracker } from '@/components/OrderTracker';
 import { Testimonials, KitchenStories, InstagramFeed, FAQSection } from '@/components/Sections';
 import { Footer } from '@/components/Footer';
+import { ShopPage } from '@/components/ShopPage';
 import type { Product } from '@/data/products';
 
 function AppContent() {
   const { loading, error } = useCatalog();
   const { customer } = useAuth();
+  const [page, setPage] = useState<'home' | 'shop'>('home');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -31,18 +32,42 @@ function AppContent() {
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
 
+  // Category browsing always lives on its own page — never mixed in with
+  // the homepage sections — so a category click always shows only that
+  // category's products, with an explicit way back to the homepage.
+  const goToShop = (catId: string | null = null) => {
+    setSelectedCategory(catId);
+    setSearchQuery('');
+    setPage('shop');
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  };
+
+  const goHome = () => {
+    setPage('home');
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  };
+
   const handleNavigate = (section: string) => {
     if (section === 'home') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      goHome();
     } else if (section === 'products') {
-      const el = document.getElementById('products');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      // Callers that just called onCategorySelect or onSearch rely on that
+      // state surviving this call — never touch selectedCategory/searchQuery
+      // here, or a stale closure would clobber the fresh pick.
+      setPage('shop');
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     } else if (section === 'story') {
-      const el = document.getElementById('story');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (page !== 'home') { setPage('home'); }
+      requestAnimationFrame(() => {
+        const el = document.getElementById('story');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
     } else if (section === 'faq') {
-      const el = document.getElementById('faq');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (page !== 'home') { setPage('home'); }
+      requestAnimationFrame(() => {
+        const el = document.getElementById('faq');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
     } else if (section === 'track') {
       setTrackerOpen(true);
     } else if (section === 'account') {
@@ -52,25 +77,17 @@ function AppContent() {
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+    setPage('shop');
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   };
 
   const handleCategorySelect = (catId: string | null) => {
-    setSelectedCategory(catId);
-    setSearchQuery('');
+    goToShop(catId);
   };
 
-  const handleShopNow = () => {
-    setSelectedCategory(null);
-    setSearchQuery('');
-    const el = document.getElementById('products');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
+  const handleShopNow = () => goToShop(null);
 
-  const handleShopGifts = () => {
-    setSelectedCategory('gifts');
-    const el = document.getElementById('products');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
+  const handleShopGifts = () => goToShop('gifts');
 
   const handleCheckout = () => {
     if (!customer) {
@@ -110,42 +127,41 @@ function AppContent() {
       />
 
       <main>
-        <div id="home">
-          <Hero onShopNow={handleShopNow} />
-        </div>
+        {page === 'shop' ? (
+          <ShopPage
+            selectedCategory={selectedCategory}
+            searchQuery={searchQuery}
+            onCategoryChange={setSelectedCategory}
+            onProductClick={setSelectedProduct}
+            onBackHome={goHome}
+          />
+        ) : (
+          <>
+            <div id="home">
+              <Hero onShopNow={handleShopNow} />
+            </div>
 
-        <CategoryShowcase onCategorySelect={handleCategorySelect} onNavigate={handleNavigate} />
+            <CategoryShowcase onCategorySelect={handleCategorySelect} onNavigate={handleNavigate} />
 
-        <div id="story">
-          <BrandStory />
-        </div>
+            <div id="story">
+              <BrandStory />
+            </div>
 
-        <BestSellers
-          onProductClick={setSelectedProduct}
-          onViewAll={() => {
-            const el = document.getElementById('products');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
+            <BestSellers onProductClick={setSelectedProduct} onViewAll={handleShopNow} />
 
-        <ProductGrid
-          selectedCategory={selectedCategory}
-          searchQuery={searchQuery}
-          onCategoryChange={handleCategorySelect}
-          onProductClick={setSelectedProduct}
-        />
+            <HeritageSection onShopNow={handleShopNow} />
 
-        <HeritageSection onShopNow={handleShopNow} />
+            <GiftShowcase onShopGifts={handleShopGifts} />
 
-        <GiftShowcase onShopGifts={handleShopGifts} />
+            <Testimonials />
 
-        <Testimonials />
+            <KitchenStories />
 
-        <KitchenStories />
+            <InstagramFeed />
 
-        <InstagramFeed />
-
-        <FAQSection />
+            <FAQSection />
+          </>
+        )}
       </main>
 
       <Footer onNavigate={handleNavigate} onCategorySelect={handleCategorySelect} />
