@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Check, CreditCard, QrCode, Banknote, MapPin, User, Phone, Mail, ArrowRight, ArrowLeft, Truck } from 'lucide-react';
+import { X, Check, CreditCard, QrCode, Banknote, MapPin, LocateFixed, User, Phone, Mail, ArrowRight, ArrowLeft, Truck } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { MiraDB } from '@/lib/supabase.js';
 import type { Customer } from '@/context/AuthContext';
@@ -12,7 +12,7 @@ interface CheckoutModalProps {
 }
 
 type Step = 'contact' | 'address' | 'payment' | 'success';
-type PaymentMethod = 'upi' | 'cod';
+type PaymentMethod = 'card' | 'upi' | 'cod';
 
 export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: CheckoutModalProps) {
   const { items, subtotal, deliveryCharge, total, clearCart } = useCart();
@@ -21,6 +21,8 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
   const [orderNumber, setOrderNumber] = useState('');
   const [placing, setPlacing] = useState(false);
   const [placeError, setPlaceError] = useState('');
+  const [locating, setLocating] = useState(false);
+  const [locateError, setLocateError] = useState('');
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -105,6 +107,53 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
       onOrderComplete(num);
       clearCart();
     }
+  };
+
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      setLocateError('Location isn’t supported on this device/browser. Please enter your address manually.');
+      return;
+    }
+    setLocating(true);
+    setLocateError('');
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+            { headers: { Accept: 'application/json' } }
+          );
+          if (!res.ok) throw new Error('Lookup failed');
+          const data = await res.json();
+          const a = data.address || {};
+          const streetParts = [a.house_number, a.road || a.pedestrian].filter(Boolean).join(' ');
+          const areaParts = [a.suburb || a.neighbourhood, a.city_district].filter(Boolean).join(', ');
+          const detectedAddress = [streetParts, areaParts].filter(Boolean).join(', ') || data.display_name || '';
+          const detectedCity = a.city || a.town || a.village || a.county || '';
+          const detectedPincode = a.postcode || '';
+          setForm((f) => ({
+            ...f,
+            address: detectedAddress || f.address,
+            city: detectedCity || f.city,
+            pincode: detectedPincode || f.pincode,
+          }));
+        } catch {
+          setLocateError('Could not determine your address from your location. Please enter it manually.');
+        } finally {
+          setLocating(false);
+        }
+      },
+      (err) => {
+        setLocating(false);
+        setLocateError(
+          err.code === err.PERMISSION_DENIED
+            ? 'Location permission denied. Please enter your address manually.'
+            : 'Could not get your location. Please enter your address manually.'
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   };
 
   const handleBack = () => {
@@ -251,7 +300,20 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
               {/* Step: Address */}
               {step === 'address' && (
                 <div className="space-y-4 animate-fade-in">
-                  <h3 className="font-serif text-lg font-bold text-charcoal-900 mb-4">Delivery Address & GPS Pin</h3>
+                  <h3 className="font-serif text-lg font-bold text-charcoal-900 mb-4">Delivery Address</h3>
+
+                  <button
+                    type="button"
+                    onClick={handleDetectLocation}
+                    disabled={locating}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-saffron-300 bg-saffron-50 text-saffron-800 font-medium rounded-lg hover:bg-saffron-100 transition-colors disabled:opacity-60"
+                  >
+                    <LocateFixed className={`w-4 h-4 ${locating ? 'animate-spin' : ''}`} />
+                    {locating ? 'Detecting your location…' : 'Use My Current Location'}
+                  </button>
+                  {locateError && <p className="text-sm text-red-600">{locateError}</p>}
+                  <p className="text-xs text-charcoal-400 -mt-2">Or enter your address manually below.</p>
+
                   <div>
                     <label className="text-sm font-medium text-charcoal-700 mb-1.5 flex items-center gap-1.5">
                       <MapPin className="w-4 h-4" /> Full Address
@@ -287,12 +349,6 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
                       />
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 p-3 bg-saffron-50 border border-saffron-200 rounded-lg">
-                    <MapPin className="w-5 h-5 text-saffron-600 shrink-0" />
-                    <p className="text-sm text-charcoal-600">
-                      Pin your exact location on the map at checkout for direct dispatch from Bikaner.
-                    </p>
-                  </div>
                 </div>
               )}
 
@@ -300,6 +356,25 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
               {step === 'payment' && (
                 <div className="space-y-4 animate-fade-in">
                   <h3 className="font-serif text-lg font-bold text-charcoal-900 mb-4">Payment Method</h3>
+
+                  {/* Card Option */}
+                  <button
+                    onClick={() => setPaymentMethod('card')}
+                    className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left ${
+                      paymentMethod === 'card'
+                        ? 'border-maroon-700 bg-maroon-50'
+                        : 'border-cream-300 bg-white hover:border-cream-400'
+                    }`}
+                  >
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${paymentMethod === 'card' ? 'bg-maroon-700' : 'bg-cream-200'}`}>
+                      <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-cream-50' : 'text-charcoal-500'}`} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-charcoal-800 text-sm">Credit / Debit Card</h4>
+                      <p className="text-xs text-charcoal-500">Visa, Mastercard, RuPay</p>
+                    </div>
+                    {paymentMethod === 'card' && <Check className="w-5 h-5 text-maroon-700" />}
+                  </button>
 
                   {/* UPI Option */}
                   <button
