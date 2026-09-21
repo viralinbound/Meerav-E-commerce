@@ -18,7 +18,10 @@ export function Hero({ onShopNow }: HeroProps) {
   }, [next]);
 
   return (
-    <section id="home-hero" className="relative h-screen min-h-[600px] overflow-hidden">
+    <section
+      id="home-hero"
+      className="relative overflow-hidden h-[60vh] min-h-[380px] sm:h-[65vh] sm:min-h-[440px] md:h-[75vh] md:min-h-[520px] lg:h-screen lg:min-h-[600px]"
+    >
       {heroBanners.map((banner, idx) => (
         <div
           key={banner.id}
