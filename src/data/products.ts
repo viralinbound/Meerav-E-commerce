@@ -392,6 +392,13 @@ export const heroBanners = [
     image: 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/royal-treat-banner.webp',
   },
   {
+    id: 'h1',
+    title: '',
+    subtitle: '',
+    cta: 'Shop Now',
+    image: 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/nani-fry-banner.webp',
+  },
+  {
     id: 'h3',
     title: '',
     subtitle: '',
