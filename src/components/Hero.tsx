@@ -18,9 +18,10 @@ export function Hero({ onShopNow }: HeroProps) {
   }, [next]);
 
   return (
+    <>
     <section
       id="home-hero"
-      className="relative overflow-hidden bg-royal-gradient h-screen min-h-[520px] max-h-[900px]"
+      className="relative overflow-hidden bg-royal-gradient aspect-[16/9] sm:aspect-auto sm:h-screen sm:min-h-[520px] sm:max-h-[900px]"
     >
       {heroBanners.map((banner, idx) => (
         <div
@@ -52,7 +53,11 @@ export function Hero({ onShopNow }: HeroProps) {
               <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-black/5 to-transparent" />
             </>
           )}
-          <div className="absolute inset-0 flex items-end sm:items-center pb-20 sm:pb-0">
+          {/* Text + CTA overlay — desktop/tablet only. On mobile the artwork
+              already carries the copy, and the CTA is a separate overlapping
+              button below the image (matching the "Explore Our Snacks"
+              placement) so it never floats in dead blurred space. */}
+          <div className="absolute inset-0 hidden sm:flex sm:items-center">
             <div className="container-max section-padding w-full">
               <div className="max-w-2xl">
                 {banner.title && (
@@ -98,7 +103,7 @@ export function Hero({ onShopNow }: HeroProps) {
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
         {heroBanners.map((_, idx) => (
           <button
             key={idx}
@@ -111,5 +116,19 @@ export function Hero({ onShopNow }: HeroProps) {
         ))}
       </div>
     </section>
+
+    {/* Mobile-only CTA, placed and styled exactly like "Explore Our Snacks" —
+        an overlapping pill centered on the banner's bottom edge, never in
+        empty blurred space. */}
+    <div className="relative sm:hidden flex justify-center -mt-6 z-10">
+      <button
+        onClick={onShopNow}
+        className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
+      >
+        {heroBanners[current].cta}
+        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+      </button>
+    </div>
+    </>
   );
 }
