@@ -719,6 +719,11 @@ const MiraEditor = (function () {
     document.getElementById('ed-bg-type').value = bgType;
     showBackgroundRows(bgType);
 
+    const fontFamilySelect = document.getElementById('ed-fontfamily-select');
+    const currentFamily = cs.fontFamily || '';
+    const knownFamily = Array.from(fontFamilySelect.options).find((o) => currentFamily.startsWith(o.value.split(',')[0].replace(/'/g, '')));
+    fontFamilySelect.value = knownFamily ? knownFamily.value : fontFamilySelect.options[0].value;
+
     const fs = parseInt(cs.fontSize) || 14;
     document.getElementById('ed-fontsize-range').value = fs;
     document.getElementById('ed-fontsize-value').textContent = fs + 'px';
@@ -1097,6 +1102,9 @@ const MiraEditor = (function () {
   }
 
   async function init() {
+    // CSS already hides the whole editor UI below 768px (see design-editor.html);
+    // this stops the iframe/site from even loading in the background on phones.
+    if (window.innerWidth < 768) return;
     await guardAdminAccess();
     bindKeyboardShortcuts(document);
     initDragHandle();
@@ -1104,6 +1112,7 @@ const MiraEditor = (function () {
     bindWidthHeightInputs();
     bindLinkInputs();
     bindMediaInput();
+    bindStyleInput('ed-fontfamily-select', 'fontFamily', '');
     bindStyleInput('ed-fontsize-range', 'fontSize', 'px');
     bindStyleInput('ed-padding-range', 'padding', 'px');
     bindStyleInput('ed-radius-range', 'borderRadius', 'px');

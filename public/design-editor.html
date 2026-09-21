@@ -10,15 +10,43 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/editor.css">
-<style>body{font-family:'Poppins',sans-serif;}h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif;}</style>
+<style>
+body{font-family:'Poppins',sans-serif;}h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif;}
+/* Design Editor needs real screen space for the canvas + two side panels,
+   so it's blocked below tablet width (768px) rather than trying to cram a
+   drag-and-drop tool into a phone screen. */
+.ed-mobile-block{display:none}
+@media (max-width:767px){
+  .ed-app{display:none}
+  .ed-mobile-block{
+    display:flex; min-height:100vh; align-items:center; justify-content:center;
+    flex-direction:column; gap:16px; text-align:center; padding:32px;
+    background:#fdf6ec; font-family:'Poppins',sans-serif;
+  }
+  .ed-mobile-block i{font-size:40px;color:#7a2026}
+  .ed-mobile-block h1{font-family:'Playfair Display',serif;font-size:22px;color:#3a1418;margin:0}
+  .ed-mobile-block p{font-size:14px;color:#6b5a55;max-width:340px;margin:0}
+  .ed-mobile-block a{
+    margin-top:8px; padding:10px 20px; border-radius:10px; background:#7a2026; color:#fff;
+    text-decoration:none; font-size:14px; font-weight:600;
+  }
+}
+</style>
 </head>
 <body>
+
+<div class="ed-mobile-block">
+  <i class="fas fa-desktop"></i>
+  <h1>Use a Tablet or Larger Screen</h1>
+  <p>The Design Editor needs more room to work — please open this page on a tablet, laptop, or desktop.</p>
+  <a href="admin.html"><i class="fas fa-arrow-left"></i> Back to Admin</a>
+</div>
 
 <div class="ed-app">
 
   <!-- ============ TOP TOOLBAR ============ -->
   <div class="ed-topbar">
-    <a href="/admin-v2.html" class="ed-btn" title="Back to Admin Dashboard"><i class="fas fa-arrow-left"></i> Admin</a>
+    <a href="admin.html" class="ed-btn" title="Back to Admin Dashboard"><i class="fas fa-arrow-left"></i> Admin</a>
 
     <!-- Mobile/tablet only — the side panels become slide-in drawers below 900px -->
     <button class="ed-btn ed-mobile-panel-toggle" onclick="MiraEditor.toggleMobilePanel('left')" title="Elements, Blocks & Layers"><i class="fas fa-shapes"></i></button>
@@ -227,6 +255,19 @@
         </div>
 
         <div class="ed-panel-title">Typography &amp; Spacing</div>
+        <div class="ed-field">
+          <label>Font Family</label>
+          <select id="ed-fontfamily-select" class="ed-select" style="width:100%;color:#111">
+            <option value="'Playfair Display', serif">Playfair Display (headings)</option>
+            <option value="'Poppins', sans-serif">Poppins (body)</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="'Times New Roman', serif">Times New Roman</option>
+            <option value="Arial, sans-serif">Arial</option>
+            <option value="Helvetica, sans-serif">Helvetica</option>
+            <option value="Verdana, sans-serif">Verdana</option>
+            <option value="'Courier New', monospace">Courier New</option>
+          </select>
+        </div>
         <div class="ed-field"><label>Font Size: <span id="ed-fontsize-value">—</span></label><input type="range" id="ed-fontsize-range" min="9" max="72" step="1"></div>
         <div class="ed-field"><label>Padding: <span id="ed-padding-value">—</span></label><input type="range" id="ed-padding-range" min="0" max="60" step="2"></div>
         <div class="ed-field"><label>Corner Radius: <span id="ed-radius-value">—</span></label><input type="range" id="ed-radius-range" min="0" max="40" step="2"></div>
