@@ -18,7 +18,6 @@ export function Hero({ onShopNow }: HeroProps) {
   }, [next]);
 
   return (
-    <>
     <section
       id="home-hero"
       className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9]"
@@ -45,11 +44,7 @@ export function Hero({ onShopNow }: HeroProps) {
             className="relative w-full h-full object-contain"
           />
           {/* Title/subtitle overlay — only for banners whose artwork doesn't
-              already carry baked-in copy (banner.title === ''). The CTA
-              itself always lives below the image as a separate overlapping
-              button (see after the section), matching the "Explore Our
-              Snacks" placement, so it never sits in dead blurred space on
-              any screen size. */}
+              already carry baked-in copy (banner.title === ''). */}
           {banner.title && (
             <>
               <div className="absolute inset-0 bg-hero-pattern" />
@@ -73,6 +68,19 @@ export function Hero({ onShopNow }: HeroProps) {
           )}
         </div>
       ))}
+
+      {/* Shop Now — sits inside the banner itself, in the lower-middle area
+          on top of the image, so it always reads as part of the banner
+          rather than a separate element below it. */}
+      <div className="absolute inset-x-0 bottom-16 sm:bottom-20 flex justify-center z-10">
+        <button
+          onClick={onShopNow}
+          className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
+        >
+          {heroBanners[current].cta}
+          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
 
       {/* Navigation Arrows */}
       <button
@@ -104,19 +112,5 @@ export function Hero({ onShopNow }: HeroProps) {
         ))}
       </div>
     </section>
-
-    {/* CTA on every screen size, placed and styled exactly like "Explore Our
-        Snacks" — an overlapping pill centered on the banner's bottom edge,
-        never floating in dead blurred space. */}
-    <div className="relative flex justify-center -mt-6 sm:-mt-7 z-10">
-      <button
-        onClick={onShopNow}
-        className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
-      >
-        {heroBanners[current].cta}
-        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-      </button>
-    </div>
-    </>
   );
 }

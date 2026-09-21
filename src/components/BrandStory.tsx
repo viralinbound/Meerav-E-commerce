@@ -73,9 +73,9 @@ export function BrandStory() {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="https://images.pexels.com/photos/37330104/pexels-photo-37330104.jpeg?auto=compress&cs=tinysrgb&h=800&w=600"
-                alt="Traditional Bikaneri kitchen"
-                className="w-full h-[500px] object-cover"
+                src="https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/sections/our-tradition-banner.webp"
+                alt="Bikaner lives in every bite — traditional bhujia frying setup"
+                className="w-full h-[500px] object-cover object-top"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-maroon-900/60 via-transparent to-transparent" />
             </div>
