@@ -32,13 +32,11 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
 
   // Every real photo the admin uploaded — packaging front, the back-of-pack
   // nutrition label, and lifestyle shots — shown in full, so the buyer sees
-  // exactly what's printed on the pack before buying it. Every product's 4
-  // photos follow the same upload order (pack front, back-of-pack
-  // ingredients/nutrition, lifestyle closeup, lifestyle with pack), so the
-  // nutrition photo (2nd) is surfaced first: [2, 1, 3, 4].
+  // exactly what's printed on the pack before buying it. Display order for
+  // every product's 4 photos: [4, 2, 3, 1] (1st and 4th swap places).
   const rawPhotos = product.photos?.length ? product.photos : [product.image];
   const orderedPhotos =
-    rawPhotos.length === 4 ? [rawPhotos[1], rawPhotos[0], rawPhotos[2], rawPhotos[3]] : rawPhotos;
+    rawPhotos.length === 4 ? [rawPhotos[3], rawPhotos[1], rawPhotos[2], rawPhotos[0]] : rawPhotos;
   const media: MediaItem[] = [
     ...orderedPhotos.map((url) => ({ type: 'image' as const, url })),
     ...(product.videos || []).map((url) => ({ type: 'video' as const, url })),
