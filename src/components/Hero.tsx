@@ -30,7 +30,7 @@ export function Hero({ onShopNow }: HeroProps) {
           <div className="absolute inset-0 bg-hero-pattern" />
           {/* Extra darkening only behind the text column, so the rest of the
               photo stays bright and clearly visible while copy stays legible. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-black/5 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="container-max section-padding w-full">
               <div className="max-w-2xl">

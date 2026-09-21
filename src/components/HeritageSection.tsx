@@ -14,7 +14,7 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
           alt="Junagarh Fort, Bikaner"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-maroon-900/55 via-maroon-800/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-maroon-900/32 via-maroon-800/18 to-transparent" />
       </div>
 
       <div className="relative container-max section-padding">
