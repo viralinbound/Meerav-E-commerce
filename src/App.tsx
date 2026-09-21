@@ -10,6 +10,7 @@ import { Hero } from '@/components/Hero';
 import { BrandStory } from '@/components/BrandStory';
 import { HeritageSection } from '@/components/HeritageSection';
 import { GiftShowcase } from '@/components/GiftShowcase';
+import { BestSellersScroll } from '@/components/BestSellersScroll';
 import { BestSellers } from '@/components/BestSellers';
 import { ProductModal } from '@/components/ProductModal';
 import { CartDrawer } from '@/components/CartDrawer';
@@ -122,6 +123,8 @@ function AppContent() {
             <div id="story">
               <BrandStory />
             </div>
+
+            <BestSellersScroll onProductClick={setSelectedProduct} />
 
             <BestSellers onProductClick={setSelectedProduct} />
 
