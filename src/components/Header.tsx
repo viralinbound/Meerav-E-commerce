@@ -63,7 +63,7 @@ export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) 
             {announcements[announcementIndex]}
           </span>
           <a
-            href="/admin-v2.html"
+            href="/admin.html"
             className="hidden sm:inline absolute right-4 text-cream-200 hover:text-saffron-300 transition-colors text-xs whitespace-nowrap"
           >
             Admin Login
@@ -198,7 +198,7 @@ export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) 
                 </button>
               </div>
               <a
-                href="/admin-v2.html"
+                href="/admin.html"
                 className="block text-center mt-2 pt-2 text-xs text-charcoal-400 hover:text-maroon-700"
               >
                 Admin Login
