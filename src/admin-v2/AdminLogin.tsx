@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react';
-import { Lock, Mail, ArrowRight, Eye, EyeOff, HelpCircle, X } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import { useAdminAuth } from './useAdminAuth';
 
 function friendlyLoginError(raw: string): string {
   const msg = raw.toLowerCase();
   if (msg.includes('invalid login credentials')) {
-    return "That email and password don't match our records. Double-check for typos, or use \"Forgot password?\" below.";
+    return "That email and password don't match our records. Double-check for typos, or ask the root admin to reset your password.";
   }
   if (msg.includes('not registered as an admin')) {
     return "This email isn't set up as an admin account. Ask the root admin to register you first.";
@@ -31,7 +31,6 @@ export function AdminLogin() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [showForgot, setShowForgot] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -70,16 +69,7 @@ export function AdminLogin() {
             </div>
           </div>
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-sm font-medium text-charcoal-700">Password</label>
-              <button
-                type="button"
-                onClick={() => setShowForgot(true)}
-                className="text-xs font-medium text-maroon-700 hover:underline"
-              >
-                Forgot password?
-              </button>
-            </div>
+            <label className="block text-sm font-medium text-charcoal-700 mb-1.5">Password</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-400" />
               <input
@@ -122,44 +112,6 @@ export function AdminLogin() {
           </a>
         </form>
       </div>
-
-      {showForgot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowForgot(false)} />
-          <div className="relative bg-cream-50 rounded-2xl shadow-2xl w-full max-w-sm">
-            <div className="bg-maroon-800 text-cream-50 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-              <div className="flex items-center gap-2">
-                <HelpCircle className="w-5 h-5" />
-                <h3 className="font-serif text-lg font-bold">Forgot Password?</h3>
-              </div>
-              <button
-                onClick={() => setShowForgot(false)}
-                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 space-y-4">
-              <p className="text-sm text-charcoal-600">
-                For security, admin passwords can only be reset by the <span className="font-semibold">root admin</span> —
-                there's no self-service reset link.
-              </p>
-              <p className="text-sm text-charcoal-600">
-                Ask your root admin to open <span className="font-semibold">Admin Accounts</span> and use{' '}
-                <span className="font-semibold">Reset Password</span> on your account. They'll share a new temporary
-                password with you, and you'll be asked to set your own the next time you sign in.
-              </p>
-              <button
-                type="button"
-                onClick={() => setShowForgot(false)}
-                className="w-full px-6 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold bg-maroon-700 text-cream-50 hover:bg-maroon-800 transition-colors"
-              >
-                Got it
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
