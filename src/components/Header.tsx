@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Search, ShoppingCart, Menu, X, Phone, MapPin, ChevronDown } from 'lucide-react';
+import { Search, ShoppingCart, Menu, X, Phone, MapPin } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
-import { useCatalog } from '@/lib/useCatalog';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/lib/useSettings';
 
 interface HeaderProps {
   onNavigate: (section: string) => void;
   onSearch: (query: string) => void;
-  onCategorySelect: (catId: string) => void;
 }
 
-export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) {
+export function Header({ onNavigate, onSearch }: HeaderProps) {
   const { itemCount, openDrawer } = useCart();
-  const { categories } = useCatalog();
   const { customer } = useAuth();
   const { settings } = useSettings();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,12 +43,6 @@ export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) 
     e.preventDefault();
     onSearch(searchQuery);
     onNavigate('products');
-  };
-
-  const handleCategoryClick = (catId: string) => {
-    onCategorySelect(catId);
-    onNavigate('products');
-    setMobileMenuOpen(false);
   };
 
   return (
@@ -162,15 +153,12 @@ export function Header({ onNavigate, onSearch, onCategorySelect }: HeaderProps) 
               >
                 Home
               </button>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => handleCategoryClick(cat.id)}
-                  className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
-                >
-                  {cat.name}
-                </button>
-              ))}
+              <button
+                onClick={() => { onNavigate('products'); setMobileMenuOpen(false); }}
+                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
+              >
+                All Products
+              </button>
               <button
                 onClick={() => { onNavigate('story'); setMobileMenuOpen(false); }}
                 className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"

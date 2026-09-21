@@ -1,14 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { X, Play } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
-import type { Category } from '@/data/products';
 import { useAdminAuth } from '../useAdminAuth';
 import { logChange } from '../activityLog';
 import { MediaUploader } from '../MediaUploader';
 
 export interface AdminProduct {
   id: string;
-  category: string;
   name: string;
   tag: string;
   rating: number;
@@ -25,10 +23,9 @@ export interface AdminProduct {
   variants: { weight: string; price: number; originalPrice?: number }[];
 }
 
-export function blankProduct(defaultCategory: string): AdminProduct {
+export function blankProduct(): AdminProduct {
   return {
     id: '',
-    category: defaultCategory,
     name: '',
     tag: '',
     rating: 5,
@@ -48,12 +45,11 @@ export function blankProduct(defaultCategory: string): AdminProduct {
 
 interface ProductFormModalProps {
   product: AdminProduct;
-  categories: Category[];
   onClose: () => void;
   onSaved: () => void;
 }
 
-export function ProductFormModal({ product, categories, onClose, onSaved }: ProductFormModalProps) {
+export function ProductFormModal({ product, onClose, onSaved }: ProductFormModalProps) {
   const { admin: me } = useAdminAuth();
   const [form, setForm] = useState<AdminProduct>(product);
   const [saving, setSaving] = useState(false);
@@ -83,7 +79,6 @@ export function ProductFormModal({ product, categories, onClose, onSaved }: Prod
     setError(null);
 
     if (!form.name.trim()) return setError('Product name is required.');
-    if (!form.category) return setError('Category is required.');
     if (form.variants.length === 0 || form.variants.some((v) => !v.weight || v.price <= 0)) {
       return setError('Every variant needs a weight and a price greater than 0.');
     }
@@ -123,29 +118,14 @@ export function ProductFormModal({ product, categories, onClose, onSaved }: Prod
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-charcoal-700 mb-1.5">Product Name *</label>
-              <input
-                required
-                value={form.name}
-                onChange={(e) => update('name', e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-cream-300 rounded-lg focus:outline-none focus:border-maroon-500 bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-charcoal-700 mb-1.5">Category *</label>
-              <select
-                required
-                value={form.category}
-                onChange={(e) => update('category', e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-cream-300 rounded-lg focus:outline-none focus:border-maroon-500 bg-white"
-              >
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block text-sm font-medium text-charcoal-700 mb-1.5">Product Name *</label>
+            <input
+              required
+              value={form.name}
+              onChange={(e) => update('name', e.target.value)}
+              className="w-full px-3.5 py-2.5 border border-cream-300 rounded-lg focus:outline-none focus:border-maroon-500 bg-white"
+            />
           </div>
 
           <div>

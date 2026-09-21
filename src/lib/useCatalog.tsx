@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { MiraDB } from './supabase.js';
 import { resolveImagePath } from './resolveImage.js';
-import type { Product, Category } from '@/data/products';
+import type { Product } from '@/data/products';
 
 export interface Testimonial {
   id: string;
@@ -27,7 +27,6 @@ export interface KitchenStory {
 }
 
 interface CatalogValue {
-  categories: Category[];
   products: Product[];
   testimonials: Testimonial[];
   faqs: Faq[];
@@ -67,18 +66,7 @@ function toProduct(row: any): Product {
   };
 }
 
-function toCategory(row: any): Category {
-  return {
-    id: row.id,
-    name: row.name,
-    description: row.description || '',
-    icon: row.icon || 'Cookie',
-    image: row.image ? resolveImagePath(row.image) : null,
-  };
-}
-
 export function CatalogProvider({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [faqs, setFaqs] = useState<Faq[]>([]);
@@ -89,15 +77,13 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      MiraDB.fetchCategories(),
       MiraDB.fetchProducts(),
       MiraDB.fetchTestimonials(),
       MiraDB.fetchFaqs(),
       MiraDB.fetchBroadcastStories(),
     ])
-      .then(([cats, prods, testi, faqRows, stories]) => {
+      .then(([prods, testi, faqRows, stories]) => {
         if (cancelled) return;
-        setCategories(cats.filter((c: any) => c.id !== 'all').map(toCategory));
         setProducts(prods.map(toProduct));
         setTestimonials(
           testi
@@ -132,7 +118,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <CatalogContext.Provider value={{ categories, products, testimonials, faqs, kitchenStories, loading, error }}>
+    <CatalogContext.Provider value={{ products, testimonials, faqs, kitchenStories, loading, error }}>
       {children}
     </CatalogContext.Provider>
   );

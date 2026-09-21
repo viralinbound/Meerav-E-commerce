@@ -5,31 +5,22 @@ import { useCart } from '@/context/CartContext';
 import { useCatalog } from '@/lib/useCatalog';
 
 interface ProductGridProps {
-  selectedCategory: string | null;
   searchQuery: string;
-  onCategoryChange: (catId: string | null) => void;
   onProductClick: (product: Product) => void;
 }
 
-export function ProductGrid({ selectedCategory, searchQuery, onCategoryChange, onProductClick }: ProductGridProps) {
+export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
   const { addToCart } = useCart();
-  const { products, categories } = useCatalog();
+  const { products } = useCatalog();
   const [sortBy, setSortBy] = useState<'popular' | 'price-low' | 'price-high' | 'rating'>('popular');
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    if (selectedCategory) {
-      result = result.filter((p) => p.category === selectedCategory);
-    }
-
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(query) ||
-          p.description.toLowerCase().includes(query) ||
-          p.category.toLowerCase().includes(query)
+        (p) => p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)
       );
     }
 
@@ -48,7 +39,7 @@ export function ProductGrid({ selectedCategory, searchQuery, onCategoryChange, o
     }
 
     return result;
-  }, [selectedCategory, searchQuery, sortBy]);
+  }, [searchQuery, sortBy]);
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -63,41 +54,12 @@ export function ProductGrid({ selectedCategory, searchQuery, onCategoryChange, o
             Our Collection
           </span>
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">
-            {selectedCategory
-              ? categories.find((c) => c.id === selectedCategory)?.name
-              : searchQuery
-              ? `Results for "${searchQuery}"`
-              : 'All Products'}
+            {searchQuery ? `Results for "${searchQuery}"` : 'All Products'}
           </h2>
           <p className="text-charcoal-500 max-w-2xl mx-auto">
-            {selectedCategory
-              ? categories.find((c) => c.id === selectedCategory)?.description
-              : 'Every Meerav delicacy in one place — pick your favourites'}
+            Every Meerav delicacy in one place — pick your favourites
           </p>
         </div>
-
-        {/* Category Filter Pills — only shown when browsing everything (no
-            category picked yet). Once a specific category is open, this
-            page shows only that category's products, full stop. */}
-        {!selectedCategory && (
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-            <button
-              onClick={() => onCategoryChange(null)}
-              className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-maroon-700 text-cream-50 shadow-md"
-            >
-              All Products
-            </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => onCategoryChange(cat.id)}
-                className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-charcoal-600 hover:bg-cream-200 border border-cream-300"
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Sort + Count Bar */}
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
@@ -126,13 +88,7 @@ export function ProductGrid({ selectedCategory, searchQuery, onCategoryChange, o
               <Search className="w-8 h-8 text-charcoal-400" />
             </div>
             <h3 className="font-serif text-xl font-semibold text-charcoal-700 mb-2">No products found</h3>
-            <p className="text-charcoal-500 mb-4">Try a different category or search term</p>
-            <button
-              onClick={() => { onCategoryChange(null); }}
-              className="text-maroon-700 font-medium text-sm hover:underline"
-            >
-              Clear all filters
-            </button>
+            <p className="text-charcoal-500 mb-4">Try a different search term</p>
           </div>
         ) : (
           <div id="home-allproducts-track" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">

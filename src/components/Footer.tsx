@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ShieldCheck, Truck, Leaf, Facebook, Instagram, Youtube, Twitter, Send } from 'lucide-react';
-import { useCatalog } from '@/lib/useCatalog';
 import { useSettings } from '@/lib/useSettings';
 
 interface FooterProps {
   onNavigate: (section: string) => void;
-  onCategorySelect: (catId: string) => void;
 }
 
-export function Footer({ onNavigate, onCategorySelect }: FooterProps) {
-  const { categories } = useCatalog();
+export function Footer({ onNavigate }: FooterProps) {
   const { settings } = useSettings();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
@@ -95,20 +92,18 @@ export function Footer({ onNavigate, onCategorySelect }: FooterProps) {
             </div>
           </div>
 
-          {/* Snack Collections */}
+          {/* Shop */}
           <div>
-            <h4 className="font-semibold text-cream-50 mb-4 text-sm uppercase tracking-wide">Snack Collections</h4>
+            <h4 className="font-semibold text-cream-50 mb-4 text-sm uppercase tracking-wide">Shop</h4>
             <ul className="space-y-2">
-              {categories.map((cat) => (
-                <li key={cat.id}>
-                  <button
-                    onClick={() => { onCategorySelect(cat.id); onNavigate('products'); }}
-                    className="text-sm text-cream-300 hover:text-saffron-400 transition-colors"
-                  >
-                    {cat.name}
-                  </button>
-                </li>
-              ))}
+              <li>
+                <button
+                  onClick={() => onNavigate('products')}
+                  className="text-sm text-cream-300 hover:text-saffron-400 transition-colors"
+                >
+                  All Products
+                </button>
+              </li>
             </ul>
           </div>
 

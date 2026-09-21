@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { IndianRupee, ClipboardList, Package, Layers, TrendingUp, Star, X } from 'lucide-react';
+import { IndianRupee, ClipboardList, Package, TrendingUp, Star, X } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { useAdminAuth } from '../useAdminAuth';
 import { logChange } from '../activityLog';
@@ -26,17 +26,15 @@ export function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [products, setProducts] = useState<DashProduct[]>([]);
-  const [categoryCount, setCategoryCount] = useState(0);
   const [orders, setOrders] = useState<DashOrder[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const load = () => {
     setLoading(true);
     setError(null);
-    Promise.all([MiraDB.fetchProducts(), MiraDB.fetchCategories(), MiraDB.fetchOrders(MiraDB.adminClient)])
-      .then(([prods, categories, ords]) => {
+    Promise.all([MiraDB.fetchProducts(), MiraDB.fetchOrders(MiraDB.adminClient)])
+      .then(([prods, ords]) => {
         setProducts(prods as DashProduct[]);
-        setCategoryCount(categories.filter((c: any) => c.id !== 'all').length);
         setOrders(ords as DashOrder[]);
       })
       .catch((e) => setError(e.message || String(e)))
@@ -86,7 +84,7 @@ export function Dashboard() {
         <MetricCard label="Total Sales" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="Real-time calculated" icon={IndianRupee} />
         <MetricCard label="Total Orders" value={orders.length} sublabel="Processed orders" icon={ClipboardList} />
         <MetricCard label="Catalog Items" value={products.length} sublabel="Active products" icon={Package} />
-        <MetricCard label="Categories" value={categoryCount} sublabel="Active snack categories" icon={Layers} />
+        <MetricCard label="Best Sellers" value={products.filter((p) => isBestseller(p.tag)).length} sublabel="Tagged products" icon={Star} />
       </div>
 
       <Card>

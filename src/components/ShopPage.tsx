@@ -3,14 +3,12 @@ import type { Product } from '@/data/products';
 import { ProductGrid } from '@/components/ProductGrid';
 
 interface ShopPageProps {
-  selectedCategory: string | null;
   searchQuery: string;
-  onCategoryChange: (catId: string | null) => void;
   onProductClick: (product: Product) => void;
   onBackHome: () => void;
 }
 
-export function ShopPage({ selectedCategory, searchQuery, onCategoryChange, onProductClick, onBackHome }: ShopPageProps) {
+export function ShopPage({ searchQuery, onProductClick, onBackHome }: ShopPageProps) {
   return (
     <div className="min-h-screen bg-white">
       <div className="border-b border-cream-200 bg-cream-50">
@@ -25,12 +23,7 @@ export function ShopPage({ selectedCategory, searchQuery, onCategoryChange, onPr
         </div>
       </div>
 
-      <ProductGrid
-        selectedCategory={selectedCategory}
-        searchQuery={searchQuery}
-        onCategoryChange={onCategoryChange}
-        onProductClick={onProductClick}
-      />
+      <ProductGrid searchQuery={searchQuery} onProductClick={onProductClick} />
     </div>
   );
 }

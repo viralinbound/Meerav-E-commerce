@@ -7,7 +7,6 @@ import { DynamicTheme } from '@/components/DynamicTheme';
 import { AuthModal } from '@/components/AuthModal';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
-import { CategoryShowcase } from '@/components/CategoryShowcase';
 import { BrandStory } from '@/components/BrandStory';
 import { HeritageSection } from '@/components/HeritageSection';
 import { GiftShowcase } from '@/components/GiftShowcase';
@@ -25,18 +24,13 @@ function AppContent() {
   const { loading, error } = useCatalog();
   const { customer } = useAuth();
   const [page, setPage] = useState<'home' | 'shop'>('home');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
 
-  // Category browsing always lives on its own page — never mixed in with
-  // the homepage sections — so a category click always shows only that
-  // category's products, with an explicit way back to the homepage.
-  const goToShop = (catId: string | null = null) => {
-    setSelectedCategory(catId);
+  const goToShop = () => {
     setSearchQuery('');
     setPage('shop');
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
@@ -51,9 +45,9 @@ function AppContent() {
     if (section === 'home') {
       goHome();
     } else if (section === 'products') {
-      // Callers that just called onCategorySelect or onSearch rely on that
-      // state surviving this call — never touch selectedCategory/searchQuery
-      // here, or a stale closure would clobber the fresh pick.
+      // Callers that just called onSearch rely on that state surviving this
+      // call — never touch searchQuery here, or a stale closure would
+      // clobber the fresh pick.
       setPage('shop');
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     } else if (section === 'story') {
@@ -81,13 +75,7 @@ function AppContent() {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   };
 
-  const handleCategorySelect = (catId: string | null) => {
-    goToShop(catId);
-  };
-
-  const handleShopNow = () => goToShop(null);
-
-  const handleShopGifts = () => goToShop('gifts');
+  const handleShopNow = () => goToShop();
 
   const handleCheckout = () => {
     if (!customer) {
@@ -120,28 +108,16 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-cream-50">
       <DynamicTheme />
-      <Header
-        onNavigate={handleNavigate}
-        onSearch={handleSearch}
-        onCategorySelect={handleCategorySelect}
-      />
+      <Header onNavigate={handleNavigate} onSearch={handleSearch} />
 
       <main>
         {page === 'shop' ? (
-          <ShopPage
-            selectedCategory={selectedCategory}
-            searchQuery={searchQuery}
-            onCategoryChange={setSelectedCategory}
-            onProductClick={setSelectedProduct}
-            onBackHome={goHome}
-          />
+          <ShopPage searchQuery={searchQuery} onProductClick={setSelectedProduct} onBackHome={goHome} />
         ) : (
           <>
             <div id="home">
               <Hero onShopNow={handleShopNow} />
             </div>
-
-            <CategoryShowcase onCategorySelect={handleCategorySelect} onNavigate={handleNavigate} />
 
             <div id="story">
               <BrandStory />
@@ -151,7 +127,7 @@ function AppContent() {
 
             <HeritageSection onShopNow={handleShopNow} />
 
-            <GiftShowcase onShopGifts={handleShopGifts} />
+            <GiftShowcase onShopGifts={handleShopNow} />
 
             <Testimonials />
 
@@ -164,7 +140,7 @@ function AppContent() {
         )}
       </main>
 
-      <Footer onNavigate={handleNavigate} onCategorySelect={handleCategorySelect} />
+      <Footer onNavigate={handleNavigate} />
 
       {/* Overlays */}
       <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
