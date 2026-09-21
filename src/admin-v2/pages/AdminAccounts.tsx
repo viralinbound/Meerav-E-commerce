@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Plus, Ban, RotateCcw, Trash2, ShieldCheck, X, KeyRound, Megaphone } from 'lucide-react';
+import { Plus, Ban, RotateCcw, Trash2, ShieldCheck, X, KeyRound, Megaphone, Copy, Check, AlertTriangle } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { useAdminAuth } from '../useAdminAuth';
 import { Card, LoadingState, ErrorState, EmptyState, TableScroller } from '../ui';
@@ -24,6 +24,7 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [tempPasswordInfo, setTempPasswordInfo] = useState<{ name: string; email: string; password: string } | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -57,8 +58,9 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
       alert(result.error.message || 'Action failed.');
       return;
     }
-    if (action === 'reset') {
-      alert('Password reset. Check the admin activity log / registered email for next steps.');
+    if (action === 'reset' && result?.tempPassword) {
+      const target = admins.find((a) => a.id === adminId);
+      setTempPasswordInfo({ name: target?.name || 'This admin', email: target?.email || '', password: result.tempPassword });
     }
     load();
   };
@@ -182,17 +184,95 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
       {showForm && (
         <RegisterAdminModal
           onClose={() => setShowForm(false)}
-          onRegistered={() => {
+          onRegistered={(info) => {
             setShowForm(false);
+            setTempPasswordInfo(info);
             load();
           }}
         />
+      )}
+
+      {tempPasswordInfo && (
+        <TempPasswordModal info={tempPasswordInfo} onClose={() => setTempPasswordInfo(null)} />
       )}
     </>
   );
 }
 
-function RegisterAdminModal({ onClose, onRegistered }: { onClose: () => void; onRegistered: () => void }) {
+function TempPasswordModal({
+  info,
+  onClose,
+}: {
+  info: { name: string; email: string; password: string };
+  onClose: () => void;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(info.password);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard unavailable — the password is still selectable in the box below
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50" />
+      <div className="relative bg-cream-50 rounded-2xl shadow-2xl w-full max-w-md">
+        <div className="bg-maroon-800 text-cream-50 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+          <h3 className="font-serif text-lg font-bold">Temporary Password</h3>
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-charcoal-600">
+            Email this temporary password to <span className="font-semibold text-charcoal-800">{info.name}</span>
+            {info.email && <> ({info.email})</>}. They'll be required to set their own new password (entered twice)
+            the first time they sign in — after that, this password stops working and no one, including you, will
+            be able to see what they change it to.
+          </p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 px-3.5 py-2.5 border border-cream-300 rounded-lg bg-white font-mono text-sm text-charcoal-800 select-all break-all">
+              {info.password}
+            </code>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="w-11 h-11 flex items-center justify-center rounded-lg bg-maroon-700 text-cream-50 hover:bg-maroon-800 transition-colors shrink-0"
+              aria-label="Copy password"
+            >
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            </button>
+          </div>
+          <p className="flex items-start gap-2 text-xs text-saffron-800 bg-saffron-50 border border-saffron-200 rounded-lg px-3 py-2.5">
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+            This is shown only once. If you close this without copying it, use "Reset Password" on this admin to
+            generate a new one.
+          </p>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full px-6 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold bg-maroon-700 text-cream-50 hover:bg-maroon-800 transition-colors"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RegisterAdminModal({
+  onClose,
+  onRegistered,
+}: {
+  onClose: () => void;
+  onRegistered: (info: { name: string; email: string; password: string }) => void;
+}) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [saving, setSaving] = useState(false);
@@ -207,7 +287,7 @@ function RegisterAdminModal({ onClose, onRegistered }: { onClose: () => void; on
     const result = await MiraDB.registerAdmin({ email: email.trim(), name: name.trim() });
     setSaving(false);
     if (result?.error) return setError(result.error.message || 'Could not register this admin.');
-    onRegistered();
+    onRegistered({ name: name.trim(), email: email.trim(), password: result.tempPassword });
   };
 
   return (
