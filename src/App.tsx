@@ -7,6 +7,7 @@ import { DynamicTheme } from '@/components/DynamicTheme';
 import { AuthModal } from '@/components/AuthModal';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
+import { CategoryShowcase } from '@/components/CategoryShowcase';
 import { BrandStory } from '@/components/BrandStory';
 import { HeritageSection } from '@/components/HeritageSection';
 import { GiftShowcase } from '@/components/GiftShowcase';
@@ -112,6 +113,8 @@ function AppContent() {
         <div id="home">
           <Hero onShopNow={handleShopNow} />
         </div>
+
+        <CategoryShowcase onCategorySelect={handleCategorySelect} onNavigate={handleNavigate} />
 
         <div id="story">
           <BrandStory />

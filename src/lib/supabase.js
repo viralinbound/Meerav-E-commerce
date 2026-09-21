@@ -17,10 +17,12 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 
 export const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-// A second client instance mirrors mira_gemini's own setup (separate auth storage
-// key for admin sessions) even though this storefront phase doesn't use it yet.
+// Same storageKey as the legacy admin.html/design-editor.html use
+// (public/js/supabase-client.js) so signing into either admin surface
+// authenticates both — no separate login when opening the Design Editor
+// from inside the React admin panel.
 const adminSupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { storageKey: 'sb-meerav-admin-auth-react' },
+  auth: { storageKey: 'sb-meerav-admin-auth' },
 })
 
 // The exact same data-access layer your live site runs on — fetchProducts,
