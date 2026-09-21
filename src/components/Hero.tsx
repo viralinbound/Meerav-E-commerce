@@ -21,7 +21,7 @@ export function Hero({ onShopNow }: HeroProps) {
     <>
     <section
       id="home-hero"
-      className="relative overflow-hidden bg-royal-gradient aspect-[16/9] sm:aspect-auto sm:h-screen sm:min-h-[520px] sm:max-h-[900px]"
+      className="relative overflow-hidden bg-royal-gradient aspect-[16/9] max-h-[85vh]"
     >
       {heroBanners.map((banner, idx) => (
         <div
