@@ -9,16 +9,11 @@ const HERITAGE_IMAGE =
 
 export function HeritageSection({ onShopNow }: HeritageSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9] max-h-[85vh]">
-      {/* The artwork already has the heading, copy, and branding baked in,
-          so — same treatment as the hero banners — it's shown in full via
-          object-contain (never cropped) on top of a blurred cover copy that
-          fills the box at any screen size, instead of duplicating the text
-          as a separate overlay. A fixed-aspect container (matching the
-          artwork's own 16:9) keeps the image spanning full width on every
-          device — a plain w-full/h-auto/max-h image would shrink narrower
-          than the container once max-height kicks in on short, wide
-          viewports, leaving dead space on the sides. */}
+    <section className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9]">
+      {/* Same treatment and same size as the hero banners: shown in full via
+          object-contain (never cropped) on a blurred cover copy that fills
+          the box at any screen size, with the section's own aspect-[16/9]
+          matching Hero's exactly so both banners read as the same size. */}
       <img
         src={HERITAGE_IMAGE}
         alt=""
