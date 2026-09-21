@@ -72,7 +72,7 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
                 {/* Image */}
                 <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
                   <img
-                    src={product.image}
+                    src={product.photos?.[3] || product.image}
                     alt={product.name}
                     className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-700"
                   />
