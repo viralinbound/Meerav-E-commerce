@@ -122,7 +122,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                 <ShoppingCart className="w-4 h-4" />
                 <span className="hidden sm:inline text-xs font-medium whitespace-nowrap">Cart</span>
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-saffron-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-scale-in">
+                  <span className="hidden lg:flex absolute -top-1 -right-1 w-4 h-4 bg-saffron-500 text-white text-[10px] font-bold items-center justify-center rounded-full animate-scale-in">
                     {itemCount}
                   </span>
                 )}
