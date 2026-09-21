@@ -20,7 +20,7 @@ export function Hero({ onShopNow }: HeroProps) {
   return (
     <section
       id="home-hero"
-      className="relative overflow-hidden h-[60vh] min-h-[380px] sm:h-[65vh] sm:min-h-[440px] md:h-[75vh] md:min-h-[520px] lg:h-screen lg:min-h-[600px]"
+      className="relative overflow-hidden bg-royal-gradient h-screen min-h-[520px] max-h-[900px]"
     >
       {heroBanners.map((banner, idx) => (
         <div
@@ -29,7 +29,20 @@ export function Hero({ onShopNow }: HeroProps) {
             idx === current ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
-          <img src={banner.image} alt={banner.title || 'Meerav'} className="w-full h-full object-cover" />
+          {/* Blurred cover copy fills every device's full-screen box with no
+              empty bars; the crisp copy on top uses object-contain so the
+              banner artwork itself is never cropped, at any screen size. */}
+          <img
+            src={banner.image}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+          />
+          <img
+            src={banner.image}
+            alt={banner.title || 'Meerav'}
+            className="relative w-full h-full object-contain"
+          />
           {/* Banners whose artwork already has the title/subtitle baked in
               (banner.title === '') skip the pattern tint, darkening gradient,
               and text overlay entirely — only the CTA button sits on top. */}
