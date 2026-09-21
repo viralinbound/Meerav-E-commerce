@@ -93,7 +93,7 @@ export function CartDrawer({ onCheckout }: CartDrawerProps) {
             <div className="p-4 space-y-3">
               {items.map((item) => (
                 <div
-                  key={item.product.id}
+                  key={item.lineId}
                   className="flex gap-3 bg-white rounded-xl p-3 shadow-sm animate-fade-in"
                 >
                   <img
@@ -113,7 +113,7 @@ export function CartDrawer({ onCheckout }: CartDrawerProps) {
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1.5 bg-cream-100 rounded-full p-0.5">
                           <button
-                            onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.lineId, item.quantity - 1)}
                             className="w-7 h-7 bg-white rounded-full flex items-center justify-center text-charcoal-700 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-sm"
                           >
                             <Minus className="w-3.5 h-3.5" />
@@ -122,14 +122,14 @@ export function CartDrawer({ onCheckout }: CartDrawerProps) {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.lineId, item.quantity + 1)}
                             className="w-7 h-7 bg-white rounded-full flex items-center justify-center text-charcoal-700 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-sm"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
                         </div>
                         <button
-                          onClick={() => removeFromCart(item.product.id)}
+                          onClick={() => removeFromCart(item.lineId)}
                           className="w-7 h-7 text-charcoal-400 hover:text-red-600 transition-colors"
                           aria-label="Remove item"
                         >

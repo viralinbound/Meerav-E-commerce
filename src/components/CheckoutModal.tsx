@@ -87,7 +87,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         totalAmount: total,
         paymentMethod,
         paymentStatus: paymentMethod === 'cod' ? 'pending' : 'paid',
-        orderStatus: 'placed',
+        orderStatus: 'Pending',
         date: new Date().toISOString(),
       });
 
@@ -344,7 +344,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
                     <h4 className="font-semibold text-charcoal-800 text-sm mb-3">Order Summary</h4>
                     <div className="space-y-2">
                       {items.map((item) => (
-                        <div key={item.product.id} className="flex justify-between text-sm text-charcoal-600">
+                        <div key={item.lineId} className="flex justify-between text-sm text-charcoal-600">
                           <span className="truncate pr-2">{item.product.name} x{item.quantity}</span>
                           <span className="shrink-0">Rs {item.product.price * item.quantity}</span>
                         </div>

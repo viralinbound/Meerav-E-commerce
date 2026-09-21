@@ -11,9 +11,11 @@ interface ProductModalProps {
 export function ProductModal({ product, onClose }: ProductModalProps) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const [variantIndex, setVariantIndex] = useState(0);
 
   useEffect(() => {
     setQuantity(1);
+    setVariantIndex(0);
   }, [product]);
 
   useEffect(() => {
@@ -27,8 +29,12 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
 
   if (!product) return null;
 
+  const variants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
+  const selectedVariant = variants[variantIndex] || variants[0];
+  const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
+
   const handleAdd = () => {
-    addToCart(product, quantity);
+    addToCart(selected, quantity);
     onClose();
   };
 
@@ -91,8 +97,33 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             </div>
 
             <h2 className="font-serif text-2xl font-bold text-charcoal-900 mb-2">{product.name}</h2>
-            <p className="text-sm text-charcoal-500 mb-4">{product.weight}</p>
             <p className="text-charcoal-600 leading-relaxed mb-6">{product.description}</p>
+
+            {/* Pack Size / Variant Selector */}
+            {variants.length > 1 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-charcoal-800 mb-2">Pack Size</h3>
+                <div className="flex flex-wrap gap-2">
+                  {variants.map((v, idx) => (
+                    <button
+                      key={v.weight}
+                      onClick={() => setVariantIndex(idx)}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${
+                        idx === variantIndex
+                          ? 'border-maroon-700 bg-maroon-700 text-cream-50'
+                          : 'border-cream-300 bg-white text-charcoal-700 hover:border-maroon-300'
+                      }`}
+                    >
+                      {v.weight}
+                      <span className={`block text-xs ${idx === variantIndex ? 'text-cream-200' : 'text-charcoal-400'}`}>
+                        Rs {v.price}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {variants.length === 1 && <p className="text-sm text-charcoal-500 mb-6 -mt-4">{selectedVariant.weight}</p>}
 
             {/* Ingredients */}
             <div className="mb-6">
@@ -123,7 +154,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
 
             {/* Price + Quantity + Add */}
             <div className="flex items-center justify-between mb-4">
-              <span className="font-serif text-3xl font-bold text-maroon-800">Rs {product.price * quantity}</span>
+              <span className="font-serif text-3xl font-bold text-maroon-800">Rs {selectedVariant.price * quantity}</span>
               <div className="flex items-center gap-3 bg-cream-100 rounded-full p-1">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -146,7 +177,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
               className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-saffron-500 text-white font-semibold rounded-xl hover:bg-saffron-600 transition-all duration-300 hover:shadow-lg active:scale-95"
             >
               <ShoppingCart className="w-5 h-5" />
-              Add to Cart - Rs {product.price * quantity}
+              Add to Cart - Rs {selectedVariant.price * quantity}
             </button>
 
             {/* Trust Badges */}

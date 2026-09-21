@@ -45,8 +45,8 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return (data || []).map(dbProductToApp);
   }
 
-  async function fetchOrders() {
-    const { data, error } = await supabaseClient.from('orders').select('*').order('created_at', { ascending: false });
+  async function fetchOrders(client = supabaseClient) {
+    const { data, error } = await client.from('orders').select('*').order('created_at', { ascending: false });
     if (error) { console.error('fetchOrders', error); return []; }
     return (data || []).map(dbOrderToApp);
   }

@@ -39,14 +39,20 @@ interface CatalogValue {
 const CatalogContext = createContext<CatalogValue | null>(null);
 
 function toProduct(row: any): Product {
-  const variant = (row.variants && row.variants[0]) || {};
+  const variants = (row.variants && row.variants.length ? row.variants : [{}]).map((v: any) => ({
+    weight: v.weight || '',
+    price: Number(v.price) || 0,
+    originalPrice: v.originalPrice != null ? Number(v.originalPrice) : undefined,
+  }));
+  const variant = variants[0];
   const tag = (row.tag || '').toLowerCase();
   return {
     id: row.id,
     name: row.name,
     category: row.category,
-    price: Number(variant.price) || 0,
-    weight: variant.weight || '',
+    price: variant.price,
+    weight: variant.weight,
+    variants,
     image: resolveImagePath(row.image),
     description: row.description || '',
     ingredients: row.ingredients || '',

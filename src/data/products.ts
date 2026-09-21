@@ -1,9 +1,16 @@
+export interface ProductVariant {
+  weight: string;
+  price: number;
+  originalPrice?: number;
+}
+
 export interface Product {
   id: string;
   name: string;
   category: string;
   price: number;
   weight: string;
+  variants: ProductVariant[];
   image: string;
   description: string;
   ingredients: string;
