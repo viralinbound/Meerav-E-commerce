@@ -12,7 +12,7 @@ import { HeritageSection } from '@/components/HeritageSection';
 import { GiftShowcase } from '@/components/GiftShowcase';
 import { BestSellersScroll } from '@/components/BestSellersScroll';
 import { BestSellers } from '@/components/BestSellers';
-import { ProductModal } from '@/components/ProductModal';
+import { ProductPage } from '@/components/ProductPage';
 import { CartDrawer } from '@/components/CartDrawer';
 import { CheckoutModal } from '@/components/CheckoutModal';
 import { OrderTracker } from '@/components/OrderTracker';
@@ -24,12 +24,28 @@ import type { Product } from '@/data/products';
 function AppContent() {
   const { loading, error } = useCatalog();
   const { customer } = useAuth();
-  const [page, setPage] = useState<'home' | 'shop'>('home');
+  const [page, setPage] = useState<'home' | 'shop' | 'product'>('home');
+  const [returnPage, setReturnPage] = useState<'home' | 'shop'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+
+  // Clicking any product card opens its own full page — never a popup —
+  // so shoppers see the real packaging front, back-of-pack nutrition label,
+  // and lifestyle photos at full size before deciding to buy.
+  const openProduct = (product: Product) => {
+    setReturnPage(page === 'shop' ? 'shop' : 'home');
+    setSelectedProduct(product);
+    setPage('product');
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  };
+
+  const backFromProduct = () => {
+    setPage(returnPage);
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  };
 
   const goToShop = () => {
     setSearchQuery('');
@@ -112,8 +128,10 @@ function AppContent() {
       <Header onNavigate={handleNavigate} onSearch={handleSearch} />
 
       <main>
-        {page === 'shop' ? (
-          <ShopPage searchQuery={searchQuery} onProductClick={setSelectedProduct} onBackHome={goHome} />
+        {page === 'product' && selectedProduct ? (
+          <ProductPage product={selectedProduct} onBack={backFromProduct} />
+        ) : page === 'shop' ? (
+          <ShopPage searchQuery={searchQuery} onProductClick={openProduct} onBackHome={goHome} />
         ) : (
           <>
             <div id="home">
@@ -124,9 +142,9 @@ function AppContent() {
               <BrandStory />
             </div>
 
-            <BestSellersScroll onProductClick={setSelectedProduct} />
+            <BestSellersScroll onProductClick={openProduct} />
 
-            <BestSellers onProductClick={setSelectedProduct} />
+            <BestSellers onProductClick={openProduct} />
 
             <HeritageSection onShopNow={handleShopNow} />
 
@@ -146,7 +164,6 @@ function AppContent() {
       <Footer onNavigate={handleNavigate} />
 
       {/* Overlays */}
-      <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
       <CartDrawer onCheckout={handleCheckout} />
       <CheckoutModal
         isOpen={checkoutOpen}

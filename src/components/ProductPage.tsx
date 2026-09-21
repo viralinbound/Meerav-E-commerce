@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { X, Star, Plus, Minus, ShoppingCart, Flame, Leaf, ShieldCheck, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { ArrowLeft, Star, Plus, Minus, ShoppingCart, Flame, Leaf, ShieldCheck, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import type { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 
-interface ProductModalProps {
-  product: Product | null;
-  onClose: () => void;
+interface ProductPageProps {
+  product: Product;
+  onBack: () => void;
 }
 
 interface MediaItem {
@@ -13,7 +13,7 @@ interface MediaItem {
   url: string;
 }
 
-export function ProductModal({ product, onClose }: ProductModalProps) {
+export function ProductPage({ product, onBack }: ProductPageProps) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [variantIndex, setVariantIndex] = useState(0);
@@ -23,23 +23,16 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
     setQuantity(1);
     setVariantIndex(0);
     setMediaIndex(0);
-  }, [product]);
-
-  useEffect(() => {
-    if (product) {
-      document.body.style.overflow = 'hidden';
-      return () => {
-        document.body.style.overflow = '';
-      };
-    }
-  }, [product]);
-
-  if (!product) return null;
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, [product.id]);
 
   const variants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
 
+  // Every real photo the admin uploaded — packaging front, the back-of-pack
+  // nutrition label, and lifestyle shots — shown in full, in order, so the
+  // buyer sees exactly what's printed on the pack before buying it.
   const media: MediaItem[] = [
     ...(product.photos?.length ? product.photos : [product.image]).map((url) => ({ type: 'image' as const, url })),
     ...(product.videos || []).map((url) => ({ type: 'video' as const, url })),
@@ -50,28 +43,27 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
 
   const handleAdd = () => {
     addToCart(selected, quantity);
-    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-charcoal-900/70 backdrop-blur-sm" onClick={onClose} />
+    <div className="min-h-screen bg-white">
+      <div className="border-b border-cream-200 bg-cream-50">
+        <div className="container-max section-padding py-4">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-sm font-medium text-charcoal-600 hover:text-maroon-700 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </button>
+        </div>
+      </div>
 
-      {/* Modal */}
-      <div className="relative bg-cream-50 rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 bg-cream-50/90 backdrop-blur-sm rounded-full flex items-center justify-center text-charcoal-600 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-md"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        <div className="grid md:grid-cols-2 gap-0">
-          {/* Media Gallery */}
+      <div className="container-max section-padding py-8 lg:py-12">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+          {/* Full Media Gallery */}
           <div className="flex flex-col">
-            <div className="relative aspect-square overflow-hidden bg-cream-100">
+            <div className="relative aspect-square overflow-hidden bg-cream-100 rounded-2xl">
               {currentMedia?.type === 'video' ? (
                 <video src={currentMedia.url} controls className="w-full h-full object-contain bg-charcoal-900" />
               ) : (
@@ -96,14 +88,14 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
                   <button
                     onClick={prevMedia}
                     aria-label="Previous media"
-                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-white/90 text-charcoal-700 rounded-full shadow-md hover:bg-white transition-colors"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-charcoal-700 rounded-full shadow-md hover:bg-white transition-colors"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
                   <button
                     onClick={nextMedia}
                     aria-label="Next media"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-white/90 text-charcoal-700 rounded-full shadow-md hover:bg-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-white/90 text-charcoal-700 rounded-full shadow-md hover:bg-white transition-colors"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>
@@ -112,18 +104,18 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             </div>
 
             {media.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto p-3 no-scrollbar bg-cream-50">
+              <div className="flex gap-3 overflow-x-auto p-1 pt-4 no-scrollbar">
                 {media.map((m, idx) => (
                   <button
                     key={m.url + idx}
                     onClick={() => setMediaIndex(idx)}
-                    className={`relative shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-colors ${
+                    className={`relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 transition-colors ${
                       idx === mediaIndex ? 'border-maroon-700' : 'border-cream-300'
                     }`}
                   >
                     {m.type === 'video' ? (
                       <div className="w-full h-full bg-charcoal-800 flex items-center justify-center">
-                        <Play className="w-4 h-4 text-cream-50" />
+                        <Play className="w-5 h-5 text-cream-50" />
                       </div>
                     ) : (
                       <img src={m.url} alt="" className="w-full h-full object-cover" />
@@ -135,7 +127,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
           </div>
 
           {/* Details */}
-          <div className="p-6 md:p-8">
+          <div>
             <div className="flex items-center gap-2 mb-3">
               <div className="flex items-center gap-1">
                 <Star className="w-4 h-4 fill-saffron-400 text-saffron-400" />
@@ -159,7 +151,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
               )}
             </div>
 
-            <h2 className="font-serif text-2xl font-bold text-charcoal-900 mb-2">{product.name}</h2>
+            <h1 className="font-serif text-3xl lg:text-4xl font-bold text-charcoal-900 mb-3">{product.name}</h1>
             <p className="text-charcoal-600 leading-relaxed mb-6">{product.description}</p>
 
             {/* Pack Size / Variant Selector */}
