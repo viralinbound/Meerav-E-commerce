@@ -149,20 +149,6 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
-        {/* Also Available On */}
-        <div className="mt-10 pt-8 border-t border-charcoal-700">
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <span className="text-sm text-cream-400">Also available on:</span>
-            {['Amazon', 'Flipkart', 'Blinkit', 'BigBasket'].map((platform) => (
-              <span
-                key={platform}
-                className="px-4 py-1.5 bg-charcoal-800 text-cream-200 text-sm rounded-lg border border-charcoal-700"
-              >
-                {platform}
-              </span>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Copyright */}
