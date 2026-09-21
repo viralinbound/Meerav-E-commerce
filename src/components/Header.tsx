@@ -69,37 +69,38 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
         }`}
       >
         <div className="container-max section-padding">
-          <div className="flex items-center flex-nowrap py-2.5 gap-1.5 xl:gap-2">
+          <div className="flex items-center flex-nowrap py-2.5 gap-3 lg:gap-6">
             {/* Logo */}
-            <button onClick={() => onNavigate('home')} className="flex items-center gap-2 shrink-0">
-              <img src="/images/meerav_logo.png" alt="Meerav" className="h-16 w-auto object-contain shrink-0 drop-shadow-md" />
-              <div className="text-left hidden xl:block">
+            <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 shrink-0">
+              <img src="/images/meerav_logo.png" alt="Meerav" className="h-14 lg:h-16 w-auto object-contain shrink-0 drop-shadow-md" />
+              <div className="text-left hidden lg:block">
                 <h1 className="font-serif text-lg font-bold text-maroon-800 leading-none whitespace-nowrap">{settings?.siteName || 'Meerav'}</h1>
                 <p className="text-[9px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap">{settings?.tagline || 'Bikaneri Namkeens'}</p>
               </div>
             </button>
 
             {/* Search Bar - Desktop */}
-            <form onSubmit={handleSearch} className="hidden xl:flex flex-1 min-w-0 max-w-[160px] 2xl:max-w-[200px]">
+            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-0 max-w-md xl:max-w-lg mx-auto">
               <div className="relative w-full">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
-                  className="w-full pl-3 pr-8 py-1.5 border-2 border-cream-300 rounded-full focus:border-saffron-400 focus:outline-none transition-colors text-xs"
+                  placeholder="Search for namkeens, sweets & more..."
+                  className="w-full pl-4 pr-10 py-2 border-2 border-cream-300 rounded-full focus:border-saffron-400 focus:outline-none transition-colors text-sm"
                 />
                 <button
                   type="submit"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 bg-saffron-500 rounded-full flex items-center justify-center text-white hover:bg-saffron-600 transition-colors"
+                  aria-label="Search"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 bg-saffron-500 rounded-full flex items-center justify-center text-white hover:bg-saffron-600 transition-colors"
                 >
-                  <Search className="w-3 h-3" />
+                  <Search className="w-3.5 h-3.5" />
                 </button>
               </div>
             </form>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-1 xl:gap-1.5 shrink-0 ml-auto">
+            <div className="flex items-center gap-1.5 lg:gap-3 shrink-0 ml-auto lg:ml-0">
               <button
                 onClick={() => onNavigate('account')}
                 className="hidden lg:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
