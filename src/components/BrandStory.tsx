@@ -8,21 +8,26 @@ export function BrandStory() {
           {/* Text */}
           <div>
             <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-6">
-              Our Heritage
+              Our Tradition
             </span>
             <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-6 leading-tight">
-              We still fry it the way Nani did.
+              Rooted in tradition. Made for today.
             </h2>
             <p className="text-lg text-charcoal-600 leading-relaxed mb-6">
-              No shortcuts, no palm oil, no factory lines — just moth flour, pure groundnut oil and
-              desert rock salt, fried in small batches every morning and packed the same day.
+              No shortcuts, no palm oil, no factory-style production — just moth flour, pure
+              groundnut oil and desert rock salt, prepared in small batches and packed fresh.
             </p>
             <p className="text-charcoal-500 leading-relaxed mb-8">
-              In the late 80s, our founder decided to walk his own path and create a new identity.
-              At a time when the technology to produce Bhujia on a large scale was unthought of, he
-              successfully laid the foundation of his dream venture. Four decades later, we haven't
-              changed a single thing about how we make our snacks — because there was never anything
-              to improve.
+              Our snacks are inspired by the traditional flavours and techniques of Rajasthan — the
+              kind of simple, honest preparation that lets good ingredients speak for themselves. We
+              stay close to these methods because we believe authentic taste doesn't need to be
+              reinvented.
+            </p>
+            <p className="text-charcoal-500 leading-relaxed mb-8 -mt-4">
+              From carefully preparing the dough to frying each batch to the right texture, every
+              step is rooted in the traditional way of making Rajasthani snacks. The result is a
+              taste that feels familiar, authentic, and close to the flavours people have loved for
+              generations.
             </p>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
@@ -77,15 +82,15 @@ export function BrandStory() {
             <div className="absolute -bottom-6 -left-6 bg-cream-50 rounded-2xl shadow-xl p-6 max-w-xs hidden md:block">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-12 h-12 bg-royal-gradient rounded-full flex items-center justify-center">
-                  <span className="font-serif text-cream-50 text-xl font-bold">40</span>
+                  <ShieldCheck className="w-6 h-6 text-cream-50" />
                 </div>
                 <div>
-                  <p className="font-serif text-2xl font-bold text-maroon-800">40 Years</p>
-                  <p className="text-xs text-charcoal-500">of honest snacking</p>
+                  <p className="font-serif text-2xl font-bold text-maroon-800">True to Tradition</p>
+                  <p className="text-xs text-charcoal-500">Traditional techniques, authentic ingredients</p>
                 </div>
               </div>
               <p className="text-sm text-charcoal-600">
-                Preserving Rajasthani taste through honest snacking, one batch at a time.
+                Taste that stays close to its roots.
               </p>
             </div>
           </div>
