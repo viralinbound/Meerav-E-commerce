@@ -33,12 +33,11 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
 
   // Every real photo the admin uploaded — packaging front, the back-of-pack
-  // nutrition label, and lifestyle shots — shown in full, so the buyer sees
-  // exactly what's printed on the pack before buying it. Display order for
-  // every product's 4 photos: [4, 1, 3, 2].
-  const rawPhotos = product.photos?.length ? product.photos : [product.image];
-  const orderedPhotos =
-    rawPhotos.length === 4 ? [rawPhotos[3], rawPhotos[0], rawPhotos[2], rawPhotos[1]] : rawPhotos;
+  // nutrition label, and lifestyle shots — shown in full, in the order
+  // stored on the product (admins control this order directly, including
+  // reordering, in the product edit form), so the buyer sees exactly what's
+  // printed on the pack before buying it.
+  const orderedPhotos = product.photos?.length ? product.photos : [product.image];
   const media: MediaItem[] = [
     ...orderedPhotos.map((url) => ({ type: 'image' as const, url })),
     ...(product.videos || []).map((url) => ({ type: 'video' as const, url })),
