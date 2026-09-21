@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { X, Play } from 'lucide-react';
+import { X, Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { useAdminAuth } from '../useAdminAuth';
 import { logChange } from '../activityLog';
@@ -67,6 +67,16 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
         [field]: field === 'weight' ? value : Number(value) || 0,
       };
       return { ...f, variants };
+    });
+  };
+
+  const movePhoto = (idx: number, direction: -1 | 1) => {
+    setForm((f) => {
+      const swapIdx = idx + direction;
+      if (swapIdx < 0 || swapIdx >= f.photos.length) return f;
+      const photos = [...f.photos];
+      [photos[idx], photos[swapIdx]] = [photos[swapIdx], photos[idx]];
+      return { ...f, photos };
     });
   };
 
@@ -140,7 +150,7 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
 
           <div>
             <label className="block text-sm font-medium text-charcoal-700 mb-2">
-              Product Photos * <span className="font-normal text-charcoal-400">(add as many as you like — first one is the cover)</span>
+              Product Photos * <span className="font-normal text-charcoal-400">(add as many as you like — first one is the cover; use the arrows to reorder)</span>
             </label>
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 mb-3">
               {form.photos.map((url, idx) => (
@@ -156,6 +166,26 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
                   >
                     <X className="w-5 h-5 text-white" />
                   </button>
+                  <div className="absolute inset-x-0 bottom-0 flex items-center justify-between px-1 pb-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      type="button"
+                      onClick={() => movePhoto(idx, -1)}
+                      disabled={idx === 0}
+                      aria-label="Move photo left"
+                      className="w-6 h-6 flex items-center justify-center rounded bg-white/90 text-charcoal-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => movePhoto(idx, 1)}
+                      disabled={idx === form.photos.length - 1}
+                      aria-label="Move photo right"
+                      className="w-6 h-6 flex items-center justify-center rounded bg-white/90 text-charcoal-700 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
