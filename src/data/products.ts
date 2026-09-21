@@ -403,6 +403,6 @@ export const heroBanners = [
     title: '',
     subtitle: '',
     cta: 'Our Story',
-    image: 'https://images.pexels.com/photos/31339268/pexels-photo-31339268.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600',
+    image: 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/heritage-banner.webp',
   },
 ];
