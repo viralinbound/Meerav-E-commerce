@@ -1,30 +1,19 @@
-import { useRef } from 'react';
-import { Star, Plus, Flame, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Star, Plus, Flame } from 'lucide-react';
 import type { Product } from '@/data/products';
 import { useCatalog } from '@/lib/useCatalog';
 import { useCart } from '@/context/CartContext';
 
 interface BestSellersProps {
   onProductClick: (product: Product) => void;
-  onViewAll: () => void;
 }
 
-export function BestSellers({ onProductClick, onViewAll }: BestSellersProps) {
+export function BestSellers({ onProductClick }: BestSellersProps) {
   const { addToCart } = useCart();
   const { products } = useCatalog();
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const bestsellers = products.filter((p) => p.isBestseller).slice(0, 6);
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
     addToCart(product);
-  };
-
-  const scroll = (dir: 'left' | 'right') => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const amount = el.clientWidth * 0.8;
-    el.scrollBy({ left: dir === 'left' ? -amount : amount, behavior: 'smooth' });
   };
 
   return (
@@ -34,33 +23,18 @@ export function BestSellers({ onProductClick, onViewAll }: BestSellersProps) {
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
             Our Collection
           </span>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Best Sellers</h2>
+          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Our Collection</h2>
           <p className="text-charcoal-500 max-w-2xl mx-auto">
-            The snacks our customers reorder the most — handcrafted, fresh, and packed with authentic Bikaneri flavour
+            Every Meerav delicacy in one place — handcrafted, fresh, and packed with authentic Bikaneri flavour
           </p>
         </div>
 
-        <div className="relative">
-        <button
-          onClick={() => scroll('left')}
-          aria-label="Scroll left"
-          className="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center bg-white text-maroon-700 rounded-full shadow-lg hover:bg-maroon-700 hover:text-cream-50 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => scroll('right')}
-          aria-label="Scroll right"
-          className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 items-center justify-center bg-white text-maroon-700 rounded-full shadow-lg hover:bg-maroon-700 hover:text-cream-50 transition-colors"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-        <div id="home-bestsellers-track" ref={scrollerRef} className="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x snap-mandatory no-scrollbar">
-          {bestsellers.map((product) => (
+        <div id="home-allproducts-grid" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.map((product) => (
             <div
               key={product.id}
               onClick={() => onProductClick(product)}
-              className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md card-hover flex-none snap-start w-[calc((100%-1rem)/2)] sm:w-[calc((100%-2rem)/3)] md:w-[calc((100%-3rem)/3)] lg:w-[calc((100%-4.5rem)/4)]"
+              className="group cursor-pointer bg-white rounded-2xl overflow-hidden shadow-md card-hover border border-cream-200"
             >
               {/* Image */}
               <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
@@ -71,9 +45,11 @@ export function BestSellers({ onProductClick, onViewAll }: BestSellersProps) {
                 />
                 {/* Badges */}
                 <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-                  <span className="px-2 py-1 bg-saffron-500 text-white text-[10px] font-bold rounded-full shadow-sm">
-                    BESTSELLER
-                  </span>
+                  {product.isBestseller && (
+                    <span className="px-2 py-1 bg-saffron-500 text-white text-[10px] font-bold rounded-full shadow-sm">
+                      BESTSELLER
+                    </span>
+                  )}
                   {product.isNew && (
                     <span className="px-2 py-1 bg-green-600 text-white text-[10px] font-bold rounded-full shadow-sm">
                       NEW
@@ -123,16 +99,6 @@ export function BestSellers({ onProductClick, onViewAll }: BestSellersProps) {
               </div>
             </div>
           ))}
-        </div>
-        </div>
-
-        <div className="text-center mt-10">
-          <button
-            onClick={onViewAll}
-            className="inline-flex items-center gap-2 px-6 py-3 border-2 border-maroon-700 text-maroon-700 font-medium rounded-full hover:bg-maroon-700 hover:text-cream-50 transition-colors"
-          >
-            View All Products
-          </button>
         </div>
       </div>
     </section>

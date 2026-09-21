@@ -147,7 +147,7 @@ function AppContent() {
               <BrandStory />
             </div>
 
-            <BestSellers onProductClick={setSelectedProduct} onViewAll={handleShopNow} />
+            <BestSellers onProductClick={setSelectedProduct} />
 
             <HeritageSection onShopNow={handleShopNow} />
 
