@@ -12,6 +12,8 @@ export interface Product {
   weight: string;
   variants: ProductVariant[];
   image: string;
+  photos: string[];
+  videos: string[];
   description: string;
   ingredients: string;
   nutrition: { protein: string; carbs: string; fat: string; calories: string };
@@ -27,6 +29,7 @@ export interface Category {
   name: string;
   description: string;
   icon: string;
+  image?: string | null;
 }
 
 export const categories: Category[] = [

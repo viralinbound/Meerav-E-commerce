@@ -81,7 +81,7 @@ export function CategoryShowcase({ onCategorySelect, onNavigate }: CategoryShowc
               >
                 <div className="relative aspect-square overflow-hidden bg-cream-100">
                   <img
-                    src={`/${CATEGORY_IMAGES[cat.id] || CATEGORY_IMAGES['bhujia-sev']}`}
+                    src={cat.image || `/${CATEGORY_IMAGES[cat.id] || CATEGORY_IMAGES['bhujia-sev']}`}
                     alt={cat.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />

@@ -54,6 +54,8 @@ function toProduct(row: any): Product {
     weight: variant.weight,
     variants,
     image: resolveImagePath(row.image),
+    photos: (row.photos && row.photos.length ? row.photos : [row.image].filter(Boolean)).map(resolveImagePath),
+    videos: (row.videos || []).map(resolveImagePath),
     description: row.description || '',
     ingredients: row.ingredients || '',
     nutrition: row.nutrition || { protein: '-', carbs: '-', fat: '-', calories: '-' },
@@ -66,7 +68,13 @@ function toProduct(row: any): Product {
 }
 
 function toCategory(row: any): Category {
-  return { id: row.id, name: row.name, description: row.description || '', icon: row.icon || 'Cookie' };
+  return {
+    id: row.id,
+    name: row.name,
+    description: row.description || '',
+    icon: row.icon || 'Cookie',
+    image: row.image ? resolveImagePath(row.image) : null,
+  };
 }
 
 export function CatalogProvider({ children }: { children: ReactNode }) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Star, Plus, Minus, ShoppingCart, Flame, Leaf, ShieldCheck } from 'lucide-react';
+import { X, Star, Plus, Minus, ShoppingCart, Flame, Leaf, ShieldCheck, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import type { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 
@@ -8,14 +8,21 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
+interface MediaItem {
+  type: 'image' | 'video';
+  url: string;
+}
+
 export function ProductModal({ product, onClose }: ProductModalProps) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [variantIndex, setVariantIndex] = useState(0);
+  const [mediaIndex, setMediaIndex] = useState(0);
 
   useEffect(() => {
     setQuantity(1);
     setVariantIndex(0);
+    setMediaIndex(0);
   }, [product]);
 
   useEffect(() => {
@@ -32,6 +39,14 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
   const variants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
+
+  const media: MediaItem[] = [
+    ...(product.photos?.length ? product.photos : [product.image]).map((url) => ({ type: 'image' as const, url })),
+    ...(product.videos || []).map((url) => ({ type: 'video' as const, url })),
+  ];
+  const currentMedia = media[mediaIndex] || media[0];
+  const prevMedia = () => setMediaIndex((i) => (i - 1 + media.length) % media.length);
+  const nextMedia = () => setMediaIndex((i) => (i + 1) % media.length);
 
   const handleAdd = () => {
     addToCart(selected, quantity);
@@ -54,21 +69,69 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
         </button>
 
         <div className="grid md:grid-cols-2 gap-0">
-          {/* Image */}
-          <div className="relative aspect-square md:aspect-auto md:h-full overflow-hidden bg-cream-100">
-            <img src={product.image} alt={product.name} className="w-full h-full object-contain p-6" />
-            <div className="absolute top-4 left-4 flex flex-col gap-1.5">
-              {product.isBestseller && (
-                <span className="px-3 py-1 bg-saffron-500 text-white text-xs font-bold rounded-full shadow-sm">
-                  BESTSELLER
-                </span>
+          {/* Media Gallery */}
+          <div className="flex flex-col">
+            <div className="relative aspect-square overflow-hidden bg-cream-100">
+              {currentMedia?.type === 'video' ? (
+                <video src={currentMedia.url} controls className="w-full h-full object-contain bg-charcoal-900" />
+              ) : (
+                <img src={currentMedia?.url} alt={product.name} className="w-full h-full object-contain p-6" />
               )}
-              {product.isNew && (
-                <span className="px-3 py-1 bg-green-600 text-white text-xs font-bold rounded-full shadow-sm">
-                  NEW
-                </span>
+
+              <div className="absolute top-4 left-4 flex flex-col gap-1.5">
+                {product.isBestseller && (
+                  <span className="px-3 py-1 bg-saffron-500 text-white text-xs font-bold rounded-full shadow-sm">
+                    BESTSELLER
+                  </span>
+                )}
+                {product.isNew && (
+                  <span className="px-3 py-1 bg-green-600 text-white text-xs font-bold rounded-full shadow-sm">
+                    NEW
+                  </span>
+                )}
+              </div>
+
+              {media.length > 1 && (
+                <>
+                  <button
+                    onClick={prevMedia}
+                    aria-label="Previous media"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-white/90 text-charcoal-700 rounded-full shadow-md hover:bg-white transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextMedia}
+                    aria-label="Next media"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center bg-white/90 text-charcoal-700 rounded-full shadow-md hover:bg-white transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </>
               )}
             </div>
+
+            {media.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto p-3 no-scrollbar bg-cream-50">
+                {media.map((m, idx) => (
+                  <button
+                    key={m.url + idx}
+                    onClick={() => setMediaIndex(idx)}
+                    className={`relative shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 transition-colors ${
+                      idx === mediaIndex ? 'border-maroon-700' : 'border-cream-300'
+                    }`}
+                  >
+                    {m.type === 'video' ? (
+                      <div className="w-full h-full bg-charcoal-800 flex items-center justify-center">
+                        <Play className="w-4 h-4 text-cream-50" />
+                      </div>
+                    ) : (
+                      <img src={m.url} alt="" className="w-full h-full object-cover" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details */}

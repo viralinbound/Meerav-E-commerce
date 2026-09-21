@@ -428,19 +428,19 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return !error;
   }
 
-  async function uploadMedia(file, folder) {
+  async function uploadMedia(file, folder, client = supabaseClient) {
     if (!file) return null;
     const ext = (file.name && file.name.split('.').pop()) || 'bin';
     const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
 
-    const { error } = await supabaseClient.storage.from(mediaBucket).upload(path, file, {
+    const { error } = await client.storage.from(mediaBucket).upload(path, file, {
       cacheControl: '3600',
       upsert: false,
       contentType: file.type || undefined
     });
     if (error) { console.error('uploadMedia', error); return null; }
 
-    const { data } = supabaseClient.storage.from(mediaBucket).getPublicUrl(path);
+    const { data } = client.storage.from(mediaBucket).getPublicUrl(path);
     return data.publicUrl;
   }
 

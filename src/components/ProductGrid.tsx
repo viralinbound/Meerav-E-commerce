@@ -76,32 +76,28 @@ export function ProductGrid({ selectedCategory, searchQuery, onCategoryChange, o
           </p>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          <button
-            onClick={() => onCategoryChange(null)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              !selectedCategory
-                ? 'bg-maroon-700 text-cream-50 shadow-md'
-                : 'bg-white text-charcoal-600 hover:bg-cream-200 border border-cream-300'
-            }`}
-          >
-            All Products
-          </button>
-          {categories.map((cat) => (
+        {/* Category Filter Pills — only shown when browsing everything (no
+            category picked yet). Once a specific category is open, this
+            page shows only that category's products, full stop. */}
+        {!selectedCategory && (
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
             <button
-              key={cat.id}
-              onClick={() => onCategoryChange(cat.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedCategory === cat.id
-                  ? 'bg-maroon-700 text-cream-50 shadow-md'
-                  : 'bg-white text-charcoal-600 hover:bg-cream-200 border border-cream-300'
-              }`}
+              onClick={() => onCategoryChange(null)}
+              className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-maroon-700 text-cream-50 shadow-md"
             >
-              {cat.name}
+              All Products
             </button>
-          ))}
-        </div>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => onCategoryChange(cat.id)}
+                className="px-4 py-2 rounded-full text-sm font-medium transition-all bg-white text-charcoal-600 hover:bg-cream-200 border border-cream-300"
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Sort + Count Bar */}
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
