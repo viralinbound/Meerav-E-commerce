@@ -36,7 +36,7 @@ export function BrandStory() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">Small Batch Fried</h3>
-                  <p className="text-xs text-charcoal-500">Every morning at dawn</p>
+                  <p className="text-xs text-charcoal-500">Prepared in small batches for consistent taste</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
@@ -54,7 +54,7 @@ export function BrandStory() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">No Preservatives</h3>
-                  <p className="text-xs text-charcoal-500">100% natural ingredients</p>
+                  <p className="text-xs text-charcoal-500">Simple, natural ingredients</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
@@ -63,7 +63,7 @@ export function BrandStory() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">Same-Day Pack</h3>
-                  <p className="text-xs text-charcoal-500">Shipped within 24 hours</p>
+                  <p className="text-xs text-charcoal-500">Packed fresh and ready to ship</p>
                 </div>
               </div>
             </div>
