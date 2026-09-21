@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Star, Plus, Minus, ShoppingCart, Flame, Leaf, ShieldCheck, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { ArrowLeft, Star, Plus, Minus, ShoppingCart, Flame, Leaf, ShieldCheck, ChevronLeft, ChevronRight, Play, X, ZoomIn } from 'lucide-react';
 import type { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 
@@ -18,11 +18,13 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   const [quantity, setQuantity] = useState(1);
   const [variantIndex, setVariantIndex] = useState(0);
   const [mediaIndex, setMediaIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     setQuantity(1);
     setVariantIndex(0);
     setMediaIndex(0);
+    setLightboxOpen(false);
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, [product.id]);
 
@@ -44,6 +46,17 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   const currentMedia = media[mediaIndex] || media[0];
   const prevMedia = () => setMediaIndex((i) => (i - 1 + media.length) % media.length);
   const nextMedia = () => setMediaIndex((i) => (i + 1) % media.length);
+
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowLeft') prevMedia();
+      if (e.key === 'ArrowRight') nextMedia();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxOpen, media.length]);
 
   const handleAdd = () => {
     addToCart(selected, quantity);
@@ -71,7 +84,16 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
               {currentMedia?.type === 'video' ? (
                 <video src={currentMedia.url} controls className="w-full h-full object-contain bg-charcoal-900" />
               ) : (
-                <img src={currentMedia?.url} alt={product.name} className="w-full h-full object-contain p-6" />
+                <button
+                  onClick={() => setLightboxOpen(true)}
+                  aria-label="Open full-size image"
+                  className="group relative block w-full h-full cursor-zoom-in"
+                >
+                  <img src={currentMedia?.url} alt={product.name} className="w-full h-full object-contain p-6" />
+                  <span className="absolute bottom-3 right-3 flex items-center justify-center w-9 h-9 bg-white/90 text-charcoal-700 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ZoomIn className="w-4 h-4" />
+                  </span>
+                </button>
               )}
 
               <div className="absolute top-4 left-4 flex flex-col gap-1.5">
@@ -251,6 +273,55 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen lightbox — opened by tapping the main product photo, so
+          buyers can inspect packaging/nutrition text at full resolution. */}
+      {lightboxOpen && currentMedia?.type === 'image' && (
+        <div
+          className="fixed inset-0 z-50 bg-charcoal-900/95 flex items-center justify-center p-4 sm:p-10"
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            onClick={() => setLightboxOpen(false)}
+            aria-label="Close"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 w-11 h-11 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          <img
+            src={currentMedia.url}
+            alt={product.name}
+            className="max-w-full max-h-full object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {media.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevMedia();
+                }}
+                aria-label="Previous media"
+                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextMedia();
+                }}
+                aria-label="Next media"
+                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
