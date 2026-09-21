@@ -22,6 +22,18 @@ export default defineConfig({
     entries: ['index.html'],
     exclude: ['lucide-react'],
   },
+  // The production build only bundles the entries listed here — without
+  // admin-v2.html, Vercel's dist/ never contains it and the deployed admin
+  // panel 404s even though it works fine against Vite's dev server (which
+  // serves every root-level .html file regardless of this list).
+  build: {
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        adminV2: fileURLToPath(new URL('./admin-v2.html', import.meta.url)),
+      },
+    },
+  },
   // Vite only exposes env vars prefixed VITE_ to import.meta.env by default.
   // Adding SUPABASE_ here means the existing SUPABASE_URL / SUPABASE_ANON_KEY
   // lines in .env (used by the legacy admin pages) work for the React app
