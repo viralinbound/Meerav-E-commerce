@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Pencil, Trash2, Search } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState, EmptyState, TableScroller } from '../ui';
 import { ProductFormModal, blankProduct, type AdminProduct } from './ProductFormModal';
@@ -14,6 +14,7 @@ export function Products() {
   const [search, setSearch] = useState('');
   const [editing, setEditing] = useState<AdminProduct | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
 
   const load = () => {
     setLoading(true);
@@ -40,10 +41,29 @@ export function Products() {
     }
   };
 
+  const handleMove = async (id: string, direction: -1 | 1) => {
+    const idx = products.findIndex((p) => p.id === id);
+    const swapIdx = idx + direction;
+    if (idx === -1 || swapIdx < 0 || swapIdx >= products.length) return;
+
+    const reordered = [...products];
+    [reordered[idx], reordered[swapIdx]] = [reordered[swapIdx], reordered[idx]];
+    setProducts(reordered);
+
+    setReordering(true);
+    const ok = await MiraDB.reorderProducts(reordered.map((p) => p.id), MiraDB.adminClient);
+    setReordering(false);
+    if (!ok) {
+      alert('Could not save the new order. Please try again.');
+      load();
+    }
+  };
+
   if (loading) return <LoadingState label="Loading products…" />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
+  const reorderable = !search.trim();
 
   return (
     <>
@@ -51,7 +71,9 @@ export function Products() {
         <div className="px-5 py-4 border-b border-cream-200 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
           <div>
             <h3 className="font-serif text-lg font-bold text-maroon-900">Product Catalog</h3>
-            <p className="text-sm text-charcoal-400">{products.length} products</p>
+            <p className="text-sm text-charcoal-400">
+              {products.length} products — use the arrows to set the display order on the website
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -80,6 +102,7 @@ export function Products() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-xs font-semibold text-charcoal-500 uppercase tracking-wide border-b border-cream-200">
+                  <th className="px-5 py-3 w-16">Order</th>
                   <th className="px-5 py-3">Product</th>
                   <th className="px-5 py-3">Price</th>
                   <th className="px-5 py-3">Stock</th>
@@ -89,6 +112,28 @@ export function Products() {
               <tbody>
                 {filtered.map((p) => (
                   <tr key={p.id} className="border-b border-cream-100 last:border-0 hover:bg-cream-50 transition-colors">
+                    <td className="px-5 py-3.5">
+                      <div className="flex flex-col gap-0.5">
+                        <button
+                          onClick={() => handleMove(p.id, -1)}
+                          disabled={!reorderable || reordering || products.findIndex((x) => x.id === p.id) === 0}
+                          className="w-7 h-7 flex items-center justify-center rounded-md text-charcoal-500 hover:bg-cream-200 transition-colors disabled:opacity-30"
+                          aria-label={`Move ${p.name} up`}
+                          title={reorderable ? 'Move up' : 'Clear search to reorder'}
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleMove(p.id, 1)}
+                          disabled={!reorderable || reordering || products.findIndex((x) => x.id === p.id) === products.length - 1}
+                          className="w-7 h-7 flex items-center justify-center rounded-md text-charcoal-500 hover:bg-cream-200 transition-colors disabled:opacity-30"
+                          aria-label={`Move ${p.name} down`}
+                          title={reorderable ? 'Move down' : 'Clear search to reorder'}
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <img

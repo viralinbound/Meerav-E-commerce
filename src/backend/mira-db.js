@@ -40,9 +40,30 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   async function fetchProducts() {
-    const { data, error } = await supabaseClient.from('products').select('*').order('created_at');
+    // sort_order drives the admin-controlled display order once the column
+    // exists (see supabase/add_product_sort_order.sql); nulls last so any
+    // newly-added product without an assigned position falls to the end
+    // instead of jumping to the front. Falls back to created_at if that
+    // migration hasn't been run yet, so the storefront never breaks.
+    let { data, error } = await supabaseClient
+      .from('products')
+      .select('*')
+      .order('sort_order', { ascending: true, nullsFirst: false })
+      .order('created_at', { ascending: true });
+    if (error) {
+      ({ data, error } = await supabaseClient.from('products').select('*').order('created_at'));
+    }
     if (error) { console.error('fetchProducts', error); return []; }
     return (data || []).map(dbProductToApp);
+  }
+
+  async function reorderProducts(orderedIds, client = supabaseClient) {
+    const updates = orderedIds.map((id, idx) => ({ id, sort_order: idx + 1 }));
+    for (const u of updates) {
+      const { error } = await client.from('products').update({ sort_order: u.sort_order }).eq('id', u.id);
+      if (error) { console.error('reorderProducts', error); return false; }
+    }
+    return true;
   }
 
   async function fetchOrders(client = supabaseClient) {
@@ -674,7 +695,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, fetchOrders, fetchCustomers, fetchNotifications,
+    fetchCategories, fetchProducts, reorderProducts, fetchOrders, fetchCustomers, fetchNotifications,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,
