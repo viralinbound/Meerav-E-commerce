@@ -1,9 +1,9 @@
-import { Fragment, useEffect, useState } from 'react';
-import { ChevronDown, ChevronRight, RotateCcw, ArrowLeft } from 'lucide-react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { ChevronDown, ChevronRight, RotateCcw, ArrowLeft, Activity, RotateCw, AlertTriangle, Clock } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { useAdminAuth } from '../useAdminAuth';
 import { undoEntry, type ActivityEntry } from '../activityLog';
-import { Card, LoadingState, ErrorState, EmptyState, StatusBadge, TableScroller } from '../ui';
+import { Card, LoadingState, ErrorState, EmptyState, StatusBadge, TableScroller, MetricCard } from '../ui';
 
 function fieldDiff(before: any, after: any) {
   const keys = new Set([...Object.keys(before || {}), ...Object.keys(after || {})]);
@@ -78,6 +78,28 @@ export function ActivityLog({ initialFilter = null, onFilterChange }: ActivityLo
 
   useEffect(load, [filterAdmin]);
 
+  const summary = useMemo(() => {
+    if (!filterAdmin) return null;
+    const byAction: Record<string, number> = {};
+    let warningsReceived = 0;
+    let undoneCount = 0;
+    let lastActive: string | null = null;
+    for (const r of rows) {
+      byAction[r.action] = (byAction[r.action] || 0) + 1;
+      if (r.action === 'admin.warn') warningsReceived += 1;
+      if (r.undone) undoneCount += 1;
+      if (!lastActive || new Date(r.created_at) > new Date(lastActive)) lastActive = r.created_at;
+    }
+    const topAction = Object.entries(byAction).sort((a, b) => b[1] - a[1])[0];
+    return {
+      total: rows.length,
+      warningsReceived,
+      undoneCount,
+      lastActive,
+      topAction: topAction ? `${topAction[0]} (${topAction[1]})` : '—',
+    };
+  }, [rows, filterAdmin]);
+
   const handleUndo = async (entry: ActivityEntry) => {
     if (!confirm(`Undo "${entry.action}" on "${entry.target}" by ${entry.admin_name}? They'll be automatically notified.`)) return;
     setUndoingId(entry.id);
@@ -91,7 +113,26 @@ export function ActivityLog({ initialFilter = null, onFilterChange }: ActivityLo
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <Card>
+    <div className="space-y-6">
+      {summary && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard label="Total Actions" value={summary.total} icon={Activity} sublabel={filterAdmin?.name} />
+          <MetricCard
+            label="Most Common"
+            value={summary.topAction.split(' (')[0] || '—'}
+            sublabel={summary.topAction.includes('(') ? `${summary.topAction.split('(')[1]?.replace(')', '')} times` : undefined}
+            icon={RotateCw}
+          />
+          <MetricCard label="Warnings Received" value={summary.warningsReceived} icon={AlertTriangle} sublabel="For undone changes" />
+          <MetricCard
+            label="Last Active"
+            value={summary.lastActive ? new Date(summary.lastActive).toLocaleDateString() : '—'}
+            sublabel={summary.lastActive ? new Date(summary.lastActive).toLocaleTimeString() : undefined}
+            icon={Clock}
+          />
+        </div>
+      )}
+      <Card>
       <div className="px-5 py-4 border-b border-cream-200 flex items-center justify-between">
         <div>
           {filterAdmin ? (
@@ -181,6 +222,7 @@ export function ActivityLog({ initialFilter = null, onFilterChange }: ActivityLo
           </table>
         </TableScroller>
       )}
-    </Card>
+      </Card>
+    </div>
   );
 }
