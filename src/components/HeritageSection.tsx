@@ -9,12 +9,16 @@ const HERITAGE_IMAGE =
 
 export function HeritageSection({ onShopNow }: HeritageSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-royal-gradient">
+    <section className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9] max-h-[85vh]">
       {/* The artwork already has the heading, copy, and branding baked in,
           so — same treatment as the hero banners — it's shown in full via
           object-contain (never cropped) on top of a blurred cover copy that
           fills the box at any screen size, instead of duplicating the text
-          as a separate overlay. */}
+          as a separate overlay. A fixed-aspect container (matching the
+          artwork's own 16:9) keeps the image spanning full width on every
+          device — a plain w-full/h-auto/max-h image would shrink narrower
+          than the container once max-height kicks in on short, wide
+          viewports, leaving dead space on the sides. */}
       <img
         src={HERITAGE_IMAGE}
         alt=""
@@ -24,7 +28,7 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
       <img
         src={HERITAGE_IMAGE}
         alt="Heritage of Bikaner, in every batch"
-        className="relative w-full h-auto max-h-[85vh] mx-auto block"
+        className="relative w-full h-full object-contain"
       />
 
       <div className="relative flex justify-center pb-10 sm:pb-12 -mt-16 sm:-mt-20">
