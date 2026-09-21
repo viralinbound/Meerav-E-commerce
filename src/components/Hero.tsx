@@ -70,7 +70,7 @@ export function Hero({ onShopNow }: HeroProps) {
                 )}
                 <button
                   onClick={onShopNow}
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-saffron-500 text-white font-semibold rounded-full hover:bg-saffron-600 transition-all duration-300 hover:shadow-2xl active:scale-95 animate-slide-up"
+                  className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl animate-slide-up"
                 >
                   {banner.cta}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
