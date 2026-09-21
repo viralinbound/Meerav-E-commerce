@@ -7,14 +7,14 @@ import { WarningsBanner } from './WarningsBanner';
 
 export type AdminPage = 'dashboard' | 'products' | 'orders' | 'categories' | 'settings' | 'admins' | 'activity';
 
-const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard }[] = [
+const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard; rootOnly?: boolean }[] = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
   { id: 'products', label: 'Products', icon: Package },
   { id: 'orders', label: 'Orders', icon: ClipboardList },
   { id: 'categories', label: 'Categories', icon: Layers },
   { id: 'settings', label: 'Store Settings', icon: Settings },
-  { id: 'admins', label: 'Admin Accounts', icon: Users },
-  { id: 'activity', label: 'Activity Log', icon: History },
+  { id: 'admins', label: 'Admin Accounts', icon: Users, rootOnly: true },
+  { id: 'activity', label: 'Activity Log', icon: History, rootOnly: true },
 ];
 
 interface AdminShellProps {
@@ -45,7 +45,7 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter((item) => !item.rootOnly || admin?.role === 'root').map((item) => {
           const Icon = item.icon;
           const active = item.id === page;
           return (

@@ -28,6 +28,9 @@ function AdminRoot() {
   if (!admin) return <AdminLogin />;
   if (admin.must_change_password) return <ChangePasswordGate />;
 
+  const isRoot = admin.role === 'root';
+  const rootOnlyPageRequested = (page === 'admins' || page === 'activity') && !isRoot;
+
   return (
     <AdminShell
       page={page}
@@ -36,21 +39,30 @@ function AdminRoot() {
         setPage(p);
       }}
     >
-      {page === 'dashboard' && <Dashboard />}
-      {page === 'products' && <Products />}
-      {page === 'orders' && <Orders />}
-      {page === 'categories' && <Categories />}
-      {page === 'settings' && <StoreSettings />}
-      {page === 'admins' && (
-        <AdminAccounts
-          onViewActivity={(id, name) => {
-            setActivityFilter({ id, name });
-            setPage('activity');
-          }}
-        />
-      )}
-      {page === 'activity' && (
-        <ActivityLog initialFilter={activityFilter} onFilterChange={setActivityFilter} />
+      {rootOnlyPageRequested ? (
+        <div className="bg-white rounded-2xl shadow-md border border-cream-200 p-10 text-center">
+          <p className="font-serif text-lg font-bold text-maroon-900 mb-1">Root admins only</p>
+          <p className="text-sm text-charcoal-500">Ask the root admin if you need access to this section.</p>
+        </div>
+      ) : (
+        <>
+          {page === 'dashboard' && <Dashboard />}
+          {page === 'products' && <Products />}
+          {page === 'orders' && <Orders />}
+          {page === 'categories' && <Categories />}
+          {page === 'settings' && <StoreSettings />}
+          {page === 'admins' && (
+            <AdminAccounts
+              onViewActivity={(id, name) => {
+                setActivityFilter({ id, name });
+                setPage('activity');
+              }}
+            />
+          )}
+          {page === 'activity' && (
+            <ActivityLog initialFilter={activityFilter} onFilterChange={setActivityFilter} />
+          )}
+        </>
       )}
     </AdminShell>
   );
