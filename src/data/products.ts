@@ -385,23 +385,16 @@ export const instagramFeed = [
 
 export const heroBanners = [
   {
-    id: 'h1',
-    title: 'We Still Fry It The Way Nani Did',
-    subtitle: 'No shortcuts, no palm oil, no factory lines — just moth flour, pure groundnut oil and desert rock salt, fried in small batches every morning.',
-    cta: 'Shop Best Sellers',
-    image: 'https://images.pexels.com/photos/27515043/pexels-photo-27515043.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600',
-  },
-  {
     id: 'h2',
-    title: 'The Royal Treat',
-    subtitle: 'Authentic Bikaneri Bhujia — preserving Rajasthani taste through honest snacking for over 40 years.',
-    cta: 'Explore Bhujia',
-    image: 'https://images.pexels.com/photos/17480807/pexels-photo-17480807.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600',
+    title: '',
+    subtitle: '',
+    cta: 'Shop Now',
+    image: 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/royal-treat-banner.webp',
   },
   {
     id: 'h3',
-    title: 'Heritage of Bikaner, In Every Batch',
-    subtitle: 'Four decades, one kitchen, no shortcuts. The same desert land that gives us our spices and salt.',
+    title: '',
+    subtitle: '',
     cta: 'Our Story',
     image: 'https://images.pexels.com/photos/31339268/pexels-photo-31339268.jpeg?auto=compress&cs=tinysrgb&h=900&w=1600',
   },

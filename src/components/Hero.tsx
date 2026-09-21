@@ -26,23 +26,32 @@ export function Hero({ onShopNow }: HeroProps) {
             idx === current ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         >
-          <img src={banner.image} alt={banner.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-hero-pattern" />
-          {/* Extra darkening only behind the text column, so the rest of the
-              photo stays bright and clearly visible while copy stays legible. */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-black/5 to-transparent" />
-          <div className="absolute inset-0 flex items-center">
+          <img src={banner.image} alt={banner.title || 'Meerav'} className="w-full h-full object-cover" />
+          {/* Banners whose artwork already has the title/subtitle baked in
+              (banner.title === '') skip the pattern tint, darkening gradient,
+              and text overlay entirely — only the CTA button sits on top. */}
+          {banner.title && (
+            <>
+              <div className="absolute inset-0 bg-hero-pattern" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-black/5 to-transparent" />
+            </>
+          )}
+          <div className="absolute inset-0 flex items-end sm:items-center pb-20 sm:pb-0">
             <div className="container-max section-padding w-full">
               <div className="max-w-2xl">
-                <span className="inline-block px-4 py-1.5 bg-saffron-500/90 text-white text-sm font-medium rounded-full mb-6 animate-slide-up text-shadow-lg">
-                  Authentic Bikaneri Taste Since 1984
-                </span>
-                <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-cream-50 leading-tight mb-6 text-shadow-lg animate-slide-up">
-                  {banner.title}
-                </h2>
-                <p className="text-lg text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up text-shadow-lg">
-                  {banner.subtitle}
-                </p>
+                {banner.title && (
+                  <>
+                    <span className="inline-block px-4 py-1.5 bg-saffron-500/90 text-white text-sm font-medium rounded-full mb-6 animate-slide-up text-shadow-lg">
+                      Authentic Bikaneri Taste Since 1984
+                    </span>
+                    <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-cream-50 leading-tight mb-6 text-shadow-lg animate-slide-up">
+                      {banner.title}
+                    </h2>
+                    <p className="text-lg text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up text-shadow-lg">
+                      {banner.subtitle}
+                    </p>
+                  </>
+                )}
                 <button
                   onClick={onShopNow}
                   className="group inline-flex items-center gap-2 px-8 py-4 bg-saffron-500 text-white font-semibold rounded-full hover:bg-saffron-600 transition-all duration-300 hover:shadow-2xl active:scale-95 animate-slide-up"
