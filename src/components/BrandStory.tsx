@@ -79,7 +79,7 @@ export function BrandStory() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-maroon-900/60 via-transparent to-transparent" />
             </div>
-            <div className="absolute -bottom-6 -left-6 bg-cream-50 rounded-2xl shadow-xl p-6 max-w-xs hidden md:block">
+            <div className="absolute -bottom-10 -left-6 bg-cream-50 rounded-2xl shadow-xl p-6 w-[calc(100%-1rem)] max-w-sm hidden md:block">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-12 h-12 bg-royal-gradient rounded-full flex items-center justify-center">
                   <ShieldCheck className="w-6 h-6 text-cream-50" />
