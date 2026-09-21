@@ -402,7 +402,7 @@ export const heroBanners = [
     id: 'h3',
     title: '',
     subtitle: '',
-    cta: 'Our Story',
-    image: 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/heritage-banner.webp',
+    cta: 'Shop Now',
+    image: 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/crunch-banner.webp',
   },
 ];
