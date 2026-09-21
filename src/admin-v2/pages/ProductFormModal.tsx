@@ -96,7 +96,7 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
     if (form.photos.length === 0) return setError('Upload at least one product photo.');
 
     setSaving(true);
-    const id = isNew ? `p-${Date.now().toString(36)}` : form.id;
+    const id = isNew ? String(await MiraDB.getNextProductSerial(MiraDB.adminClient)) : form.id;
     const payload = {
       ...form,
       id,

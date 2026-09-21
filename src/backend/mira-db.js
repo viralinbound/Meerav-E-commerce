@@ -57,6 +57,17 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return (data || []).map(dbProductToApp);
   }
 
+  async function getNextProductSerial(client = supabaseClient) {
+    const { data, error } = await client.from('products').select('id');
+    if (error) { console.error('getNextProductSerial', error); return 1234; }
+    const numericIds = (data || [])
+      .map((r) => r.id)
+      .filter((id) => /^\d+$/.test(id))
+      .map(Number);
+    if (numericIds.length === 0) return 1234;
+    return Math.max(...numericIds) + 1;
+  }
+
   async function reorderProducts(orderedIds, client = supabaseClient) {
     const updates = orderedIds.map((id, idx) => ({ id, sort_order: idx + 1 }));
     for (const u of updates) {
@@ -695,7 +706,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, fetchOrders, fetchCustomers, fetchNotifications,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchCustomers, fetchNotifications,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,
