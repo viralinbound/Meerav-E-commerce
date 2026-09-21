@@ -21,7 +21,7 @@ export function Hero({ onShopNow }: HeroProps) {
     <>
     <section
       id="home-hero"
-      className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9] max-h-[85vh]"
+      className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9]"
     >
       {heroBanners.map((banner, idx) => (
         <div
@@ -44,24 +44,19 @@ export function Hero({ onShopNow }: HeroProps) {
             alt={banner.title || 'Meerav'}
             className="relative w-full h-full object-contain"
           />
-          {/* Banners whose artwork already has the title/subtitle baked in
-              (banner.title === '') skip the pattern tint, darkening gradient,
-              and text overlay entirely — only the CTA button sits on top. */}
+          {/* Title/subtitle overlay — only for banners whose artwork doesn't
+              already carry baked-in copy (banner.title === ''). The CTA
+              itself always lives below the image as a separate overlapping
+              button (see after the section), matching the "Explore Our
+              Snacks" placement, so it never sits in dead blurred space on
+              any screen size. */}
           {banner.title && (
             <>
               <div className="absolute inset-0 bg-hero-pattern" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-black/5 to-transparent" />
-            </>
-          )}
-          {/* Text + CTA overlay — desktop/tablet only. On mobile the artwork
-              already carries the copy, and the CTA is a separate overlapping
-              button below the image (matching the "Explore Our Snacks"
-              placement) so it never floats in dead blurred space. */}
-          <div className="absolute inset-0 hidden sm:flex sm:items-center">
-            <div className="container-max section-padding w-full">
-              <div className="max-w-2xl">
-                {banner.title && (
-                  <>
+              <div className="absolute inset-0 hidden sm:flex sm:items-center">
+                <div className="container-max section-padding w-full">
+                  <div className="max-w-2xl">
                     <span className="inline-block px-4 py-1.5 bg-saffron-500/90 text-white text-sm font-medium rounded-full mb-6 animate-slide-up text-shadow-lg">
                       Authentic Bikaneri Taste Since 1984
                     </span>
@@ -71,18 +66,11 @@ export function Hero({ onShopNow }: HeroProps) {
                     <p className="text-lg text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up text-shadow-lg">
                       {banner.subtitle}
                     </p>
-                  </>
-                )}
-                <button
-                  onClick={onShopNow}
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl animate-slide-up"
-                >
-                  {banner.cta}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       ))}
 
@@ -117,10 +105,10 @@ export function Hero({ onShopNow }: HeroProps) {
       </div>
     </section>
 
-    {/* Mobile-only CTA, placed and styled exactly like "Explore Our Snacks" —
-        an overlapping pill centered on the banner's bottom edge, never in
-        empty blurred space. */}
-    <div className="relative sm:hidden flex justify-center -mt-6 z-10">
+    {/* CTA on every screen size, placed and styled exactly like "Explore Our
+        Snacks" — an overlapping pill centered on the banner's bottom edge,
+        never floating in dead blurred space. */}
+    <div className="relative flex justify-center -mt-6 sm:-mt-7 z-10">
       <button
         onClick={onShopNow}
         className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
