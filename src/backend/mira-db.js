@@ -515,6 +515,18 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return { error };
   }
 
+  async function sendPasswordReset(email) {
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    return { error };
+  }
+
+  async function updatePassword(newPassword) {
+    const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+    return { error };
+  }
+
   async function getCurrentSession() {
     const { data } = await supabaseClient.auth.getSession();
     return data.session;
@@ -680,6 +692,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     subscribeTable,
     uploadMedia, deleteMedia,
     signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange, resendConfirmationEmail,
+    sendPasswordReset, updatePassword,
     adminClient: adminSupabaseClient,
     signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
     fetchAdmins, registerAdmin, removeAdmin,

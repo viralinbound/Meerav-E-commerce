@@ -59,6 +59,39 @@ export function Dashboard() {
 
   const isBestseller = (tag?: string) => (tag || '').toLowerCase().includes('best');
 
+  // Sales grouped by calendar day for the last 14 days, oldest first, so the
+  // trend chart below reads left-to-right like a normal timeline.
+  const salesByDay = useMemo(() => {
+    const days: { key: string; label: string; total: number; orders: number }[] = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      days.push({
+        key: d.toDateString(),
+        label: d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+        total: 0,
+        orders: 0,
+      });
+    }
+    const byKey = new Map(days.map((d) => [d.key, d]));
+    for (const o of orders) {
+      const d = new Date(o.date);
+      if (isNaN(d.getTime())) continue;
+      const entry = byKey.get(d.toDateString());
+      if (entry) {
+        entry.total += o.totalAmount || 0;
+        entry.orders += 1;
+      }
+    }
+    return days;
+  }, [orders]);
+
+  const statusBreakdown = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const o of orders) counts.set(o.orderStatus, (counts.get(o.orderStatus) || 0) + 1);
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+  }, [orders]);
+
   const toggleBestseller = async (product: DashProduct) => {
     setBusyId(product.id);
     const before = { ...product };
@@ -75,7 +108,7 @@ export function Dashboard() {
 
   const totalSales = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
   const recent = [...orders]
-    .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    .sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime())
     .slice(0, 8);
 
   return (
@@ -85,6 +118,49 @@ export function Dashboard() {
         <MetricCard label="Total Orders" value={orders.length} sublabel="Processed orders" icon={ClipboardList} />
         <MetricCard label="Catalog Items" value={products.length} sublabel="Active products" icon={Package} />
         <MetricCard label="Best Sellers" value={products.filter((p) => isBestseller(p.tag)).length} sublabel="Tagged products" icon={Star} />
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-4">
+        <Card className="lg:col-span-2">
+          <div className="px-5 py-4 border-b border-cream-200">
+            <h3 className="font-serif text-lg font-bold text-maroon-900 flex items-center gap-2">
+              <TrendingUp className="w-4.5 h-4.5 text-maroon-700" /> Sales — Last 14 Days
+            </h3>
+            <p className="text-sm text-charcoal-400">Daily revenue from real order data.</p>
+          </div>
+          <div className="p-5">
+            {salesByDay.every((d) => d.total === 0) ? (
+              <EmptyState label="No sales yet" hint="Once orders come in, the daily trend shows up here." />
+            ) : (
+              <SalesTrendChart data={salesByDay} />
+            )}
+          </div>
+        </Card>
+
+        <Card>
+          <div className="px-5 py-4 border-b border-cream-200">
+            <h3 className="font-serif text-lg font-bold text-maroon-900">Order Status</h3>
+            <p className="text-sm text-charcoal-400">All-time breakdown.</p>
+          </div>
+          {statusBreakdown.length === 0 ? (
+            <EmptyState label="No orders yet" />
+          ) : (
+            <div className="p-5 space-y-3">
+              {statusBreakdown.map(([status, count]) => (
+                <div key={status} className="flex items-center justify-between gap-3">
+                  <StatusBadge status={status} />
+                  <div className="flex-1 h-2 bg-cream-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-maroon-600 rounded-full"
+                      style={{ width: `${(count / orders.length) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-semibold text-charcoal-700 w-6 text-right">{count}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
       </div>
 
       <Card>
@@ -159,7 +235,12 @@ export function Dashboard() {
                     <td className="px-5 py-3.5 text-charcoal-700">{o.customer?.name || '—'}</td>
                     <td className="px-5 py-3.5 font-medium text-charcoal-800">₹{o.totalAmount}</td>
                     <td className="px-5 py-3.5"><StatusBadge status={o.orderStatus} /></td>
-                    <td className="px-5 py-3.5 text-charcoal-400">{o.date}</td>
+                    <td className="px-5 py-3.5 text-charcoal-400">
+                      {new Date(o.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      <span className="text-charcoal-300">
+                        {' '}· {new Date(o.date).toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' })}
+                      </span>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -168,5 +249,47 @@ export function Dashboard() {
         )}
       </Card>
     </div>
+  );
+}
+
+function SalesTrendChart({ data }: { data: { key: string; label: string; total: number; orders: number }[] }) {
+  const max = Math.max(...data.map((d) => d.total), 1);
+  const width = 700;
+  const height = 200;
+  const barGap = 6;
+  const barWidth = (width - barGap * (data.length - 1)) / data.length;
+
+  return (
+    <svg viewBox={`0 0 ${width} ${height + 28}`} className="w-full h-56" preserveAspectRatio="none">
+      {data.map((d, i) => {
+        const barHeight = (d.total / max) * height;
+        const x = i * (barWidth + barGap);
+        const y = height - barHeight;
+        return (
+          <g key={d.key}>
+            <title>
+              {d.label}: ₹{d.total.toLocaleString('en-IN')} ({d.orders} order{d.orders === 1 ? '' : 's'})
+            </title>
+            <rect
+              x={x}
+              y={y}
+              width={barWidth}
+              height={Math.max(barHeight, d.total > 0 ? 3 : 0)}
+              rx={3}
+              className={d.total > 0 ? 'fill-maroon-600' : 'fill-cream-200'}
+            />
+            <text
+              x={x + barWidth / 2}
+              y={height + 18}
+              textAnchor="middle"
+              className="fill-charcoal-400"
+              style={{ fontSize: 10 }}
+            >
+              {d.label}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
   );
 }

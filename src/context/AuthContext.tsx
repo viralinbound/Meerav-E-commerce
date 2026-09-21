@@ -28,6 +28,10 @@ interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<{ error?: any }>;
   signOut: () => Promise<void>;
   resendConfirmationEmail: (email: string) => Promise<{ error?: any }>;
+  sendPasswordReset: (email: string) => Promise<{ error?: any }>;
+  updatePassword: (newPassword: string) => Promise<{ error?: any }>;
+  passwordRecovery: boolean;
+  clearPasswordRecovery: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -40,6 +44,7 @@ function normalizeCustomer(c: any): Customer | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -52,7 +57,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!cancelled) setLoading(false);
     });
 
-    const { data: sub } = MiraDB.onAuthChange(async (_event: string, session: any) => {
+    // Clicking the "reset your password" link in the email lands back here
+    // already signed in to a recovery session — PASSWORD_RECOVERY tells us
+    // to show a "set new password" form instead of treating this as a
+    // normal sign-in.
+    const { data: sub } = MiraDB.onAuthChange(async (event: string, session: any) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        if (!cancelled) setPasswordRecovery(true);
+      }
       if (session?.user) {
         const profile = await MiraDB.getOrCreateCustomerProfile(session.user);
         if (!cancelled) setCustomer(normalizeCustomer(profile));
@@ -88,8 +100,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return MiraDB.resendConfirmationEmail(email);
   }
 
+  async function sendPasswordReset(email: string) {
+    return MiraDB.sendPasswordReset(email);
+  }
+
+  async function updatePassword(newPassword: string) {
+    const res = await MiraDB.updatePassword(newPassword);
+    if (!res.error) setPasswordRecovery(false);
+    return res;
+  }
+
+  function clearPasswordRecovery() {
+    setPasswordRecovery(false);
+  }
+
   return (
-    <AuthContext.Provider value={{ customer, loading, signUp, signIn, signOut, resendConfirmationEmail }}>
+    <AuthContext.Provider
+      value={{
+        customer,
+        loading,
+        signUp,
+        signIn,
+        signOut,
+        resendConfirmationEmail,
+        sendPasswordReset,
+        updatePassword,
+        passwordRecovery,
+        clearPasswordRecovery,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

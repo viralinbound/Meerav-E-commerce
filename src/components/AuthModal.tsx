@@ -7,21 +7,74 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
-type Mode = 'signin' | 'signup';
+type Mode = 'signin' | 'signup' | 'forgot' | 'reset';
 
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { customer, signIn, signUp, signOut, resendConfirmationEmail } = useAuth();
+  const { customer, signIn, signUp, signOut, resendConfirmationEmail, sendPasswordReset, updatePassword, passwordRecovery, clearPasswordRecovery } = useAuth();
   const [mode, setMode] = useState<Mode>('signin');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
   const [resendStatus, setResendStatus] = useState('');
+  const [resetSent, setResetSent] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [resetDone, setResetDone] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', pincode: '', password: '' });
 
-  if (!isOpen) return null;
+  const effectiveMode: Mode = passwordRecovery ? 'reset' : mode;
+
+  if (!isOpen && !passwordRecovery) return null;
 
   function update(field: string, value: string) {
     setForm((f) => ({ ...f, [field]: value }));
+  }
+
+  async function handleForgotSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    setBusy(true);
+    const res = await sendPasswordReset(form.email);
+    setBusy(false);
+    if (res.error) {
+      setError(res.error.message || 'Could not send reset email. Please try again.');
+    } else {
+      setResetSent(true);
+    }
+  }
+
+  async function handleResetSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError('');
+    if (newPassword.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
+    if (newPassword !== newPasswordConfirm) {
+      setError('Passwords don’t match.');
+      return;
+    }
+    setBusy(true);
+    const res = await updatePassword(newPassword);
+    setBusy(false);
+    if (res.error) {
+      setError(res.error.message || 'Could not update password. Please try again.');
+    } else {
+      setResetDone(true);
+    }
+  }
+
+  function handleClose() {
+    setMode('signin');
+    setError('');
+    setResendStatus('');
+    setNeedsConfirmation(false);
+    setResetSent(false);
+    setResetDone(false);
+    setNewPassword('');
+    setNewPasswordConfirm('');
+    clearPasswordRecovery();
+    onClose();
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -58,18 +111,123 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="absolute inset-0 bg-charcoal-900/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-charcoal-900/70 backdrop-blur-sm" onClick={effectiveMode === 'reset' ? undefined : handleClose} />
 
       <div className="relative bg-cream-50 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-scale-in">
         <div className="sticky top-0 bg-maroon-800 text-cream-50 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
-          <h2 className="font-serif text-xl font-bold">{customer ? 'Your Account' : mode === 'signin' ? 'Sign In' : 'Create Account'}</h2>
-          <button onClick={onClose} className="w-9 h-9 hover:bg-maroon-700 rounded-full flex items-center justify-center transition-colors">
-            <X className="w-5 h-5" />
-          </button>
+          <h2 className="font-serif text-xl font-bold">
+            {customer && effectiveMode !== 'reset'
+              ? 'Your Account'
+              : effectiveMode === 'signin'
+              ? 'Sign In'
+              : effectiveMode === 'signup'
+              ? 'Create Account'
+              : effectiveMode === 'forgot'
+              ? 'Reset Password'
+              : 'Set New Password'}
+          </h2>
+          {effectiveMode !== 'reset' && (
+            <button onClick={handleClose} className="w-9 h-9 hover:bg-maroon-700 rounded-full flex items-center justify-center transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
 
         <div className="p-6">
-          {customer ? (
+          {effectiveMode === 'reset' ? (
+            resetDone ? (
+              <div className="text-center">
+                <p className="text-charcoal-700 mb-6">Your password has been updated.</p>
+                <button onClick={handleClose} className="btn-primary w-full justify-center">
+                  Continue
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleResetSubmit} className="space-y-4">
+                <p className="text-sm text-charcoal-500">Choose a new password for your account.</p>
+                <div>
+                  <label className="text-sm font-medium text-charcoal-700 mb-1.5 flex items-center gap-1.5">
+                    <Lock className="w-4 h-4" /> New Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    minLength={6}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="At least 6 characters"
+                    className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-charcoal-700 mb-1.5 flex items-center gap-1.5">
+                    <Lock className="w-4 h-4" /> Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    minLength={6}
+                    value={newPasswordConfirm}
+                    onChange={(e) => setNewPasswordConfirm(e.target.value)}
+                    placeholder="Re-enter password"
+                    className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
+                  />
+                </div>
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                <button type="submit" disabled={busy} className="btn-primary w-full justify-center">
+                  {busy ? 'Please wait…' : 'Update Password'}
+                </button>
+              </form>
+            )
+          ) : effectiveMode === 'forgot' ? (
+            resetSent ? (
+              <div className="text-center">
+                <p className="text-charcoal-700 mb-6">
+                  If an account exists for <span className="font-medium">{form.email}</span>, a password reset link has been sent.
+                </p>
+                <button
+                  onClick={() => {
+                    setMode('signin');
+                    setResetSent(false);
+                  }}
+                  className="btn-primary w-full justify-center"
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleForgotSubmit} className="space-y-4">
+                <p className="text-sm text-charcoal-500">Enter your account email and we’ll send you a link to reset your password.</p>
+                <div>
+                  <label className="text-sm font-medium text-charcoal-700 mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-4 h-4" /> Email Address
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => update('email', e.target.value)}
+                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
+                  />
+                </div>
+                {error && <p className="text-sm text-red-600">{error}</p>}
+                <button type="submit" disabled={busy} className="btn-primary w-full justify-center">
+                  {busy ? 'Please wait…' : 'Send Reset Link'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode('signin');
+                    setError('');
+                  }}
+                  className="block mx-auto text-sm text-maroon-700 font-medium hover:underline"
+                >
+                  Back to Sign In
+                </button>
+              </form>
+            )
+          ) : customer ? (
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-royal-gradient flex items-center justify-center">
                 <span className="font-serif text-cream-50 text-xl font-bold">{customer.name?.slice(0, 2).toUpperCase()}</span>
@@ -79,7 +237,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <button
                 onClick={() => {
                   signOut();
-                  onClose();
+                  handleClose();
                 }}
                 className="btn-primary w-full justify-center"
               >
@@ -167,6 +325,18 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     placeholder="At least 6 characters"
                     className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
                   />
+                  {mode === 'signin' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMode('forgot');
+                        setError('');
+                      }}
+                      className="mt-1.5 text-xs text-maroon-700 font-medium hover:underline"
+                    >
+                      Forgot password?
+                    </button>
+                  )}
                 </div>
 
                 {error && <p className="text-sm text-red-600">{error}</p>}
