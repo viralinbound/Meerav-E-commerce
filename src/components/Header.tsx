@@ -87,22 +87,35 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
               </div>
             </button>
 
+            {/* Nav Links - Desktop */}
+            <nav className="hidden lg:flex items-center gap-5 shrink-0">
+              {navLinks.map((link) => (
+                <button
+                  key={link.section}
+                  onClick={() => onNavigate(link.section)}
+                  className="text-sm font-medium text-charcoal-700 hover:text-maroon-700 transition-colors whitespace-nowrap"
+                >
+                  {link.label}
+                </button>
+              ))}
+            </nav>
+
             {/* Search Bar - Desktop */}
-            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-0 max-w-md xl:max-w-lg mx-auto">
+            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-0 max-w-[220px] xl:max-w-xs mx-auto">
               <div className="relative w-full">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for namkeens, sweets & more..."
-                  className="w-full pl-4 pr-10 py-2 border-2 border-cream-300 rounded-full focus:border-saffron-400 focus:outline-none transition-colors text-sm"
+                  placeholder="Search..."
+                  className="w-full pl-3 pr-8 py-1.5 border border-cream-300 rounded-full focus:border-saffron-400 focus:outline-none transition-colors text-xs"
                 />
                 <button
                   type="submit"
                   aria-label="Search"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 bg-saffron-500 rounded-full flex items-center justify-center text-white hover:bg-saffron-600 transition-colors"
+                  className="absolute right-0.5 top-1/2 -translate-y-1/2 w-6 h-6 bg-saffron-500 rounded-full flex items-center justify-center text-white hover:bg-saffron-600 transition-colors"
                 >
-                  <Search className="w-3.5 h-3.5" />
+                  <Search className="w-3 h-3" />
                 </button>
               </div>
             </form>
@@ -143,19 +156,6 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
               </button>
             </div>
           </div>
-
-          {/* Nav Links - Desktop */}
-          <nav className="hidden lg:flex items-center justify-center gap-8 py-2.5 border-t border-cream-200">
-            {navLinks.map((link) => (
-              <button
-                key={link.section}
-                onClick={() => onNavigate(link.section)}
-                className="text-sm font-medium text-charcoal-700 hover:text-maroon-700 transition-colors whitespace-nowrap"
-              >
-                {link.label}
-              </button>
-            ))}
-          </nav>
         </div>
 
         {/* Mobile Menu */}
