@@ -176,12 +176,12 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                   </button>
                 </div>
               </form>
-              <div className="grid grid-cols-2 gap-1 pb-2 border-b border-cream-200 mb-1">
+              <div className="flex items-center gap-1 pb-2 mb-1 border-b border-cream-200 overflow-x-auto no-scrollbar">
                 {navLinks.map((link) => (
                   <button
                     key={link.section}
                     onClick={() => { onNavigate(link.section); setMobileMenuOpen(false); }}
-                    className="text-left px-3 py-2 text-sm font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors"
+                    className="shrink-0 px-3 py-2 text-sm font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors whitespace-nowrap"
                   >
                     {link.label}
                   </button>
