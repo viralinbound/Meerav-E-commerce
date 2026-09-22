@@ -78,18 +78,18 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
         }`}
       >
         <div className="container-max section-padding">
-          <div className="flex items-center flex-nowrap py-2.5 gap-2 lg:gap-4">
+          <div className="flex items-center flex-nowrap py-2.5 gap-2 xl:gap-4">
             {/* Logo */}
             <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 shrink-0">
-              <img src="/images/meerav_logo.png" alt="Meerav" className="h-14 lg:h-16 w-auto object-contain shrink-0 drop-shadow-md" />
-              <div className="text-left hidden lg:block">
+              <img src="/images/meerav_logo.png" alt="Meerav" className="h-14 xl:h-16 w-auto object-contain shrink-0 drop-shadow-md" />
+              <div className="text-left hidden xl:block">
                 <h1 className="font-serif text-lg font-bold text-maroon-800 leading-none whitespace-nowrap">{settings?.siteName || 'Meerav'}</h1>
                 <p className="text-[9px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap">{settings?.tagline || 'Bikaneri Namkeens'}</p>
               </div>
             </button>
 
             {/* Nav Links - Desktop */}
-            <nav className="hidden lg:flex items-center gap-3 xl:gap-5 shrink-0">
+            <nav className="hidden xl:flex items-center gap-3 xl:gap-5 shrink-0">
               {navLinks.map((link) => (
                 <button
                   key={link.section}
@@ -102,7 +102,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
             </nav>
 
             {/* Search Bar - Desktop */}
-            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-[130px] max-w-[180px] xl:max-w-xs mx-auto">
+            <form onSubmit={handleSearch} className="hidden xl:flex flex-1 min-w-[130px] max-w-[180px] xl:max-w-xs mx-auto">
               <div className="relative w-full">
                 <input
                   type="text"
@@ -122,17 +122,17 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
             </form>
 
             {/* Right Actions */}
-            <div className="flex items-center gap-1.5 lg:gap-3 shrink-0 ml-auto lg:ml-0">
+            <div className="flex items-center gap-1.5 xl:gap-3 shrink-0 ml-auto xl:ml-0">
               <button
                 onClick={() => onNavigate('track')}
-                className="hidden lg:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
+                className="hidden xl:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
               >
                 <MapPin className="w-3.5 h-3.5" />
                 Your Orders
               </button>
               <button
                 onClick={() => onNavigate('account')}
-                className="hidden lg:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
+                className="hidden xl:flex items-center gap-1 text-xs text-charcoal-600 hover:text-maroon-700 transition-colors whitespace-nowrap"
               >
                 <Phone className="w-3.5 h-3.5" />
                 {customer ? customer.name.split(' ')[0] : 'Sign In'}
@@ -144,14 +144,14 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                 <ShoppingCart className="w-4 h-4" />
                 <span className="hidden sm:inline text-xs font-medium whitespace-nowrap">Cart</span>
                 {itemCount > 0 && (
-                  <span className="hidden lg:flex absolute -top-1 -right-1 w-4 h-4 bg-saffron-500 text-white text-[10px] font-bold items-center justify-center rounded-full animate-scale-in">
+                  <span className="hidden xl:flex absolute -top-1 -right-1 w-4 h-4 bg-saffron-500 text-white text-[10px] font-bold items-center justify-center rounded-full animate-scale-in">
                     {itemCount}
                   </span>
                 )}
               </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-1.5 text-charcoal-700 shrink-0"
+                className="xl:hidden p-1.5 text-charcoal-700 shrink-0"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -161,7 +161,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-cream-50 border-t border-cream-200 animate-slide-up">
+          <div className="xl:hidden bg-cream-50 border-t border-cream-200 animate-slide-up">
             <div className="container-max section-padding py-4 space-y-1">
               <form onSubmit={handleSearch} className="mb-3">
                 <div className="relative">
