@@ -91,6 +91,13 @@ function AppContent() {
         const el = document.getElementById('faq');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       });
+    } else if (section === 'fanFavourites') {
+      if (page !== 'home') setPage('home');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById('best-sellers-scroll')?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
     } else if (section === 'contact') {
       if (page !== 'home') { setPage('home'); }
       requestAnimationFrame(() => {
