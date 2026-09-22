@@ -47,10 +47,11 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
 
   const navLinks = [
     { label: 'Home', section: 'home' },
-    { label: 'Best Sellers', section: 'browseProducts' },
-    { label: 'All Products', section: 'products' },
     { label: 'Our Story', section: 'story' },
+    { label: 'Fan Favourites', section: 'browseProducts' },
+    { label: 'All Products', section: 'products' },
     { label: 'FAQ', section: 'faq' },
+    { label: 'Contact Us', section: 'contact' },
   ];
 
   return (
@@ -77,7 +78,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
         }`}
       >
         <div className="container-max section-padding">
-          <div className="flex items-center flex-nowrap py-2.5 gap-3 lg:gap-6">
+          <div className="flex items-center flex-nowrap py-2.5 gap-2 lg:gap-4">
             {/* Logo */}
             <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 shrink-0">
               <img src="/images/meerav_logo.png" alt="Meerav" className="h-14 lg:h-16 w-auto object-contain shrink-0 drop-shadow-md" />
@@ -88,7 +89,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
             </button>
 
             {/* Nav Links - Desktop */}
-            <nav className="hidden lg:flex items-center gap-5 shrink-0">
+            <nav className="hidden lg:flex items-center gap-3 xl:gap-5 shrink-0">
               {navLinks.map((link) => (
                 <button
                   key={link.section}
@@ -101,7 +102,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
             </nav>
 
             {/* Search Bar - Desktop */}
-            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-0 max-w-[220px] xl:max-w-xs mx-auto">
+            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-[130px] max-w-[180px] xl:max-w-xs mx-auto">
               <div className="relative w-full">
                 <input
                   type="text"

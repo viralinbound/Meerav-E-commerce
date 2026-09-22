@@ -134,7 +134,7 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
 
           {/* Contact & Support */}
-          <div>
+          <div id="contact">
             <h4 className="font-semibold text-cream-50 mb-4 text-sm uppercase tracking-wide">Contact & Support</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-cream-300">

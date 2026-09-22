@@ -37,7 +37,7 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
             Fan Favourites
           </span>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Best Sellers</h2>
+          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Fan Favourites</h2>
           <p className="text-charcoal-500 max-w-2xl mx-auto">
             The snacks our customers reorder the most — handcrafted, fresh, and packed with authentic Bikaneri flavour
           </p>
