@@ -45,6 +45,14 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
     onNavigate('products');
   };
 
+  const navLinks = [
+    { label: 'Home', section: 'home' },
+    { label: 'Best Sellers', section: 'browseProducts' },
+    { label: 'All Products', section: 'products' },
+    { label: 'Our Story', section: 'story' },
+    { label: 'FAQ', section: 'faq' },
+  ];
+
   return (
     <>
       {/* Announcement Bar */}
@@ -135,6 +143,19 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
               </button>
             </div>
           </div>
+
+          {/* Nav Links - Desktop */}
+          <nav className="hidden lg:flex items-center justify-center gap-8 py-2.5 border-t border-cream-200">
+            {navLinks.map((link) => (
+              <button
+                key={link.section}
+                onClick={() => onNavigate(link.section)}
+                className="text-sm font-medium text-charcoal-700 hover:text-maroon-700 transition-colors whitespace-nowrap"
+              >
+                {link.label}
+              </button>
+            ))}
+          </nav>
         </div>
 
         {/* Mobile Menu */}
@@ -155,6 +176,17 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                   </button>
                 </div>
               </form>
+              <div className="grid grid-cols-2 gap-1 pb-2 border-b border-cream-200 mb-1">
+                {navLinks.map((link) => (
+                  <button
+                    key={link.section}
+                    onClick={() => { onNavigate(link.section); setMobileMenuOpen(false); }}
+                    className="text-left px-3 py-2 text-sm font-medium text-charcoal-700 hover:text-maroon-700 hover:bg-cream-100 rounded-md transition-colors"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </div>
               <div className="flex gap-2 pt-2 border-t border-cream-200 mt-2">
                 <button
                   onClick={() => { onNavigate('track'); setMobileMenuOpen(false); }}
