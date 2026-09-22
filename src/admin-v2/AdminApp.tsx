@@ -5,6 +5,7 @@ import { AdminShell, type AdminPage } from './AdminShell';
 import { Dashboard } from './pages/Dashboard';
 import { Products } from './pages/Products';
 import { HeroBanners } from './pages/HeroBanners';
+import { ContentSections } from './pages/ContentSections';
 import { Orders } from './pages/Orders';
 import { StoreSettings } from './pages/StoreSettings';
 import { AdminAccounts } from './pages/AdminAccounts';
@@ -49,6 +50,7 @@ function AdminRoot() {
           {page === 'dashboard' && <Dashboard />}
           {page === 'products' && <Products />}
           {page === 'heroBanners' && <HeroBanners />}
+          {page === 'content' && <ContentSections />}
           {page === 'orders' && <Orders />}
           {page === 'settings' && <StoreSettings />}
           {page === 'admins' && (

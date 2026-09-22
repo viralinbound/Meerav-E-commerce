@@ -1,16 +1,17 @@
 import { useState, type ReactNode } from 'react';
 import {
-  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images,
+  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images, MessageSquareQuote,
 } from 'lucide-react';
 import { useAdminAuth } from './useAdminAuth';
 import { WarningsBanner } from './WarningsBanner';
 
-export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'orders' | 'settings' | 'admins' | 'activity';
+export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'content' | 'orders' | 'settings' | 'admins' | 'activity';
 
 const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard; rootOnly?: boolean }[] = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
   { id: 'products', label: 'Products', icon: Package },
   { id: 'heroBanners', label: 'Hero Banners', icon: Images },
+  { id: 'content', label: 'Reviews & FAQs', icon: MessageSquareQuote },
   { id: 'orders', label: 'Orders', icon: ClipboardList },
   { id: 'settings', label: 'Store Settings', icon: Settings },
   { id: 'admins', label: 'Admin Accounts', icon: Users, rootOnly: true },
