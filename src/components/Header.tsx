@@ -80,11 +80,11 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
         <div className="container-max section-padding">
           <div className="flex items-center flex-nowrap py-2.5 gap-2 xl:gap-4">
             {/* Logo */}
-            <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 shrink-0">
-              <img src="/images/meerav_logo.png" alt="Meerav" className="h-14 xl:h-16 w-auto object-contain shrink-0 drop-shadow-md" />
-              <div className="text-left hidden xl:block">
-                <h1 className="font-serif text-lg font-bold text-maroon-800 leading-none whitespace-nowrap">{settings?.siteName || 'Meerav'}</h1>
-                <p className="text-[9px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap">{settings?.tagline || 'Bikaneri Namkeens'}</p>
+            <button onClick={() => onNavigate('home')} className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
+              <img src="/images/meerav_logo.png" alt="Meerav" className="h-10 sm:h-14 xl:h-16 w-auto object-contain shrink-0 drop-shadow-md" />
+              <div className="text-left min-w-0">
+                <h1 className="font-serif text-xs sm:text-base xl:text-lg font-bold text-maroon-800 leading-tight truncate">{settings?.siteName || 'Meerav'}</h1>
+                <p className="text-[6px] sm:text-[8px] xl:text-[9px] text-charcoal-500 tracking-widest uppercase whitespace-nowrap truncate">{settings?.tagline || 'Bikaneri Namkeens'}</p>
               </div>
             </button>
 
