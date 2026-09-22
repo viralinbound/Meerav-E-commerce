@@ -155,30 +155,6 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                   </button>
                 </div>
               </form>
-              <button
-                onClick={() => { onNavigate('home'); setMobileMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => { onNavigate('products'); setMobileMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
-              >
-                All Products
-              </button>
-              <button
-                onClick={() => { onNavigate('story'); setMobileMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
-              >
-                Our Story
-              </button>
-              <button
-                onClick={() => { onNavigate('faq'); setMobileMenuOpen(false); }}
-                className="block w-full text-left px-3 py-2.5 text-sm font-medium text-charcoal-700 hover:bg-cream-100 rounded-md"
-              >
-                FAQ
-              </button>
               <div className="flex gap-2 pt-2 border-t border-cream-200 mt-2">
                 <button
                   onClick={() => { onNavigate('track'); setMobileMenuOpen(false); }}
