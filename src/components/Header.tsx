@@ -101,8 +101,8 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
               ))}
             </nav>
 
-            {/* Search Bar - Tablet & Desktop */}
-            <form onSubmit={handleSearch} className="hidden sm:flex flex-1 min-w-[110px] max-w-[160px] lg:max-w-[180px] xl:max-w-xs mx-auto">
+            {/* Search Bar - Desktop */}
+            <form onSubmit={handleSearch} className="hidden lg:flex flex-1 min-w-[130px] max-w-[180px] xl:max-w-xs mx-auto">
               <div className="relative w-full">
                 <input
                   type="text"
@@ -163,7 +163,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
         {mobileMenuOpen && (
           <div className="lg:hidden bg-cream-50 border-t border-cream-200 animate-slide-up">
             <div className="container-max section-padding py-4 space-y-1">
-              <form onSubmit={handleSearch} className="mb-3 sm:hidden">
+              <form onSubmit={handleSearch} className="mb-3">
                 <div className="relative">
                   <input
                     type="text"
