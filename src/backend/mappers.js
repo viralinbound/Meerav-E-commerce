@@ -379,6 +379,8 @@ export function dbHeroBannerToApp(row) {
     title: row.title || '',
     subtitle: row.subtitle || '',
     cta: row.cta || 'Shop Now',
+    buttonX: row.button_x != null ? Number(row.button_x) : 50,
+    buttonY: row.button_y != null ? Number(row.button_y) : 82,
     sortOrder: Number(row.sort_order) || 0,
     isVisible: row.is_visible !== false
   };
@@ -391,6 +393,8 @@ export function appHeroBannerToDb(b) {
     title: b.title || '',
     subtitle: b.subtitle || '',
     cta: b.cta || 'Shop Now',
+    button_x: b.buttonX != null ? Number(b.buttonX) : 50,
+    button_y: b.buttonY != null ? Number(b.buttonY) : 82,
     sort_order: Number(b.sortOrder) || 0,
     is_visible: b.isVisible !== false
   };

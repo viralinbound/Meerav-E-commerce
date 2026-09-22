@@ -311,7 +311,14 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   async function dbUpsertHeroBanner(banner, client = supabaseClient) {
-    const { error } = await client.from('hero_banners').upsert(appHeroBannerToDb(banner));
+    const payload = appHeroBannerToDb(banner);
+    let { error } = await client.from('hero_banners').upsert(payload);
+    if (error && error.code === '42703') {
+      // button_x/button_y columns don't exist yet (add_hero_banner_button_position.sql
+      // not run) -- retry without them so everything else still saves.
+      const { button_x, button_y, ...fallback } = payload;
+      ({ error } = await client.from('hero_banners').upsert(fallback));
+    }
     if (error) { console.error('dbUpsertHeroBanner', error); return false; }
     return true;
   }

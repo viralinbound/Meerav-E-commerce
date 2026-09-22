@@ -10,6 +10,8 @@ export interface HeroBanner {
   title: string;
   subtitle: string;
   cta: string;
+  buttonX?: number;
+  buttonY?: number;
 }
 
 export interface Testimonial {
@@ -104,7 +106,15 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
           setHeroBanners(
             banners
               .filter((b: any) => b.isVisible)
-              .map((b: any) => ({ id: b.id, image: resolveImagePath(b.image), title: b.title, subtitle: b.subtitle, cta: b.cta }))
+              .map((b: any) => ({
+                id: b.id,
+                image: resolveImagePath(b.image),
+                title: b.title,
+                subtitle: b.subtitle,
+                cta: b.cta,
+                buttonX: b.buttonX,
+                buttonY: b.buttonY,
+              }))
           );
         }
         setTestimonials(

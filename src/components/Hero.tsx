@@ -25,6 +25,10 @@ export function Hero({ onShopNow }: HeroProps) {
 
   if (heroBanners.length === 0) return null;
 
+  const activeBanner = heroBanners[current] || heroBanners[0];
+  const buttonX = activeBanner.buttonX ?? 50;
+  const buttonY = activeBanner.buttonY ?? 82;
+
   return (
     <section
       id="home-hero"
@@ -77,15 +81,18 @@ export function Hero({ onShopNow }: HeroProps) {
         </div>
       ))}
 
-      {/* Shop Now — sits inside the banner itself, in the lower-middle area
-          on top of the image, so it always reads as part of the banner
-          rather than a separate element below it. */}
-      <div className="absolute inset-x-0 bottom-16 sm:bottom-20 flex justify-center z-10">
+      {/* Shop Now — positioned per-banner via buttonX/buttonY (percentages,
+          set by dragging it in Admin > Hero Banners), so it always reads as
+          part of the banner artwork instead of a fixed generic spot. */}
+      <div
+        className="absolute z-10"
+        style={{ left: `${buttonX}%`, top: `${buttonY}%`, transform: 'translate(-50%, -50%)' }}
+      >
         <button
           onClick={onShopNow}
-          className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
+          className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl whitespace-nowrap"
         >
-          {heroBanners[current]?.cta || heroBanners[0].cta}
+          {activeBanner.cta}
           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
