@@ -98,7 +98,7 @@ export function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2">
               <li>
                 <button
-                  onClick={() => onNavigate('products')}
+                  onClick={() => onNavigate('browseProducts')}
                   className="text-sm text-cream-300 hover:text-saffron-400 transition-colors"
                 >
                   All Products

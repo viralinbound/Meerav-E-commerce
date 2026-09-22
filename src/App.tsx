@@ -67,6 +67,18 @@ function AppContent() {
       // clobber the fresh pick.
       setPage('shop');
       window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    } else if (section === 'browseProducts') {
+      // Footer's "All Products" — scrolls to the Our Collection section on
+      // this same page instead of navigating to the separate Shop page,
+      // matching Shop Now / Explore Our Snacks elsewhere. Distinct from
+      // 'products' above, which the header search relies on for real
+      // filtered results.
+      if (page !== 'home') setPage('home');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById('bestsellers')?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
     } else if (section === 'story') {
       if (page !== 'home') { setPage('home'); }
       requestAnimationFrame(() => {
