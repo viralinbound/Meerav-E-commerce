@@ -120,9 +120,14 @@ export function InstagramFeed() {
     <section className="py-20 bg-gradient-to-b from-cream-100 to-cream-50">
       <div className="container-max section-padding">
         <div className="text-center mb-12">
-          <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4">
-            @meerav.bikaner
-          </span>
+          <a
+            href="https://www.instagram.com/meeravnamkeen"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4 hover:bg-maroon-200 transition-colors"
+          >
+            @meeravnamkeen
+          </a>
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">
             Follow Us on Instagram
           </h2>
@@ -151,11 +156,13 @@ export function InstagramFeed() {
 
         <div className="text-center mt-8">
           <a
-            href="#"
+            href="https://www.instagram.com/meeravnamkeen"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-maroon-700 font-medium text-sm hover:underline"
           >
             <Instagram className="w-5 h-5" />
-            Follow @meerav.bikaner
+            Follow @meeravnamkeen
           </a>
         </div>
       </div>

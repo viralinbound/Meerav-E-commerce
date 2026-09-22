@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, ShieldCheck, Truck, Leaf, Facebook, Instagram, Youtube, Twitter, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, ShieldCheck, Truck, Leaf, Facebook, Instagram, Youtube, Linkedin, Send } from 'lucide-react';
 import { useSettings } from '@/lib/useSettings';
 
 interface FooterProps {
@@ -80,10 +80,17 @@ export function Footer({ onNavigate }: FooterProps) {
               pure groundnut oil with zero palm oil.
             </p>
             <div className="flex gap-2">
-              {[Facebook, Instagram, Youtube, Twitter].map((Icon, idx) => (
+              {[
+                { Icon: Facebook, href: '#' },
+                { Icon: Instagram, href: 'https://www.instagram.com/meeravnamkeen' },
+                { Icon: Youtube, href: '#' },
+                { Icon: Linkedin, href: 'https://www.linkedin.com/company/meerav/' },
+              ].map(({ Icon, href }, idx) => (
                 <a
                   key={idx}
-                  href="#"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 bg-charcoal-800 rounded-full flex items-center justify-center hover:bg-saffron-500 transition-colors"
                 >
                   <Icon className="w-4 h-4 text-cream-200" />
