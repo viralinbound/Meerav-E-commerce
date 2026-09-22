@@ -35,8 +35,8 @@ export function BrandStory() {
                   <Flame className="w-6 h-6 text-saffron-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-charcoal-800 text-sm">Small Batch Fried</h3>
-                  <p className="text-xs text-charcoal-500">Prepared in small batches for consistent taste</p>
+                  <h3 className="font-semibold text-charcoal-800 text-sm">Fried in Small Batches</h3>
+                  <p className="text-xs text-charcoal-500">Never a mega-batch — so every handful tastes like the last</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
@@ -44,8 +44,8 @@ export function BrandStory() {
                   <Leaf className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-charcoal-800 text-sm">Zero Palm Oil</h3>
-                  <p className="text-xs text-charcoal-500">Pure groundnut oil only</p>
+                  <h3 className="font-semibold text-charcoal-800 text-sm">No Palm Oil, Ever</h3>
+                  <p className="text-xs text-charcoal-500">Just pure groundnut oil, the way our grandparents used it</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
@@ -53,8 +53,8 @@ export function BrandStory() {
                   <ShieldCheck className="w-6 h-6 text-maroon-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-charcoal-800 text-sm">No Preservatives</h3>
-                  <p className="text-xs text-charcoal-500">Simple, natural ingredients</p>
+                  <h3 className="font-semibold text-charcoal-800 text-sm">Nothing Artificial</h3>
+                  <p className="text-xs text-charcoal-500">No preservatives — just real ingredients you can name</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
@@ -62,8 +62,8 @@ export function BrandStory() {
                   <Truck className="w-6 h-6 text-mustard-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-charcoal-800 text-sm">Same-Day Pack</h3>
-                  <p className="text-xs text-charcoal-500">Packed fresh and ready to ship</p>
+                  <h3 className="font-semibold text-charcoal-800 text-sm">Packed the Same Day</h3>
+                  <p className="text-xs text-charcoal-500">Fried today, boxed today, on its way to you today</p>
                 </div>
               </div>
             </div>
@@ -84,12 +84,12 @@ export function BrandStory() {
                   <ShieldCheck className="w-6 h-6 text-cream-50" />
                 </div>
                 <div>
-                  <p className="font-serif text-2xl font-bold text-maroon-800">True to Tradition</p>
-                  <p className="text-xs text-charcoal-500">Traditional techniques, authentic ingredients</p>
+                  <p className="font-serif text-2xl font-bold text-maroon-800">Still Made the Old Way</p>
+                  <p className="text-xs text-charcoal-500">Same recipe, same care, nothing cut short</p>
                 </div>
               </div>
               <p className="text-sm text-charcoal-600">
-                Taste that stays close to its roots.
+                No fancy machinery, no fancy talk — just Bikaner's way of doing things right.
               </p>
             </div>
           </div>
