@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { ChevronDown, ChevronRight, RotateCcw, ArrowLeft, Activity, RotateCw, AlertTriangle, Clock } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
-import { useAdminAuth } from '../useAdminAuth';
+import { useAdminAuth, isHostRole } from '../useAdminAuth';
 import { undoEntry, type ActivityEntry } from '../activityLog';
 import { Card, LoadingState, ErrorState, EmptyState, StatusBadge, TableScroller, MetricCard } from '../ui';
 
@@ -164,13 +164,13 @@ export function ActivityLog({ initialFilter = null, onFilterChange }: ActivityLo
                 <th className="px-5 py-3">Target</th>
                 <th className="px-5 py-3">When</th>
                 <th className="px-5 py-3">Status</th>
-                {me?.role === 'root' && <th className="px-5 py-3 text-right">Undo</th>}
+                {isHostRole(me?.role) && <th className="px-5 py-3 text-right">Undo</th>}
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => {
                 const isOpen = expandedId === r.id;
-                const canUndo = me?.role === 'root' && !r.undone && r.details?.before !== undefined;
+                const canUndo = isHostRole(me?.role) && !r.undone && r.details?.before !== undefined;
                 return (
                   <Fragment key={r.id}>
                     <tr className="border-b border-cream-100 last:border-0 hover:bg-cream-50 transition-colors">
@@ -194,7 +194,7 @@ export function ActivityLog({ initialFilter = null, onFilterChange }: ActivityLo
                       <td className="px-5 py-3.5">
                         {r.undone ? <StatusBadge status="Undone" /> : <span className="text-xs text-charcoal-300">—</span>}
                       </td>
-                      {me?.role === 'root' && (
+                      {isHostRole(me?.role) && (
                         <td className="px-5 py-3.5 text-right">
                           <button
                             onClick={() => handleUndo(r)}
@@ -210,7 +210,7 @@ export function ActivityLog({ initialFilter = null, onFilterChange }: ActivityLo
                     </tr>
                     {isOpen && (
                       <tr>
-                        <td colSpan={me?.role === 'root' ? 7 : 6} className="p-0">
+                        <td colSpan={isHostRole(me?.role) ? 7 : 6} className="p-0">
                           <LogRowDetail entry={r} />
                         </td>
                       </tr>

@@ -1,8 +1,9 @@
 import { useState, type ReactNode } from 'react';
 import {
-  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images, MessageSquareQuote, GalleryHorizontalEnd, Landmark,
+  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images, MessageSquareQuote, GalleryHorizontalEnd, Landmark, Pencil, Check,
 } from 'lucide-react';
-import { useAdminAuth } from './useAdminAuth';
+import { useAdminAuth, isHostRole } from './useAdminAuth';
+import { MiraDB } from '@/lib/supabase.js';
 import { WarningsBanner } from './WarningsBanner';
 
 export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'heritageBanner' | 'siteImages' | 'content' | 'orders' | 'settings' | 'admins' | 'activity';
@@ -25,10 +26,66 @@ const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard; r
 // array. Empty/missing permissions = full access, for pre-existing admins.
 export function hasPermission(admin: { role?: string; permissions?: string[] | null } | null, pageId: AdminPage): boolean {
   if (!admin) return false;
-  if (admin.role === 'root') return true;
+  if (isHostRole(admin.role)) return true;
   if (pageId === 'dashboard') return true;
   if (!admin.permissions || admin.permissions.length === 0) return true;
   return admin.permissions.includes(pageId);
+}
+
+// Every admin (host or sub-admin) can correct their own display name here,
+// no approval needed — goes straight to update_own_admin_name(), which can
+// only ever touch the caller's own row (never role/permissions/anyone else).
+function SelfNameEditor() {
+  const { admin, refreshAdmin } = useAdminAuth();
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(admin?.name || '');
+  const [saving, setSaving] = useState(false);
+
+  if (!editing) {
+    return (
+      <button
+        onClick={() => { setValue(admin?.name || ''); setEditing(true); }}
+        className="group flex items-center gap-1.5 text-left w-full"
+        title="Click to rename yourself"
+      >
+        <p className="text-sm font-semibold text-cream-50 truncate">{admin?.name || 'Admin'}</p>
+        <Pencil className="w-3 h-3 text-cream-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+      </button>
+    );
+  }
+
+  const save = async () => {
+    if (!value.trim() || value.trim() === admin?.name) { setEditing(false); return; }
+    setSaving(true);
+    const result = await MiraDB.updateOwnName(value.trim());
+    setSaving(false);
+    if (result?.error) {
+      alert(result.error.message || "Could not save. Make sure the add_admin_permissions.sql migration has been run.");
+      return;
+    }
+    await refreshAdmin();
+    setEditing(false);
+  };
+
+  return (
+    <div className="flex items-center gap-1">
+      <input
+        autoFocus
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Enter') save(); if (e.key === 'Escape') setEditing(false); }}
+        className="flex-1 min-w-0 px-2 py-1 rounded bg-white/10 text-cream-50 text-sm border border-cream-100/30 focus:outline-none focus:border-saffron-400"
+      />
+      <button
+        onClick={save}
+        disabled={saving}
+        className="w-6 h-6 shrink-0 flex items-center justify-center rounded bg-saffron-500 text-maroon-900 disabled:opacity-60"
+        aria-label="Save name"
+      >
+        <Check className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
 }
 
 interface AdminShellProps {
@@ -59,7 +116,7 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {NAV_ITEMS.filter((item) => (!item.rootOnly || admin?.role === 'root') && hasPermission(admin, item.id)).map((item) => {
+        {NAV_ITEMS.filter((item) => (!item.rootOnly || isHostRole(admin?.role)) && hasPermission(admin, item.id)).map((item) => {
           const Icon = item.icon;
           const active = item.id === page;
           return (
@@ -92,7 +149,7 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
 
       <div className="px-4 py-4 border-t border-maroon-700/50">
         <div className="px-1 mb-3">
-          <p className="text-sm font-semibold text-cream-50 truncate">{admin?.name || 'Admin'}</p>
+          <SelfNameEditor />
           <p className="text-xs text-cream-300 truncate">{admin?.email}</p>
         </div>
         <button

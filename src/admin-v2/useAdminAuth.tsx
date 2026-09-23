@@ -1,6 +1,13 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { MiraDB } from '@/lib/supabase.js';
 
+// Production data uses role = 'host' for the account owner; some earlier
+// code/docs assumed 'root'. Treat both as the same top-level role so
+// gating works regardless of which string a given admin row actually has.
+export function isHostRole(role?: string | null): boolean {
+  return role === 'root' || role === 'host';
+}
+
 export interface AdminProfile {
   id: string;
   email: string;

@@ -720,6 +720,24 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return { ok: true };
   }
 
+  // Root-only (same RLS policy as updateAdminPermissions): corrects any
+  // admin's display name, including its own.
+  async function updateAdminName(adminId, name) {
+    const { error } = await adminSupabaseClient.from('admins').update({ name }).eq('id', adminId);
+    if (error) { console.error('updateAdminName', error); return { error }; }
+    return { ok: true };
+  }
+
+  // Any signed-in admin (host or sub-admin) can rename themselves, no host
+  // approval needed -- goes through a SECURITY DEFINER function that only
+  // ever touches the caller's own row, so it can't be used to change role,
+  // permissions, or anyone else's name.
+  async function updateOwnName(name) {
+    const { error } = await adminSupabaseClient.rpc('update_own_admin_name', { new_name: name });
+    if (error) { console.error('updateOwnName', error); return { error }; }
+    return { ok: true };
+  }
+
   async function invokeAdminManage(body) {
     const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', { body });
     if (error) return { error: { message: await readFunctionError(error) } };
@@ -838,7 +856,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     sendPasswordReset, updatePassword,
     adminClient: adminSupabaseClient,
     signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
-    fetchAdmins, registerAdmin, removeAdmin, updateAdminPermissions,
+    fetchAdmins, registerAdmin, removeAdmin, updateAdminPermissions, updateAdminName, updateOwnName,
     resetAdminPassword, changeOwnPassword, banAdmin, unbanAdmin, warnAdmin,
     fetchMyWarnings, fetchWarningsForAdmin, acknowledgeWarning,
     logAdminActivity, fetchActivityLog, fetchActivityForAdmin, markActivityUndone,

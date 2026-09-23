@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Plus, Ban, RotateCcw, Trash2, ShieldCheck, X, KeyRound, Megaphone, Copy, Check, AlertTriangle, SlidersHorizontal } from 'lucide-react';
+import { Plus, Ban, RotateCcw, Trash2, ShieldCheck, X, KeyRound, Megaphone, Copy, Check, AlertTriangle, SlidersHorizontal, Pencil } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
-import { useAdminAuth } from '../useAdminAuth';
+import { useAdminAuth, isHostRole } from '../useAdminAuth';
 import { Card, LoadingState, ErrorState, EmptyState, TableScroller } from '../ui';
 
 interface AdminRow {
@@ -40,6 +40,7 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [tempPasswordInfo, setTempPasswordInfo] = useState<{ name: string; email: string; password: string } | null>(null);
   const [editingPermissionsFor, setEditingPermissionsFor] = useState<AdminRow | null>(null);
+  const [editingNameFor, setEditingNameFor] = useState<AdminRow | null>(null);
 
   const load = () => {
     setLoading(true);
@@ -155,7 +156,16 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
                         >
                           <KeyRound className="w-4 h-4" />
                         </button>
-                        {a.role !== 'root' && (
+                        <button
+                          onClick={() => setEditingNameFor(a)}
+                          disabled={busyId === a.id}
+                          className="w-9 h-9 flex items-center justify-center rounded-lg text-maroon-700 hover:bg-maroon-50 transition-colors disabled:opacity-50"
+                          aria-label={`Rename ${a.name}`}
+                          title="Correct this admin's name"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        {!isHostRole(a.role) && (
                           <>
                             <button
                               onClick={() => setEditingPermissionsFor(a)}
@@ -204,6 +214,17 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
         )}
       </Card>
 
+      {editingNameFor && (
+        <RenameModal
+          admin={editingNameFor}
+          onClose={() => setEditingNameFor(null)}
+          onSaved={() => {
+            setEditingNameFor(null);
+            load();
+          }}
+        />
+      )}
+
       {showForm && (
         <RegisterAdminModal
           onClose={() => setShowForm(false)}
@@ -230,6 +251,73 @@ export function AdminAccounts({ onViewActivity }: AdminAccountsProps) {
         />
       )}
     </>
+  );
+}
+
+function RenameModal({
+  admin,
+  onClose,
+  onSaved,
+}: {
+  admin: AdminRow;
+  onClose: () => void;
+  onSaved: () => void;
+}) {
+  const [name, setName] = useState(admin.name);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSave = async () => {
+    if (!name.trim()) return setError('Name is required.');
+    setSaving(true);
+    setError(null);
+    const result = await MiraDB.updateAdminName(admin.id, name.trim());
+    setSaving(false);
+    if (result?.error) {
+      setError(result.error.message || 'Could not save. Make sure the add_admin_permissions.sql migration has been run.');
+      return;
+    }
+    onSaved();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-cream-50 rounded-2xl shadow-2xl w-full max-w-sm">
+        <div className="bg-maroon-800 text-cream-50 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+          <h3 className="font-serif text-lg font-bold">Rename Admin</h3>
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-charcoal-600">
+            Admins can already rename themselves freely from their own account menu — use this only to correct a name yourself, or if
+            you'd rather warn them instead, close this and use "Send warning".
+          </p>
+          <input
+            autoFocus
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full px-3.5 py-2.5 border border-cream-300 rounded-lg focus:outline-none focus:border-maroon-500 bg-white"
+          />
+          {error && <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>}
+          <div className="flex items-center justify-end gap-3 pt-1">
+            <button type="button" onClick={onClose} className="px-5 py-2.5 min-h-[44px] rounded-lg text-sm font-medium text-charcoal-600 hover:bg-cream-200 transition-colors">
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSave}
+              disabled={saving}
+              className="px-6 py-2.5 min-h-[44px] rounded-lg text-sm font-semibold bg-maroon-700 text-cream-50 hover:bg-maroon-800 transition-colors disabled:opacity-60"
+            >
+              {saving ? 'Saving…' : 'Save Name'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AdminAuthProvider, useAdminAuth } from './useAdminAuth';
+import { AdminAuthProvider, useAdminAuth, isHostRole } from './useAdminAuth';
 import { AdminLogin } from './AdminLogin';
 import { AdminShell, hasPermission, type AdminPage } from './AdminShell';
 import { Dashboard } from './pages/Dashboard';
@@ -31,7 +31,7 @@ function AdminRoot() {
   if (!admin) return <AdminLogin />;
   if (admin.must_change_password) return <ChangePasswordGate />;
 
-  const isRoot = admin.role === 'root';
+  const isRoot = isHostRole(admin.role);
   const rootOnlyPageRequested = (page === 'admins' || page === 'activity') && !isRoot;
   const blockedByPermissions = !rootOnlyPageRequested && !hasPermission(admin, page);
 
