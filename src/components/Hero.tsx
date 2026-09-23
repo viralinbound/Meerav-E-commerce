@@ -124,16 +124,16 @@ export function Hero({ onShopNow }: HeroProps) {
           // desktops relative to its saved (tablet-tuned) position, so the
           // gap above the dots reads the same at every screen width instead
           // of just scaling the raw percentage with the aspect-locked box.
-          top: `calc(${buttonY}% + clamp(-1.8rem, 5vw - 3rem, 1.2rem))`,
+          top: `calc(${buttonY}% + clamp(-1.5rem, 5vw - 2.7rem, 1.2rem))`,
           transform: 'translate(-50%, -50%)',
         }}
       >
         <button
           onClick={onShopNow}
           style={{
-            padding: 'clamp(0.4rem, 2.5vw, 1rem) clamp(0.9rem, 5vw, 2rem)',
-            fontSize: 'clamp(0.75rem, 2.8vw, 1.125rem)',
-            gap: 'clamp(0.3rem, 1.2vw, 0.5rem)',
+            padding: 'clamp(0.35rem, 2.2vw, 1rem) clamp(0.8rem, 4.5vw, 2rem)',
+            fontSize: 'clamp(0.7rem, 2.5vw, 1.125rem)',
+            gap: 'clamp(0.25rem, 1vw, 0.5rem)',
           }}
           className="group inline-flex items-center bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
