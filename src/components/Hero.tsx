@@ -131,9 +131,9 @@ export function Hero({ onShopNow }: HeroProps) {
         <button
           onClick={onShopNow}
           style={{
-            padding: 'clamp(0.35rem, 2.2vw, 1rem) clamp(0.8rem, 4.5vw, 2rem)',
-            fontSize: 'clamp(0.7rem, 2.5vw, 1.125rem)',
-            gap: 'clamp(0.25rem, 1vw, 0.5rem)',
+            padding: 'clamp(0.3rem, 1.8vw, 1rem) clamp(0.7rem, 3.8vw, 2rem)',
+            fontSize: 'clamp(0.65rem, 2.1vw, 1.125rem)',
+            gap: 'clamp(0.2rem, 0.9vw, 0.5rem)',
           }}
           className="group inline-flex items-center bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
