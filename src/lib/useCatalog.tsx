@@ -78,13 +78,36 @@ function toProduct(row: any): Product {
   };
 }
 
+const CACHE_KEY = 'meerav_catalog_cache_v1';
+
+function readCache(): Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories'> | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(data: Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories'>) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+  } catch {
+    // Storage full or unavailable — the live fetch still renders fine without it.
+  }
+}
+
 export function CatalogProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [heroBanners, setHeroBanners] = useState<HeroBanner[]>(staticHeroBanners);
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [faqs, setFaqs] = useState<Faq[]>([]);
-  const [kitchenStories, setKitchenStories] = useState<KitchenStory[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Hydrate instantly from whatever was cached on the last successful load —
+  // so a refresh shows real content immediately instead of the loading
+  // screen, while a fresh fetch still runs underneath to catch any updates.
+  const cached = readCache();
+  const [products, setProducts] = useState<Product[]>(cached?.products || []);
+  const [heroBanners, setHeroBanners] = useState<HeroBanner[]>(cached?.heroBanners || staticHeroBanners);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(cached?.testimonials || []);
+  const [faqs, setFaqs] = useState<Faq[]>(cached?.faqs || []);
+  const [kitchenStories, setKitchenStories] = useState<KitchenStory[]>(cached?.kitchenStories || []);
+  const [loading, setLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -98,51 +121,71 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     ])
       .then(([prods, banners, testi, faqRows, stories]) => {
         if (cancelled) return;
-        setProducts(prods.map(toProduct));
+        const freshProducts = prods.map(toProduct);
         // Falls back to the hardcoded banners (see useState above) if the
         // hero_banners table doesn't exist yet or is empty, so the hero
         // carousel never goes blank.
-        if (banners && banners.length) {
-          setHeroBanners(
-            banners
-              .filter((b: any) => b.isVisible)
-              .map((b: any) => ({
-                id: b.id,
-                image: resolveImagePath(b.image),
-                title: b.title,
-                subtitle: b.subtitle,
-                cta: b.cta,
-                buttonX: b.buttonX,
-                buttonY: b.buttonY,
-              }))
-          );
-        }
-        setTestimonials(
-          testi
-            .filter((t: any) => t.isVisible)
-            .map((t: any) => ({
-              id: t.id,
-              name: t.name,
-              city: t.city,
-              rating: t.rating,
-              text: t.reviewText,
-              avatar: resolveImagePath(t.avatar),
-            }))
-        );
-        setFaqs(faqRows.filter((f: any) => f.isVisible).map((f: any) => ({ id: f.id, question: f.question, answer: f.answer })));
-        setKitchenStories(
-          stories
-            .filter((s: any) => s.isVisible)
-            .map((s: any) => ({
-              id: s.id,
-              title: s.title,
-              description: `₹${s.price} (was ₹${s.originalPrice})`,
-              image: resolveImagePath(s.posterUrl),
-              duration: s.tag,
-            }))
-        );
+        const freshHeroBanners =
+          banners && banners.length
+            ? banners
+                .filter((b: any) => b.isVisible)
+                .map((b: any) => ({
+                  id: b.id,
+                  image: resolveImagePath(b.image),
+                  title: b.title,
+                  subtitle: b.subtitle,
+                  cta: b.cta,
+                  buttonX: b.buttonX,
+                  buttonY: b.buttonY,
+                }))
+            : heroBanners;
+        const freshTestimonials = testi
+          .filter((t: any) => t.isVisible)
+          .map((t: any) => ({
+            id: t.id,
+            name: t.name,
+            city: t.city,
+            rating: t.rating,
+            text: t.reviewText,
+            avatar: resolveImagePath(t.avatar),
+          }));
+        const freshFaqs = faqRows
+          .filter((f: any) => f.isVisible)
+          .map((f: any) => ({ id: f.id, question: f.question, answer: f.answer }));
+        const freshKitchenStories = stories
+          .filter((s: any) => s.isVisible)
+          .map((s: any) => ({
+            id: s.id,
+            title: s.title,
+            description: `₹${s.price} (was ₹${s.originalPrice})`,
+            image: resolveImagePath(s.posterUrl),
+            duration: s.tag,
+          }));
+
+        setProducts(freshProducts);
+        setHeroBanners(freshHeroBanners);
+        setTestimonials(freshTestimonials);
+        setFaqs(freshFaqs);
+        setKitchenStories(freshKitchenStories);
+        setError(null);
+        writeCache({
+          products: freshProducts,
+          heroBanners: freshHeroBanners,
+          testimonials: freshTestimonials,
+          faqs: freshFaqs,
+          kitchenStories: freshKitchenStories,
+        });
       })
-      .catch((e) => !cancelled && setError(e.message || String(e)))
+      .catch((e) => {
+        if (cancelled) return;
+        // If we already have cached content on screen, a failed background
+        // refresh shouldn't rip it out from under the visitor — just log it.
+        if (cached) {
+          console.warn('Catalog refresh failed, keeping cached content:', e);
+        } else {
+          setError(e.message || String(e));
+        }
+      })
       .finally(() => !cancelled && setLoading(false));
     return () => {
       cancelled = true;
