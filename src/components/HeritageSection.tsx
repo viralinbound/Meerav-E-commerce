@@ -34,20 +34,19 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
         className="absolute z-10"
         style={{
           left: '50%',
-          // Base position raised from 82% to 74% so the button never gets
-          // clipped by the section's bottom edge on tablet/desktop, plus the
-          // same breakpoint offset as Hero's button (raised further on
-          // mobile, nudged back down slightly on wide desktops).
-          top: 'calc(74% + clamp(-1.0rem, 5vw - 3rem, 1.2rem))',
+          // Base position tuned to sit below the paragraph text without
+          // getting clipped by the section's bottom edge on tablet/desktop,
+          // plus the same breakpoint offset as Hero's button.
+          top: 'calc(80% + clamp(-0.2rem, 5vw - 2.3rem, 1.4rem))',
           transform: 'translate(-50%, -50%)',
         }}
       >
         <button
           onClick={onShopNow}
           style={{
-            padding: 'clamp(0.3rem, 1.8vw, 1rem) clamp(0.7rem, 3.8vw, 2rem)',
-            fontSize: 'clamp(0.65rem, 2.1vw, 1.125rem)',
-            gap: 'clamp(0.2rem, 0.9vw, 0.5rem)',
+            padding: 'clamp(0.25rem, 1.4vw, 1rem) clamp(0.6rem, 3vw, 2rem)',
+            fontSize: 'clamp(0.6rem, 1.8vw, 1.125rem)',
+            gap: 'clamp(0.18rem, 0.7vw, 0.5rem)',
           }}
           className="group inline-flex items-center bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
