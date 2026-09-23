@@ -26,13 +26,13 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
         className="relative w-full h-full object-contain"
       />
 
-      <div className="relative flex justify-center pb-10 sm:pb-12 -mt-16 sm:-mt-20">
+      <div className="relative flex justify-center pb-6 sm:pb-10 md:pb-12 -mt-8 sm:-mt-16 md:-mt-20">
         <button
           onClick={onShopNow}
-          className="group inline-flex items-center gap-2 px-8 py-4 bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl"
+          className="group inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
           Explore Our Snacks
-          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
     </section>

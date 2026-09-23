@@ -29,37 +29,37 @@ export function BrandStory() {
               taste that feels familiar, authentic, and close to the flavours people have loved for
               generations.
             </p>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
-                <div className="w-12 h-12 bg-saffron-100 rounded-lg flex items-center justify-center shrink-0">
-                  <Flame className="w-6 h-6 text-saffron-600" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-saffron-100 rounded-lg flex items-center justify-center shrink-0">
+                  <Flame className="w-5 h-5 sm:w-6 sm:h-6 text-saffron-600" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">Fried in Small Batches</h3>
                   <p className="text-xs text-charcoal-500">Never a mega-batch — so every handful tastes like the last</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                  <Leaf className="w-6 h-6 text-green-600" />
+              <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-mustard-100 rounded-lg flex items-center justify-center shrink-0">
+                  <Leaf className="w-5 h-5 sm:w-6 sm:h-6 text-mustard-600" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">No Palm Oil, Ever</h3>
                   <p className="text-xs text-charcoal-500">Just pure groundnut oil, the way our grandparents used it</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
-                <div className="w-12 h-12 bg-maroon-100 rounded-lg flex items-center justify-center shrink-0">
-                  <ShieldCheck className="w-6 h-6 text-maroon-600" />
+              <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-maroon-100 rounded-lg flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-maroon-600" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">Nothing Artificial</h3>
                   <p className="text-xs text-charcoal-500">No preservatives — just real ingredients you can name</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-4 bg-white rounded-xl shadow-sm">
-                <div className="w-12 h-12 bg-mustard-100 rounded-lg flex items-center justify-center shrink-0">
-                  <Truck className="w-6 h-6 text-mustard-600" />
+              <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-saffron-100 rounded-lg flex items-center justify-center shrink-0">
+                  <Truck className="w-5 h-5 sm:w-6 sm:h-6 text-saffron-700" />
                 </div>
                 <div>
                   <h3 className="font-semibold text-charcoal-800 text-sm">Packed the Same Day</h3>
