@@ -43,19 +43,19 @@ export function GiftShowcase({ onShopGifts }: GiftShowcaseProps) {
             <div
               key={item.title}
               onClick={onShopGifts}
-              className="group cursor-pointer rounded-2xl overflow-hidden bg-white shadow-md card-hover"
+              className="group cursor-pointer rounded-2xl overflow-hidden bg-white shadow-md card-hover flex flex-col h-full"
             >
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative h-64 overflow-hidden shrink-0">
                 <img
                   src={item.image}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
               </div>
-              <div className="p-6">
+              <div className="p-6 flex flex-col flex-1">
                 <h3 className="font-serif text-xl font-bold text-charcoal-900 mb-2">{item.title}</h3>
                 <p className="text-sm text-charcoal-500 leading-relaxed mb-4">{item.description}</p>
-                <div className="flex items-center gap-2 text-maroon-700 font-medium text-sm group-hover:gap-3 transition-all">
+                <div className="mt-auto flex items-center gap-2 text-maroon-700 font-medium text-sm group-hover:gap-3 transition-all">
                   Explore Collection
                   <ArrowRight className="w-4 h-4" />
                 </div>
