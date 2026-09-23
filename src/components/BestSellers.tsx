@@ -26,7 +26,7 @@ export function BestSellers({ onProductClick }: BestSellersProps) {
   };
 
   return (
-    <section id="bestsellers" className="pt-8 pb-16 lg:pt-12 lg:pb-24 bg-cream-50">
+    <section id="bestsellers" className="pt-4 pb-8 lg:pt-12 lg:pb-24 bg-cream-50">
       <div className="container-max section-padding">
         <div className="text-center mb-6 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
