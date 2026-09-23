@@ -47,7 +47,7 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
   };
 
   return (
-    <section id="products" className="py-20 bg-white">
+    <section id="products" className="py-10 sm:py-14 lg:py-20 bg-white">
       <div className="container-max section-padding">
         <div className="text-center mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
