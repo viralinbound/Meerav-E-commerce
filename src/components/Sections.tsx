@@ -8,7 +8,7 @@ export function Testimonials() {
   return (
     <section className="py-8 sm:py-10 lg:py-12 bg-gradient-to-b from-cream-50 to-cream-100">
       <div className="container-max section-padding">
-        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4">
             Customer Love
           </span>
@@ -61,7 +61,7 @@ export function KitchenStories() {
   return (
     <section className="py-8 sm:py-10 lg:py-12 bg-cream-50">
       <div className="container-max section-padding">
-        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
             Kitchen Stories
           </span>
@@ -119,7 +119,7 @@ export function InstagramFeed() {
   return (
     <section className="py-8 sm:py-10 lg:py-12 bg-gradient-to-b from-cream-100 to-cream-50">
       <div className="container-max section-padding">
-        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-10">
           <a
             href="https://www.instagram.com/meeravnamkeen"
             target="_blank"
@@ -177,7 +177,7 @@ export function FAQSection() {
   return (
     <section id="faq" className="py-8 sm:py-10 lg:py-12 bg-cream-50">
       <div className="container-max section-padding">
-        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
             Questions & Answers
           </span>

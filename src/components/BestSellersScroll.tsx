@@ -61,7 +61,7 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
           <div
             id="home-bestsellers-track"
             ref={scrollerRef}
-            className="flex overflow-x-auto gap-4 md:gap-6 pb-4 snap-x snap-mandatory no-scrollbar"
+            className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory no-scrollbar"
           >
             {items.map((product) => (
               <div
