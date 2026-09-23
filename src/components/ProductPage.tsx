@@ -102,7 +102,7 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
               <div className="absolute top-4 left-4 flex flex-col gap-1.5">
                 {product.isBestseller && (
                   <span className="px-3 py-1 bg-saffron-500 text-white text-xs font-bold rounded-full shadow-sm">
-                    BESTSELLER
+                    TOP PICK
                   </span>
                 )}
                 {product.isNew && (

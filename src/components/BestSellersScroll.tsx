@@ -35,9 +35,9 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
       <div className="container-max section-padding">
         <div className="text-center mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
-            Most Reordered
+            Crowd's Choice
           </span>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Fan Favourites</h2>
+          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Most Loved Bites</h2>
           <p className="text-charcoal-500 max-w-2xl mx-auto">
             The ones customers keep reordering — small-batch fried and usually gone within days of every restock
           </p>
@@ -80,7 +80,7 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
                   <div className="absolute top-2 left-2 flex flex-col gap-1.5">
                     {product.isBestseller && (
                       <span className="px-2 py-1 bg-saffron-500 text-white text-[10px] font-bold rounded-full shadow-sm">
-                        BESTSELLER
+                        TOP PICK
                       </span>
                     )}
                     {product.isNew && (

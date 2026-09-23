@@ -109,7 +109,7 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
                   <div className="absolute top-2 left-2 flex flex-col gap-1.5">
                     {product.isBestseller && (
                       <span className="px-2 py-1 bg-saffron-500 text-white text-[10px] font-bold rounded-full shadow-sm">
-                        BESTSELLER
+                        TOP PICK
                       </span>
                     )}
                     {product.isNew && (
