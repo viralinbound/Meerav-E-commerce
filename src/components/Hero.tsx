@@ -2,6 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useCatalog } from '@/lib/useCatalog';
 
+const VIDEO_EXTENSIONS = /\.(mp4|webm|mov|m4v)($|\?)/i;
+function isVideoUrl(url: string) {
+  return VIDEO_EXTENSIONS.test(url);
+}
+
 interface HeroProps {
   onShopNow: () => void;
 }
@@ -27,7 +32,9 @@ export function Hero({ onShopNow }: HeroProps) {
 
   const activeBanner = heroBanners[current] || heroBanners[0];
   const buttonX = activeBanner.buttonX ?? 50;
-  const buttonY = activeBanner.buttonY ?? 82;
+  // Clamped so a banner saved with a very low button position (dragged close
+  // to the edge in Admin > Hero Banners) can never sit on top of the dots.
+  const buttonY = Math.min(activeBanner.buttonY ?? 82, 86);
 
   return (
     <section
@@ -43,18 +50,43 @@ export function Hero({ onShopNow }: HeroProps) {
         >
           {/* Blurred cover copy fills every device's full-screen box with no
               empty bars; the crisp copy on top uses object-contain so the
-              banner artwork itself is never cropped, at any screen size. */}
-          <img
-            src={banner.image}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
-          />
-          <img
-            src={banner.image}
-            alt={banner.title || 'Meerav'}
-            className="relative w-full h-full object-contain"
-          />
+              banner artwork itself is never cropped, at any screen size.
+              Same treatment for a video banner, just swapping the tag. */}
+          {isVideoUrl(banner.image) ? (
+            <>
+              <video
+                src={banner.image}
+                aria-hidden="true"
+                muted
+                autoPlay
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+              />
+              <video
+                src={banner.image}
+                muted
+                autoPlay
+                loop
+                playsInline
+                className="relative w-full h-full object-contain"
+              />
+            </>
+          ) : (
+            <>
+              <img
+                src={banner.image}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60"
+              />
+              <img
+                src={banner.image}
+                alt={banner.title || 'Meerav'}
+                className="relative w-full h-full object-contain"
+              />
+            </>
+          )}
           {/* Title/subtitle overlay — only for banners whose artwork doesn't
               already carry baked-in copy (banner.title === ''). */}
           {banner.title && (

@@ -4,7 +4,7 @@ import { MiraDB } from '@/lib/supabase.js';
 
 interface MediaUploaderProps {
   folder: string;
-  accept: 'image/*' | 'video/*';
+  accept: 'image/*' | 'video/*' | 'image/*,video/*';
   label: string;
   onUploaded: (url: string) => void;
 }

@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Plus, Trash2, GripVertical, Eye, EyeOff, ImageOff, Move } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Eye, EyeOff, ImageOff, Move, ChevronUp, ChevronDown } from 'lucide-react';
+
+const VIDEO_EXTENSIONS = /\.(mp4|webm|mov|m4v)($|\?)/i;
+function isVideoUrl(url: string) {
+  return VIDEO_EXTENSIONS.test(url);
+}
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState, EmptyState } from '../ui';
 import { MediaUploader } from '../MediaUploader';
@@ -61,7 +66,18 @@ function ButtonPositionPicker({
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        <img src={banner.image} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+        {isVideoUrl(banner.image) ? (
+          <video
+            src={banner.image}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            muted
+            autoPlay
+            loop
+            playsInline
+          />
+        ) : (
+          <img src={banner.image} alt="" className="absolute inset-0 w-full h-full object-cover pointer-events-none" />
+        )}
         <button
           type="button"
           onPointerDown={(e) => {
@@ -109,6 +125,15 @@ export function HeroBanners() {
   const persistOrder = async (ordered: AdminHeroBanner[]) => {
     setBanners(ordered);
     await MiraDB.reorderHeroBanners(ordered.map((b) => b.id), MiraDB.adminClient);
+  };
+
+  const moveByOffset = (bannerId: string, offset: 1 | -1) => {
+    const list = [...banners];
+    const idx = list.findIndex((b) => b.id === bannerId);
+    const targetIdx = idx + offset;
+    if (idx === -1 || targetIdx < 0 || targetIdx >= list.length) return;
+    [list[idx], list[targetIdx]] = [list[targetIdx], list[idx]];
+    persistOrder(list);
   };
 
   const handleDrop = (targetId: string) => {
@@ -214,7 +239,7 @@ export function HeroBanners() {
           <EmptyState label="No hero banners" hint="Add one below to get started." />
         ) : (
           <div className="divide-y divide-cream-100">
-            {banners.map((banner) => (
+            {banners.map((banner, idx) => (
               <div key={banner.id}>
                 <div
                   draggable
@@ -225,11 +250,44 @@ export function HeroBanners() {
                 >
                   <div className="flex items-center gap-3 shrink-0">
                     <GripVertical className="w-5 h-5 text-charcoal-300 cursor-grab active:cursor-grabbing shrink-0" />
-                    <img
-                      src={banner.image}
-                      alt=""
-                      className="w-28 h-16 object-cover rounded-lg bg-cream-100 border border-cream-300 shrink-0"
-                    />
+                    <div className="flex flex-col gap-0.5 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => moveByOffset(banner.id, -1)}
+                        disabled={idx === 0}
+                        className="w-6 h-5 flex items-center justify-center rounded text-charcoal-500 hover:bg-cream-200 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Move up"
+                        title="Move up"
+                      >
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveByOffset(banner.id, 1)}
+                        disabled={idx === banners.length - 1}
+                        className="w-6 h-5 flex items-center justify-center rounded text-charcoal-500 hover:bg-cream-200 disabled:opacity-25 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Move down"
+                        title="Move down"
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    {isVideoUrl(banner.image) ? (
+                      <video
+                        src={banner.image}
+                        className="w-28 h-16 object-cover rounded-lg bg-cream-100 border border-cream-300 shrink-0"
+                        muted
+                        autoPlay
+                        loop
+                        playsInline
+                      />
+                    ) : (
+                      <img
+                        src={banner.image}
+                        alt=""
+                        className="w-28 h-16 object-cover rounded-lg bg-cream-100 border border-cream-300 shrink-0"
+                      />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0 grid sm:grid-cols-3 gap-2">
                     <input
@@ -296,9 +354,9 @@ export function HeroBanners() {
         )}
 
         <div className="p-5 border-t border-cream-200">
-          <MediaUploader folder="hero" accept="image/*" label="Add Hero Banner Photo" onUploaded={handleAdd} />
+          <MediaUploader folder="hero" accept="image/*,video/*" label="Add Hero Banner Photo or Video" onUploaded={handleAdd} />
           <p className="text-xs text-charcoal-400 mt-2 flex items-center gap-1.5">
-            <Plus className="w-3.5 h-3.5" /> Add as many banners as you want — the carousel adapts automatically.
+            <Plus className="w-3.5 h-3.5" /> Add as many photos or short videos as you want — the carousel adapts automatically.
           </p>
         </div>
       </Card>
