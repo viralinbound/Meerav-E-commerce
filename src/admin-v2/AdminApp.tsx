@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AdminAuthProvider, useAdminAuth } from './useAdminAuth';
 import { AdminLogin } from './AdminLogin';
-import { AdminShell, type AdminPage } from './AdminShell';
+import { AdminShell, hasPermission, type AdminPage } from './AdminShell';
 import { Dashboard } from './pages/Dashboard';
 import { Products } from './pages/Products';
 import { HeroBanners } from './pages/HeroBanners';
@@ -33,6 +33,7 @@ function AdminRoot() {
 
   const isRoot = admin.role === 'root';
   const rootOnlyPageRequested = (page === 'admins' || page === 'activity') && !isRoot;
+  const blockedByPermissions = !rootOnlyPageRequested && !hasPermission(admin, page);
 
   return (
     <AdminShell
@@ -46,6 +47,11 @@ function AdminRoot() {
         <div className="bg-white rounded-2xl shadow-md border border-cream-200 p-10 text-center">
           <p className="font-serif text-lg font-bold text-maroon-900 mb-1">Root admins only</p>
           <p className="text-sm text-charcoal-500">Ask the root admin if you need access to this section.</p>
+        </div>
+      ) : blockedByPermissions ? (
+        <div className="bg-white rounded-2xl shadow-md border border-cream-200 p-10 text-center">
+          <p className="font-serif text-lg font-bold text-maroon-900 mb-1">You don't have access to this section</p>
+          <p className="text-sm text-charcoal-500">Ask the root admin to grant you access from Admin Accounts.</p>
         </div>
       ) : (
         <>

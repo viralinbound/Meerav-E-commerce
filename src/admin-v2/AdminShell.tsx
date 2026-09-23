@@ -20,6 +20,17 @@ const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard; r
   { id: 'activity', label: 'Activity Log', icon: History, rootOnly: true },
 ];
 
+// Dashboard always stays visible so a restricted admin never lands on a
+// blank sidebar; root always passes regardless of its (unused) permissions
+// array. Empty/missing permissions = full access, for pre-existing admins.
+export function hasPermission(admin: { role?: string; permissions?: string[] | null } | null, pageId: AdminPage): boolean {
+  if (!admin) return false;
+  if (admin.role === 'root') return true;
+  if (pageId === 'dashboard') return true;
+  if (!admin.permissions || admin.permissions.length === 0) return true;
+  return admin.permissions.includes(pageId);
+}
+
 interface AdminShellProps {
   page: AdminPage;
   onNavigate: (page: AdminPage) => void;
@@ -48,7 +59,7 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {NAV_ITEMS.filter((item) => !item.rootOnly || admin?.role === 'root').map((item) => {
+        {NAV_ITEMS.filter((item) => (!item.rootOnly || admin?.role === 'root') && hasPermission(admin, item.id)).map((item) => {
           const Icon = item.icon;
           const active = item.id === page;
           return (

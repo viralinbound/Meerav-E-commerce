@@ -7,6 +7,10 @@ export interface AdminProfile {
   name: string;
   role: string;
   must_change_password?: boolean;
+  // Empty/missing = full access (matches pre-existing admins so nothing
+  // changes for them). A non-empty array restricts the sidebar/pages to
+  // just those page ids, set by the root admin in Admin Accounts.
+  permissions?: string[] | null;
 }
 
 interface AdminAuthValue {

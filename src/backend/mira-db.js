@@ -712,6 +712,14 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return data || [];
   }
 
+  // Root-only (enforced by RLS, not just the UI): sets exactly which admin
+  // pages a sub-admin can see. An empty array means full access.
+  async function updateAdminPermissions(adminId, permissions) {
+    const { error } = await adminSupabaseClient.from('admins').update({ permissions }).eq('id', adminId);
+    if (error) { console.error('updateAdminPermissions', error); return { error }; }
+    return { ok: true };
+  }
+
   async function invokeAdminManage(body) {
     const { data, error } = await adminSupabaseClient.functions.invoke('admin-manage', { body });
     if (error) return { error: { message: await readFunctionError(error) } };
@@ -830,7 +838,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     sendPasswordReset, updatePassword,
     adminClient: adminSupabaseClient,
     signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
-    fetchAdmins, registerAdmin, removeAdmin,
+    fetchAdmins, registerAdmin, removeAdmin, updateAdminPermissions,
     resetAdminPassword, changeOwnPassword, banAdmin, unbanAdmin, warnAdmin,
     fetchMyWarnings, fetchWarningsForAdmin, acknowledgeWarning,
     logAdminActivity, fetchActivityLog, fetchActivityForAdmin, markActivityUndone,
