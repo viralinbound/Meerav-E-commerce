@@ -32,7 +32,15 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
           screen width — a fixed negative margin can't track that reliably. */}
       <div
         className="absolute z-10"
-        style={{ left: '50%', top: '82%', transform: 'translate(-50%, -50%)' }}
+        style={{
+          left: '50%',
+          // Base position raised from 82% to 74% so the button never gets
+          // clipped by the section's bottom edge on tablet/desktop, plus the
+          // same breakpoint offset as Hero's button (raised further on
+          // mobile, nudged back down slightly on wide desktops).
+          top: 'calc(74% + clamp(-1.8rem, 5vw - 3rem, 1.2rem))',
+          transform: 'translate(-50%, -50%)',
+        }}
       >
         <button
           onClick={onShopNow}
