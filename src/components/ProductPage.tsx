@@ -28,7 +28,11 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   }, [product.id]);
 
-  const variants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
+  // Only 200 g packaging is sold — collapse any other pack-size variants
+  // down to a single 200 g option instead of showing a size picker.
+  const allVariants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
+  const twoHundredG = allVariants.find((v) => v.weight?.replace(/\s/g, '').toLowerCase().startsWith('200g'));
+  const variants = [{ ...(twoHundredG || allVariants[0]), weight: '200 g' }];
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
 
