@@ -2,7 +2,7 @@ import { Flame, Leaf, ShieldCheck, Truck } from 'lucide-react';
 
 export function BrandStory() {
   return (
-    <section className="py-8 sm:py-10 lg:py-20 bg-cream-50">
+    <section className="py-8 sm:py-10 lg:py-12 bg-cream-50">
       <div className="container-max section-padding">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
           {/* Text */}

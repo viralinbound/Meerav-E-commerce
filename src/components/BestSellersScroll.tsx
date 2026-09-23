@@ -31,7 +31,7 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
   if (items.length === 0) return null;
 
   return (
-    <section id="best-sellers-scroll" className="py-8 sm:py-10 lg:py-20 bg-white">
+    <section id="best-sellers-scroll" className="py-8 sm:py-10 lg:py-12 bg-white">
       <div className="container-max section-padding">
         <div className="text-center mb-6 sm:mb-8 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
