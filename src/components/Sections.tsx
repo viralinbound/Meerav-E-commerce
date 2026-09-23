@@ -10,7 +10,7 @@ export function Testimonials() {
       <div className="container-max section-padding">
         <div className="text-center mb-6 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4">
-            Real Stories
+            Verified Reviews
           </span>
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">
             Loved Across India & Beyond
