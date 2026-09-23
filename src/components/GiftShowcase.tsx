@@ -24,7 +24,7 @@ export function GiftShowcase({ onShopGifts }: GiftShowcaseProps) {
   ];
 
   return (
-    <section className="py-8 lg:py-12 bg-gradient-to-b from-cream-100 to-cream-50">
+    <section className="pt-16 pb-8 lg:pt-24 lg:pb-12 bg-gradient-to-b from-cream-100 to-cream-50">
       <div className="container-max section-padding">
         <div className="text-center mb-6 lg:mb-10">
           <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4">
