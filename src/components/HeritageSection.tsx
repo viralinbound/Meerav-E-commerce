@@ -26,9 +26,13 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
         className="relative w-full h-full object-contain"
       />
 
+      {/* Pinned as a percentage of the section's own locked aspect-ratio box
+          (same technique as Hero's buttonX/buttonY) so it always sits right
+          at the image's bottom edge, regardless of letterboxing at any
+          screen width — a fixed negative margin can't track that reliably. */}
       <div
-        className="relative flex justify-center"
-        style={{ paddingBottom: 'clamp(0.9rem, 4vw, 3rem)', marginTop: 'clamp(-2.2rem, -9vw, -5rem)' }}
+        className="absolute z-10"
+        style={{ left: '50%', top: '82%', transform: 'translate(-50%, -50%)' }}
       >
         <button
           onClick={onShopNow}
