@@ -11,6 +11,7 @@ import {
   dbSettingsToApp, appSettingsToDb,
   dbCouponToApp, appCouponToDb,
   dbTestimonialToApp, appTestimonialToDb,
+  dbSiteImageToApp, appSiteImageToDb,
   dbFaqToApp, appFaqToDb,
   dbTrustBadgeToApp, appTrustBadgeToDb,
   dbBroadcastStoryToApp, appBroadcastStoryToDb,
@@ -371,6 +372,34 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     try {
       const list = (await fetchTestimonials(client)).filter(t => t.id !== testimonialId);
       localStorage.setItem('mira_testimonials', JSON.stringify(list));
+    } catch(e) {}
+    return true;
+  }
+
+  async function fetchSiteImages(client = supabaseClient) {
+    try {
+      const { data, error } = await client.from('site_images').select('*').order('sort_order', { ascending: true });
+      if (!error && data && data.length) {
+        const list = data.map(dbSiteImageToApp);
+        try { localStorage.setItem('mira_site_images', JSON.stringify(list)); } catch(e) {}
+        return list;
+      }
+    } catch(e) {}
+    try {
+      const cached = localStorage.getItem('mira_site_images');
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    return [];
+  }
+
+  async function dbUpsertSiteImage(siteImage, client = supabaseClient) {
+    const { error } = await client.from('site_images').upsert(appSiteImageToDb(siteImage));
+    if (error) { console.error('dbUpsertSiteImage', error); return false; }
+    try {
+      const list = await fetchSiteImages(client);
+      const idx = list.findIndex(s => s.id === siteImage.id);
+      if (idx !== -1) list[idx] = siteImage; else list.push(siteImage);
+      localStorage.setItem('mira_site_images', JSON.stringify(list));
     } catch(e) {}
     return true;
   }
@@ -757,6 +786,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchCoupons, dbUpsertCoupon, dbDeleteCoupon,
     fetchHeroBanners, dbUpsertHeroBanner, dbDeleteHeroBanner, reorderHeroBanners,
     fetchTestimonials, dbUpsertTestimonial, dbDeleteTestimonial,
+    fetchSiteImages, dbUpsertSiteImage,
     fetchFaqs, dbUpsertFaq, dbDeleteFaq,
     fetchTrustBadges, dbUpsertTrustBadge, dbDeleteTrustBadge,
     fetchBroadcastStories, dbUpsertStory, dbDeleteStory,

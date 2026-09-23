@@ -328,6 +328,24 @@ export function appTestimonialToDb(t) {
   };
 }
 
+export function dbSiteImageToApp(row) {
+  return {
+    id: row.id,
+    label: row.label || '',
+    image: row.image,
+    sortOrder: Number(row.sort_order) || 0
+  };
+}
+
+export function appSiteImageToDb(s) {
+  return {
+    id: s.id,
+    label: s.label || '',
+    image: s.image,
+    sort_order: Number(s.sortOrder) || 0
+  };
+}
+
 export function dbFaqToApp(row) {
   return {
     id: row.id,

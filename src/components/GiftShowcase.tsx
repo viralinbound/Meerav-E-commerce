@@ -1,25 +1,30 @@
 import { ArrowRight } from 'lucide-react';
+import { useSiteImage } from '@/lib/useCatalog';
 
 interface GiftShowcaseProps {
   onShopGifts: () => void;
 }
 
 export function GiftShowcase({ onShopGifts }: GiftShowcaseProps) {
+  const giftBoxesImage = useSiteImage('gift-boxes');
+  const handmadeGourmetImage = useSiteImage('handmade-gourmet');
+  const festiveSpecialsImage = useSiteImage('festive-specials');
+
   const collections = [
     {
       title: 'Gift Boxes',
       description: 'Choose from our stunning range of curated gift boxes and find the right gift to enhance any occasion.',
-      image: 'https://images.pexels.com/photos/28769884/pexels-photo-28769884.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+      image: giftBoxesImage,
     },
     {
       title: 'Handmade Gourmet',
       description: 'In each piece you will discover an exquisitely smooth velvety taste of our individually crafted gourmet snacks.',
-      image: 'https://images.pexels.com/photos/8887061/pexels-photo-8887061.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+      image: handmadeGourmetImage,
     },
     {
       title: 'Festive Specials',
       description: 'Discover the exquisitely smooth velvety taste of our limited-edition festive collections, made only during celebrations.',
-      image: 'https://images.pexels.com/photos/8887011/pexels-photo-8887011.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+      image: festiveSpecialsImage,
     },
   ];
 

@@ -37,14 +37,38 @@ export interface KitchenStory {
   duration: string;
 }
 
+export interface SiteImage {
+  id: string;
+  label: string;
+  image: string;
+}
+
 interface CatalogValue {
   products: Product[];
   heroBanners: HeroBanner[];
   testimonials: Testimonial[];
   faqs: Faq[];
   kitchenStories: KitchenStory[];
+  siteImages: SiteImage[];
   loading: boolean;
   error: string | null;
+}
+
+// Hardcoded defaults — used until the site_images table exists/has rows,
+// so these sections never go blank on a fresh install.
+const DEFAULT_SITE_IMAGES: Record<string, string> = {
+  'heritage-banner': 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/sections/heritage-section-banner.webp',
+  'tradition-banner': 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/sections/our-tradition-banner.webp',
+  'gift-boxes': 'https://images.pexels.com/photos/28769884/pexels-photo-28769884.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+  'handmade-gourmet': 'https://images.pexels.com/photos/8887061/pexels-photo-8887061.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+  'festive-specials': 'https://images.pexels.com/photos/8887011/pexels-photo-8887011.jpeg?auto=compress&cs=tinysrgb&h=600&w=600',
+};
+
+// Looks up a site image by slot id, falling back to the hardcoded default
+// (and finally to a blank string) so a component never renders a broken img.
+export function useSiteImage(id: string): string {
+  const { siteImages } = useCatalog();
+  return siteImages.find((s) => s.id === id)?.image || DEFAULT_SITE_IMAGES[id] || '';
 }
 
 const CatalogContext = createContext<CatalogValue | null>(null);
@@ -80,7 +104,9 @@ function toProduct(row: any): Product {
 
 const CACHE_KEY = 'meerav_catalog_cache_v1';
 
-function readCache(): Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories'> | null {
+type CachedCatalog = Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories' | 'siteImages'>;
+
+function readCache(): CachedCatalog | null {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     return raw ? JSON.parse(raw) : null;
@@ -89,7 +115,7 @@ function readCache(): Pick<CatalogValue, 'products' | 'heroBanners' | 'testimoni
   }
 }
 
-function writeCache(data: Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories'>) {
+function writeCache(data: CachedCatalog) {
   try {
     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
   } catch {
@@ -107,6 +133,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [testimonials, setTestimonials] = useState<Testimonial[]>(cached?.testimonials || []);
   const [faqs, setFaqs] = useState<Faq[]>(cached?.faqs || []);
   const [kitchenStories, setKitchenStories] = useState<KitchenStory[]>(cached?.kitchenStories || []);
+  const [siteImages, setSiteImages] = useState<SiteImage[]>(cached?.siteImages || []);
   const [loading, setLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
 
@@ -118,8 +145,9 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       MiraDB.fetchTestimonials(),
       MiraDB.fetchFaqs(),
       MiraDB.fetchBroadcastStories(),
+      MiraDB.fetchSiteImages(),
     ])
-      .then(([prods, banners, testi, faqRows, stories]) => {
+      .then(([prods, banners, testi, faqRows, stories, images]) => {
         if (cancelled) return;
         const freshProducts = prods.map(toProduct);
         // Falls back to the hardcoded banners (see useState above) if the
@@ -162,11 +190,18 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
             duration: s.tag,
           }));
 
+        const freshSiteImages = (images || []).map((s: any) => ({
+          id: s.id,
+          label: s.label,
+          image: resolveImagePath(s.image),
+        }));
+
         setProducts(freshProducts);
         setHeroBanners(freshHeroBanners);
         setTestimonials(freshTestimonials);
         setFaqs(freshFaqs);
         setKitchenStories(freshKitchenStories);
+        setSiteImages(freshSiteImages);
         setError(null);
         writeCache({
           products: freshProducts,
@@ -174,6 +209,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
           testimonials: freshTestimonials,
           faqs: freshFaqs,
           kitchenStories: freshKitchenStories,
+          siteImages: freshSiteImages,
         });
       })
       .catch((e) => {
@@ -193,7 +229,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <CatalogContext.Provider value={{ products, heroBanners, testimonials, faqs, kitchenStories, loading, error }}>
+    <CatalogContext.Provider value={{ products, heroBanners, testimonials, faqs, kitchenStories, siteImages, loading, error }}>
       {children}
     </CatalogContext.Provider>
   );

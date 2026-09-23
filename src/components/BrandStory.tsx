@@ -1,6 +1,8 @@
 import { Flame, Leaf, ShieldCheck, Truck } from 'lucide-react';
+import { useSiteImage } from '@/lib/useCatalog';
 
 export function BrandStory() {
+  const traditionImage = useSiteImage('tradition-banner');
   return (
     <section className="pt-8 pb-4 lg:pt-24 lg:pb-12 bg-cream-50">
       <div className="container-max section-padding">
@@ -75,7 +77,7 @@ export function BrandStory() {
           <div>
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               <img
-                src="https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/sections/our-tradition-banner.webp"
+                src={traditionImage}
                 alt="Bikaner lives in every bite — traditional bhujia frying setup"
                 className="w-full h-[500px] object-cover object-top"
               />

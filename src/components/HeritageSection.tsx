@@ -1,13 +1,12 @@
 import { ArrowRight } from 'lucide-react';
+import { useSiteImage } from '@/lib/useCatalog';
 
 interface HeritageSectionProps {
   onShopNow: () => void;
 }
 
-const HERITAGE_IMAGE =
-  'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/sections/heritage-section-banner.webp';
-
 export function HeritageSection({ onShopNow }: HeritageSectionProps) {
+  const HERITAGE_IMAGE = useSiteImage('heritage-banner');
   return (
     <section className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9]">
       {/* Same treatment and same size as the hero banners: shown in full via
