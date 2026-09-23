@@ -15,7 +15,8 @@ import {
   dbFaqToApp, appFaqToDb,
   dbTrustBadgeToApp, appTrustBadgeToDb,
   dbBroadcastStoryToApp, appBroadcastStoryToDb,
-  dbHeroBannerToApp, appHeroBannerToDb
+  dbHeroBannerToApp, appHeroBannerToDb,
+  dbHeritageContentToApp, appHeritageContentToDb
 } from './mappers.js';
 
 export const MEDIA_BUCKET = 'meerav-media';
@@ -312,8 +313,16 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   async function dbUpsertHeroBanner(banner, client = supabaseClient) {
-    const payload = appHeroBannerToDb(banner);
+    let payload = appHeroBannerToDb(banner);
     let { error } = await client.from('hero_banners').upsert(payload);
+    if (error && error.code === '42703') {
+      // title_size/subtitle_size/title_color/button_size/button_bg_color/
+      // button_text_color columns don't exist yet (add_hero_banner_style.sql
+      // not run) -- retry without them so everything else still saves.
+      const { title_size, subtitle_size, title_color, button_size, button_bg_color, button_text_color, ...fallback } = payload;
+      payload = fallback;
+      ({ error } = await client.from('hero_banners').upsert(payload));
+    }
     if (error && error.code === '42703') {
       // button_x/button_y columns don't exist yet (add_hero_banner_button_position.sql
       // not run) -- retry without them so everything else still saves.
@@ -327,6 +336,30 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   async function dbDeleteHeroBanner(bannerId, client = supabaseClient) {
     const { error } = await client.from('hero_banners').delete().eq('id', bannerId);
     if (error) { console.error('dbDeleteHeroBanner', error); return false; }
+    return true;
+  }
+
+  async function fetchHeritageContent(client = supabaseClient) {
+    try {
+      const { data, error } = await client.from('heritage_content').select('*').eq('id', 'heritage').maybeSingle();
+      if (!error && data) {
+        const value = dbHeritageContentToApp(data);
+        try { localStorage.setItem('mira_heritage_content', JSON.stringify(value)); } catch(e) {}
+        return value;
+      }
+    } catch(e) {}
+    try {
+      const cached = localStorage.getItem('mira_heritage_content');
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    return null;
+  }
+
+  async function dbUpsertHeritageContent(content, client = supabaseClient) {
+    const payload = appHeritageContentToDb({ ...content, id: 'heritage' });
+    const { error } = await client.from('heritage_content').upsert(payload);
+    if (error) { console.error('dbUpsertHeritageContent', error); return false; }
+    try { localStorage.setItem('mira_heritage_content', JSON.stringify({ ...content, id: 'heritage' })); } catch(e) {}
     return true;
   }
 
@@ -785,6 +818,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     fetchPageDesignPatches, dbUpsertPageDesignPatches,
     fetchCoupons, dbUpsertCoupon, dbDeleteCoupon,
     fetchHeroBanners, dbUpsertHeroBanner, dbDeleteHeroBanner, reorderHeroBanners,
+    fetchHeritageContent, dbUpsertHeritageContent,
     fetchTestimonials, dbUpsertTestimonial, dbDeleteTestimonial,
     fetchSiteImages, dbUpsertSiteImage,
     fetchFaqs, dbUpsertFaq, dbDeleteFaq,

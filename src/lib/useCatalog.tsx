@@ -4,7 +4,18 @@ import { resolveImagePath } from './resolveImage.js';
 import type { Product } from '@/data/products';
 import { heroBanners as staticHeroBanners } from '@/data/products';
 
-export interface HeroBanner {
+export type TextSize = 'sm' | 'md' | 'lg';
+
+export interface BannerStyle {
+  titleSize?: TextSize;
+  subtitleSize?: TextSize;
+  titleColor?: string;
+  buttonSize?: TextSize;
+  buttonBgColor?: string;
+  buttonTextColor?: string;
+}
+
+export interface HeroBanner extends BannerStyle {
   id: string;
   image: string;
   title: string;
@@ -12,6 +23,12 @@ export interface HeroBanner {
   cta: string;
   buttonX?: number;
   buttonY?: number;
+}
+
+export interface HeritageContent extends BannerStyle {
+  title: string;
+  subtitle: string;
+  cta: string;
 }
 
 export interface Testimonial {
@@ -50,9 +67,22 @@ interface CatalogValue {
   faqs: Faq[];
   kitchenStories: KitchenStory[];
   siteImages: SiteImage[];
+  heritageContent: HeritageContent;
   loading: boolean;
   error: string | null;
 }
+
+const DEFAULT_HERITAGE_CONTENT: HeritageContent = {
+  title: '',
+  subtitle: '',
+  cta: 'Explore Our Snacks',
+  titleSize: 'md',
+  subtitleSize: 'md',
+  titleColor: '#7a2026',
+  buttonSize: 'md',
+  buttonBgColor: '#fdf9f0',
+  buttonTextColor: '#7a2026',
+};
 
 // Hardcoded defaults — used until the site_images table exists/has rows,
 // so these sections never go blank on a fresh install.
@@ -104,7 +134,7 @@ function toProduct(row: any): Product {
 
 const CACHE_KEY = 'meerav_catalog_cache_v1';
 
-type CachedCatalog = Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories' | 'siteImages'>;
+type CachedCatalog = Pick<CatalogValue, 'products' | 'heroBanners' | 'testimonials' | 'faqs' | 'kitchenStories' | 'siteImages' | 'heritageContent'>;
 
 function readCache(): CachedCatalog | null {
   try {
@@ -134,6 +164,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   const [faqs, setFaqs] = useState<Faq[]>(cached?.faqs || []);
   const [kitchenStories, setKitchenStories] = useState<KitchenStory[]>(cached?.kitchenStories || []);
   const [siteImages, setSiteImages] = useState<SiteImage[]>(cached?.siteImages || []);
+  const [heritageContent, setHeritageContent] = useState<HeritageContent>(cached?.heritageContent || DEFAULT_HERITAGE_CONTENT);
   const [loading, setLoading] = useState(!cached);
   const [error, setError] = useState<string | null>(null);
 
@@ -146,8 +177,9 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
       MiraDB.fetchFaqs(),
       MiraDB.fetchBroadcastStories(),
       MiraDB.fetchSiteImages(),
+      MiraDB.fetchHeritageContent(),
     ])
-      .then(([prods, banners, testi, faqRows, stories, images]) => {
+      .then(([prods, banners, testi, faqRows, stories, images, heritage]) => {
         if (cancelled) return;
         const freshProducts = prods.map(toProduct);
         // Falls back to the hardcoded banners (see useState above) if the
@@ -165,6 +197,12 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
                   cta: b.cta,
                   buttonX: b.buttonX,
                   buttonY: b.buttonY,
+                  titleSize: b.titleSize,
+                  subtitleSize: b.subtitleSize,
+                  titleColor: b.titleColor,
+                  buttonSize: b.buttonSize,
+                  buttonBgColor: b.buttonBgColor,
+                  buttonTextColor: b.buttonTextColor,
                 }))
             : heroBanners;
         const freshTestimonials = testi
@@ -196,12 +234,27 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
           image: resolveImagePath(s.image),
         }));
 
+        const freshHeritageContent: HeritageContent = heritage
+          ? {
+              title: heritage.title,
+              subtitle: heritage.subtitle,
+              cta: heritage.cta,
+              titleSize: heritage.titleSize,
+              subtitleSize: heritage.subtitleSize,
+              titleColor: heritage.titleColor,
+              buttonSize: heritage.buttonSize,
+              buttonBgColor: heritage.buttonBgColor,
+              buttonTextColor: heritage.buttonTextColor,
+            }
+          : heritageContent;
+
         setProducts(freshProducts);
         setHeroBanners(freshHeroBanners);
         setTestimonials(freshTestimonials);
         setFaqs(freshFaqs);
         setKitchenStories(freshKitchenStories);
         setSiteImages(freshSiteImages);
+        setHeritageContent(freshHeritageContent);
         setError(null);
         writeCache({
           products: freshProducts,
@@ -210,6 +263,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
           faqs: freshFaqs,
           kitchenStories: freshKitchenStories,
           siteImages: freshSiteImages,
+          heritageContent: freshHeritageContent,
         });
       })
       .catch((e) => {
@@ -229,7 +283,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <CatalogContext.Provider value={{ products, heroBanners, testimonials, faqs, kitchenStories, siteImages, loading, error }}>
+    <CatalogContext.Provider value={{ products, heroBanners, testimonials, faqs, kitchenStories, siteImages, heritageContent, loading, error }}>
       {children}
     </CatalogContext.Provider>
   );

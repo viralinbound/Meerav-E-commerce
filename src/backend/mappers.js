@@ -399,6 +399,12 @@ export function dbHeroBannerToApp(row) {
     cta: row.cta || 'Shop Now',
     buttonX: row.button_x != null ? Number(row.button_x) : 50,
     buttonY: row.button_y != null ? Number(row.button_y) : 82,
+    titleSize: row.title_size || 'md',
+    subtitleSize: row.subtitle_size || 'md',
+    titleColor: row.title_color || '#fdf9f0',
+    buttonSize: row.button_size || 'md',
+    buttonBgColor: row.button_bg_color || '#fdf9f0',
+    buttonTextColor: row.button_text_color || '#7a2026',
     sortOrder: Number(row.sort_order) || 0,
     isVisible: row.is_visible !== false
   };
@@ -413,8 +419,44 @@ export function appHeroBannerToDb(b) {
     cta: b.cta || 'Shop Now',
     button_x: b.buttonX != null ? Number(b.buttonX) : 50,
     button_y: b.buttonY != null ? Number(b.buttonY) : 82,
+    title_size: b.titleSize || 'md',
+    subtitle_size: b.subtitleSize || 'md',
+    title_color: b.titleColor || '#fdf9f0',
+    button_size: b.buttonSize || 'md',
+    button_bg_color: b.buttonBgColor || '#fdf9f0',
+    button_text_color: b.buttonTextColor || '#7a2026',
     sort_order: Number(b.sortOrder) || 0,
     is_visible: b.isVisible !== false
+  };
+}
+
+export function dbHeritageContentToApp(row) {
+  return {
+    id: row.id || 'heritage',
+    title: row.title || '',
+    subtitle: row.subtitle || '',
+    cta: row.cta || 'Explore Our Snacks',
+    titleSize: row.title_size || 'md',
+    subtitleSize: row.subtitle_size || 'md',
+    titleColor: row.title_color || '#7a2026',
+    buttonSize: row.button_size || 'md',
+    buttonBgColor: row.button_bg_color || '#fdf9f0',
+    buttonTextColor: row.button_text_color || '#7a2026'
+  };
+}
+
+export function appHeritageContentToDb(h) {
+  return {
+    id: h.id || 'heritage',
+    title: h.title || '',
+    subtitle: h.subtitle || '',
+    cta: h.cta || 'Explore Our Snacks',
+    title_size: h.titleSize || 'md',
+    subtitle_size: h.subtitleSize || 'md',
+    title_color: h.titleColor || '#7a2026',
+    button_size: h.buttonSize || 'md',
+    button_bg_color: h.buttonBgColor || '#fdf9f0',
+    button_text_color: h.buttonTextColor || '#7a2026'
   };
 }
 

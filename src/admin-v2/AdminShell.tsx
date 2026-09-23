@@ -1,16 +1,17 @@
 import { useState, type ReactNode } from 'react';
 import {
-  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images, MessageSquareQuote, GalleryHorizontalEnd,
+  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images, MessageSquareQuote, GalleryHorizontalEnd, Landmark,
 } from 'lucide-react';
 import { useAdminAuth } from './useAdminAuth';
 import { WarningsBanner } from './WarningsBanner';
 
-export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'siteImages' | 'content' | 'orders' | 'settings' | 'admins' | 'activity';
+export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'heritageBanner' | 'siteImages' | 'content' | 'orders' | 'settings' | 'admins' | 'activity';
 
 const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard; rootOnly?: boolean }[] = [
   { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
   { id: 'products', label: 'Products', icon: Package },
   { id: 'heroBanners', label: 'Hero Banners', icon: Images },
+  { id: 'heritageBanner', label: 'Heritage Banner', icon: Landmark },
   { id: 'siteImages', label: 'Site Photos', icon: GalleryHorizontalEnd },
   { id: 'content', label: 'Reviews & FAQs', icon: MessageSquareQuote },
   { id: 'orders', label: 'Orders', icon: ClipboardList },

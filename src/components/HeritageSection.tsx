@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react';
-import { useSiteImage } from '@/lib/useCatalog';
+import { useSiteImage, useCatalog } from '@/lib/useCatalog';
+import { TITLE_SIZE_CLASSES, SUBTITLE_SIZE_CLASSES, BUTTON_SIZE_STYLE } from '@/lib/bannerStyle';
 
 interface HeritageSectionProps {
   onShopNow: () => void;
@@ -7,6 +8,9 @@ interface HeritageSectionProps {
 
 export function HeritageSection({ onShopNow }: HeritageSectionProps) {
   const HERITAGE_IMAGE = useSiteImage('heritage-banner');
+  const { heritageContent } = useCatalog();
+  const buttonStyle = BUTTON_SIZE_STYLE[heritageContent.buttonSize || 'md'];
+
   return (
     <section className="relative overflow-hidden bg-royal-gradient w-full aspect-[16/9]">
       {/* Same treatment and same size as the hero banners: shown in full via
@@ -24,6 +28,29 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
         alt="Heritage of Bikaner, in every batch"
         className="relative w-full h-full object-contain"
       />
+
+      {/* Optional title/subtitle overlay — editable in Admin > Heritage
+          Banner. Empty by default so nothing shows until the admin types
+          something (the photo may already carry its own baked-in text). */}
+      {heritageContent.title && (
+        <div className="absolute inset-0 hidden sm:flex sm:items-center">
+          <div className="container-max section-padding w-full">
+            <div className="max-w-2xl">
+              <h2
+                className={`font-serif font-bold leading-tight mb-4 text-shadow-lg ${TITLE_SIZE_CLASSES[heritageContent.titleSize || 'md']}`}
+                style={{ color: heritageContent.titleColor || '#7a2026' }}
+              >
+                {heritageContent.title}
+              </h2>
+              {heritageContent.subtitle && (
+                <p className={`text-charcoal-700 max-w-xl leading-relaxed ${SUBTITLE_SIZE_CLASSES[heritageContent.subtitleSize || 'md']}`}>
+                  {heritageContent.subtitle}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pinned as a percentage of the section's own locked aspect-ratio box
           (same technique as Hero's buttonX/buttonY) so it always sits right
@@ -43,13 +70,15 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
         <button
           onClick={onShopNow}
           style={{
-            padding: 'clamp(0.25rem, 1.4vw, 1rem) clamp(0.6rem, 3vw, 2rem)',
-            fontSize: 'clamp(0.6rem, 1.8vw, 1.125rem)',
-            gap: 'clamp(0.18rem, 0.7vw, 0.5rem)',
+            padding: buttonStyle.padding,
+            fontSize: buttonStyle.fontSize,
+            gap: buttonStyle.gap,
+            backgroundColor: heritageContent.buttonBgColor || '#fdf9f0',
+            color: heritageContent.buttonTextColor || '#7a2026',
           }}
-          className="group inline-flex items-center bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
+          className="group inline-flex items-center font-semibold rounded-full hover:brightness-95 transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
-          Explore Our Snacks
+          {heritageContent.cta || 'Explore Our Snacks'}
           <ArrowRight className="w-[1.1em] h-[1.1em] group-hover:translate-x-1 transition-transform" />
         </button>
       </div>

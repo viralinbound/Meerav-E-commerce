@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useCatalog } from '@/lib/useCatalog';
+import { TITLE_SIZE_CLASSES, SUBTITLE_SIZE_CLASSES, BUTTON_SIZE_STYLE } from '@/lib/bannerStyle';
 
 const VIDEO_EXTENSIONS = /\.(mp4|webm|mov|m4v)($|\?)/i;
 function isVideoUrl(url: string) {
@@ -35,6 +36,7 @@ export function Hero({ onShopNow }: HeroProps) {
   // Clamped so a banner saved with a very low button position (dragged close
   // to the edge in Admin > Hero Banners) can never sit on top of the dots.
   const buttonY = Math.min(activeBanner.buttonY ?? 82, 86);
+  const buttonStyle = BUTTON_SIZE_STYLE[activeBanner.buttonSize || 'md'];
 
   return (
     <section
@@ -99,10 +101,15 @@ export function Hero({ onShopNow }: HeroProps) {
                     <span className="inline-block px-4 py-1.5 bg-saffron-500/90 text-white text-sm font-medium rounded-full mb-6 animate-slide-up text-shadow-lg">
                       Authentic Bikaneri Taste Since 1984
                     </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-cream-50 leading-tight mb-6 text-shadow-lg animate-slide-up">
+                    <h2
+                      className={`font-serif font-bold leading-tight mb-6 text-shadow-lg animate-slide-up ${TITLE_SIZE_CLASSES[banner.titleSize || 'md']}`}
+                      style={{ color: banner.titleColor || '#fdf9f0' }}
+                    >
                       {banner.title}
                     </h2>
-                    <p className="text-lg text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up text-shadow-lg">
+                    <p
+                      className={`text-cream-100 mb-8 max-w-xl leading-relaxed animate-slide-up text-shadow-lg ${SUBTITLE_SIZE_CLASSES[banner.subtitleSize || 'md']}`}
+                    >
                       {banner.subtitle}
                     </p>
                   </div>
@@ -131,11 +138,13 @@ export function Hero({ onShopNow }: HeroProps) {
         <button
           onClick={onShopNow}
           style={{
-            padding: 'clamp(0.25rem, 1.4vw, 1rem) clamp(0.6rem, 3vw, 2rem)',
-            fontSize: 'clamp(0.6rem, 1.8vw, 1.125rem)',
-            gap: 'clamp(0.18rem, 0.7vw, 0.5rem)',
+            padding: buttonStyle.padding,
+            fontSize: buttonStyle.fontSize,
+            gap: buttonStyle.gap,
+            backgroundColor: activeBanner.buttonBgColor || '#fdf9f0',
+            color: activeBanner.buttonTextColor || '#7a2026',
           }}
-          className="group inline-flex items-center bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
+          className="group inline-flex items-center font-semibold rounded-full hover:brightness-95 transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
           {activeBanner.cta}
           <ArrowRight className="w-[1.1em] h-[1.1em] group-hover:translate-x-1 transition-transform" />

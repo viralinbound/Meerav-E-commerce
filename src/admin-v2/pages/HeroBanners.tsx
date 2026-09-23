@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Plus, Trash2, GripVertical, Eye, EyeOff, ImageOff, Move, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Eye, EyeOff, ImageOff, Move, ChevronUp, ChevronDown, Palette } from 'lucide-react';
 
 const VIDEO_EXTENSIONS = /\.(mp4|webm|mov|m4v)($|\?)/i;
 function isVideoUrl(url: string) {
@@ -8,8 +8,9 @@ function isVideoUrl(url: string) {
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState, EmptyState } from '../ui';
 import { MediaUploader } from '../MediaUploader';
+import { StylePanel, type Styleable } from '../StylePanel';
 
-interface AdminHeroBanner {
+interface AdminHeroBanner extends Styleable {
   id: string;
   image: string;
   title: string;
@@ -106,6 +107,7 @@ export function HeroBanners() {
   const [banners, setBanners] = useState<AdminHeroBanner[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [positioningId, setPositioningId] = useState<string | null>(null);
+  const [stylingId, setStylingId] = useState<string | null>(null);
   const dragId = useRef<string | null>(null);
 
   const load = () => {
@@ -324,6 +326,16 @@ export function HeroBanners() {
                       <Move className="w-4 h-4" />
                     </button>
                     <button
+                      onClick={() => setStylingId((cur) => (cur === banner.id ? null : banner.id))}
+                      className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
+                        stylingId === banner.id ? 'bg-maroon-700 text-cream-50' : 'text-charcoal-500 hover:bg-cream-200'
+                      }`}
+                      aria-label="Edit text/button size and color"
+                      title="Edit title, subtitle and button size/color"
+                    >
+                      <Palette className="w-4 h-4" />
+                    </button>
+                    <button
                       onClick={() => handleUpdate(banner, { isVisible: !banner.isVisible })}
                       className="w-9 h-9 flex items-center justify-center rounded-lg text-charcoal-500 hover:bg-cream-200 transition-colors"
                       aria-label={banner.isVisible ? 'Hide banner' : 'Show banner'}
@@ -346,6 +358,12 @@ export function HeroBanners() {
                     banner={banner}
                     onDrag={(x, y) => editLocally(banner.id, { buttonX: x, buttonY: y })}
                     onDrop={(x, y) => persistBanner({ ...banner, buttonX: x, buttonY: y })}
+                  />
+                )}
+                {stylingId === banner.id && (
+                  <StylePanel
+                    value={banner}
+                    onChange={(patch) => handleUpdate(banner, patch)}
                   />
                 )}
               </div>
