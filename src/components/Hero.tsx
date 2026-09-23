@@ -90,10 +90,15 @@ export function Hero({ onShopNow }: HeroProps) {
       >
         <button
           onClick={onShopNow}
-          className="group inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2 text-sm sm:px-6 sm:py-3 sm:text-base md:px-8 md:py-4 md:text-lg bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 hover:shadow-2xl active:scale-95 shadow-xl whitespace-nowrap"
+          style={{
+            padding: 'clamp(0.4rem, 2.5vw, 1rem) clamp(0.9rem, 5vw, 2rem)',
+            fontSize: 'clamp(0.75rem, 2.8vw, 1.125rem)',
+            gap: 'clamp(0.3rem, 1.2vw, 0.5rem)',
+          }}
+          className="group inline-flex items-center bg-cream-50 text-maroon-800 font-semibold rounded-full hover:bg-saffron-400 hover:text-white transition-all duration-300 active:scale-95 whitespace-nowrap"
         >
           {activeBanner.cta}
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+          <ArrowRight className="w-[1.1em] h-[1.1em] group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
 
