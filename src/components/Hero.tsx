@@ -118,7 +118,15 @@ export function Hero({ onShopNow }: HeroProps) {
           part of the banner artwork instead of a fixed generic spot. */}
       <div
         className="absolute z-10"
-        style={{ left: `${buttonX}%`, top: `${buttonY}%`, transform: 'translate(-50%, -50%)' }}
+        style={{
+          left: `${buttonX}%`,
+          // Raises the button on narrow phones and nudges it down on wide
+          // desktops relative to its saved (tablet-tuned) position, so the
+          // gap above the dots reads the same at every screen width instead
+          // of just scaling the raw percentage with the aspect-locked box.
+          top: `calc(${buttonY}% + clamp(-1.8rem, 5vw - 3rem, 1.2rem))`,
+          transform: 'translate(-50%, -50%)',
+        }}
       >
         <button
           onClick={onShopNow}
