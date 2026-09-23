@@ -39,7 +39,7 @@ export function BestSellersScroll({ onProductClick }: BestSellersScrollProps) {
           </span>
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Fan Favourites</h2>
           <p className="text-charcoal-500 max-w-2xl mx-auto">
-            The snacks our customers reorder the most — handcrafted, fresh, and packed with authentic Bikaneri flavour
+            The ones customers keep reordering — small-batch fried and usually gone within days of every restock
           </p>
         </div>
 

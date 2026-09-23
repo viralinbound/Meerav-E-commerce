@@ -30,11 +30,11 @@ export function BestSellers({ onProductClick }: BestSellersProps) {
       <div className="container-max section-padding">
         <div className="text-center mb-10">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
-            Our Collection
+            Full Range
           </span>
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">Our Collection</h2>
           <p className="text-charcoal-500 max-w-2xl mx-auto">
-            Every Meerav delicacy in one place — handcrafted, fresh, and packed with authentic Bikaneri flavour
+            Every namkeen and sweet we make, all in one place — pick your favourites and build your own box
           </p>
         </div>
 
