@@ -124,7 +124,7 @@ export function Hero({ onShopNow }: HeroProps) {
           // desktops relative to its saved (tablet-tuned) position, so the
           // gap above the dots reads the same at every screen width instead
           // of just scaling the raw percentage with the aspect-locked box.
-          top: `calc(${buttonY}% + clamp(-1.5rem, 5vw - 2.7rem, 1.2rem))`,
+          top: `calc(${buttonY}% + clamp(-0.7rem, 5vw - 2.7rem, 1.2rem))`,
           transform: 'translate(-50%, -50%)',
         }}
       >

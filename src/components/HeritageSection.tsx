@@ -38,7 +38,7 @@ export function HeritageSection({ onShopNow }: HeritageSectionProps) {
           // clipped by the section's bottom edge on tablet/desktop, plus the
           // same breakpoint offset as Hero's button (raised further on
           // mobile, nudged back down slightly on wide desktops).
-          top: 'calc(74% + clamp(-1.8rem, 5vw - 3rem, 1.2rem))',
+          top: 'calc(74% + clamp(-1.0rem, 5vw - 3rem, 1.2rem))',
           transform: 'translate(-50%, -50%)',
         }}
       >
