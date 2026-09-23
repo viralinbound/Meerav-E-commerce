@@ -31,3 +31,7 @@ INSERT INTO public.site_images (id, label, image, sort_order) VALUES
     ('handmade-gourmet', 'Curated Collections — Handmade Gourmet', 'https://images.pexels.com/photos/8887061/pexels-photo-8887061.jpeg?auto=compress&cs=tinysrgb&h=600&w=600', 4),
     ('festive-specials', 'Curated Collections — Festive Specials', 'https://images.pexels.com/photos/8887011/pexels-photo-8887011.jpeg?auto=compress&cs=tinysrgb&h=600&w=600', 5)
 ON CONFLICT (id) DO NOTHING;
+
+-- Enables realtime: any admin photo replacement here pushes instantly to
+-- every open storefront tab, no page refresh needed.
+ALTER PUBLICATION supabase_realtime ADD TABLE public.site_images;

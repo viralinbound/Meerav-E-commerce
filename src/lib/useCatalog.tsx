@@ -170,6 +170,8 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
+
+    const load = () =>
     Promise.all([
       MiraDB.fetchProducts(),
       MiraDB.fetchHeroBanners(),
@@ -277,8 +279,26 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
         }
       })
       .finally(() => !cancelled && setLoading(false));
+
+    load();
+
+    // Live updates: whenever an admin adds/edits/removes a hero banner,
+    // site photo, or heritage banner text, every open storefront tab
+    // refetches and re-renders automatically — no manual page reload needed.
+    const subs = ['hero_banners', 'site_images', 'heritage_content']
+      .map((table) => {
+        if (typeof MiraDB.subscribeTable !== 'function') return null;
+        try {
+          return MiraDB.subscribeTable(table, () => load());
+        } catch {
+          return null;
+        }
+      })
+      .filter(Boolean);
+
     return () => {
       cancelled = true;
+      subs.forEach((sub: any) => sub?.unsubscribe?.());
     };
   }, []);
 

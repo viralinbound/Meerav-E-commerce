@@ -30,3 +30,7 @@ CREATE POLICY "Admins can manage heritage content" ON public.heritage_content
 
 INSERT INTO public.heritage_content (id, cta) VALUES ('heritage', 'Explore Our Snacks')
 ON CONFLICT (id) DO NOTHING;
+
+-- Enables realtime: any admin edit here pushes instantly to every open
+-- storefront tab, no page refresh needed.
+ALTER PUBLICATION supabase_realtime ADD TABLE public.heritage_content;

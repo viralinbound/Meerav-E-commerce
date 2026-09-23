@@ -32,3 +32,7 @@ INSERT INTO public.hero_banners (id, image, title, subtitle, cta, sort_order) VA
     ('h1', 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/nani-fry-banner.webp', '', '', 'Shop Now', 2),
     ('h3', 'https://rudiggwblncwkjmqqemd.supabase.co/storage/v1/object/public/meerav-media/hero/crunch-banner.webp', '', '', 'Shop Now', 3)
 ON CONFLICT (id) DO NOTHING;
+
+-- Enables realtime: any admin add/edit/delete/reorder here pushes instantly
+-- to every open storefront tab, no page refresh needed.
+ALTER PUBLICATION supabase_realtime ADD TABLE public.hero_banners;
