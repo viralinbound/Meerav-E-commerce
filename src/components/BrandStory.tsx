@@ -2,17 +2,19 @@ import { Flame, Leaf, ShieldCheck, Truck } from 'lucide-react';
 
 export function BrandStory() {
   return (
-    <section className="py-10 sm:py-14 lg:py-20 bg-cream-50">
+    <section className="py-8 sm:py-12 lg:py-20 bg-cream-50">
       <div className="container-max section-padding">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center">
           {/* Text */}
           <div>
-            <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-6">
-              Our Tradition
-            </span>
-            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-6 leading-tight">
-              Rooted in tradition. Made for today.
-            </h2>
+            <div className="text-center lg:text-left">
+              <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4 sm:mb-6">
+                Our Tradition
+              </span>
+              <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-6 leading-tight">
+                Rooted in tradition. Made for today.
+              </h2>
+            </div>
             <p className="text-lg text-charcoal-600 leading-relaxed mb-6">
               No shortcuts, no palm oil, no factory-style production — just moth flour, pure
               groundnut oil and desert rock salt, prepared in small batches and packed fresh.

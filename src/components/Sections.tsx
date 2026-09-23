@@ -6,9 +6,9 @@ import { useCatalog } from '@/lib/useCatalog';
 export function Testimonials() {
   const { testimonials } = useCatalog();
   return (
-    <section className="py-10 sm:py-14 lg:py-20 bg-gradient-to-b from-cream-50 to-cream-100">
+    <section className="py-8 sm:py-12 lg:py-20 bg-gradient-to-b from-cream-50 to-cream-100">
       <div className="container-max section-padding">
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4">
             Customer Love
           </span>
@@ -59,9 +59,9 @@ export function Testimonials() {
 
 export function KitchenStories() {
   return (
-    <section className="py-10 sm:py-14 lg:py-20 bg-cream-50">
+    <section className="py-8 sm:py-12 lg:py-20 bg-cream-50">
       <div className="container-max section-padding">
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
             Kitchen Stories
           </span>
@@ -117,9 +117,9 @@ export function KitchenStories() {
 
 export function InstagramFeed() {
   return (
-    <section className="py-10 sm:py-14 lg:py-20 bg-gradient-to-b from-cream-100 to-cream-50">
+    <section className="py-8 sm:py-12 lg:py-20 bg-gradient-to-b from-cream-100 to-cream-50">
       <div className="container-max section-padding">
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <a
             href="https://www.instagram.com/meeravnamkeen"
             target="_blank"
@@ -175,9 +175,9 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-10 sm:py-14 lg:py-20 bg-cream-50">
+    <section id="faq" className="py-8 sm:py-12 lg:py-20 bg-cream-50">
       <div className="container-max section-padding">
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 sm:mb-8 lg:mb-12">
           <span className="inline-block px-4 py-1.5 bg-saffron-100 text-saffron-700 text-sm font-medium rounded-full mb-4">
             Questions & Answers
           </span>
