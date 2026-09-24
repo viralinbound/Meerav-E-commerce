@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { IndianRupee, ClipboardList, Package, TrendingUp, Star, X } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { useAdminAuth } from '../useAdminAuth';
 import { logChange } from '../activityLog';
@@ -115,19 +114,17 @@ export function Dashboard() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="col-span-2">
-          <MetricCard featured label="Total Sales" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="Real-time calculated" icon={IndianRupee} />
+          <MetricCard featured label="Total Sales" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="Real-time calculated" />
         </div>
-        <MetricCard label="Total Orders" value={orders.length} sublabel="Processed orders" icon={ClipboardList} />
-        <MetricCard label="Catalog Items" value={products.length} sublabel="Active products" icon={Package} />
-        <MetricCard label="Best Sellers" value={products.filter((p) => isBestseller(p.tag)).length} sublabel="Tagged products" icon={Star} />
+        <MetricCard label="Total Orders" value={orders.length} sublabel="Processed orders" />
+        <MetricCard label="Catalog Items" value={products.length} sublabel="Active products" />
+        <MetricCard label="Best Sellers" value={products.filter((p) => isBestseller(p.tag)).length} sublabel="Tagged products" />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2">
           <div className="px-5 py-4 border-b border-cream-200">
-            <h3 className="font-serif text-lg font-bold text-maroon-900 flex items-center gap-2">
-              <TrendingUp className="w-4.5 h-4.5 text-maroon-700" /> Sales — Last 14 Days
-            </h3>
+            <h3 className="font-sans text-lg font-bold text-maroon-900">Sales — Last 14 Days</h3>
             <p className="text-sm text-charcoal-400">Daily revenue from real order data.</p>
           </div>
           <div className="p-5">
@@ -141,7 +138,7 @@ export function Dashboard() {
 
         <Card>
           <div className="px-5 py-4 border-b border-cream-200">
-            <h3 className="font-serif text-lg font-bold text-maroon-900">Order Status</h3>
+            <h3 className="font-sans text-lg font-bold text-maroon-900">Order Status</h3>
             <p className="text-sm text-charcoal-400">All-time breakdown.</p>
           </div>
           {statusBreakdown.length === 0 ? (
@@ -167,9 +164,7 @@ export function Dashboard() {
 
       <Card>
         <div className="px-5 py-4 border-b border-cream-200">
-          <h3 className="font-serif text-lg font-bold text-maroon-900 flex items-center gap-2">
-            <TrendingUp className="w-4.5 h-4.5 text-maroon-700" /> Top Sellers
-          </h3>
+          <h3 className="font-sans text-lg font-bold text-maroon-900">Top Sellers</h3>
           <p className="text-sm text-charcoal-400">Auto-built from real order data — units sold, most first.</p>
         </div>
         {topSellers.length === 0 ? (
@@ -196,15 +191,7 @@ export function Dashboard() {
                       : 'bg-cream-100 text-charcoal-600 hover:bg-cream-200'
                   }`}
                 >
-                  {isBestseller(product!.tag) ? (
-                    <>
-                      <X className="w-3.5 h-3.5" /> Remove Tag
-                    </>
-                  ) : (
-                    <>
-                      <Star className="w-3.5 h-3.5" /> Mark Bestseller
-                    </>
-                  )}
+                  {isBestseller(product!.tag) ? 'Remove Tag' : 'Mark Bestseller'}
                 </button>
               </div>
             ))}
@@ -214,7 +201,7 @@ export function Dashboard() {
 
       <Card>
         <div className="px-5 py-4 border-b border-cream-200 flex items-center justify-between">
-          <h3 className="font-serif text-lg font-bold text-maroon-900">Recent Orders</h3>
+          <h3 className="font-sans text-lg font-bold text-maroon-900">Recent Orders</h3>
         </div>
         {recent.length === 0 ? (
           <EmptyState label="No orders yet" hint="Orders placed on the storefront will show up here in real time." />

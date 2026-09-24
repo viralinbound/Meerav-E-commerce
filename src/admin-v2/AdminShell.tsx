@@ -1,24 +1,21 @@
 import { useState, type ReactNode } from 'react';
-import {
-  LayoutDashboard, Package, ClipboardList, Menu, X, LogOut, Settings, Users, History, Paintbrush, ExternalLink, Images, MessageSquareQuote, GalleryHorizontalEnd, Landmark, Pencil, Check,
-} from 'lucide-react';
 import { useAdminAuth, isHostRole } from './useAdminAuth';
 import { MiraDB } from '@/lib/supabase.js';
 import { WarningsBanner } from './WarningsBanner';
 
 export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'heritageBanner' | 'siteImages' | 'content' | 'orders' | 'settings' | 'admins' | 'activity';
 
-const NAV_ITEMS: { id: AdminPage; label: string; icon: typeof LayoutDashboard; rootOnly?: boolean }[] = [
-  { id: 'dashboard', label: 'Overview', icon: LayoutDashboard },
-  { id: 'products', label: 'Products', icon: Package },
-  { id: 'heroBanners', label: 'Hero Banners', icon: Images },
-  { id: 'heritageBanner', label: 'Heritage Banner', icon: Landmark },
-  { id: 'siteImages', label: 'Site Photos', icon: GalleryHorizontalEnd },
-  { id: 'content', label: 'Reviews & FAQs', icon: MessageSquareQuote },
-  { id: 'orders', label: 'Orders', icon: ClipboardList },
-  { id: 'settings', label: 'Store Settings', icon: Settings },
-  { id: 'admins', label: 'Admin Accounts', icon: Users, rootOnly: true },
-  { id: 'activity', label: 'Activity Log', icon: History, rootOnly: true },
+const NAV_ITEMS: { id: AdminPage; label: string; rootOnly?: boolean }[] = [
+  { id: 'dashboard', label: 'Overview' },
+  { id: 'products', label: 'Products' },
+  { id: 'heroBanners', label: 'Hero Banners' },
+  { id: 'heritageBanner', label: 'Heritage Banner' },
+  { id: 'siteImages', label: 'Site Photos' },
+  { id: 'content', label: 'Reviews & FAQs' },
+  { id: 'orders', label: 'Orders' },
+  { id: 'settings', label: 'Store Settings' },
+  { id: 'admins', label: 'Admin Accounts', rootOnly: true },
+  { id: 'activity', label: 'Activity Log', rootOnly: true },
 ];
 
 // Dashboard always stays visible so a restricted admin never lands on a
@@ -49,7 +46,7 @@ function SelfNameEditor() {
         title="Click to rename yourself"
       >
         <p className="text-sm font-semibold text-cream-50 truncate">{admin?.name || 'Admin'}</p>
-        <Pencil className="w-3 h-3 text-cream-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+        <span className="text-[10px] uppercase tracking-wide text-cream-300 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">Edit</span>
       </button>
     );
   }
@@ -79,10 +76,10 @@ function SelfNameEditor() {
       <button
         onClick={save}
         disabled={saving}
-        className="w-6 h-6 shrink-0 flex items-center justify-center rounded bg-saffron-500 text-maroon-900 disabled:opacity-60"
+        className="px-2 h-6 shrink-0 flex items-center justify-center rounded bg-saffron-500 text-maroon-900 text-xs font-semibold disabled:opacity-60"
         aria-label="Save name"
       >
-        <Check className="w-3.5 h-3.5" />
+        Save
       </button>
     </div>
   );
@@ -110,7 +107,7 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
       <div className="flex items-center gap-3 px-5 py-6 border-b border-maroon-700/50">
         <img src="/images/meerav_logo.png" alt="Meerav" className="h-11 w-auto object-contain" />
         <div>
-          <p className="font-serif text-lg font-bold text-cream-50 leading-none">Meerav Admin</p>
+          <p className="font-sans text-lg font-bold text-cream-50 leading-none">Meerav Admin</p>
           <p className="text-[11px] text-saffron-300 tracking-wide uppercase mt-1">Dispatch Hub</p>
         </div>
       </div>
@@ -129,7 +126,6 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
                   : 'text-cream-200 hover:bg-maroon-700/60 hover:text-cream-50'
               }`}
             >
-              <Icon className="w-5 h-5 shrink-0" />
               {item.label}
             </button>
           );
@@ -141,9 +137,8 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
           rel="noopener noreferrer"
           className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors min-h-[44px] text-saffron-200 hover:bg-maroon-700/60 hover:text-saffron-100 border border-saffron-400/30 mt-2"
         >
-          <Paintbrush className="w-5 h-5 shrink-0" />
           Design Editor
-          <ExternalLink className="w-3.5 h-3.5 ml-auto opacity-60" />
+          <span className="ml-auto text-xs opacity-60">Opens in new tab</span>
         </a>
       </nav>
 
@@ -156,7 +151,6 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
           onClick={() => signOut()}
           className="w-full flex items-center gap-2 justify-center px-4 py-2.5 min-h-[44px] rounded-lg text-sm font-medium text-cream-100 border border-cream-100/20 hover:bg-maroon-700/60 transition-colors"
         >
-          <LogOut className="w-4 h-4" />
           Sign Out
         </button>
       </div>
@@ -175,10 +169,10 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
           <div className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-royal-gradient shadow-2xl animate-slide-in-right">
             <button
               onClick={() => setDrawerOpen(false)}
-              className="absolute top-5 right-4 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-cream-50"
+              className="absolute top-5 right-4 px-3 h-9 flex items-center justify-center rounded-full bg-white/10 text-cream-50 text-sm font-medium"
               aria-label="Close menu"
             >
-              <X className="w-5 h-5" />
+              Close
             </button>
             {SidebarContent}
           </div>
@@ -191,12 +185,12 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
           <div className="flex items-center gap-3 px-4 sm:px-6 py-4">
             <button
               onClick={() => setDrawerOpen(true)}
-              className="lg:hidden w-11 h-11 flex items-center justify-center rounded-lg text-maroon-800 hover:bg-cream-200 transition-colors -ml-1"
+              className="lg:hidden px-3 h-11 flex items-center justify-center rounded-lg text-maroon-800 hover:bg-cream-200 transition-colors -ml-1 text-sm font-semibold"
               aria-label="Open menu"
             >
-              <Menu className="w-6 h-6" />
+              Menu
             </button>
-            <h2 className="font-serif text-xl sm:text-2xl font-bold text-maroon-900">{activeLabel}</h2>
+            <h2 className="font-sans text-xl sm:text-2xl font-bold text-maroon-900">{activeLabel}</h2>
           </div>
         </header>
 

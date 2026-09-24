@@ -1,32 +1,26 @@
 import type { ReactNode } from 'react';
-import { Loader2, Inbox, AlertTriangle } from 'lucide-react';
 
 export function MetricCard({
-  label, value, sublabel, icon: Icon, featured = false,
+  label, value, sublabel, featured = false,
 }: {
   label: string;
   value: string | number;
   sublabel?: string;
-  icon: typeof Loader2;
   featured?: boolean;
 }) {
   if (featured) {
     return (
       <div className="relative bg-royal-gradient rounded-2xl shadow-md p-5 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5">
-        <Icon className="w-16 h-16 text-cream-50/10 absolute -right-2 -bottom-2" strokeWidth={1.5} />
         <p className="text-xs font-semibold text-saffron-200 uppercase tracking-wide relative">{label}</p>
-        <p className="font-serif text-3xl font-bold text-cream-50 tracking-tight mt-3 relative">{value}</p>
+        <p className="font-sans text-3xl font-bold text-cream-50 tracking-tight mt-3 relative">{value}</p>
         {sublabel && <p className="text-xs text-cream-200/80 mt-1 relative">{sublabel}</p>}
       </div>
     );
   }
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-cream-200 border-l-[3px] border-l-saffron-400 p-5 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
-      <div className="flex items-start justify-between mb-3">
-        <p className="text-xs font-semibold text-charcoal-500 uppercase tracking-wide">{label}</p>
-        <Icon className="w-4 h-4 text-maroon-600/70 shrink-0" />
-      </div>
-      <p className="font-serif text-2xl font-bold text-maroon-900 tracking-tight">{value}</p>
+      <p className="text-xs font-semibold text-charcoal-500 uppercase tracking-wide mb-3">{label}</p>
+      <p className="font-sans text-2xl font-bold text-maroon-900 tracking-tight">{value}</p>
       {sublabel && <p className="text-xs text-charcoal-400 mt-1">{sublabel}</p>}
     </div>
   );
@@ -35,8 +29,7 @@ export function MetricCard({
 export function LoadingState({ label = 'Loading…' }: { label?: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-charcoal-400">
-      <Loader2 className="w-8 h-8 animate-spin mb-3 text-maroon-600" />
-      <p className="text-sm">{label}</p>
+      <p className="text-sm animate-pulse">{label}</p>
     </div>
   );
 }
@@ -44,9 +37,6 @@ export function LoadingState({ label = 'Loading…' }: { label?: string }) {
 export function EmptyState({ label, hint }: { label: string; hint?: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-      <div className="w-14 h-14 rounded-full bg-cream-200 flex items-center justify-center mb-4">
-        <Inbox className="w-6 h-6 text-charcoal-400" />
-      </div>
       <p className="text-charcoal-700 font-medium">{label}</p>
       {hint && <p className="text-sm text-charcoal-400 mt-1 max-w-sm">{hint}</p>}
     </div>
@@ -56,9 +46,6 @@ export function EmptyState({ label, hint }: { label: string; hint?: string }) {
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center px-4">
-      <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
-        <AlertTriangle className="w-6 h-6 text-red-500" />
-      </div>
       <p className="text-charcoal-700 font-medium">Something went wrong</p>
       <p className="text-sm text-charcoal-400 mt-1 max-w-sm">{message}</p>
       {onRetry && (
