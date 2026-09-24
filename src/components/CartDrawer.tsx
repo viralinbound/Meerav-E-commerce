@@ -8,10 +8,6 @@ interface CartDrawerProps {
 export function CartDrawer({ onCheckout }: CartDrawerProps) {
   const { items, isOpen, closeDrawer, updateQuantity, removeFromCart, subtotal, deliveryCharge, total, itemCount } = useCart();
 
-  const FREE_DELIVERY_THRESHOLD = 500;
-  const remaining = Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal);
-  const progress = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
-
   return (
     <>
       {/* Backdrop */}
@@ -47,25 +43,12 @@ export function CartDrawer({ onCheckout }: CartDrawerProps) {
           </button>
         </div>
 
-        {/* Free Delivery Progress */}
+        {/* Free Delivery Banner */}
         {items.length > 0 && (
           <div className="p-4 bg-cream-100 border-b border-cream-200">
-            {remaining > 0 ? (
-              <p className="text-sm text-charcoal-600 mb-2">
-                Add <span className="font-bold text-maroon-700">Rs {remaining}</span> more for{' '}
-                <span className="font-semibold text-green-700">FREE delivery</span>
-              </p>
-            ) : (
-              <p className="text-sm text-green-700 font-medium mb-2 flex items-center gap-1.5">
-                <Truck className="w-4 h-4" /> You've unlocked FREE delivery!
-              </p>
-            )}
-            <div className="h-2 bg-cream-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-saffron-400 to-saffron-600 rounded-full transition-all duration-500"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
+            <p className="text-sm text-green-700 font-medium flex items-center gap-1.5">
+              <Truck className="w-4 h-4" /> FREE delivery on all orders
+            </p>
           </div>
         )}
 

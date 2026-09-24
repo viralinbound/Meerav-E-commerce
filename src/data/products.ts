@@ -326,8 +326,8 @@ export const faqs = [
     answer: 'All our bhujia and namkeen are fried in small batches every morning and packed the same day. Sweets are made fresh daily. Products are shipped within 24-48 hours of being made, so you receive snacks that are at peak freshness.',
   },
   {
-    question: 'What is the minimum order value and delivery charges?',
-    answer: 'The minimum order value is Rs 500. We offer free delivery across India on all orders above Rs 500. Orders below Rs 500 will incur a flat shipping charge of Rs 60.',
+    question: 'What are the delivery charges?',
+    answer: 'We offer free delivery across India on all orders, with no minimum order value.',
   },
   {
     question: 'How long does delivery take?',

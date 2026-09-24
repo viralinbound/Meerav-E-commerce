@@ -21,7 +21,7 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
   const announcements = settings?.announcementText
     ? [settings.announcementText]
     : [
-        'Min Order Value Rs 500 | Free delivery across India',
+        'Free delivery across India on all orders',
         'For Online Order Enquiry: 1800 102 9046 (Mon-Sat 11 AM to 5 PM)',
         'Use code MEERAV10 for 10% off your first order',
       ];

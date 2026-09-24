@@ -106,9 +106,6 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const FREE_DELIVERY_THRESHOLD = 500;
-const DELIVERY_CHARGE = 60;
-
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, loadState);
 
@@ -122,7 +119,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const itemCount = state.items.reduce((sum, i) => sum + i.quantity, 0);
   const subtotal = state.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
-  const deliveryCharge = subtotal >= FREE_DELIVERY_THRESHOLD || subtotal === 0 ? 0 : DELIVERY_CHARGE;
+  const deliveryCharge = 0;
   const total = subtotal + deliveryCharge;
 
   const value: CartContextValue = {

@@ -40,7 +40,12 @@ export function OrderHistory({ isOpen, onClose, customer }: OrderHistoryProps) {
     setLoading(true);
     MiraDB.fetchMyOrders(customer.id).then((data: Order[]) => {
       if (!cancelled) {
-        setOrders(data);
+        // COD confirms at order time, so it always shows; an online payment
+        // only becomes a real order once it's actually paid -- a
+        // pending/abandoned/failed online attempt should never appear as if
+        // it were placed.
+        const visible = data.filter((o) => o.paymentMethod === 'cod' || o.paymentStatus === 'paid');
+        setOrders(visible);
         setLoading(false);
       }
     });
