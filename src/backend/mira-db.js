@@ -630,6 +630,17 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return true;
   }
 
+  // Checks whether a signed-in storefront user is also an admin/host, using
+  // the public is_admin() RPC (already granted to anon/authenticated for RLS
+  // purposes) -- lets the header show a "Go to Admin Dashboard" link only to
+  // real admin/host accounts, never to regular customers.
+  async function checkIsAdmin(userId) {
+    if (!userId) return false;
+    const { data, error } = await supabaseClient.rpc('is_admin', { uid: userId });
+    if (error) { console.warn('checkIsAdmin', error); return false; }
+    return !!data;
+  }
+
   async function signUpCustomer({ email, password, name, phone, address, city, state, pincode }) {
     const { data, error } = await supabaseClient.auth.signUp({
       email, password, options: { data: { name, phone } }
@@ -868,7 +879,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, checkIsAdmin,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

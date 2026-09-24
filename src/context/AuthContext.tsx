@@ -27,6 +27,7 @@ interface SignUpFields {
 
 interface AuthContextValue {
   customer: Customer | null;
+  isAdminAccount: boolean;
   loading: boolean;
   signUp: (fields: SignUpFields) => Promise<{ error?: any; needsConfirmation?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error?: any }>;
@@ -47,6 +48,7 @@ function normalizeCustomer(c: any): Customer | null {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(null);
+  const [isAdminAccount, setIsAdminAccount] = useState(false);
   const [loading, setLoading] = useState(true);
   const [passwordRecovery, setPasswordRecovery] = useState(false);
 
@@ -57,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         const profile = await MiraDB.getOrCreateCustomerProfile(session.user);
         if (!cancelled) setCustomer(normalizeCustomer(profile));
+        const isAdmin = await MiraDB.checkIsAdmin(session.user.id);
+        if (!cancelled) setIsAdminAccount(isAdmin);
       }
       if (!cancelled) setLoading(false);
     });
@@ -72,8 +76,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (session?.user) {
         const profile = await MiraDB.getOrCreateCustomerProfile(session.user);
         if (!cancelled) setCustomer(normalizeCustomer(profile));
+        const isAdmin = await MiraDB.checkIsAdmin(session.user.id);
+        if (!cancelled) setIsAdminAccount(isAdmin);
       } else {
-        if (!cancelled) setCustomer(null);
+        if (!cancelled) { setCustomer(null); setIsAdminAccount(false); }
       }
     });
 
@@ -91,13 +97,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signIn(email: string, password: string) {
     const res = await MiraDB.signInCustomer(email, password);
-    if (!res.error && res.profile) setCustomer(normalizeCustomer(res.profile));
+    if (!res.error && res.profile) {
+      setCustomer(normalizeCustomer(res.profile));
+      setIsAdminAccount(await MiraDB.checkIsAdmin(res.profile.id));
+    }
     return res;
   }
 
   async function signOut() {
     await MiraDB.signOutCustomer();
     setCustomer(null);
+    setIsAdminAccount(false);
   }
 
   async function resendConfirmationEmail(email: string) {
@@ -122,6 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <AuthContext.Provider
       value={{
         customer,
+        isAdminAccount,
         loading,
         signUp,
         signIn,
