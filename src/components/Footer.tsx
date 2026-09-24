@@ -76,8 +76,8 @@ export function Footer({ onNavigate }: FooterProps) {
               </div>
             </div>
             <p className="text-sm text-cream-300 leading-relaxed mb-4">
-              Authentic royal Bikaneri namkeens, sweets, and roasted diet savories crafted daily in
-              pure groundnut oil with zero palm oil.
+              Authentic royal Bikaneri namkeens, sweets, and roasted diet savories crafted daily
+              with quality edible vegetable oils.
             </p>
             <div className="flex gap-2">
               {[
@@ -117,10 +117,10 @@ export function Footer({ onNavigate }: FooterProps) {
             <h4 className="font-semibold text-cream-50 mb-4 text-sm uppercase tracking-wide">Purity Guarantees</h4>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-cream-300">
-                <Leaf className="w-4 h-4 text-green-400 shrink-0" /> Pure Groundnut Oil
+                <Leaf className="w-4 h-4 text-green-400 shrink-0" /> Quality Ingredients
               </li>
               <li className="flex items-center gap-2 text-sm text-cream-300">
-                <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" /> No Preservatives
+                <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" /> No Added Flavours, Colours or Preservatives
               </li>
               <li className="flex items-center gap-2 text-sm text-cream-300">
                 <Truck className="w-4 h-4 text-green-400 shrink-0" /> Same-Day Packing

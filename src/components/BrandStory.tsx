@@ -18,8 +18,8 @@ export function BrandStory() {
               </h2>
             </div>
             <p className="text-lg text-charcoal-600 leading-relaxed mb-6">
-              No shortcuts, no palm oil, no factory-style production — just moth flour, pure
-              groundnut oil and desert rock salt, prepared in small batches and packed fresh.
+              No shortcuts, no factory-style production — just quality ingredients, prepared in
+              small batches and packed fresh.
             </p>
             <p className="text-charcoal-500 leading-relaxed mb-8">
               Our snacks are inspired by the traditional flavours and techniques of Rajasthan — the
@@ -48,8 +48,8 @@ export function BrandStory() {
                   <Leaf className="w-5 h-5 sm:w-6 sm:h-6 text-mustard-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-charcoal-800 text-sm">No Palm Oil, Ever</h3>
-                  <p className="text-xs text-charcoal-500">Just pure groundnut oil, the way our grandparents used it</p>
+                  <h3 className="font-semibold text-charcoal-800 text-sm">Made with Quality Edible Vegetable Oils</h3>
+                  <p className="text-xs text-charcoal-500">Made with care, the way our grandparents intended</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl">
@@ -57,8 +57,8 @@ export function BrandStory() {
                   <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-maroon-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-charcoal-800 text-sm">Nothing Artificial</h3>
-                  <p className="text-xs text-charcoal-500">No preservatives — just real ingredients you can name</p>
+                  <h3 className="font-semibold text-charcoal-800 text-sm">Made with Quality Ingredients</h3>
+                  <p className="text-xs text-charcoal-500">No added flavours, colours or preservatives</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 sm:p-4 bg-white rounded-xl">
