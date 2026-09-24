@@ -40,11 +40,11 @@ export function OrderHistory({ isOpen, onClose, customer }: OrderHistoryProps) {
     setLoading(true);
     MiraDB.fetchMyOrders(customer.id).then((data: Order[]) => {
       if (!cancelled) {
-        // COD confirms at order time, so it always shows; an online payment
-        // only becomes a real order once it's actually paid -- a
-        // pending/abandoned/failed online attempt should never appear as if
-        // it were placed.
-        const visible = data.filter((o) => o.paymentMethod === 'cod' || o.paymentStatus === 'paid');
+        // COD confirms at order time, so it always shows. An online payment
+        // shows once it's resolved either way (paid or failed) so the
+        // customer knows what happened to it; only a still-in-progress
+        // attempt (customer hasn't finished on PayU yet) stays hidden.
+        const visible = data.filter((o) => o.paymentMethod === 'cod' || o.paymentStatus === 'paid' || o.paymentStatus === 'failed');
         setOrders(visible);
         setLoading(false);
       }
@@ -100,8 +100,14 @@ export function OrderHistory({ isOpen, onClose, customer }: OrderHistoryProps) {
                         </p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium px-2 py-1 rounded-full bg-saffron-100 text-saffron-800">
-                          {order.orderStatus}
+                        <span
+                          className={`text-xs font-medium px-2 py-1 rounded-full ${
+                            order.paymentStatus === 'failed'
+                              ? 'bg-red-100 text-red-700'
+                              : 'bg-saffron-100 text-saffron-800'
+                          }`}
+                        >
+                          {order.paymentStatus === 'failed' ? 'Payment Failed' : order.orderStatus}
                         </span>
                         {expanded ? <ChevronUp className="w-4 h-4 text-charcoal-500" /> : <ChevronDown className="w-4 h-4 text-charcoal-500" />}
                       </div>
