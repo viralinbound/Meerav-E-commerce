@@ -174,9 +174,12 @@ export function InstagramFeed() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {instagramFeed.map((img, idx) => (
-            <div
+            <a
               key={idx}
-              className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer"
+              href="https://www.instagram.com/meeravnamkeen"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer block"
             >
               <img
                 src={img}
@@ -186,7 +189,7 @@ export function InstagramFeed() {
               <div className="absolute inset-0 bg-maroon-900/0 group-hover:bg-maroon-900/40 transition-colors duration-300 flex items-center justify-center">
                 <Instagram className="w-6 h-6 text-cream-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
-            </div>
+            </a>
           ))}
         </div>
 
