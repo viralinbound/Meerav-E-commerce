@@ -22,6 +22,7 @@ export interface Product {
   isNew?: boolean;
   rating: number;
   reviews: number;
+  unitsSold?: number;
 }
 
 export interface Category {

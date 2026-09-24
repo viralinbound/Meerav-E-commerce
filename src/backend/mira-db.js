@@ -143,6 +143,21 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return !error;
   }
 
+  // Bumps each ordered product's real units_sold counter right after checkout,
+  // so "Best Seller" on the storefront can be calculated from actual sales
+  // instead of a manually-set tag. Best-effort -- a failure here shouldn't
+  // block the order that already succeeded.
+  async function incrementUnitsSold(items) {
+    for (const item of items || []) {
+      if (!item?.productId || !item?.quantity) continue;
+      const { error } = await supabaseClient.rpc('increment_units_sold', {
+        p_product_id: item.productId,
+        p_qty: item.quantity,
+      });
+      if (error) console.warn('incrementUnitsSold', error);
+    }
+  }
+
   // The branded, sequential order number (e.g. "MEERAV-1001") depends on
   // order_seq, which Postgres only assigns once the insert actually commits —
   // so it's fetched right after a successful checkout insert, not predicted client-side.
@@ -853,7 +868,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

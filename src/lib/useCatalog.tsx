@@ -129,7 +129,25 @@ function toProduct(row: any): Product {
     isNew: tag.includes('new'),
     rating: Number(row.rating) || 0,
     reviews: Number(row.reviewsCount) || 0,
+    unitsSold: Number(row.unitsSold) || 0,
   };
+}
+
+const BESTSELLER_COUNT = 6;
+
+// "Best Seller" is calculated from real order history (units actually sold),
+// not just a manually-set tag -- the top sellers earn the badge automatically
+// as customers buy, and lose it if something else overtakes them. A manual
+// "Best Seller" tag from the admin panel still works as a pin for products
+// that haven't sold yet (e.g. a brand-new launch).
+function markAutoBestsellers(products: Product[]): Product[] {
+  const ranked = [...products]
+    .filter((p) => (p.unitsSold || 0) > 0)
+    .sort((a, b) => (b.unitsSold || 0) - (a.unitsSold || 0))
+    .slice(0, BESTSELLER_COUNT)
+    .map((p) => p.id);
+  const topSet = new Set(ranked);
+  return products.map((p) => (topSet.has(p.id) ? { ...p, isBestseller: true } : p));
 }
 
 const CACHE_KEY = 'meerav_catalog_cache_v1';
@@ -183,7 +201,7 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
     ])
       .then(([prods, banners, testi, faqRows, stories, images, heritage]) => {
         if (cancelled) return;
-        const freshProducts = prods.map(toProduct);
+        const freshProducts = markAutoBestsellers(prods.map(toProduct));
         // Falls back to the hardcoded banners (see useState above) if the
         // hero_banners table doesn't exist yet or is empty, so the hero
         // carousel never goes blank.

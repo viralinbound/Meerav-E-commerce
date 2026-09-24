@@ -8,6 +8,7 @@ export function dbProductToApp(row) {
     category: row.category,
     name: row.name,
     tag: row.tag,
+    unitsSold: Number(row.units_sold) || 0,
     rating: Number(row.rating) || 0,
     reviewsCount: row.reviews_count || 0,
     spiceLevel: row.spice_level,

@@ -100,6 +100,8 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         return;
       }
 
+      MiraDB.incrementUnitsSold(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
+
       const seq = await MiraDB.fetchOrderSeq(orderId);
       const num = seq ? `MEERAV-${seq}` : orderId.toUpperCase();
       setOrderNumber(num);
