@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Phone, MapPin, ShieldCheck, Truck, Leaf, Facebook, Instagram, Youtube, Linkedin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, ShieldCheck, Truck, Leaf, Instagram, Linkedin, Send } from 'lucide-react';
 import { useSettings } from '@/lib/useSettings';
 
 interface FooterProps {
@@ -81,9 +81,7 @@ export function Footer({ onNavigate }: FooterProps) {
             </p>
             <div className="flex gap-2">
               {[
-                { Icon: Facebook, href: '#' },
                 { Icon: Instagram, href: 'https://www.instagram.com/meeravnamkeen' },
-                { Icon: Youtube, href: '#' },
                 { Icon: Linkedin, href: 'https://www.linkedin.com/company/meerav/' },
               ].map(({ Icon, href }, idx) => (
                 <a
