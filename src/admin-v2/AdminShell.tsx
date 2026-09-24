@@ -131,6 +131,16 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
         })}
 
         <a
+          href="/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors min-h-[44px] text-cream-200 hover:bg-maroon-700/60 hover:text-cream-50 border border-cream-100/20 mt-2"
+        >
+          View Storefront
+          <span className="ml-auto text-xs opacity-60">Opens in new tab</span>
+        </a>
+
+        <a
           href="/design-editor.html"
           target="_blank"
           rel="noopener noreferrer"

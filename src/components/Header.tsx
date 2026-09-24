@@ -62,12 +62,14 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
           <span key={announcementIndex} className="animate-fade-in text-center">
             {announcements[announcementIndex]}
           </span>
-          <a
-            href="/admin.html"
-            className="hidden sm:inline absolute right-4 text-cream-200 hover:text-saffron-300 transition-colors text-xs whitespace-nowrap"
-          >
-            Admin Login
-          </a>
+          {!customer && (
+            <a
+              href="/admin.html"
+              className="hidden sm:inline absolute right-4 text-cream-200 hover:text-saffron-300 transition-colors text-xs whitespace-nowrap"
+            >
+              Admin Login
+            </a>
+          )}
         </div>
       </div>
 
@@ -202,12 +204,14 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                   <Phone className="w-4 h-4" /> {customer ? customer.name.split(' ')[0] : 'Sign In'}
                 </button>
               </div>
-              <a
-                href="/admin.html"
-                className="block text-center mt-2 pt-2 text-xs text-charcoal-400 hover:text-maroon-700"
-              >
-                Admin Login
-              </a>
+              {!customer && (
+                <a
+                  href="/admin.html"
+                  className="block text-center mt-2 pt-2 text-xs text-charcoal-400 hover:text-maroon-700"
+                >
+                  Admin Login
+                </a>
+              )}
             </div>
           </div>
         )}
