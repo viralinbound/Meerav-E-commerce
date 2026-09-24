@@ -87,8 +87,11 @@ function KitchenStoryLightbox({ story, onClose }: { story: KitchenStory; onClose
 }
 
 export function KitchenStories() {
-  const { kitchenStories: liveStories } = useCatalog();
-  const stories = liveStories.length ? liveStories : staticKitchenStories;
+  // Broadcast Stories in the admin is product-package photos, not real
+  // kitchen prep footage -- using it here made the lightbox show a namkeen
+  // pack instead of an actual kitchen scene, so this stays on the curated
+  // stock photos until there's real kitchen video/photo content to show.
+  const stories = staticKitchenStories;
   const [openStory, setOpenStory] = useState<KitchenStory | null>(null);
 
   return (
