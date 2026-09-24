@@ -32,10 +32,15 @@ function redirectToPayu(action: string, params: Record<string, string>) {
   form.submit();
 }
 
+const COD_CHARGE = 30;
+const COD_FREE_THRESHOLD = 500;
+
 export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: CheckoutModalProps) {
-  const { items, subtotal, deliveryCharge, total, clearCart } = useCart();
+  const { items, subtotal, deliveryCharge, total: cartTotal, clearCart } = useCart();
   const [step, setStep] = useState<Step>('contact');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('online');
+  const codCharge = paymentMethod === 'cod' && subtotal < COD_FREE_THRESHOLD ? COD_CHARGE : 0;
+  const total = cartTotal + codCharge;
   const [orderNumber, setOrderNumber] = useState('');
   const [placing, setPlacing] = useState(false);
   const [placeError, setPlaceError] = useState('');
@@ -452,6 +457,16 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
                         <span>Delivery</span>
                         {deliveryCharge === 0 ? <span className="text-green-700">FREE</span> : <span>Rs {deliveryCharge}</span>}
                       </div>
+                      {paymentMethod === 'cod' && (
+                        <div className="flex justify-between text-sm text-charcoal-600">
+                          <span>COD Charge</span>
+                          {codCharge === 0 ? (
+                            <span className="text-green-700">FREE (order ≥ Rs {COD_FREE_THRESHOLD})</span>
+                          ) : (
+                            <span>Rs {codCharge}</span>
+                          )}
+                        </div>
+                      )}
                       <div className="flex justify-between font-bold text-charcoal-900 pt-2 border-t border-cream-300">
                         <span>Total</span>
                         <span className="font-serif text-lg text-maroon-800">Rs {total}</span>
