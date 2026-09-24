@@ -52,6 +52,8 @@ export interface KitchenStory {
   description: string;
   image: string;
   duration: string;
+  mediaUrl?: string;
+  mediaType?: 'video' | 'image';
 }
 
 export interface SiteImage {
@@ -246,6 +248,8 @@ export function CatalogProvider({ children }: { children: ReactNode }) {
             description: `₹${s.price} (was ₹${s.originalPrice})`,
             image: resolveImagePath(s.posterUrl),
             duration: s.tag,
+            mediaUrl: resolveImagePath(s.mediaUrl),
+            mediaType: s.mediaType,
           }));
 
         const freshSiteImages = (images || []).map((s: any) => ({

@@ -1,7 +1,7 @@
-import { Star, Quote, Play, Instagram, ChevronDown, Plus, Minus } from 'lucide-react';
+import { Star, Quote, Play, Instagram, ChevronDown, Plus, Minus, X } from 'lucide-react';
 import { useState } from 'react';
-import { instagramFeed, kitchenStories } from '@/data/products';
-import { useCatalog } from '@/lib/useCatalog';
+import { instagramFeed, kitchenStories as staticKitchenStories } from '@/data/products';
+import { useCatalog, type KitchenStory } from '@/lib/useCatalog';
 
 export function Testimonials() {
   const { testimonials } = useCatalog();
@@ -57,7 +57,40 @@ export function Testimonials() {
   );
 }
 
+function KitchenStoryLightbox({ story, onClose }: { story: KitchenStory; onClose: () => void }) {
+  const isVideo = story.mediaType === 'video' && story.mediaUrl;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div className="absolute inset-0 bg-charcoal-900/85 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-2xl">
+        <button
+          onClick={onClose}
+          className="absolute -top-11 right-0 w-9 h-9 flex items-center justify-center rounded-full bg-white/10 text-cream-50 hover:bg-white/20 transition-colors"
+          aria-label="Close"
+        >
+          <X className="w-5 h-5" />
+        </button>
+        <div className="rounded-2xl overflow-hidden bg-charcoal-900 shadow-2xl">
+          {isVideo ? (
+            <video src={story.mediaUrl} poster={story.image} controls autoPlay className="w-full max-h-[80vh]" />
+          ) : (
+            <img src={story.mediaUrl || story.image} alt={story.title} className="w-full max-h-[80vh] object-contain" />
+          )}
+          <div className="p-5">
+            <h3 className="font-serif text-lg font-bold text-cream-50 mb-1">{story.title}</h3>
+            <p className="text-sm text-cream-300">{story.description}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function KitchenStories() {
+  const { kitchenStories: liveStories } = useCatalog();
+  const stories = liveStories.length ? liveStories : staticKitchenStories;
+  const [openStory, setOpenStory] = useState<KitchenStory | null>(null);
+
   return (
     <section className="py-4 lg:py-12 bg-cream-50">
       <div className="container-max section-padding">
@@ -74,9 +107,10 @@ export function KitchenStories() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {kitchenStories.map((story) => (
+          {stories.map((story) => (
             <div
               key={story.id}
+              onClick={() => setOpenStory(story)}
               className="group cursor-pointer rounded-2xl overflow-hidden shadow-md card-hover relative"
             >
               <div className="relative h-64 overflow-hidden">
@@ -111,6 +145,8 @@ export function KitchenStories() {
           ))}
         </div>
       </div>
+
+      {openStory && <KitchenStoryLightbox story={openStory} onClose={() => setOpenStory(null)} />}
     </section>
   );
 }
