@@ -170,6 +170,15 @@ function AppContent() {
     );
   }
 
+  if (page === 'terms' || page === 'privacy' || page === 'refund') {
+    return (
+      <>
+        <DynamicTheme />
+        <LegalPage section={page} onNavigate={(s) => setPage(s)} onBack={goHome} />
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-cream-50">
       <DynamicTheme />
@@ -180,8 +189,6 @@ function AppContent() {
           <ProductPage product={selectedProduct} onBack={backFromProduct} />
         ) : page === 'shop' ? (
           <ShopPage searchQuery={searchQuery} onProductClick={openProduct} onBackHome={goHome} />
-        ) : page === 'terms' || page === 'privacy' || page === 'refund' ? (
-          <LegalPage section={page} onNavigate={(s) => setPage(s)} onBack={goHome} />
         ) : (
           <>
             <div id="home">
