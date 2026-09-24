@@ -32,6 +32,24 @@ function AppContent() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<'success' | 'failed' | null>(null);
+
+  // PayU's server-to-server callback redirects the browser back here with
+  // ?payment=success/failed after the customer pays -- this is just the
+  // banner shown for that; the order's real paid/failed status was already
+  // set server-side in the payu-callback Edge Function, never trusted here.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const result = params.get('payment');
+    if (result === 'success' || result === 'failed') {
+      setPaymentResult(result);
+      params.delete('payment');
+      params.delete('order');
+      params.delete('reason');
+      const rest = params.toString();
+      window.history.replaceState({}, '', window.location.pathname + (rest ? `?${rest}` : ''));
+    }
+  }, []);
 
   // Clicking any product card opens its own full page — never a popup —
   // so shoppers see the real packaging front, back-of-pack nutrition label,
@@ -230,6 +248,38 @@ function AppContent() {
       />
       <OrderHistory isOpen={trackerOpen} onClose={() => setTrackerOpen(false)} customer={customer} />
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+
+      {paymentResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="absolute inset-0 bg-charcoal-900/70 backdrop-blur-sm" onClick={() => setPaymentResult(null)} />
+          <div className="relative bg-cream-50 rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center animate-scale-in">
+            {paymentResult === 'success' ? (
+              <>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">✓</span>
+                </div>
+                <h3 className="font-serif text-xl font-bold text-charcoal-900 mb-2">Payment Successful</h3>
+                <p className="text-sm text-charcoal-500 mb-6">
+                  Your payment was received and your order is confirmed. Check "Your Orders" for details.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">✕</span>
+                </div>
+                <h3 className="font-serif text-xl font-bold text-charcoal-900 mb-2">Payment Failed</h3>
+                <p className="text-sm text-charcoal-500 mb-6">
+                  Your payment didn't go through and no amount was deducted for this attempt. Please try again or choose Cash on Delivery.
+                </p>
+              </>
+            )}
+            <button onClick={() => setPaymentResult(null)} className="btn-primary w-full justify-center">
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

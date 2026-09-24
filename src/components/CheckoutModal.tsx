@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Check, CreditCard, QrCode, Banknote, MapPin, LocateFixed, User, Phone, Mail, ArrowRight, ArrowLeft, Truck } from 'lucide-react';
+import { X, Check, CreditCard, Banknote, MapPin, LocateFixed, User, Phone, Mail, ArrowRight, ArrowLeft, Truck } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { MiraDB } from '@/lib/supabase.js';
 import type { Customer } from '@/context/AuthContext';
@@ -12,12 +12,30 @@ interface CheckoutModalProps {
 }
 
 type Step = 'contact' | 'address' | 'payment' | 'success';
-type PaymentMethod = 'card' | 'upi' | 'cod';
+type PaymentMethod = 'online' | 'cod';
+
+// Builds a hidden form and submits it so the browser POSTs straight to
+// PayU's hosted payment page with the signed fields -- this is how PayU's
+// classic integration expects the redirect to happen, not a GET/fetch.
+function redirectToPayu(action: string, params: Record<string, string>) {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = action;
+  for (const [key, value] of Object.entries(params)) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = value;
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+}
 
 export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: CheckoutModalProps) {
   const { items, subtotal, deliveryCharge, total, clearCart } = useCart();
   const [step, setStep] = useState<Step>('contact');
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('upi');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('online');
   const [orderNumber, setOrderNumber] = useState('');
   const [placing, setPlacing] = useState(false);
   const [placeError, setPlaceError] = useState('');
@@ -88,26 +106,42 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         })),
         totalAmount: total,
         paymentMethod,
-        paymentStatus: paymentMethod === 'cod' ? 'pending' : 'paid',
+        // Real online payments start "pending" and only ever flip to "paid"
+        // once PayU's server-to-server callback verifies it -- never here.
+        paymentStatus: 'pending',
         orderStatus: 'Pending',
         date: new Date().toISOString(),
       });
 
-      setPlacing(false);
-
       if (!ok) {
+        setPlacing(false);
         setPlaceError('Could not place your order. Please try again.');
         return;
       }
 
-      MiraDB.incrementUnitsSold(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
+      if (paymentMethod === 'cod') {
+        setPlacing(false);
+        // COD is confirmed at order time, so the sale counts immediately;
+        // online payments only count once payu-callback confirms it paid.
+        MiraDB.incrementUnitsSold(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
+        const seq = await MiraDB.fetchOrderSeq(orderId);
+        const num = seq ? `MEERAV-${seq}` : orderId.toUpperCase();
+        setOrderNumber(num);
+        setStep('success');
+        onOrderComplete(num);
+        clearCart();
+        return;
+      }
 
-      const seq = await MiraDB.fetchOrderSeq(orderId);
-      const num = seq ? `MEERAV-${seq}` : orderId.toUpperCase();
-      setOrderNumber(num);
-      setStep('success');
-      onOrderComplete(num);
+      const payu = await MiraDB.initiatePayuPayment(orderId);
+      if (payu?.error) {
+        setPlacing(false);
+        setPlaceError(payu.error.message || 'Could not start online payment. Please try again or choose Cash on Delivery.');
+        return;
+      }
       clearCart();
+      redirectToPayu(payu.action, payu.params);
+      // Browser navigates away to PayU here -- no further UI update needed.
     }
   };
 
@@ -359,42 +393,23 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
                 <div className="space-y-4 animate-fade-in">
                   <h3 className="font-serif text-lg font-bold text-charcoal-900 mb-4">Payment Method</h3>
 
-                  {/* Card Option */}
+                  {/* Online Payment (PayU) */}
                   <button
-                    onClick={() => setPaymentMethod('card')}
+                    onClick={() => setPaymentMethod('online')}
                     className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left ${
-                      paymentMethod === 'card'
+                      paymentMethod === 'online'
                         ? 'border-maroon-700 bg-maroon-50'
                         : 'border-cream-300 bg-white hover:border-cream-400'
                     }`}
                   >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${paymentMethod === 'card' ? 'bg-maroon-700' : 'bg-cream-200'}`}>
-                      <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-cream-50' : 'text-charcoal-500'}`} />
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${paymentMethod === 'online' ? 'bg-maroon-700' : 'bg-cream-200'}`}>
+                      <CreditCard className={`w-5 h-5 ${paymentMethod === 'online' ? 'text-cream-50' : 'text-charcoal-500'}`} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-charcoal-800 text-sm">Credit / Debit Card</h4>
-                      <p className="text-xs text-charcoal-500">Visa, Mastercard, RuPay</p>
+                      <h4 className="font-semibold text-charcoal-800 text-sm">Pay Online</h4>
+                      <p className="text-xs text-charcoal-500">Card, UPI, or Netbanking — secured by PayU</p>
                     </div>
-                    {paymentMethod === 'card' && <Check className="w-5 h-5 text-maroon-700" />}
-                  </button>
-
-                  {/* UPI Option */}
-                  <button
-                    onClick={() => setPaymentMethod('upi')}
-                    className={`w-full flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left ${
-                      paymentMethod === 'upi'
-                        ? 'border-maroon-700 bg-maroon-50'
-                        : 'border-cream-300 bg-white hover:border-cream-400'
-                    }`}
-                  >
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${paymentMethod === 'upi' ? 'bg-maroon-700' : 'bg-cream-200'}`}>
-                      <QrCode className={`w-5 h-5 ${paymentMethod === 'upi' ? 'text-cream-50' : 'text-charcoal-500'}`} />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-charcoal-800 text-sm">UPI Payment</h4>
-                      <p className="text-xs text-charcoal-500">GPay, PhonePe, Paytm, BHIM, or CRED</p>
-                    </div>
-                    {paymentMethod === 'upi' && <Check className="w-5 h-5 text-maroon-700" />}
+                    {paymentMethod === 'online' && <Check className="w-5 h-5 text-maroon-700" />}
                   </button>
 
                   {/* COD Option */}
@@ -466,7 +481,11 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
                       : 'bg-cream-200 text-charcoal-400 cursor-not-allowed'
                   }`}
                 >
-                  {placing ? 'Placing Order…' : step === 'payment' ? 'Place Order' : 'Continue'}
+                  {placing
+                    ? paymentMethod === 'online' ? 'Redirecting to PayU…' : 'Placing Order…'
+                    : step === 'payment'
+                    ? paymentMethod === 'online' ? 'Proceed to Pay' : 'Place Order'
+                    : 'Continue'}
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

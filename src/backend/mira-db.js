@@ -143,6 +143,21 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return !error;
   }
 
+  // Asks the payu-initiate Edge Function to build a real PayU hosted-checkout
+  // payload for an already-inserted pending order. The actual merchant
+  // key/salt never touch the browser -- they live only as Edge Function
+  // secrets on Supabase's server.
+  async function initiatePayuPayment(orderId) {
+    try {
+      const { data, error } = await supabaseClient.functions.invoke('payu-initiate', { body: { orderId } });
+      if (error) return { error: { message: await readFunctionError(error) } };
+      return data;
+    } catch (e) {
+      console.error('initiatePayuPayment', e);
+      return { error: { message: 'Online payment is not available right now. Please choose Cash on Delivery.' } };
+    }
+  }
+
   // Bumps each ordered product's real units_sold counter right after checkout,
   // so "Best Seller" on the storefront can be calculated from actual sales
   // instead of a manually-set tag. Best-effort -- a failure here shouldn't
@@ -879,7 +894,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, checkIsAdmin,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, checkIsAdmin, initiatePayuPayment,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

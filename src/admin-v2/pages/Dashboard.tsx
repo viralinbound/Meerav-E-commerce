@@ -9,6 +9,8 @@ interface DashOrder {
   customer: { name?: string } | null;
   totalAmount: number;
   orderStatus: string;
+  paymentMethod?: string;
+  paymentStatus?: string;
   date: string;
   items?: { productId: string; name: string; quantity: number; image?: string }[];
 }
@@ -105,7 +107,17 @@ export function Dashboard() {
   if (loading) return <LoadingState label="Loading dashboard…" />;
   if (error) return <ErrorState message={error} onRetry={load} />;
 
-  const totalSales = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  // Only counts revenue that's actually confirmed -- COD counts at order
+  // time (matches how the storefront confirms it), online only counts once
+  // PayU's callback has verified the payment, so a pending/failed online
+  // attempt never inflates revenue.
+  const codRevenue = orders
+    .filter((o) => o.paymentMethod === 'cod')
+    .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const onlineRevenue = orders
+    .filter((o) => o.paymentMethod !== 'cod' && o.paymentStatus === 'paid')
+    .reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const totalSales = codRevenue + onlineRevenue;
   const recent = [...orders]
     .sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime())
     .slice(0, 8);
@@ -114,11 +126,11 @@ export function Dashboard() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <div className="col-span-2">
-          <MetricCard featured label="Total Sales" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="Real-time calculated" />
+          <MetricCard featured label="Total Revenue" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="COD + confirmed online payments" />
         </div>
+        <MetricCard label="COD Revenue" value={`₹${codRevenue.toLocaleString('en-IN')}`} sublabel="Cash on Delivery" />
+        <MetricCard label="Online Revenue" value={`₹${onlineRevenue.toLocaleString('en-IN')}`} sublabel="Paid via PayU" />
         <MetricCard label="Total Orders" value={orders.length} sublabel="Processed orders" />
-        <MetricCard label="Catalog Items" value={products.length} sublabel="Active products" />
-        <MetricCard label="Best Sellers" value={products.filter((p) => isBestseller(p.tag)).length} sublabel="Tagged products" />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
