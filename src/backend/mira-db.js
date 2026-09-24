@@ -86,6 +86,19 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return (data || []).map(dbOrderToApp);
   }
 
+  // Storefront "Your Orders" -- relies on the "customers read own orders" RLS
+  // policy (customer->>'id' = auth.uid()) so this only ever returns the
+  // signed-in customer's own orders, never anyone else's.
+  async function fetchMyOrders(customerId) {
+    const { data, error } = await supabaseClient
+      .from('orders')
+      .select('*')
+      .eq('customer->>id', customerId)
+      .order('created_at', { ascending: false });
+    if (error) { console.error('fetchMyOrders', error); return []; }
+    return (data || []).map(dbOrderToApp);
+  }
+
   async function fetchCustomers(client = supabaseClient) {
     const { data, error } = await client.from('customers').select('*').order('created_at', { ascending: false });
     if (error) { console.error('fetchCustomers', error); return []; }
@@ -832,7 +845,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchCustomers, fetchNotifications,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

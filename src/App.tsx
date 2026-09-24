@@ -15,7 +15,7 @@ import { BestSellers } from '@/components/BestSellers';
 import { ProductPage } from '@/components/ProductPage';
 import { CartDrawer } from '@/components/CartDrawer';
 import { CheckoutModal } from '@/components/CheckoutModal';
-import { OrderTracker } from '@/components/OrderTracker';
+import { OrderHistory } from '@/components/OrderHistory';
 import { Testimonials, KitchenStories, InstagramFeed, FAQSection } from '@/components/Sections';
 import { Footer } from '@/components/Footer';
 import { ShopPage } from '@/components/ShopPage';
@@ -106,7 +106,11 @@ function AppContent() {
         });
       });
     } else if (section === 'track') {
-      setTrackerOpen(true);
+      if (customer) {
+        setTrackerOpen(true);
+      } else {
+        setAuthOpen(true);
+      }
     } else if (section === 'account') {
       setAuthOpen(true);
     }
@@ -211,7 +215,7 @@ function AppContent() {
         onOrderComplete={handleOrderComplete}
         customer={customer}
       />
-      <OrderTracker isOpen={trackerOpen} onClose={() => setTrackerOpen(false)} />
+      <OrderHistory isOpen={trackerOpen} onClose={() => setTrackerOpen(false)} customer={customer} />
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
   );
