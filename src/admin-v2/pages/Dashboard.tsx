@@ -124,7 +124,7 @@ export function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-4">
         <Card className="lg:col-span-2">
           <div className="px-5 py-4 border-b border-cream-200">
-            <h3 className="font-sans text-lg font-bold text-maroon-900">Sales — Last 14 Days</h3>
+            <h3 className="font-sans text-lg font-bold text-maroon-900 tracking-tight">Sales — Last 14 Days</h3>
             <p className="text-sm text-charcoal-400">Daily revenue from real order data.</p>
           </div>
           <div className="p-5">
@@ -138,7 +138,7 @@ export function Dashboard() {
 
         <Card>
           <div className="px-5 py-4 border-b border-cream-200">
-            <h3 className="font-sans text-lg font-bold text-maroon-900">Order Status</h3>
+            <h3 className="font-sans text-lg font-bold text-maroon-900 tracking-tight">Order Status</h3>
             <p className="text-sm text-charcoal-400">All-time breakdown.</p>
           </div>
           {statusBreakdown.length === 0 ? (
@@ -164,7 +164,7 @@ export function Dashboard() {
 
       <Card>
         <div className="px-5 py-4 border-b border-cream-200">
-          <h3 className="font-sans text-lg font-bold text-maroon-900">Top Sellers</h3>
+          <h3 className="font-sans text-lg font-bold text-maroon-900 tracking-tight">Top Sellers</h3>
           <p className="text-sm text-charcoal-400">Auto-built from real order data — units sold, most first.</p>
         </div>
         {topSellers.length === 0 ? (
@@ -201,7 +201,7 @@ export function Dashboard() {
 
       <Card>
         <div className="px-5 py-4 border-b border-cream-200 flex items-center justify-between">
-          <h3 className="font-sans text-lg font-bold text-maroon-900">Recent Orders</h3>
+          <h3 className="font-sans text-lg font-bold text-maroon-900 tracking-tight">Recent Orders</h3>
         </div>
         {recent.length === 0 ? (
           <EmptyState label="No orders yet" hint="Orders placed on the storefront will show up here in real time." />

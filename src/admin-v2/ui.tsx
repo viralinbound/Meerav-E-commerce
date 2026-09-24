@@ -1,5 +1,20 @@
 import type { ReactNode } from 'react';
 
+// Splits a "₹12,345" style value so the currency mark can sit smaller and
+// lighter than the digits — reads like a hand-set price tag, not a raw
+// string dump.
+function MetricValue({ value, className }: { value: string | number; className: string }) {
+  const str = String(value);
+  const match = str.match(/^(₹)(.+)$/);
+  if (!match) return <span className={className} style={{ fontVariantNumeric: 'tabular-nums' }}>{str}</span>;
+  return (
+    <span className={className} style={{ fontVariantNumeric: 'tabular-nums' }}>
+      <span className="text-[0.55em] font-semibold align-top mr-0.5 opacity-70">₹</span>
+      {match[2]}
+    </span>
+  );
+}
+
 export function MetricCard({
   label, value, sublabel, featured = false,
 }: {
@@ -11,17 +26,17 @@ export function MetricCard({
   if (featured) {
     return (
       <div className="relative bg-royal-gradient rounded-2xl shadow-md p-5 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5">
-        <p className="text-xs font-semibold text-saffron-200 uppercase tracking-wide relative">{label}</p>
-        <p className="font-sans text-3xl font-bold text-cream-50 tracking-tight mt-3 relative">{value}</p>
-        {sublabel && <p className="text-xs text-cream-200/80 mt-1 relative">{sublabel}</p>}
+        <p className="text-[11px] font-semibold text-saffron-200 uppercase tracking-[0.12em] relative">{label}</p>
+        <MetricValue value={value} className="block font-sans text-4xl font-extrabold text-cream-50 tracking-tighter leading-none mt-3 relative" />
+        {sublabel && <p className="text-xs text-cream-200/80 mt-2 relative">{sublabel}</p>}
       </div>
     );
   }
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-cream-200 border-l-[3px] border-l-saffron-400 p-5 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
-      <p className="text-xs font-semibold text-charcoal-500 uppercase tracking-wide mb-3">{label}</p>
-      <p className="font-sans text-2xl font-bold text-maroon-900 tracking-tight">{value}</p>
-      {sublabel && <p className="text-xs text-charcoal-400 mt-1">{sublabel}</p>}
+      <p className="text-[11px] font-semibold text-charcoal-500 uppercase tracking-[0.12em] mb-3">{label}</p>
+      <MetricValue value={value} className="block font-sans text-[1.75rem] font-extrabold text-maroon-900 tracking-tighter leading-none" />
+      {sublabel && <p className="text-xs text-charcoal-400 mt-2">{sublabel}</p>}
     </div>
   );
 }

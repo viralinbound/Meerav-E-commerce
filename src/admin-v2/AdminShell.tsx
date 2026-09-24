@@ -107,14 +107,13 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
       <div className="flex items-center gap-3 px-5 py-6 border-b border-maroon-700/50">
         <img src="/images/meerav_logo.png" alt="Meerav" className="h-11 w-auto object-contain" />
         <div>
-          <p className="font-sans text-lg font-bold text-cream-50 leading-none">Meerav Admin</p>
+          <p className="font-sans text-lg font-bold text-cream-50 leading-none tracking-tight">Meerav Admin</p>
           <p className="text-[11px] text-saffron-300 tracking-wide uppercase mt-1">Dispatch Hub</p>
         </div>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {NAV_ITEMS.filter((item) => (!item.rootOnly || isHostRole(admin?.role)) && hasPermission(admin, item.id)).map((item) => {
-          const Icon = item.icon;
           const active = item.id === page;
           return (
             <button
@@ -190,7 +189,7 @@ export function AdminShell({ page, onNavigate, children }: AdminShellProps) {
             >
               Menu
             </button>
-            <h2 className="font-sans text-xl sm:text-2xl font-bold text-maroon-900">{activeLabel}</h2>
+            <h2 className="font-sans text-xl sm:text-2xl font-bold text-maroon-900 tracking-tight">{activeLabel}</h2>
           </div>
         </header>
 
