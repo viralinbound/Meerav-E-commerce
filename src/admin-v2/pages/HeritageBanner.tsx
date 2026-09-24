@@ -3,6 +3,8 @@ import { ImageOff } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState } from '../ui';
 import { StylePanel, type Styleable } from '../StylePanel';
+import { useAdminAuth } from '../useAdminAuth';
+import { logChange } from '../activityLog';
 
 interface AdminHeritageContent extends Styleable {
   title: string;
@@ -23,6 +25,7 @@ const DEFAULT_CONTENT: AdminHeritageContent = {
 };
 
 export function HeritageBanner() {
+  const { admin: me } = useAdminAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
@@ -48,11 +51,13 @@ export function HeritageBanner() {
   useEffect(load, []);
 
   const persist = async (updated: AdminHeritageContent) => {
+    const before = content;
     setSaving(true);
     const ok = await MiraDB.dbUpsertHeritageContent(updated, MiraDB.adminClient);
     setSaving(false);
     if (ok) {
       setUnavailable(false);
+      await logChange(me, 'heritage_content.update', 'Heritage Banner', 'heritage_content', 'heritage', before, updated);
     } else {
       alert('Could not save this change. Please try again.');
       load();

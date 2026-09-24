@@ -8,7 +8,7 @@ export async function logChange(
   admin: AdminProfile | null,
   action: string,
   targetLabel: string,
-  table: 'products' | 'categories' | 'site_settings',
+  table: 'products' | 'categories' | 'site_settings' | 'hero_banners' | 'heritage_content' | 'site_images' | 'faqs' | 'testimonials' | 'orders',
   pk: string,
   before: any,
   after: any

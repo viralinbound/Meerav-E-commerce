@@ -1,6 +1,8 @@
 import { Fragment, useEffect, useState } from 'react';
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState, EmptyState, StatusBadge, TableScroller } from '../ui';
+import { useAdminAuth } from '../useAdminAuth';
+import { logChange } from '../activityLog';
 
 const STATUS_OPTIONS = ['Pending', 'Processing', 'Dispatched', 'Delivered', 'Cancelled'];
 
@@ -17,6 +19,7 @@ interface OrderRow {
 }
 
 export function Orders() {
+  const { admin: me } = useAdminAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [orders, setOrders] = useState<OrderRow[]>([]);
@@ -34,11 +37,17 @@ export function Orders() {
   useEffect(load, []);
 
   const handleStatusChange = async (orderId: string, newStatus: string) => {
+    const before = orders.find((o) => o.id === orderId) || null;
     setUpdatingId(orderId);
     const prev = orders;
     setOrders((cur) => cur.map((o) => (o.id === orderId ? { ...o, orderStatus: newStatus } : o)));
     const ok = await MiraDB.dbUpdateOrderStatus(orderId, newStatus, MiraDB.adminClient);
-    if (!ok) setOrders(prev);
+    if (!ok) {
+      setOrders(prev);
+    } else {
+      const label = before?.orderSeq ? `MEERAV-${before.orderSeq}` : orderId;
+      await logChange(me, 'order.status', label, 'orders', orderId, before, before ? { ...before, orderStatus: newStatus } : null);
+    }
     setUpdatingId(null);
   };
 

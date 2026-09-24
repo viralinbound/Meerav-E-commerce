@@ -9,6 +9,8 @@ import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState, EmptyState } from '../ui';
 import { MediaUploader } from '../MediaUploader';
 import { StylePanel, type Styleable } from '../StylePanel';
+import { useAdminAuth } from '../useAdminAuth';
+import { logChange } from '../activityLog';
 
 interface AdminHeroBanner extends Styleable {
   id: string;
@@ -101,6 +103,7 @@ function ButtonPositionPicker({
 }
 
 export function HeroBanners() {
+  const { admin: me } = useAdminAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
@@ -170,6 +173,7 @@ export function HeroBanners() {
     if (ok) {
       setBanners((cur) => [...cur, banner]);
       setUnavailable(false);
+      await logChange(me, 'hero_banner.create', banner.title || 'New hero banner', 'hero_banners', banner.id, null, banner);
     } else {
       alert('Could not add this banner. Please try again.');
     }
@@ -182,29 +186,33 @@ export function HeroBanners() {
     setBanners((cur) => cur.map((b) => (b.id === bannerId ? { ...b, ...patch } : b)));
   };
 
-  const persistBanner = async (banner: AdminHeroBanner) => {
+  const persistBanner = async (before: AdminHeroBanner, banner: AdminHeroBanner) => {
     setSavingId(banner.id);
     const ok = await MiraDB.dbUpsertHeroBanner(banner, MiraDB.adminClient);
     setSavingId(null);
     if (!ok) {
       alert('Could not save this change. Please try again.');
       load();
+    } else {
+      await logChange(me, 'hero_banner.update', banner.title || banner.id, 'hero_banners', banner.id, before, banner);
     }
   };
 
   const handleUpdate = (banner: AdminHeroBanner, patch: Partial<AdminHeroBanner>) => {
     const updated = { ...banner, ...patch };
     setBanners((cur) => cur.map((b) => (b.id === banner.id ? updated : b)));
-    persistBanner(updated);
+    persistBanner(banner, updated);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Remove this banner from the hero carousel?')) return;
+    const before = banners.find((b) => b.id === id) || null;
     setSavingId(id);
     const ok = await MiraDB.dbDeleteHeroBanner(id, MiraDB.adminClient);
     setSavingId(null);
     if (ok) {
       setBanners((cur) => cur.filter((b) => b.id !== id));
+      await logChange(me, 'hero_banner.delete', before?.title || id, 'hero_banners', id, before, null);
     } else {
       alert('Could not remove this banner. Please try again.');
     }

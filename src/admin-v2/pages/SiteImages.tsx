@@ -3,6 +3,8 @@ import { ImageOff } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState } from '../ui';
 import { MediaUploader } from '../MediaUploader';
+import { useAdminAuth } from '../useAdminAuth';
+import { logChange } from '../activityLog';
 
 interface AdminSiteImage {
   id: string;
@@ -49,6 +51,7 @@ const DEFAULT_SLOTS: AdminSiteImage[] = [
 ];
 
 export function SiteImages() {
+  const { admin: me } = useAdminAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
@@ -81,6 +84,7 @@ export function SiteImages() {
     setSavingId(null);
     if (ok) {
       setUnavailable(false);
+      await logChange(me, 'site_image.update', slot.label, 'site_images', slot.id, slot, updated);
     } else {
       alert('Could not save this photo. Please try again.');
       load();

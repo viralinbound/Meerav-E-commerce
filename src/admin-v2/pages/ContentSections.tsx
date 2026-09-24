@@ -3,6 +3,8 @@ import { Plus, Trash2, GripVertical, Eye, EyeOff } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { Card, LoadingState, ErrorState, EmptyState } from '../ui';
 import { MediaUploader } from '../MediaUploader';
+import { useAdminAuth } from '../useAdminAuth';
+import { logChange } from '../activityLog';
 
 interface AdminTestimonial {
   id: string;
@@ -28,6 +30,7 @@ function newId(prefix: string) {
 }
 
 export function ContentSections() {
+  const { admin: me } = useAdminAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [testimonials, setTestimonials] = useState<AdminTestimonial[]>([]);
@@ -62,6 +65,8 @@ export function ContentSections() {
     if (!ok) {
       alert('Could not save this review. Please try again.');
       load();
+    } else {
+      await logChange(me, 'testimonial.update', t.name || 'Testimonial', 'testimonials', t.id, null, t);
     }
   };
 
@@ -82,11 +87,16 @@ export function ContentSections() {
 
   const deleteTestimonial = async (id: string) => {
     if (!confirm('Remove this review?')) return;
+    const before = testimonials.find((t) => t.id === id) || null;
     setSavingId(id);
     const ok = await MiraDB.dbDeleteTestimonial(id, MiraDB.adminClient);
     setSavingId(null);
-    if (ok) setTestimonials((cur) => cur.filter((t) => t.id !== id));
-    else alert('Could not remove this review. Please try again.');
+    if (ok) {
+      setTestimonials((cur) => cur.filter((t) => t.id !== id));
+      await logChange(me, 'testimonial.delete', before?.name || id, 'testimonials', id, before, null);
+    } else {
+      alert('Could not remove this review. Please try again.');
+    }
   };
 
   const reorderTestimonials = async (list: AdminTestimonial[]) => {
@@ -122,6 +132,8 @@ export function ContentSections() {
     if (!ok) {
       alert('Could not save this FAQ. Please try again.');
       load();
+    } else {
+      await logChange(me, 'faq.update', f.question || 'FAQ', 'faqs', f.id, null, f);
     }
   };
 
@@ -139,11 +151,16 @@ export function ContentSections() {
 
   const deleteFaq = async (id: string) => {
     if (!confirm('Remove this FAQ?')) return;
+    const before = faqs.find((f) => f.id === id) || null;
     setSavingId(id);
     const ok = await MiraDB.dbDeleteFaq(id, MiraDB.adminClient);
     setSavingId(null);
-    if (ok) setFaqs((cur) => cur.filter((f) => f.id !== id));
-    else alert('Could not remove this FAQ. Please try again.');
+    if (ok) {
+      setFaqs((cur) => cur.filter((f) => f.id !== id));
+      await logChange(me, 'faq.delete', before?.question || id, 'faqs', id, before, null);
+    } else {
+      alert('Could not remove this FAQ. Please try again.');
+    }
   };
 
   const reorderFaqs = async (list: AdminFaq[]) => {
