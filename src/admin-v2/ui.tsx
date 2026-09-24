@@ -2,22 +2,31 @@ import type { ReactNode } from 'react';
 import { Loader2, Inbox, AlertTriangle } from 'lucide-react';
 
 export function MetricCard({
-  label, value, sublabel, icon: Icon,
+  label, value, sublabel, icon: Icon, featured = false,
 }: {
   label: string;
   value: string | number;
   sublabel?: string;
   icon: typeof Loader2;
+  featured?: boolean;
 }) {
+  if (featured) {
+    return (
+      <div className="relative bg-royal-gradient rounded-2xl shadow-md p-5 overflow-hidden transition-transform duration-200 ease-out hover:-translate-y-0.5">
+        <Icon className="w-16 h-16 text-cream-50/10 absolute -right-2 -bottom-2" strokeWidth={1.5} />
+        <p className="text-xs font-semibold text-saffron-200 uppercase tracking-wide relative">{label}</p>
+        <p className="font-serif text-3xl font-bold text-cream-50 tracking-tight mt-3 relative">{value}</p>
+        {sublabel && <p className="text-xs text-cream-200/80 mt-1 relative">{sublabel}</p>}
+      </div>
+    );
+  }
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-cream-200 p-5 card-hover">
+    <div className="bg-white rounded-2xl shadow-sm border border-cream-200 border-l-[3px] border-l-saffron-400 p-5 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
       <div className="flex items-start justify-between mb-3">
         <p className="text-xs font-semibold text-charcoal-500 uppercase tracking-wide">{label}</p>
-        <div className="w-9 h-9 rounded-lg bg-maroon-50 flex items-center justify-center shrink-0">
-          <Icon className="w-4.5 h-4.5 text-maroon-700" />
-        </div>
+        <Icon className="w-4 h-4 text-maroon-600/70 shrink-0" />
       </div>
-      <p className="font-serif text-3xl font-bold text-maroon-900">{value}</p>
+      <p className="font-serif text-2xl font-bold text-maroon-900 tracking-tight">{value}</p>
       {sublabel && <p className="text-xs text-charcoal-400 mt-1">{sublabel}</p>}
     </div>
   );

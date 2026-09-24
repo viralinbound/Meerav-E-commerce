@@ -113,8 +113,10 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard label="Total Sales" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="Real-time calculated" icon={IndianRupee} />
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="col-span-2">
+          <MetricCard featured label="Total Sales" value={`₹${totalSales.toLocaleString('en-IN')}`} sublabel="Real-time calculated" icon={IndianRupee} />
+        </div>
         <MetricCard label="Total Orders" value={orders.length} sublabel="Processed orders" icon={ClipboardList} />
         <MetricCard label="Catalog Items" value={products.length} sublabel="Active products" icon={Package} />
         <MetricCard label="Best Sellers" value={products.filter((p) => isBestseller(p.tag)).length} sublabel="Tagged products" icon={Star} />
