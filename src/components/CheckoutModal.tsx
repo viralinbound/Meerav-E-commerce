@@ -109,7 +109,10 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         // Real online payments start "pending" and only ever flip to "paid"
         // once PayU's server-to-server callback verifies it -- never here.
         paymentStatus: 'pending',
-        orderStatus: 'Pending',
+        // COD is confirmed the moment it's placed, so it goes straight to
+        // kitchen/dispatch processing; an online order stays Pending until
+        // payu-callback confirms payment, then flips to Processing itself.
+        orderStatus: paymentMethod === 'cod' ? 'Processing' : 'Pending',
         date: new Date().toISOString(),
       });
 

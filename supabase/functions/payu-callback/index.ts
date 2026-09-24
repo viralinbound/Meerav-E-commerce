@@ -46,6 +46,10 @@ Deno.serve(async (req) => {
 
     await supabase.from('orders').update({
       payment_status: isPaid ? 'paid' : 'failed',
+      // A confirmed payment moves the order straight into kitchen/dispatch
+      // processing; a failed payment is rejected outright, never left
+      // looking like an order still in progress.
+      order_status: isPaid ? 'Processing' : 'Cancelled',
       gateway_response: { ...fields, verified: true },
     }).eq('id', order.id);
 
