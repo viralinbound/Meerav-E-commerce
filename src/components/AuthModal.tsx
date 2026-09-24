@@ -9,6 +9,44 @@ interface AuthModalProps {
 
 type Mode = 'signin' | 'signup' | 'forgot' | 'reset';
 
+interface PasswordStrength {
+  label: string;
+  color: string;
+  score: number; // 0-4
+}
+
+function getPasswordStrength(password: string): PasswordStrength {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { label: 'Weak', color: 'bg-red-500', score: 1 };
+  if (score <= 2) return { label: 'Fair', color: 'bg-orange-500', score: 2 };
+  if (score <= 3) return { label: 'Good', color: 'bg-yellow-500', score: 3 };
+  return { label: 'Strong', color: 'bg-green-600', score: 4 };
+}
+
+function PasswordStrengthMeter({ password }: { password: string }) {
+  if (!password) return null;
+  const strength = getPasswordStrength(password);
+  return (
+    <div className="mt-1.5">
+      <div className="flex gap-1">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className={`h-1.5 flex-1 rounded-full ${i <= strength.score ? strength.color : 'bg-cream-300'}`}
+          />
+        ))}
+      </div>
+      <p className="text-xs text-charcoal-500 mt-1">Password strength: {strength.label}</p>
+    </div>
+  );
+}
+
 export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { customer, signIn, signUp, signOut, resendConfirmationEmail, sendPasswordReset, updatePassword, passwordRecovery, clearPasswordRecovery } = useAuth();
   const [mode, setMode] = useState<Mode>('signin');
@@ -20,7 +58,8 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
   const [resetDone, setResetDone] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', pincode: '', password: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', city: '', state: '', pincode: '', password: '' });
+  const [passwordConfirm, setPasswordConfirm] = useState('');
 
   const effectiveMode: Mode = passwordRecovery ? 'reset' : mode;
 
@@ -73,6 +112,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setResetDone(false);
     setNewPassword('');
     setNewPasswordConfirm('');
+    setPasswordConfirm('');
     clearPasswordRecovery();
     onClose();
   }
@@ -82,6 +122,10 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setError('');
     setResendStatus('');
     setNeedsConfirmation(false);
+    if (mode === 'signup' && form.password !== passwordConfirm) {
+      setError('Passwords don’t match.');
+      return;
+    }
     setBusy(true);
     const res = mode === 'signin' ? await signIn(form.email, form.password) : await signUp(form);
     setBusy(false);
@@ -286,6 +330,28 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                         className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
                       />
                     </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">City</label>
+                        <input
+                          type="text"
+                          value={form.city}
+                          onChange={(e) => update('city', e.target.value)}
+                          placeholder="Mumbai"
+                          className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">State</label>
+                        <input
+                          type="text"
+                          value={form.state}
+                          onChange={(e) => update('state', e.target.value)}
+                          placeholder="Maharashtra"
+                          className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
+                        />
+                      </div>
+                    </div>
                     <div>
                       <label className="text-sm font-medium text-charcoal-700 mb-1.5 block">Pincode</label>
                       <input
@@ -319,12 +385,13 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   <input
                     type="password"
                     required
-                    minLength={6}
+                    minLength={8}
                     value={form.password}
                     onChange={(e) => update('password', e.target.value)}
-                    placeholder="At least 6 characters"
+                    placeholder="At least 8 characters"
                     className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
                   />
+                  {mode === 'signup' && <PasswordStrengthMeter password={form.password} />}
                   {mode === 'signin' && (
                     <button
                       type="button"
@@ -338,6 +405,26 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     </button>
                   )}
                 </div>
+
+                {mode === 'signup' && (
+                  <div>
+                    <label className="text-sm font-medium text-charcoal-700 mb-1.5 flex items-center gap-1.5">
+                      <Lock className="w-4 h-4" /> Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      minLength={8}
+                      value={passwordConfirm}
+                      onChange={(e) => setPasswordConfirm(e.target.value)}
+                      placeholder="Re-enter password"
+                      className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:outline-none focus:border-saffron-400 focus:ring-1 focus:ring-saffron-400 transition-colors"
+                    />
+                    {passwordConfirm && passwordConfirm !== form.password && (
+                      <p className="text-xs text-red-600 mt-1">Passwords don’t match.</p>
+                    )}
+                  </div>
+                )}
 
                 {error && <p className="text-sm text-red-600">{error}</p>}
                 {needsConfirmation && (

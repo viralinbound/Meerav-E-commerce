@@ -8,6 +8,8 @@ export interface Customer {
   email: string;
   phone?: string;
   address?: string;
+  city?: string;
+  state?: string;
   pincode?: string;
   avatar?: string;
 }
@@ -18,6 +20,8 @@ interface SignUpFields {
   password: string;
   phone?: string;
   address?: string;
+  city?: string;
+  state?: string;
   pincode?: string;
 }
 

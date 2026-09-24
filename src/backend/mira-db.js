@@ -159,7 +159,15 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   async function dbUpsertCustomer(customer) {
-    const { error } = await supabaseClient.from('customers').upsert(appCustomerToDb(customer));
+    let payload = appCustomerToDb(customer);
+    let { error } = await supabaseClient.from('customers').upsert(payload);
+    if (error && error.code === '42703') {
+      // city/state columns don't exist yet (add_customer_city_state.sql not
+      // run) -- retry without them so everything else still saves.
+      const { city, state, ...fallback } = payload;
+      payload = fallback;
+      ({ error } = await supabaseClient.from('customers').upsert(payload));
+    }
     if (error) console.error('dbUpsertCustomer', error);
     return !error;
   }
@@ -607,14 +615,14 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     return true;
   }
 
-  async function signUpCustomer({ email, password, name, phone, address, pincode }) {
+  async function signUpCustomer({ email, password, name, phone, address, city, state, pincode }) {
     const { data, error } = await supabaseClient.auth.signUp({
       email, password, options: { data: { name, phone } }
     });
     if (error) return { error };
 
     const profile = {
-      id: data.user.id, name, phone, email, address, pincode,
+      id: data.user.id, name, phone, email, address, city, state, pincode,
       avatar: null, wishlist: [], savedAddresses: []
     };
     // With "Confirm email" enabled, signUp() returns no session yet, so RLS
