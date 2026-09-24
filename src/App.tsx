@@ -19,12 +19,13 @@ import { OrderHistory } from '@/components/OrderHistory';
 import { Testimonials, KitchenStories, InstagramFeed, FAQSection } from '@/components/Sections';
 import { Footer } from '@/components/Footer';
 import { ShopPage } from '@/components/ShopPage';
+import { LegalPage, type LegalSection } from '@/components/LegalPage';
 import type { Product } from '@/data/products';
 
 function AppContent() {
   const { loading, error } = useCatalog();
   const { customer } = useAuth();
-  const [page, setPage] = useState<'home' | 'shop' | 'product'>('home');
+  const [page, setPage] = useState<'home' | 'shop' | 'product' | LegalSection>('home');
   const [returnPage, setReturnPage] = useState<'home' | 'shop'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -113,6 +114,9 @@ function AppContent() {
       }
     } else if (section === 'account') {
       setAuthOpen(true);
+    } else if (section === 'terms' || section === 'privacy' || section === 'refund') {
+      setPage(section);
+      window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     }
   };
 
@@ -176,6 +180,8 @@ function AppContent() {
           <ProductPage product={selectedProduct} onBack={backFromProduct} />
         ) : page === 'shop' ? (
           <ShopPage searchQuery={searchQuery} onProductClick={openProduct} onBackHome={goHome} />
+        ) : page === 'terms' || page === 'privacy' || page === 'refund' ? (
+          <LegalPage section={page} onNavigate={(s) => setPage(s)} onBack={goHome} />
         ) : (
           <>
             <div id="home">

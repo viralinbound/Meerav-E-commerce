@@ -154,6 +154,18 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
 
+        <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center mt-10 pt-6 border-t border-charcoal-700">
+          <button onClick={() => onNavigate('terms')} className="text-xs text-cream-400 hover:text-saffron-400 transition-colors">
+            Terms & Conditions
+          </button>
+          <button onClick={() => onNavigate('privacy')} className="text-xs text-cream-400 hover:text-saffron-400 transition-colors">
+            Privacy Policy
+          </button>
+          <button onClick={() => onNavigate('refund')} className="text-xs text-cream-400 hover:text-saffron-400 transition-colors">
+            Refund & Cancellation
+          </button>
+        </div>
+
       </div>
 
       {/* Copyright */}
