@@ -108,7 +108,8 @@ export function dbOrderToApp(row) {
     date: row.order_date,
     trackingNumber: row.tracking_number,
     driver: row.driver || {},
-    notifications: row.notifications || {}
+    notifications: row.notifications || {},
+    stockDeducted: !!row.stock_deducted
   };
 }
 

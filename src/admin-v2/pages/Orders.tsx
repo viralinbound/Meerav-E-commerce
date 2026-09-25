@@ -10,11 +10,12 @@ interface OrderRow {
   id: string;
   orderSeq: number | null;
   customer: { name?: string; phone?: string; address?: string; city?: string; pincode?: string } | null;
-  items: { name: string; qty: number }[];
+  items: { name: string; qty?: number; quantity?: number; productId?: string; weight?: string }[];
   totalAmount: number;
   orderStatus: string;
   paymentMethod: string;
   paymentStatus: string;
+  stockDeducted?: boolean;
   date: string;
 }
 
@@ -45,6 +46,20 @@ export function Orders() {
     if (!ok) {
       setOrders(prev);
     } else {
+      // Only give stock back if it was actually taken in the first place --
+      // cancelling a still-pending online order (never decremented) must not
+      // add phantom stock, and cancelling twice must not double-restore.
+      if (newStatus === 'Cancelled' && before?.stockDeducted) {
+        await MiraDB.restoreVariantStock(
+          (before.items || []).map((it) => ({
+            productId: it.productId,
+            weight: it.weight,
+            quantity: it.quantity ?? it.qty ?? 0,
+          }))
+        );
+        await MiraDB.setOrderStockDeducted(orderId, false, MiraDB.adminClient);
+        setOrders((cur) => cur.map((o) => (o.id === orderId ? { ...o, stockDeducted: false } : o)));
+      }
       const label = before?.orderSeq ? `MEERAV-${before.orderSeq}` : orderId;
       await logChange(me, 'order.status', label, 'orders', orderId, before, before ? { ...before, orderStatus: newStatus } : null);
     }

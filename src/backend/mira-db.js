@@ -219,6 +219,30 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     }
   }
 
+  // Reverses decrementVariantStock -- called when an order that actually
+  // deducted stock (stock_deducted = true) gets cancelled, so those units
+  // go back on the shelf for other customers to buy.
+  async function restoreVariantStock(items) {
+    for (const item of items || []) {
+      if (!item?.productId || !item?.quantity || !item?.weight) continue;
+      const { error } = await supabaseClient.rpc('restore_variant_stock', {
+        p_product_id: item.productId,
+        p_weight: item.weight,
+        p_qty: item.quantity,
+      });
+      if (error) console.warn('restoreVariantStock', error);
+    }
+  }
+
+  // Records that an order's stock has actually been deducted, so a later
+  // cancellation knows there's real stock to give back -- and won't
+  // double-restore if the order is cancelled more than once.
+  async function setOrderStockDeducted(orderId, deducted, client = supabaseClient) {
+    const { error } = await client.from('orders').update({ stock_deducted: deducted }).eq('id', orderId);
+    if (error) console.warn('setOrderStockDeducted', error);
+    return !error;
+  }
+
   // The branded, sequential order number (e.g. "MEERAV-1001") depends on
   // order_seq, which Postgres only assigns once the insert actually commits —
   // so it's fetched right after a successful checkout insert, not predicted client-side.
@@ -940,7 +964,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, checkVariantStock, checkIsAdmin, initiatePayuPayment,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, restoreVariantStock, setOrderStockDeducted, checkVariantStock, checkIsAdmin, initiatePayuPayment,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

@@ -65,6 +65,7 @@ Deno.serve(async (req) => {
           }
         }
       }
+      await supabase.from('orders').update({ stock_deducted: true }).eq('id', order.id);
     }
 
     return Response.redirect(`${siteUrl}/?payment=${isPaid ? 'success' : 'failed'}&order=${order.id}`, 302);

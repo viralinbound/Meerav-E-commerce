@@ -151,6 +151,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         // online payments only count once payu-callback confirms it paid.
         MiraDB.incrementUnitsSold(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
         MiraDB.decrementVariantStock(items.map((i) => ({ productId: i.product.id, weight: i.product.weight, quantity: i.quantity })));
+        MiraDB.setOrderStockDeducted(orderId, true);
         const seq = await MiraDB.fetchOrderSeq(orderId);
         const num = seq ? `MEERAV-${seq}` : orderId.toUpperCase();
         setOrderNumber(num);
