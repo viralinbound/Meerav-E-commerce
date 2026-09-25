@@ -73,11 +73,16 @@ Deno.serve(async (req) => {
           <p style="color:#a08d70;font-size:13px;margin-top:24px;">— The Meerav Team, Bikaner</p>
         </div>`);
 
-      // Notify every admin/host that a new subscriber just joined, so the
-      // team sees signups happening without having to check the admin
-      // panel's Newsletter page on their own.
+      // Notify every OTHER admin/host that a new subscriber just joined, so
+      // the team sees signups happening without checking the admin panel's
+      // Newsletter page on their own. If the person subscribing IS an
+      // admin/host subscribing their own address, they've already gotten
+      // the thank-you email above like any other subscriber -- they don't
+      // also need a "someone subscribed" notification about themselves.
       const { data: admins } = await supabase.from('admins').select('email').eq('banned', false);
-      const adminEmails = (admins || []).map((a: { email: string }) => a.email).filter(Boolean);
+      const adminEmails = (admins || [])
+        .map((a: { email: string }) => a.email)
+        .filter((e: string) => e && e.toLowerCase() !== normalized);
       if (adminEmails.length) {
         await sendEmail(apiKey, fromEmail, adminEmails, 'New newsletter subscriber', `
           <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#fdf9f0;padding:32px 24px;color:#3a2a1a;">
