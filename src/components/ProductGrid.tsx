@@ -61,8 +61,22 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
     return result;
   }, [products, searchQuery, sortBy, packSize]);
 
+  // When a Pack Size filter is active, every card should reflect THAT
+  // variant's own price/weight/stock -- not always the product's default
+  // first variant -- since that's the size the customer explicitly asked
+  // to see and buy.
+  const displayVariantFor = (product: Product) => {
+    if (packSize === 'all') return null;
+    return product.variants?.find((v) => v.weight === packSize) || null;
+  };
+
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
+    const dv = displayVariantFor(product);
+    if (dv) {
+      addToCart({ ...product, price: dv.price, weight: dv.weight });
+      return;
+    }
     addToCart(product);
   };
 
@@ -130,7 +144,13 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
         ) : (
           <div id="home-allproducts-track" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {filteredProducts.map((product) => {
-              const outOfStock = isProductOutOfStock(product);
+              const dv = displayVariantFor(product);
+              const displayPrice = dv ? dv.price : product.price;
+              const displayWeight = dv ? dv.weight : product.weight;
+              // With a Pack Size filter active, "out of stock" reflects just
+              // that one variant; otherwise it's the whole-product check
+              // (every variant sold out).
+              const outOfStock = dv ? dv.stock != null && dv.stock <= 0 : isProductOutOfStock(product);
               return (
               <div
                 key={product.id}
@@ -193,10 +213,10 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
                   <h3 className="font-medium text-charcoal-800 text-sm md:text-base leading-snug mb-1 line-clamp-2 group-hover:text-maroon-700 transition-colors">
                     {product.name}
                   </h3>
-                  <p className="text-xs text-charcoal-400 mb-2">{product.weight}</p>
+                  <p className="text-xs text-charcoal-400 mb-2">{displayWeight}</p>
                   <div className="flex items-center justify-between">
                     <span className="font-serif text-lg md:text-xl font-bold text-maroon-800">
-                      Rs {product.price}
+                      Rs {displayPrice}
                     </span>
                     {!outOfStock && (
                     <button
