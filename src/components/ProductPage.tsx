@@ -14,7 +14,7 @@ interface MediaItem {
 }
 
 export function ProductPage({ product, onBack }: ProductPageProps) {
-  const { addToCart } = useCart();
+  const { items: cartItems, addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [variantIndex, setVariantIndex] = useState(0);
   const [mediaIndex, setMediaIndex] = useState(0);
@@ -39,6 +39,12 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
 
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
+  // Total of every variant of THIS product already in the cart, so the
+  // customer sees it right here instead of only discovering it by opening
+  // the cart drawer at the end.
+  const totalInCart = cartItems
+    .filter((i) => i.product.id === product.id)
+    .reduce((sum, i) => sum + i.quantity, 0);
   // stock is undefined for a variant the admin never set a number for, which
   // means unlimited -- only an explicit 0 (or lower, clamped) blocks a sale.
   const maxQty = selectedVariant.stock;
@@ -194,6 +200,13 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
 
             <h1 className="font-serif text-3xl lg:text-4xl font-bold text-charcoal-900 mb-3">{product.name}</h1>
             <p className="text-charcoal-600 leading-relaxed mb-6">{product.description}</p>
+
+            {totalInCart > 0 && (
+              <p className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 text-sm font-medium rounded-lg mb-4">
+                <ShoppingCart className="w-4 h-4" />
+                {totalInCart} of this product already in your cart (all sizes combined)
+              </p>
+            )}
 
             {/* Pack Size / Variant Selector */}
             {variants.length > 1 && (
