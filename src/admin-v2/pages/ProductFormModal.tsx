@@ -162,7 +162,7 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
             <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 mb-3">
               {form.photos.map((url, idx) => (
                 <div key={url + idx} className="relative aspect-square rounded-lg overflow-hidden bg-cream-100 border border-cream-300 group">
-                  <img src={url.startsWith('http') ? url : `/${url}`} alt="" className="w-full h-full object-cover" />
+                  <img src={url.startsWith('http') || url.startsWith('/') ? url : `/${url}`} alt="" className="w-full h-full object-cover" />
                   {idx === 0 && (
                     <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-maroon-700 text-cream-50 text-[9px] font-bold rounded">COVER</span>
                   )}

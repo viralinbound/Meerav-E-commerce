@@ -186,7 +186,7 @@ export function Dashboard() {
             {topSellers.map(({ product, unitsSold }) => (
               <div key={product!.id} className="flex items-center gap-3 px-5 py-3.5">
                 <img
-                  src={product!.image?.startsWith('http') ? product!.image : `/${product!.image}`}
+                  src={product!.image?.startsWith('http') || product!.image?.startsWith('/') ? product!.image : `/${product!.image}`}
                   alt={product!.name}
                   className="w-11 h-11 rounded-lg object-contain bg-cream-100 shrink-0 p-0.5"
                 />

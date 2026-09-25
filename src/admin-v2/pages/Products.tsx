@@ -138,7 +138,7 @@ export function Products() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <img
-                          src={p.image?.startsWith('http') ? p.image : `/${p.image}`}
+                          src={p.image?.startsWith('http') || p.image?.startsWith('/') ? p.image : `/${p.image}`}
                           alt={p.name}
                           className="w-11 h-11 rounded-lg object-contain bg-cream-100 shrink-0 p-0.5"
                         />
