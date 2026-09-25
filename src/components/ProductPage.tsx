@@ -20,17 +20,23 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  useEffect(() => {
-    setQuantity(1);
-    setVariantIndex(0);
-    setMediaIndex(0);
-    setLightboxOpen(false);
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
-  }, [product.id]);
-
   // Show every pack-size variant the admin has actually configured for this
   // product, so a size picker only appears when there's a real choice.
   const variants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
+
+  useEffect(() => {
+    setQuantity(1);
+    // Land on the first size that's actually available, not a sold-out one,
+    // if the product has another in-stock option -- falls back to index 0
+    // (which may itself be sold out) only if every size is sold out.
+    const firstInStock = variants.findIndex((v) => !(v.stock != null && v.stock <= 0));
+    setVariantIndex(firstInStock >= 0 ? firstInStock : 0);
+    setMediaIndex(0);
+    setLightboxOpen(false);
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
+
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
   // stock is undefined for a variant the admin never set a number for, which
@@ -194,22 +200,28 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
               <div className="mb-6">
                 <h3 className="text-sm font-semibold text-charcoal-800 mb-2">Pack Size</h3>
                 <div className="flex flex-wrap gap-2">
-                  {variants.map((v, idx) => (
-                    <button
-                      key={v.weight}
-                      onClick={() => setVariantIndex(idx)}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${
-                        idx === variantIndex
-                          ? 'border-maroon-700 bg-maroon-700 text-cream-50'
-                          : 'border-cream-300 bg-white text-charcoal-700 hover:border-maroon-300'
-                      }`}
-                    >
-                      {v.weight}
-                      <span className={`block text-xs ${idx === variantIndex ? 'text-cream-200' : 'text-charcoal-400'}`}>
-                        Rs {v.price}
-                      </span>
-                    </button>
-                  ))}
+                  {variants.map((v, idx) => {
+                    const soldOut = v.stock != null && v.stock <= 0;
+                    return (
+                      <button
+                        key={v.weight}
+                        onClick={() => setVariantIndex(idx)}
+                        disabled={soldOut}
+                        className={`relative px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${
+                          soldOut
+                            ? 'border-cream-200 bg-cream-100 text-charcoal-300 cursor-not-allowed'
+                            : idx === variantIndex
+                            ? 'border-maroon-700 bg-maroon-700 text-cream-50'
+                            : 'border-cream-300 bg-white text-charcoal-700 hover:border-maroon-300'
+                        }`}
+                      >
+                        {v.weight}
+                        <span className={`block text-xs ${soldOut ? 'text-charcoal-300' : idx === variantIndex ? 'text-cream-200' : 'text-charcoal-400'}`}>
+                          {soldOut ? 'Sold Out' : `Rs ${v.price}`}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -276,6 +288,12 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
               <ShoppingCart className="w-5 h-5" />
               {outOfStock ? 'Out of Stock' : `Add to Cart - Rs ${selectedVariant.price * quantity}`}
             </button>
+            {outOfStock && (
+              <p className="text-sm text-charcoal-500 text-center mt-2">
+                This {selectedVariant.weight} pack will be available soon.
+                {variants.length > 1 && ' Other pack sizes may still be in stock above.'}
+              </p>
+            )}
 
             {/* Trust Badges */}
             <div className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-cream-200">
