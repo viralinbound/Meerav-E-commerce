@@ -1,6 +1,6 @@
 import { Star, Quote, Play, Instagram, ChevronDown, Plus, Minus, X } from 'lucide-react';
 import { useState } from 'react';
-import { instagramFeed, kitchenStories as staticKitchenStories } from '@/data/products';
+import { kitchenStories as staticKitchenStories } from '@/data/products';
 import { useCatalog, type KitchenStory } from '@/lib/useCatalog';
 
 export function Testimonials() {
@@ -175,28 +175,7 @@ export function InstagramFeed() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {instagramFeed.map((img, idx) => (
-            <a
-              key={idx}
-              href="https://www.instagram.com/meeravnamkeen"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer block"
-            >
-              <img
-                src={img}
-                alt={`Instagram post ${idx + 1}`}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-maroon-900/0 group-hover:bg-maroon-900/40 transition-colors duration-300 flex items-center justify-center">
-                <Instagram className="w-6 h-6 text-cream-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-            </a>
-          ))}
-        </div>
-
-        <div className="text-center mt-8">
+        <div className="text-center">
           <a
             href="https://www.instagram.com/meeravnamkeen"
             target="_blank"

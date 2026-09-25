@@ -387,15 +387,6 @@ export const kitchenStories = [
   },
 ];
 
-// Real posts from the brand's own @meeravnamkeen Instagram account, saved
-// as static files rather than hotlinked -- Instagram's CDN URLs are signed
-// and expire within hours, so linking to them directly would break.
-export const instagramFeed = [
-  '/images/instagram/post1.jpg',
-  '/images/instagram/post2.jpg',
-  '/images/instagram/post3.jpg',
-];
-
 export const heroBanners = [
   {
     id: 'h2',
