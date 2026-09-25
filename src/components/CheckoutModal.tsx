@@ -152,6 +152,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         MiraDB.incrementUnitsSold(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
         MiraDB.decrementVariantStock(items.map((i) => ({ productId: i.product.id, weight: i.product.weight, quantity: i.quantity })));
         MiraDB.setOrderStockDeducted(orderId, true);
+        MiraDB.sendOrderConfirmationEmail(orderId);
         const seq = await MiraDB.fetchOrderSeq(orderId);
         const num = seq ? `MEERAV-${seq}` : orderId.toUpperCase();
         setOrderNumber(num);

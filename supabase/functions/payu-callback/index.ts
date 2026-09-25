@@ -5,6 +5,7 @@
 // (--no-verify-jwt because PayU posts here directly, not through your app's
 // authenticated Supabase client)
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { sendOrderConfirmationEmail } from '../_shared/orderEmail.ts';
 
 async function sha512Hex(input: string): Promise<string> {
   const data = new TextEncoder().encode(input);
@@ -38,7 +39,7 @@ Deno.serve(async (req) => {
       return Response.redirect(`${siteUrl}/?payment=failed&reason=hash_mismatch`, 302);
     }
 
-    const { data: order } = await supabase.from('orders').select('id, payment_status, items').eq('payu_txn_id', txnid).maybeSingle();
+    const { data: order } = await supabase.from('orders').select('id, order_seq, payment_status, payment_method, customer, items, total_amount').eq('payu_txn_id', txnid).maybeSingle();
     if (!order) return Response.redirect(`${siteUrl}/?payment=failed&reason=order_not_found`, 302);
 
     const isPaid = status === 'success';
@@ -66,6 +67,14 @@ Deno.serve(async (req) => {
         }
       }
       await supabase.from('orders').update({ stock_deducted: true }).eq('id', order.id);
+
+      // Best-effort -- a failed email must never block the payment flow
+      // that already succeeded, so any error here is only logged.
+      try {
+        await sendOrderConfirmationEmail(order);
+      } catch (e) {
+        console.error('sendOrderConfirmationEmail', e);
+      }
     }
 
     return Response.redirect(`${siteUrl}/?payment=${isPaid ? 'success' : 'failed'}&order=${order.id}`, 302);

@@ -158,6 +158,18 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     }
   }
 
+  // Fires the order-confirmation email for a COD order right after it's
+  // placed. Best-effort -- if this fails, the order itself is already
+  // placed and unaffected, so callers just fire this and move on.
+  async function sendOrderConfirmationEmail(orderId) {
+    try {
+      const { error } = await supabaseClient.functions.invoke('send-order-email', { body: { orderId } });
+      if (error) console.warn('sendOrderConfirmationEmail', error);
+    } catch (e) {
+      console.warn('sendOrderConfirmationEmail', e);
+    }
+  }
+
   // Bumps each ordered product's real units_sold counter right after checkout,
   // so "Best Seller" on the storefront can be calculated from actual sales
   // instead of a manually-set tag. Best-effort -- a failure here shouldn't
@@ -970,7 +982,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, restoreVariantStock, setOrderStockDeducted, checkVariantStock, checkIsAdmin, initiatePayuPayment,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, restoreVariantStock, setOrderStockDeducted, checkVariantStock, checkIsAdmin, initiatePayuPayment, sendOrderConfirmationEmail,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,
