@@ -258,48 +258,70 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
                 + Add Variant
               </button>
             </div>
-            <p className="text-xs text-charcoal-400 mb-2">Leave Stock blank for unlimited — a variant only stops selling once you set a number and it reaches 0.</p>
-            <div className="space-y-2">
-              {form.variants.map((v, idx) => (
-                <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2 items-center">
-                  <input
-                    placeholder="Weight (200 g)"
-                    value={v.weight}
-                    onChange={(e) => updateVariant(idx, 'weight', e.target.value)}
-                    className="px-3 py-2 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Price"
-                    value={v.price || ''}
-                    onChange={(e) => updateVariant(idx, 'price', e.target.value)}
-                    className="px-3 py-2 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
-                  />
-                  <input
-                    type="number"
-                    placeholder="MRP (optional)"
-                    value={v.originalPrice || ''}
-                    onChange={(e) => updateVariant(idx, 'originalPrice', e.target.value)}
-                    className="px-3 py-2 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
-                  />
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="Stock (blank=∞)"
-                    value={v.stock ?? ''}
-                    onChange={(e) => updateVariant(idx, 'stock', e.target.value)}
-                    className="px-3 py-2 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
-                  />
+            <p className="text-xs text-charcoal-400 mb-3">Leave Stock blank for unlimited — a variant only stops selling once you set a number and it reaches 0.</p>
+            <div className="space-y-3">
+              {form.variants.map((v, idx) => {
+                const soldOut = v.stock != null && v.stock <= 0;
+                return (
+                <div key={idx} className={`relative border rounded-xl p-3 ${soldOut ? 'border-red-200 bg-red-50' : 'border-cream-300 bg-cream-50'}`}>
+                  {soldOut && (
+                    <span className="absolute -top-2 left-3 px-2 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded-full">
+                      OUT OF STOCK
+                    </span>
+                  )}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div>
+                      <label className="block text-xs font-medium text-charcoal-500 mb-1">Weight</label>
+                      <input
+                        placeholder="200 g"
+                        value={v.weight}
+                        onChange={(e) => updateVariant(idx, 'weight', e.target.value)}
+                        className="w-full px-3 py-2.5 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-charcoal-500 mb-1">Price</label>
+                      <input
+                        type="number"
+                        placeholder="Price"
+                        value={v.price || ''}
+                        onChange={(e) => updateVariant(idx, 'price', e.target.value)}
+                        className="w-full px-3 py-2.5 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-charcoal-500 mb-1">MRP (optional)</label>
+                      <input
+                        type="number"
+                        placeholder="MRP"
+                        value={v.originalPrice || ''}
+                        onChange={(e) => updateVariant(idx, 'originalPrice', e.target.value)}
+                        className="w-full px-3 py-2.5 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-charcoal-500 mb-1">Stock</label>
+                      <input
+                        type="number"
+                        min="0"
+                        placeholder="Blank = ∞"
+                        value={v.stock ?? ''}
+                        onChange={(e) => updateVariant(idx, 'stock', e.target.value)}
+                        className={`w-full px-3 py-2.5 border rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white ${soldOut ? 'border-red-300 text-red-700 font-semibold' : 'border-cream-300'}`}
+                      />
+                    </div>
+                  </div>
                   <button
                     type="button"
                     onClick={() => removeVariant(idx)}
                     disabled={form.variants.length <= 1}
-                    className="w-9 h-9 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-100 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     <X className="w-4 h-4" />
                   </button>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

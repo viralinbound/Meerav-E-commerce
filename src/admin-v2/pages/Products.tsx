@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2, Search, ArrowUp, ArrowDown } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
+import { isProductOutOfStock } from '@/data/products';
 import { Card, LoadingState, ErrorState, EmptyState, TableScroller } from '../ui';
 import { ProductFormModal, blankProduct, type AdminProduct } from './ProductFormModal';
 import { useAdminAuth } from '../useAdminAuth';
@@ -152,9 +153,29 @@ export function Products() {
                       {p.variants?.length > 1 && <span className="text-xs text-charcoal-400"> +{p.variants.length - 1} more</span>}
                     </td>
                     <td className="px-5 py-3.5">
-                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${p.inStock ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        {p.inStock ? 'In Stock' : 'Out of Stock'}
-                      </span>
+                      {(() => {
+                        const fullyOut = isProductOutOfStock(p);
+                        const anyLow = !fullyOut && p.variants?.some((v) => v.stock != null);
+                        return (
+                          <div className="space-y-1">
+                            <span
+                              className={`inline-block px-2.5 py-1 rounded-full text-xs font-semibold ${
+                                fullyOut ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+                              }`}
+                            >
+                              {fullyOut ? 'Out of Stock' : 'In Stock'}
+                            </span>
+                            {anyLow && (
+                              <p className="text-[11px] text-charcoal-400">
+                                {p.variants
+                                  .filter((v) => v.stock != null)
+                                  .map((v) => `${v.weight}: ${v.stock}`)
+                                  .join(' · ')}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </td>
                     <td className="px-5 py-3.5">
                       <div className="flex items-center justify-end gap-2">
