@@ -173,6 +173,22 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     }
   }
 
+  // Reduces each ordered variant's stock (only variants an admin has
+  // actually given a stock number -- others are unlimited and untouched).
+  // Called once an order is genuinely confirmed: immediately for COD, or
+  // from payu-callback once an online payment clears.
+  async function decrementVariantStock(items) {
+    for (const item of items || []) {
+      if (!item?.productId || !item?.quantity || !item?.weight) continue;
+      const { error } = await supabaseClient.rpc('decrement_variant_stock', {
+        p_product_id: item.productId,
+        p_weight: item.weight,
+        p_qty: item.quantity,
+      });
+      if (error) console.warn('decrementVariantStock', error);
+    }
+  }
+
   // The branded, sequential order number (e.g. "MEERAV-1001") depends on
   // order_seq, which Postgres only assigns once the insert actually commits —
   // so it's fetched right after a successful checkout insert, not predicted client-side.
@@ -894,7 +910,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, checkIsAdmin, initiatePayuPayment,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, checkIsAdmin, initiatePayuPayment,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

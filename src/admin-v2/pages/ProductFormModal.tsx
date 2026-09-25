@@ -20,7 +20,7 @@ export interface AdminProduct {
   ingredients: string;
   nutrition: { energy?: string; protein?: string; carbs?: string; fat?: string };
   inStock: boolean;
-  variants: { weight: string; price: number; originalPrice?: number }[];
+  variants: { weight: string; price: number; originalPrice?: number; stock?: number }[];
 }
 
 export function blankProduct(): AdminProduct {
@@ -59,13 +59,20 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
   const update = <K extends keyof AdminProduct>(key: K, value: AdminProduct[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
 
-  const updateVariant = (idx: number, field: 'weight' | 'price' | 'originalPrice', value: string) => {
+  const updateVariant = (idx: number, field: 'weight' | 'price' | 'originalPrice' | 'stock', value: string) => {
     setForm((f) => {
       const variants = [...f.variants];
-      variants[idx] = {
-        ...variants[idx],
-        [field]: field === 'weight' ? value : Number(value) || 0,
-      };
+      if (field === 'stock') {
+        // Blank means "unlimited" -- only a real number turns on stock
+        // tracking for this variant, so leaving it empty never blocks sales.
+        const { stock, ...rest } = variants[idx];
+        variants[idx] = value.trim() === '' ? rest : { ...rest, stock: Math.max(0, Number(value) || 0) };
+      } else {
+        variants[idx] = {
+          ...variants[idx],
+          [field]: field === 'weight' ? value : Number(value) || 0,
+        };
+      }
       return { ...f, variants };
     });
   };
@@ -251,9 +258,10 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
                 + Add Variant
               </button>
             </div>
+            <p className="text-xs text-charcoal-400 mb-2">Leave Stock blank for unlimited — a variant only stops selling once you set a number and it reaches 0.</p>
             <div className="space-y-2">
               {form.variants.map((v, idx) => (
-                <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2 items-center">
+                <div key={idx} className="grid grid-cols-[1fr_1fr_1fr_1fr_auto] gap-2 items-center">
                   <input
                     placeholder="Weight (200 g)"
                     value={v.weight}
@@ -272,6 +280,14 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
                     placeholder="MRP (optional)"
                     value={v.originalPrice || ''}
                     onChange={(e) => updateVariant(idx, 'originalPrice', e.target.value)}
+                    className="px-3 py-2 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Stock (blank=∞)"
+                    value={v.stock ?? ''}
+                    onChange={(e) => updateVariant(idx, 'stock', e.target.value)}
                     className="px-3 py-2 border border-cream-300 rounded-lg text-sm focus:outline-none focus:border-maroon-500 bg-white"
                   />
                   <button

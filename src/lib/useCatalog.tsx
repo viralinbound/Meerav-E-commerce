@@ -110,6 +110,7 @@ function toProduct(row: any): Product {
     weight: v.weight || '',
     price: Number(v.price) || 0,
     originalPrice: v.originalPrice != null ? Number(v.originalPrice) : undefined,
+    stock: v.stock != null ? Number(v.stock) : undefined,
   }));
   const variant = variants[0];
   const tag = (row.tag || '').toLowerCase();

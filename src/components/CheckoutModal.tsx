@@ -105,6 +105,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         items: items.map((i) => ({
           productId: i.product.id,
           name: i.product.name,
+          weight: i.product.weight,
           price: i.product.price,
           quantity: i.quantity,
           image: i.product.image,
@@ -132,6 +133,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
         // COD is confirmed at order time, so the sale counts immediately;
         // online payments only count once payu-callback confirms it paid.
         MiraDB.incrementUnitsSold(items.map((i) => ({ productId: i.product.id, quantity: i.quantity })));
+        MiraDB.decrementVariantStock(items.map((i) => ({ productId: i.product.id, weight: i.product.weight, quantity: i.quantity })));
         const seq = await MiraDB.fetchOrderSeq(orderId);
         const num = seq ? `MEERAV-${seq}` : orderId.toUpperCase();
         setOrderNumber(num);

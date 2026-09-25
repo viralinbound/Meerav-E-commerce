@@ -33,6 +33,14 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   const variants = product.variants?.length ? product.variants : [{ weight: product.weight, price: product.price }];
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
+  // stock is undefined for a variant the admin never set a number for, which
+  // means unlimited -- only an explicit 0 (or lower, clamped) blocks a sale.
+  const maxQty = selectedVariant.stock;
+  const outOfStock = maxQty != null && maxQty <= 0;
+
+  useEffect(() => {
+    if (maxQty != null) setQuantity((q) => Math.min(q, Math.max(1, maxQty)));
+  }, [variantIndex, maxQty]);
 
   // Every real photo the admin uploaded — packaging front, the back-of-pack
   // nutrition label, and lifestyle shots — shown in full, in the order
@@ -240,26 +248,33 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
               <div className="flex items-center gap-3 bg-cream-100 rounded-full p-1">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-charcoal-700 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-sm"
+                  disabled={outOfStock}
+                  className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-charcoal-700 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-sm disabled:opacity-40"
                 >
                   <Minus className="w-4 h-4" />
                 </button>
                 <span className="font-semibold text-charcoal-800 w-8 text-center">{quantity}</span>
                 <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-charcoal-700 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-sm"
+                  onClick={() => setQuantity((q) => (maxQty != null ? Math.min(maxQty, q + 1) : q + 1))}
+                  disabled={outOfStock || (maxQty != null && quantity >= maxQty)}
+                  className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-charcoal-700 hover:bg-maroon-700 hover:text-cream-50 transition-colors shadow-sm disabled:opacity-40"
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
+            {maxQty != null && !outOfStock && (
+              <p className="text-xs text-saffron-700 mb-2 -mt-2">Only {maxQty} left in stock</p>
+            )}
+
             <button
               onClick={handleAdd}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-saffron-500 text-white font-semibold rounded-xl hover:bg-saffron-600 transition-all duration-300 hover:shadow-lg active:scale-95"
+              disabled={outOfStock}
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-saffron-500 text-white font-semibold rounded-xl hover:bg-saffron-600 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
             >
               <ShoppingCart className="w-5 h-5" />
-              Add to Cart - Rs {selectedVariant.price * quantity}
+              {outOfStock ? 'Out of Stock' : `Add to Cart - Rs ${selectedVariant.price * quantity}`}
             </button>
 
             {/* Trust Badges */}

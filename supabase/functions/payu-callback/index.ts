@@ -53,13 +53,16 @@ Deno.serve(async (req) => {
       gateway_response: { ...fields, verified: true },
     }).eq('id', order.id);
 
-    // Only bump the real sales counter once, the first time this order
-    // actually clears payment -- a retried/duplicate callback must not
-    // double-count units sold.
+    // Only bump the real sales counter (and reduce stock) once, the first
+    // time this order actually clears payment -- a retried/duplicate
+    // callback must not double-count units sold or over-deduct stock.
     if (isPaid && !alreadyPaid) {
       for (const item of order.items || []) {
         if (item?.productId && item?.quantity) {
           await supabase.rpc('increment_units_sold', { p_product_id: item.productId, p_qty: item.quantity });
+          if (item.weight) {
+            await supabase.rpc('decrement_variant_stock', { p_product_id: item.productId, p_weight: item.weight, p_qty: item.quantity });
+          }
         }
       }
     }
