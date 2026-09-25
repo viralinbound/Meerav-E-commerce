@@ -17,9 +17,9 @@ const TABS: { id: LegalSection; label: string }[] = [
 
 export function LegalPage({ section, onNavigate, onBack }: LegalPageProps) {
   const { settings } = useSettings();
-  const phone = settings?.contactPhone || '1800 102 9046';
-  const email = settings?.contactEmail || 'care@meerav.com';
-  const address = settings?.contactAddress || 'Bikaner, Rajasthan 334001';
+  const phone = settings?.contactPhone || '+91 98861 87879';
+  const email = settings?.contactEmail || '';
+  const address = settings?.contactAddress || 'Sudhama Nagar, Bangalore, Karnataka - 560027 (INDIA)';
   const [updated] = useState(() => new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }));
 
   return (
@@ -106,7 +106,7 @@ export function LegalPage({ section, onNavigate, onBack }: LegalPageProps) {
                   exclusive jurisdiction of the courts in Bikaner, Rajasthan.
                 </Section>
                 <Section title="9. Contact Us">
-                  For any questions about these Terms, reach us at {email} or {phone}, or write to us
+                  For any questions about these Terms, reach us at {email ? `${email} or ` : ''}{phone}, or write to us
                   at {address}.
                 </Section>
               </Doc>
@@ -142,11 +142,11 @@ export function LegalPage({ section, onNavigate, onBack }: LegalPageProps) {
                 </Section>
                 <Section title="6. Your Rights">
                   You can request access to, correction of, or deletion of your personal data by
-                  contacting us at {email}. You can also update your saved address and profile
+                  contacting us at {email || phone}. You can also update your saved address and profile
                   details directly from your account.
                 </Section>
                 <Section title="7. Contact Us">
-                  Questions about this Privacy Policy can be sent to {email} or {phone}, or to our
+                  Questions about this Privacy Policy can be sent to {email ? `${email} or ` : ''}{phone}, or to our
                   address at {address}.
                 </Section>
               </Doc>
@@ -156,7 +156,7 @@ export function LegalPage({ section, onNavigate, onBack }: LegalPageProps) {
               <Doc title="Refund & Cancellation Policy">
                 <Section title="1. Order Cancellation">
                   You can request cancellation of an order before it has been dispatched by
-                  contacting us at {phone} or {email} with your order number. Once an order has been
+                  contacting us at {phone}{email ? ` or ${email}` : ''} with your order number. Once an order has been
                   dispatched, it cannot be cancelled.
                 </Section>
                 <Section title="2. Damaged or Incorrect Items">
@@ -177,7 +177,7 @@ export function LegalPage({ section, onNavigate, onBack }: LegalPageProps) {
                 </Section>
                 <Section title="5. Contact Us">
                   For cancellations, refunds, or delivery issues, reach us at {phone} (Mon–Sat, 11 AM
-                  to 5 PM) or {email}.
+                  to 5 PM){email ? ` or ${email}` : ''}.
                 </Section>
               </Doc>
             )}

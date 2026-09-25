@@ -138,17 +138,19 @@ export function Footer({ onNavigate }: FooterProps) {
               <li className="flex items-start gap-2 text-sm text-cream-300">
                 <Phone className="w-4 h-4 text-saffron-400 shrink-0 mt-0.5" />
                 <div>
-                  <p>{settings?.contactPhone || '1800 102 9046'}</p>
+                  <p>{settings?.contactPhone || '+91 98861 87879'}</p>
                   <p className="text-xs text-cream-400">Mon-Sat 11 AM to 5 PM</p>
                 </div>
               </li>
-              <li className="flex items-start gap-2 text-sm text-cream-300">
-                <Mail className="w-4 h-4 text-saffron-400 shrink-0 mt-0.5" />
-                <span>{settings?.contactEmail || 'care@meerav.com'}</span>
-              </li>
+              {settings?.contactEmail && (
+                <li className="flex items-start gap-2 text-sm text-cream-300">
+                  <Mail className="w-4 h-4 text-saffron-400 shrink-0 mt-0.5" />
+                  <span>{settings.contactEmail}</span>
+                </li>
+              )}
               <li className="flex items-start gap-2 text-sm text-cream-300">
                 <MapPin className="w-4 h-4 text-saffron-400 shrink-0 mt-0.5" />
-                <span>{settings?.contactAddress || 'Bikaner, Rajasthan 334001'}</span>
+                <span>{settings?.contactAddress || 'Sudhama Nagar, Bangalore, Karnataka - 560027 (INDIA)'}</span>
               </li>
             </ul>
           </div>
