@@ -236,9 +236,15 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
 
   // Records that an order's stock has actually been deducted, so a later
   // cancellation knows there's real stock to give back -- and won't
-  // double-restore if the order is cancelled more than once.
-  async function setOrderStockDeducted(orderId, deducted, client = supabaseClient) {
-    const { error } = await client.from('orders').update({ stock_deducted: deducted }).eq('id', orderId);
+  // double-restore if the order is cancelled more than once. Goes through a
+  // SECURITY DEFINER RPC (not a direct table update) because RLS only lets
+  // admins UPDATE orders -- a customer's own COD checkout call would
+  // otherwise be silently blocked and this flag would never actually be set.
+  async function setOrderStockDeducted(orderId, deducted) {
+    const { error } = await supabaseClient.rpc('mark_order_stock_deducted', {
+      p_order_id: orderId,
+      p_deducted: deducted,
+    });
     if (error) console.warn('setOrderStockDeducted', error);
     return !error;
   }
