@@ -20,6 +20,16 @@ function isValidEmail(email: string): boolean {
 
 const SITE_URL = 'https://meeravsnacks.com';
 
+async function sendEmail(apiKey: string, fromEmail: string, to: string[], subject: string, html: string) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: fromEmail, to, subject, html }),
+  });
+  if (!res.ok) console.error('Resend send failed', subject, res.status, await res.text());
+  return res.ok;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
 
@@ -49,27 +59,34 @@ Deno.serve(async (req) => {
     const apiKey = Deno.env.get('RESEND_API_KEY');
     if (apiKey) {
       const fromEmail = Deno.env.get('RESEND_FROM_EMAIL') || 'Meerav Namkeens <onboarding@resend.dev>';
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          from: fromEmail,
-          to: [normalized],
-          subject: 'Thank you for subscribing to Meerav!',
-          html: `
-            <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#fdf9f0;padding:32px 24px;color:#3a2a1a;">
-              <h1 style="color:#6e1423;font-size:22px;margin:0 0 12px;">Thank you for subscribing!</h1>
-              <p style="color:#5a4a35;font-size:14px;line-height:1.6;">
-                Stay tuned for new offers and deals — you'll be the first to hear about them.
-              </p>
-              <a href="${SITE_URL}" style="display:inline-block;margin-top:16px;padding:10px 20px;background:#6e1423;color:#fdf9f0;text-decoration:none;border-radius:6px;font-size:14px;">
-                Visit Meerav
-              </a>
-              <p style="color:#a08d70;font-size:13px;margin-top:24px;">— The Meerav Team, Bikaner</p>
-            </div>`,
-        }),
-      });
-      if (!res.ok) console.error('Resend subscribe-email failed', res.status, await res.text());
+
+      // Thank-you email to the person who just subscribed.
+      await sendEmail(apiKey, fromEmail, [normalized], 'Thank you for subscribing to Meerav!', `
+        <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#fdf9f0;padding:32px 24px;color:#3a2a1a;">
+          <h1 style="color:#6e1423;font-size:22px;margin:0 0 12px;">Thank you for subscribing!</h1>
+          <p style="color:#5a4a35;font-size:14px;line-height:1.6;">
+            Stay tuned for new offers and deals — you'll be the first to hear about them.
+          </p>
+          <a href="${SITE_URL}" style="display:inline-block;margin-top:16px;padding:10px 20px;background:#6e1423;color:#fdf9f0;text-decoration:none;border-radius:6px;font-size:14px;">
+            Visit Meerav
+          </a>
+          <p style="color:#a08d70;font-size:13px;margin-top:24px;">— The Meerav Team, Bikaner</p>
+        </div>`);
+
+      // Notify every admin/host that a new subscriber just joined, so the
+      // team sees signups happening without having to check the admin
+      // panel's Newsletter page on their own.
+      const { data: admins } = await supabase.from('admins').select('email').eq('banned', false);
+      const adminEmails = (admins || []).map((a: { email: string }) => a.email).filter(Boolean);
+      if (adminEmails.length) {
+        await sendEmail(apiKey, fromEmail, adminEmails, 'New newsletter subscriber', `
+          <div style="font-family:Georgia,serif;max-width:520px;margin:0 auto;background:#fdf9f0;padding:32px 24px;color:#3a2a1a;">
+            <h1 style="color:#6e1423;font-size:20px;margin:0 0 12px;">New newsletter subscriber</h1>
+            <p style="color:#5a4a35;font-size:14px;line-height:1.6;">
+              <strong>${normalized}</strong> just subscribed through the website footer.
+            </p>
+          </div>`);
+      }
     }
 
     return json({ ok: true });
