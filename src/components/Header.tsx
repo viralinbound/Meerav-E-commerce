@@ -23,7 +23,6 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
     : [
         'Free delivery across India on all orders',
         'For Online Order Enquiry: 1800 102 9046 (Mon-Sat 11 AM to 5 PM)',
-        'Use code MEERAV10 for 10% off your first order',
       ];
 
   useEffect(() => {
@@ -62,12 +61,12 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
           <span key={announcementIndex} className="animate-fade-in text-center">
             {announcements[announcementIndex]}
           </span>
-          {(!customer || isAdminAccount) && (
+          {customer && isAdminAccount && (
             <a
               href="/admin.html"
               className="hidden sm:inline absolute right-4 text-cream-200 hover:text-saffron-300 transition-colors text-xs whitespace-nowrap"
             >
-              {customer ? 'Go to Admin Dashboard' : 'Admin Login'}
+              Go to Admin Dashboard
             </a>
           )}
         </div>
@@ -204,12 +203,12 @@ export function Header({ onNavigate, onSearch }: HeaderProps) {
                   <Phone className="w-4 h-4" /> {customer ? customer.name.split(' ')[0] : 'Sign In'}
                 </button>
               </div>
-              {(!customer || isAdminAccount) && (
+              {customer && isAdminAccount && (
                 <a
                   href="/admin.html"
                   className="block text-center mt-2 pt-2 text-xs text-charcoal-400 hover:text-maroon-700"
                 >
-                  {customer ? 'Go to Admin Dashboard' : 'Admin Login'}
+                  Go to Admin Dashboard
                 </a>
               )}
             </div>
