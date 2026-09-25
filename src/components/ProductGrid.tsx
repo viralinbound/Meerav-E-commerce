@@ -13,6 +13,20 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
   const { addToCart } = useCart();
   const { products } = useCatalog();
   const [sortBy, setSortBy] = useState<'popular' | 'price-low' | 'price-high' | 'rating'>('popular');
+  const [packSize, setPackSize] = useState('all');
+
+  // Every distinct pack size across all products' actual variants (not just
+  // the default one shown on the card), so the filter reflects whatever
+  // sizes admins have configured, however many that is.
+  const packSizes = useMemo(() => {
+    const sizes = new Set<string>();
+    for (const p of products) {
+      for (const v of p.variants?.length ? p.variants : [{ weight: p.weight }]) {
+        if (v.weight) sizes.add(v.weight);
+      }
+    }
+    return Array.from(sizes).sort();
+  }, [products]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
@@ -21,6 +35,12 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
         (p) => p.name.toLowerCase().includes(query) || p.description.toLowerCase().includes(query)
+      );
+    }
+
+    if (packSize !== 'all') {
+      result = result.filter((p) =>
+        (p.variants?.length ? p.variants : [{ weight: p.weight }]).some((v) => v.weight === packSize)
       );
     }
 
@@ -39,7 +59,7 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
     }
 
     return result;
-  }, [searchQuery, sortBy]);
+  }, [products, searchQuery, sortBy, packSize]);
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
@@ -66,18 +86,35 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
           <p className="text-sm text-charcoal-500">
             Showing <span className="font-semibold text-charcoal-800">{filteredProducts.length}</span> products
           </p>
-          <div className="flex items-center gap-2">
-            <label className="text-sm text-charcoal-500">Sort by:</label>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-              className="px-3 py-2 border border-cream-300 rounded-lg text-sm bg-white focus:outline-none focus:border-saffron-400 cursor-pointer"
-            >
-              <option value="popular">Most Popular</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="rating">Highest Rated</option>
-            </select>
+          <div className="flex items-center gap-3 flex-wrap">
+            {packSizes.length > 1 && (
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-charcoal-500">Pack Size:</label>
+                <select
+                  value={packSize}
+                  onChange={(e) => setPackSize(e.target.value)}
+                  className="px-3 py-2 border border-cream-300 rounded-lg text-sm bg-white focus:outline-none focus:border-saffron-400 cursor-pointer"
+                >
+                  <option value="all">All Sizes</option>
+                  {packSizes.map((size) => (
+                    <option key={size} value={size}>{size}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-charcoal-500">Sort by:</label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                className="px-3 py-2 border border-cream-300 rounded-lg text-sm bg-white focus:outline-none focus:border-saffron-400 cursor-pointer"
+              >
+                <option value="popular">Most Popular</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="rating">Highest Rated</option>
+              </select>
+            </div>
           </div>
         </div>
 
