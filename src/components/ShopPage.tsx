@@ -4,7 +4,7 @@ import { ProductGrid } from '@/components/ProductGrid';
 
 interface ShopPageProps {
   searchQuery: string;
-  onProductClick: (product: Product) => void;
+  onProductClick: (product: Product, initialWeight?: string) => void;
   onBackHome: () => void;
 }
 

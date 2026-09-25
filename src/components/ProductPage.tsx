@@ -5,6 +5,7 @@ import { useCart } from '@/context/CartContext';
 
 interface ProductPageProps {
   product: Product;
+  initialWeight?: string | null;
   onBack: () => void;
 }
 
@@ -13,7 +14,7 @@ interface MediaItem {
   url: string;
 }
 
-export function ProductPage({ product, onBack }: ProductPageProps) {
+export function ProductPage({ product, initialWeight, onBack }: ProductPageProps) {
   const { items: cartItems, addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [variantIndex, setVariantIndex] = useState(0);
@@ -26,16 +27,23 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
 
   useEffect(() => {
     setQuantity(1);
-    // Land on the first size that's actually available, not a sold-out one,
-    // if the product has another in-stock option -- falls back to index 0
-    // (which may itself be sold out) only if every size is sold out.
-    const firstInStock = variants.findIndex((v) => !(v.stock != null && v.stock <= 0));
-    setVariantIndex(firstInStock >= 0 ? firstInStock : 0);
+    // If the customer clicked a specific pack-size card (e.g. from a
+    // filtered search result), land on that exact size. Otherwise land on
+    // the first size that's actually available, not a sold-out one, if the
+    // product has another in-stock option -- falls back to index 0 (which
+    // may itself be sold out) only if every size is sold out.
+    const requestedIdx = initialWeight ? variants.findIndex((v) => v.weight === initialWeight) : -1;
+    if (requestedIdx >= 0) {
+      setVariantIndex(requestedIdx);
+    } else {
+      const firstInStock = variants.findIndex((v) => !(v.stock != null && v.stock <= 0));
+      setVariantIndex(firstInStock >= 0 ? firstInStock : 0);
+    }
     setMediaIndex(0);
     setLightboxOpen(false);
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [product.id]);
+  }, [product.id, initialWeight]);
 
   const selectedVariant = variants[variantIndex] || variants[0];
   const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };

@@ -29,6 +29,7 @@ function AppContent() {
   const [returnPage, setReturnPage] = useState<'home' | 'shop'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedWeight, setSelectedWeight] = useState<string | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [trackerOpen, setTrackerOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
@@ -54,9 +55,10 @@ function AppContent() {
   // Clicking any product card opens its own full page — never a popup —
   // so shoppers see the real packaging front, back-of-pack nutrition label,
   // and lifestyle photos at full size before deciding to buy.
-  const openProduct = (product: Product) => {
+  const openProduct = (product: Product, initialWeight?: string) => {
     setReturnPage(page === 'shop' ? 'shop' : 'home');
     setSelectedProduct(product);
+    setSelectedWeight(initialWeight || null);
     setPage('product');
     window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
   };
@@ -204,7 +206,7 @@ function AppContent() {
 
       <main>
         {page === 'product' && selectedProduct ? (
-          <ProductPage product={selectedProduct} onBack={backFromProduct} />
+          <ProductPage product={selectedProduct} initialWeight={selectedWeight} onBack={backFromProduct} />
         ) : page === 'shop' ? (
           <ShopPage searchQuery={searchQuery} onProductClick={openProduct} onBackHome={goHome} />
         ) : (
