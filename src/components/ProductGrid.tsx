@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Star, Plus, Flame, Search } from 'lucide-react';
-import type { Product } from '@/data/products';
+import { isProductOutOfStock, type Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { useCatalog } from '@/lib/useCatalog';
 
@@ -129,7 +129,9 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
           </div>
         ) : (
           <div id="home-allproducts-track" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filteredProducts.map((product) => (
+            {filteredProducts.map((product) => {
+              const outOfStock = isProductOutOfStock(product);
+              return (
               <div
                 key={product.id}
                 onClick={() => onProductClick(product)}
@@ -140,8 +142,15 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-700"
+                    className={`w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-700 ${outOfStock ? 'opacity-50 grayscale' : ''}`}
                   />
+                  {outOfStock && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-charcoal-900/10">
+                      <span className="px-3 py-1.5 bg-charcoal-800 text-white text-xs font-bold rounded-full shadow-sm">
+                        OUT OF STOCK
+                      </span>
+                    </div>
+                  )}
                   {/* Badges */}
                   <div className="absolute top-2 left-2 flex flex-col gap-1.5">
                     {product.isBestseller && (
@@ -163,13 +172,15 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
                     </div>
                   )}
                   {/* Quick Add Button */}
-                  <button
-                    onClick={(e) => handleAddToCart(e, product)}
-                    className="absolute bottom-3 right-3 w-10 h-10 bg-maroon-700 text-cream-50 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-maroon-800 active:scale-90"
-                    aria-label="Add to cart"
-                  >
-                    <Plus className="w-5 h-5" />
-                  </button>
+                  {!outOfStock && (
+                    <button
+                      onClick={(e) => handleAddToCart(e, product)}
+                      className="absolute bottom-3 right-3 w-10 h-10 bg-maroon-700 text-cream-50 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-maroon-800 active:scale-90"
+                      aria-label="Add to cart"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  )}
                 </div>
 
                 {/* Info */}
@@ -187,6 +198,7 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
                     <span className="font-serif text-lg md:text-xl font-bold text-maroon-800">
                       Rs {product.price}
                     </span>
+                    {!outOfStock && (
                     <button
                       onClick={(e) => handleAddToCart(e, product)}
                       className="md:hidden p-1.5 bg-saffron-500 text-white rounded-lg active:scale-90"
@@ -194,10 +206,12 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
                     >
                       <Plus className="w-4 h-4" />
                     </button>
+                    )}
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

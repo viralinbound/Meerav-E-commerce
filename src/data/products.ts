@@ -5,6 +5,16 @@ export interface ProductVariant {
   stock?: number;
 }
 
+// A product is out of stock only when EVERY variant has been given a real
+// stock number and it's all used up -- a product where no variant tracks
+// stock (the default) is never considered out of stock, and a product with
+// even one variant still in stock (or untracked) stays purchasable.
+export function isProductOutOfStock(product: Pick<Product, 'variants'>): boolean {
+  const variants = product.variants?.length ? product.variants : [];
+  if (variants.length === 0) return false;
+  return variants.every((v) => v.stock != null && v.stock <= 0);
+}
+
 export interface Product {
   id: string;
   name: string;
