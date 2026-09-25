@@ -21,6 +21,7 @@ export interface Product {
   category: string;
   price: number;
   weight: string;
+  stock?: number;
   variants: ProductVariant[];
   image: string;
   photos: string[];

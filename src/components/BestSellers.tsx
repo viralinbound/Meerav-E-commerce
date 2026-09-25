@@ -15,7 +15,7 @@ export function BestSellers({ onProductClick }: BestSellersProps) {
 
   const handleAddToCart = (e: React.MouseEvent, product: Product) => {
     e.stopPropagation();
-    addToCart(product);
+    addToCart({ ...product, stock: product.variants?.[0]?.stock });
   };
 
   const scroll = (dir: 'left' | 'right') => {

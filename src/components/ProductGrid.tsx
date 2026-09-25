@@ -74,7 +74,7 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
 
   const handleAddToCart = (e: React.MouseEvent, card: VariantCard) => {
     e.stopPropagation();
-    addToCart({ ...card.product, price: card.variant.price, weight: card.variant.weight });
+    addToCart({ ...card.product, price: card.variant.price, weight: card.variant.weight, stock: card.variant.stock });
   };
 
   return (

@@ -46,7 +46,7 @@ export function ProductPage({ product, initialWeight, onBack }: ProductPageProps
   }, [product.id, initialWeight]);
 
   const selectedVariant = variants[variantIndex] || variants[0];
-  const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight };
+  const selected: Product = { ...product, price: selectedVariant.price, weight: selectedVariant.weight, stock: selectedVariant.stock };
   // Total of every variant of THIS product already in the cart, so the
   // customer sees it right here instead of only discovering it by opening
   // the cart drawer at the end.
