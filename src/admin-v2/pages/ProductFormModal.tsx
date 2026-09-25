@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { X, Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import { MiraDB } from '@/lib/supabase.js';
 import { useAdminAuth } from '../useAdminAuth';
@@ -55,6 +55,28 @@ export function ProductFormModal({ product, onClose, onSaved }: ProductFormModal
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const isNew = !product.id;
+
+  // The product list this modal was opened from can be stale (e.g. a bulk
+  // data update ran after the list last loaded) -- saving with a stale
+  // `photos` array would silently wipe out photos that exist in the
+  // database but never made it into this form's state. Re-fetch the row
+  // fresh the moment the modal opens so the form always starts from what's
+  // actually in the database right now, not from a snapshot the parent
+  // list happened to be holding.
+  useEffect(() => {
+    if (!product.id) return;
+    let cancelled = false;
+    MiraDB.adminClient
+      .from('products')
+      .select('*')
+      .eq('id', product.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled && data) setForm(MiraDB.mappers.dbProductToApp(data));
+      });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product.id]);
 
   const update = <K extends keyof AdminProduct>(key: K, value: AdminProduct[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
