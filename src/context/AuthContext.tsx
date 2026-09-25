@@ -61,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!cancelled) setCustomer(normalizeCustomer(profile));
         const isAdmin = await MiraDB.checkIsAdmin(session.user.id);
         if (!cancelled) setIsAdminAccount(isAdmin);
+        if (isAdmin) MiraDB.syncAdminSession(session);
       }
       if (!cancelled) setLoading(false);
     });
@@ -78,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!cancelled) setCustomer(normalizeCustomer(profile));
         const isAdmin = await MiraDB.checkIsAdmin(session.user.id);
         if (!cancelled) setIsAdminAccount(isAdmin);
+        if (isAdmin) MiraDB.syncAdminSession(session);
       } else {
         if (!cancelled) { setCustomer(null); setIsAdminAccount(false); }
       }
@@ -99,13 +101,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await MiraDB.signInCustomer(email, password);
     if (!res.error && res.profile) {
       setCustomer(normalizeCustomer(res.profile));
-      setIsAdminAccount(await MiraDB.checkIsAdmin(res.profile.id));
+      const isAdmin = await MiraDB.checkIsAdmin(res.profile.id);
+      setIsAdminAccount(isAdmin);
+      if (isAdmin) MiraDB.syncAdminSession(res.session);
     }
     return res;
   }
 
   async function signOut() {
     await MiraDB.signOutCustomer();
+    // An admin who signs out of the storefront almost certainly means to
+    // sign out entirely -- leaving the admin panel session alive behind
+    // that "signed out" state would be a real security gap, not a
+    // convenience worth keeping.
+    if (isAdminAccount) await MiraDB.signOutAdmin();
     setCustomer(null);
     setIsAdminAccount(false);
   }

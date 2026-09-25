@@ -890,6 +890,25 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     await adminSupabaseClient.auth.signOut();
   }
 
+  // The storefront customer session and the admin panel session are kept
+  // in separate browser storage on purpose (so a leaked customer session
+  // alone can never reach the admin panel) -- but when the signed-in
+  // customer account IS a real admin/host, copying its already-verified
+  // tokens into the admin client's own session means they land on
+  // /admin.html already signed in, instead of typing the same password a
+  // second time for an account they just proved they own.
+  async function syncAdminSession(session) {
+    if (!session?.access_token || !session?.refresh_token) return;
+    try {
+      await adminSupabaseClient.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+    } catch (e) {
+      console.warn('syncAdminSession', e);
+    }
+  }
+
   async function getAdminSession() {
     const { data } = await adminSupabaseClient.auth.getSession();
     return data.session;
@@ -1049,7 +1068,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     signUpCustomer, signInCustomer, signOutCustomer, getCurrentSession, getOrCreateCustomerProfile, onAuthChange, resendConfirmationEmail,
     sendPasswordReset, updatePassword,
     adminClient: adminSupabaseClient,
-    signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange,
+    signInAdmin, signOutAdmin, getAdminSession, getCurrentAdminProfile, onAdminAuthChange, syncAdminSession,
     fetchAdmins, registerAdmin, removeAdmin, updateAdminPermissions, updateAdminName, updateOwnName,
     resetAdminPassword, changeOwnPassword, banAdmin, unbanAdmin, warnAdmin,
     fetchMyWarnings, fetchWarningsForAdmin, acknowledgeWarning,
