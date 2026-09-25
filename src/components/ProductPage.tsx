@@ -37,10 +37,9 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   // means unlimited -- only an explicit 0 (or lower, clamped) blocks a sale.
   const maxQty = selectedVariant.stock;
   const outOfStock = maxQty != null && maxQty <= 0;
-
-  useEffect(() => {
-    if (maxQty != null) setQuantity((q) => Math.min(q, Math.max(1, maxQty)));
-  }, [variantIndex, maxQty]);
+  // Switching pack size keeps whatever quantity was already picked -- the
+  // "+" button below already can't go past a variant's own stock, so there's
+  // nothing to force-reset here.
 
   // Every real photo the admin uploaded — packaging front, the back-of-pack
   // nutrition label, and lifestyle shots — shown in full, in the order
@@ -68,7 +67,8 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   }, [lightboxOpen, media.length]);
 
   const handleAdd = () => {
-    addToCart(selected, quantity);
+    const qtyToAdd = maxQty != null ? Math.min(quantity, maxQty) : quantity;
+    addToCart(selected, qtyToAdd);
   };
 
   return (
