@@ -238,7 +238,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
       <div className="absolute inset-0 bg-charcoal-900/70 backdrop-blur-sm" onClick={handleClose} />
 
-      <div className="relative bg-cream-50 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in">
+      <div className={`relative bg-cream-50 rounded-2xl shadow-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in ${step === 'success' ? 'max-w-3xl' : 'max-w-2xl'}`}>
         {/* Header */}
         <div className="sticky top-0 bg-maroon-800 text-cream-50 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
           <h2 className="font-serif text-xl font-bold">
@@ -254,35 +254,35 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
 
         {step === 'success' ? (
           /* Success Screen */
-          <div className="p-8 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-scale-in">
-              <Check className="w-10 h-10 text-green-600" />
+          <div className="p-8 sm:p-12 text-center">
+            <div className="w-28 h-28 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-8 animate-scale-in">
+              <Check className="w-14 h-14 text-green-600" />
             </div>
-            <h3 className="font-serif text-2xl font-bold text-charcoal-900 mb-2">
+            <h3 className="font-serif text-3xl sm:text-4xl font-bold text-charcoal-900 mb-3">
               Thank you for your order!
             </h3>
-            <p className="text-charcoal-500 mb-6">
+            <p className="text-charcoal-500 text-lg mb-8">
               Your order has been placed successfully. You'll receive a confirmation SMS shortly.
             </p>
-            <div className="bg-cream-100 rounded-xl p-4 mb-6 inline-block">
+            <div className="bg-cream-100 rounded-xl p-6 mb-8 inline-block">
               <p className="text-sm text-charcoal-500">Order Number</p>
-              <p className="font-serif text-2xl font-bold text-maroon-800">{orderNumber}</p>
+              <p className="font-serif text-3xl sm:text-4xl font-bold text-maroon-800">{orderNumber}</p>
             </div>
-            <div className="flex flex-col gap-3 max-w-sm mx-auto">
-              <div className="flex items-center gap-3 p-3 bg-cream-100 rounded-lg text-left">
-                <Truck className="w-5 h-5 text-saffron-600 shrink-0" />
-                <p className="text-sm text-charcoal-600">
+            <div className="flex flex-col gap-3 max-w-md mx-auto">
+              <div className="flex items-center gap-3 p-4 bg-cream-100 rounded-lg text-left">
+                <Truck className="w-6 h-6 text-saffron-600 shrink-0" />
+                <p className="text-base text-charcoal-600">
                   Estimated delivery: <span className="font-medium">3-5 business days</span>
                 </p>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-cream-100 rounded-lg text-left">
-                <MapPin className="w-5 h-5 text-maroon-600 shrink-0" />
-                <p className="text-sm text-charcoal-600">
+              <div className="flex items-center gap-3 p-4 bg-cream-100 rounded-lg text-left">
+                <MapPin className="w-6 h-6 text-maroon-600 shrink-0" />
+                <p className="text-base text-charcoal-600">
                   Track your order in real-time using the delivery tracker on our website.
                 </p>
               </div>
             </div>
-            <button onClick={handleClose} className="btn-primary mt-6">
+            <button onClick={handleClose} className="btn-primary mt-8 text-base px-8 py-3">
               Continue Shopping
             </button>
           </div>
