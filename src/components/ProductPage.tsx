@@ -49,9 +49,13 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
   // means unlimited -- only an explicit 0 (or lower, clamped) blocks a sale.
   const maxQty = selectedVariant.stock;
   const outOfStock = maxQty != null && maxQty <= 0;
-  // Switching pack size keeps whatever quantity was already picked -- the
-  // "+" button below already can't go past a variant's own stock, so there's
-  // nothing to force-reset here.
+
+  // Switching pack size starts the quantity fresh at 1 rather than carrying
+  // over whatever was picked for the previous size.
+  const selectVariant = (idx: number) => {
+    setVariantIndex(idx);
+    setQuantity(1);
+  };
 
   // Every real photo the admin uploaded — packaging front, the back-of-pack
   // nutrition label, and lifestyle shots — shown in full, in the order
@@ -218,7 +222,7 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
                     return (
                       <button
                         key={v.weight}
-                        onClick={() => setVariantIndex(idx)}
+                        onClick={() => selectVariant(idx)}
                         disabled={soldOut}
                         className={`relative px-4 py-2 rounded-lg text-sm font-medium border-2 transition-colors ${
                           soldOut
@@ -269,7 +273,7 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
 
             {/* Price + Quantity + Add */}
             <div className="flex items-center justify-between mb-4">
-              <span className="font-serif text-3xl font-bold text-maroon-800">Rs {selectedVariant.price * quantity}</span>
+              <span className="font-serif text-3xl font-bold text-maroon-800">Rs {selectedVariant.price}</span>
               <div className="flex items-center gap-3 bg-cream-100 rounded-full p-1">
                 <button
                   onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -299,7 +303,7 @@ export function ProductPage({ product, onBack }: ProductPageProps) {
               className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-saffron-500 text-white font-semibold rounded-xl hover:bg-saffron-600 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
             >
               <ShoppingCart className="w-5 h-5" />
-              {outOfStock ? 'Out of Stock' : `Add to Cart - Rs ${selectedVariant.price * quantity}`}
+              {outOfStock ? 'Out of Stock' : `Add to Cart - Rs ${selectedVariant.price}`}
             </button>
             {outOfStock && (
               <p className="text-sm text-charcoal-500 text-center mt-2">
