@@ -173,6 +173,36 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     }
   }
 
+  // Checks the CURRENT live stock (not the possibly-stale cart/catalog data)
+  // for each cart line right before an order is placed. Stock can change
+  // between adding to cart and checking out -- another customer buying the
+  // same item, or an admin adjusting it -- so this is the real gate, not
+  // just the clamp applied when the item was first added.
+  async function checkVariantStock(items) {
+    const problems = [];
+    const productIds = [...new Set((items || []).map((i) => i.productId).filter(Boolean))];
+    if (productIds.length === 0) return problems;
+
+    const { data, error } = await supabaseClient.from('products').select('id, name, variants').in('id', productIds);
+    if (error) { console.warn('checkVariantStock', error); return problems; }
+
+    const byId = new Map((data || []).map((p) => [p.id, p]));
+    for (const item of items || []) {
+      const product = byId.get(item.productId);
+      const variant = product?.variants?.find((v) => v.weight === item.weight);
+      const available = variant?.stock;
+      if (available != null && item.quantity > available) {
+        problems.push({
+          name: product?.name || item.name || item.productId,
+          weight: item.weight,
+          requested: item.quantity,
+          available,
+        });
+      }
+    }
+    return problems;
+  }
+
   // Reduces each ordered variant's stock (only variants an admin has
   // actually given a stock number -- others are unlimited and untouched).
   // Called once an order is genuinely confirmed: immediately for COD, or
@@ -910,7 +940,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
   }
 
   return {
-    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, checkIsAdmin, initiatePayuPayment,
+    fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, checkVariantStock, checkIsAdmin, initiatePayuPayment,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

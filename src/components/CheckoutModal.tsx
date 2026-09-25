@@ -90,6 +90,23 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
       setPlacing(true);
       setPlaceError('');
 
+      // Stock may have changed since these items were added to cart (another
+      // customer bought the last units, or an admin adjusted it) -- this is
+      // the real gate against the live database, not just the clamp applied
+      // when the item was first added.
+      const stockProblems = await MiraDB.checkVariantStock(
+        items.map((i) => ({ productId: i.product.id, weight: i.product.weight, quantity: i.quantity, name: i.product.name }))
+      );
+      if (stockProblems.length > 0) {
+        setPlacing(false);
+        setPlaceError(
+          `Not enough stock — ` +
+          stockProblems.map((p) => `${p.name} (${p.weight}): only ${p.available} left, you have ${p.requested} in cart`).join('; ') +
+          `. Please adjust your cart and try again.`
+        );
+        return;
+      }
+
       const orderId = `order_${customer.id.slice(0, 8)}_${Date.now()}`;
       const ok = await MiraDB.dbInsertOrder({
         id: orderId,
