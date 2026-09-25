@@ -280,7 +280,7 @@ export function ProductPage({ product, initialWeight, onBack }: ProductPageProps
             </div>
 
             {/* Price + Quantity + Add */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-1">
               <span className="font-serif text-3xl font-bold text-maroon-800">Rs {selectedVariant.price}</span>
               <div className="flex items-center gap-3 bg-cream-100 rounded-full p-1">
                 <button
@@ -300,6 +300,8 @@ export function ProductPage({ product, initialWeight, onBack }: ProductPageProps
                 </button>
               </div>
             </div>
+
+            <p className="text-xs text-charcoal-400 mb-3">Price inclusive of GST</p>
 
             {maxQty != null && !outOfStock && (
               <p className="text-xs text-saffron-700 mb-2 -mt-2">Only {maxQty} left in stock</p>

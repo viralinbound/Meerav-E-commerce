@@ -73,6 +73,7 @@ export function ProductGrid({ searchQuery, onProductClick }: ProductGridProps) {
           <p className="text-charcoal-500 max-w-2xl mx-auto">
             Every Meerav delicacy in one place — pick your favourites
           </p>
+          <p className="text-xs text-charcoal-400 mt-2">All prices inclusive of GST</p>
         </div>
 
         {/* Sort + Count Bar */}

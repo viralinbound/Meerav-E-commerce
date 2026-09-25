@@ -152,6 +152,7 @@ export function CartDrawer({ onCheckout }: CartDrawerProps) {
               <span>Total</span>
               <span className="font-serif text-maroon-800">Rs {total}</span>
             </div>
+            <p className="text-xs text-charcoal-400 -mt-2">Price inclusive of GST</p>
             <button
               onClick={onCheckout}
               className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-saffron-500 text-white font-semibold rounded-xl hover:bg-saffron-600 transition-all duration-300 hover:shadow-lg active:scale-95"

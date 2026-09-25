@@ -36,6 +36,7 @@ export function BestSellers({ onProductClick }: BestSellersProps) {
           <p className="text-charcoal-500 max-w-2xl mx-auto">
             Every namkeen and sweet we make, all in one place — pick your favourites and build your own box
           </p>
+          <p className="text-xs text-charcoal-400 mt-2">All prices inclusive of GST</p>
         </div>
 
         <div className="relative">

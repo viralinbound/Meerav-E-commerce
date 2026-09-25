@@ -492,6 +492,7 @@ export function CheckoutModal({ isOpen, onClose, onOrderComplete, customer }: Ch
                         <span>Total</span>
                         <span className="font-serif text-lg text-maroon-800">Rs {total}</span>
                       </div>
+                      <p className="text-xs text-charcoal-400 text-right">Price inclusive of GST</p>
                     </div>
                   </div>
                 </div>

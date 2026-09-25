@@ -64,6 +64,7 @@ export function renderOrderEmailHtml(order: OrderRow): string {
         <span>Total</span>
         <span>Rs ${order.total_amount}</span>
       </div>
+      <p style="margin:4px 0 0;font-size:12px;color:#a08d70;text-align:right;">Price inclusive of GST</p>
       <p style="margin:8px 0 0;font-size:13px;color:#7a6a55;">Payment: ${paymentLabel}</p>
     </div>
 
