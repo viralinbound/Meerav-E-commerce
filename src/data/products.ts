@@ -387,13 +387,13 @@ export const kitchenStories = [
   },
 ];
 
+// Real posts from the brand's own @meeravnamkeen Instagram account, saved
+// as static files rather than hotlinked -- Instagram's CDN URLs are signed
+// and expire within hours, so linking to them directly would break.
 export const instagramFeed = [
-  'https://images.pexels.com/photos/17480807/pexels-photo-17480807.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
-  'https://images.pexels.com/photos/12865864/pexels-photo-12865864.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
-  'https://images.pexels.com/photos/20556455/pexels-photo-20556455.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
-  'https://images.pexels.com/photos/30203314/pexels-photo-30203314.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
-  'https://images.pexels.com/photos/38834635/pexels-photo-38834635.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
-  'https://images.pexels.com/photos/31339268/pexels-photo-31339268.jpeg?auto=compress&cs=tinysrgb&h=400&w=400',
+  '/images/instagram/post1.jpg',
+  '/images/instagram/post2.jpg',
+  '/images/instagram/post3.jpg',
 ];
 
 export const heroBanners = [
