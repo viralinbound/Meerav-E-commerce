@@ -170,6 +170,49 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     }
   }
 
+  // Saves a real newsletter signup (previously the footer form just showed
+  // a fake "check your inbox" message and stored nothing) and sends the
+  // thank-you email server-side.
+  async function subscribeToNewsletter(email) {
+    try {
+      const { error } = await supabaseClient.functions.invoke('send-subscribe-email', { body: { email } });
+      if (error) return { error: await readFunctionError(error) };
+      return { ok: true };
+    } catch (e) {
+      console.error('subscribeToNewsletter', e);
+      return { error: 'Could not subscribe right now. Please try again.' };
+    }
+  }
+
+  // Admin-only: total active (non-unsubscribed) newsletter subscriber count.
+  async function fetchSubscriberCount(client = supabaseClient) {
+    const { count, error } = await client
+      .from('newsletter_subscribers')
+      .select('*', { count: 'exact', head: true })
+      .eq('unsubscribed', false);
+    if (error) { console.warn('fetchSubscriberCount', error); return 0; }
+    return count || 0;
+  }
+
+  // Admin-only: sends an offer/announcement email to every subscriber.
+  // The Edge Function itself re-checks the caller is really an admin
+  // (never trust a client-side gate alone), using the admin session's own
+  // access token.
+  async function sendBroadcastEmail(subject, message, client = supabaseClient) {
+    try {
+      const { data: { session } } = await client.auth.getSession();
+      const { data, error } = await client.functions.invoke('send-broadcast-email', {
+        body: { subject, message },
+        headers: session ? { Authorization: `Bearer ${session.access_token}` } : undefined,
+      });
+      if (error) return { error: await readFunctionError(error) };
+      return data;
+    } catch (e) {
+      console.error('sendBroadcastEmail', e);
+      return { error: 'Could not send the broadcast right now.' };
+    }
+  }
+
   // Bumps each ordered product's real units_sold counter right after checkout,
   // so "Best Seller" on the storefront can be calculated from actual sales
   // instead of a manually-set tag. Best-effort -- a failure here shouldn't
@@ -983,6 +1026,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
 
   return {
     fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, restoreVariantStock, setOrderStockDeducted, checkVariantStock, checkIsAdmin, initiatePayuPayment, sendOrderConfirmationEmail,
+    subscribeToNewsletter, fetchSubscriberCount, sendBroadcastEmail,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

@@ -9,6 +9,7 @@ import { HeritageBanner } from './pages/HeritageBanner';
 import { SiteImages } from './pages/SiteImages';
 import { ContentSections } from './pages/ContentSections';
 import { Orders } from './pages/Orders';
+import { Newsletter } from './pages/Newsletter';
 import { StoreSettings } from './pages/StoreSettings';
 import { AdminAccounts } from './pages/AdminAccounts';
 import { ActivityLog } from './pages/ActivityLog';
@@ -62,6 +63,7 @@ function AdminRoot() {
           {page === 'siteImages' && <SiteImages />}
           {page === 'content' && <ContentSections />}
           {page === 'orders' && <Orders />}
+          {page === 'newsletter' && <Newsletter />}
           {page === 'settings' && <StoreSettings />}
           {page === 'admins' && (
             <AdminAccounts

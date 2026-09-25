@@ -3,7 +3,7 @@ import { useAdminAuth, isHostRole } from './useAdminAuth';
 import { MiraDB } from '@/lib/supabase.js';
 import { WarningsBanner } from './WarningsBanner';
 
-export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'heritageBanner' | 'siteImages' | 'content' | 'orders' | 'settings' | 'admins' | 'activity';
+export type AdminPage = 'dashboard' | 'products' | 'heroBanners' | 'heritageBanner' | 'siteImages' | 'content' | 'orders' | 'newsletter' | 'settings' | 'admins' | 'activity';
 
 const NAV_ITEMS: { id: AdminPage; label: string; rootOnly?: boolean }[] = [
   { id: 'dashboard', label: 'Overview' },
@@ -13,6 +13,7 @@ const NAV_ITEMS: { id: AdminPage; label: string; rootOnly?: boolean }[] = [
   { id: 'siteImages', label: 'Site Photos' },
   { id: 'content', label: 'Reviews & FAQs' },
   { id: 'orders', label: 'Orders' },
+  { id: 'newsletter', label: 'Newsletter' },
   { id: 'settings', label: 'Store Settings' },
   { id: 'admins', label: 'Admin Accounts', rootOnly: true },
   { id: 'activity', label: 'Activity Log', rootOnly: true },

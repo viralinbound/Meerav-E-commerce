@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, ShieldCheck, Truck, Leaf, Instagram, Linkedin, Send } from 'lucide-react';
 import { useSettings } from '@/lib/useSettings';
+import { MiraDB } from '@/lib/supabase.js';
 
 interface FooterProps {
   onNavigate: (section: string) => void;
@@ -10,14 +11,23 @@ export function Footer({ onNavigate }: FooterProps) {
   const { settings } = useSettings();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [subscribing, setSubscribing] = useState(false);
+  const [subscribeError, setSubscribeError] = useState('');
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail('');
-      setTimeout(() => setSubscribed(false), 3000);
+    if (!email || subscribing) return;
+    setSubscribing(true);
+    setSubscribeError('');
+    const result = await MiraDB.subscribeToNewsletter(email);
+    setSubscribing(false);
+    if (result?.error) {
+      setSubscribeError(result.error);
+      return;
     }
+    setSubscribed(true);
+    setEmail('');
+    setTimeout(() => setSubscribed(false), 4000);
   };
 
   return (
@@ -31,7 +41,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 Drop your email for offers & fresh-batch alerts
               </h3>
               <p className="text-cream-300 text-sm">
-                Get 10% off your first order, plus early access to new launches and seasonal specials.
+                Be the first to hear about fresh-batch alerts, new launches, and seasonal specials.
               </p>
             </div>
             <form onSubmit={handleSubscribe} className="flex gap-2">
@@ -48,16 +58,20 @@ export function Footer({ onNavigate }: FooterProps) {
               </div>
               <button
                 type="submit"
-                className="flex items-center gap-2 px-5 py-3 bg-saffron-500 text-white font-semibold rounded-lg hover:bg-saffron-600 transition-colors active:scale-95"
+                disabled={subscribing}
+                className="flex items-center gap-2 px-5 py-3 bg-saffron-500 text-white font-semibold rounded-lg hover:bg-saffron-600 transition-colors active:scale-95 disabled:opacity-60"
               >
                 <Send className="w-4 h-4" />
-                <span className="hidden sm:inline">Subscribe</span>
+                <span className="hidden sm:inline">{subscribing ? 'Subscribing…' : 'Subscribe'}</span>
               </button>
             </form>
             {subscribed && (
               <p className="text-green-400 text-sm mt-2 animate-fade-in">
-                Thank you! Check your inbox for a 10% off coupon.
+                Thank you for subscribing! Check your inbox — you're on the list for fresh-batch alerts and offers.
               </p>
+            )}
+            {subscribeError && (
+              <p className="text-red-400 text-sm mt-2 animate-fade-in">{subscribeError}</p>
             )}
           </div>
         </div>
