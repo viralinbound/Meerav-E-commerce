@@ -1,6 +1,6 @@
 import { Star, Quote, Play, Instagram, ChevronDown, Plus, Minus, X } from 'lucide-react';
 import { useState } from 'react';
-import { kitchenStories as staticKitchenStories } from '@/data/products';
+import { instagramFeed, kitchenStories as staticKitchenStories } from '@/data/products';
 import { useCatalog, type KitchenStory } from '@/lib/useCatalog';
 
 export function Testimonials() {
@@ -164,9 +164,31 @@ export function InstagramFeed() {
         <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">
           Follow Us on Instagram
         </h2>
-        <p className="text-charcoal-500 max-w-2xl mx-auto mb-6">
+        <p className="text-charcoal-500 max-w-2xl mx-auto mb-8">
           Behind-the-scenes from our kitchen, fresh batch alerts, and customer love
         </p>
+
+        <div className="flex flex-wrap justify-center gap-3 mb-8 max-w-2xl">
+          {instagramFeed.map((img, idx) => (
+            <a
+              key={idx}
+              href="https://www.instagram.com/meeravnamkeen"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative w-40 sm:w-48 aspect-square rounded-xl overflow-hidden cursor-pointer block shadow-md"
+            >
+              <img
+                src={img}
+                alt={`Instagram post ${idx + 1}`}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-maroon-900/0 group-hover:bg-maroon-900/40 transition-colors duration-300 flex items-center justify-center">
+                <Instagram className="w-6 h-6 text-cream-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            </a>
+          ))}
+        </div>
+
         <a
           href="https://www.instagram.com/meeravnamkeen"
           target="_blank"
