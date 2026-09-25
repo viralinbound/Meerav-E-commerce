@@ -157,35 +157,25 @@ export function KitchenStories() {
 export function InstagramFeed() {
   return (
     <section className="py-4 lg:py-12 bg-gradient-to-b from-cream-100 to-cream-50">
-      <div className="container-max section-padding">
-        <div className="text-center mb-6 lg:mb-10">
-          <a
-            href="https://www.instagram.com/meeravnamkeen"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4 hover:bg-maroon-200 transition-colors"
-          >
-            @meeravnamkeen
-          </a>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">
-            Follow Us on Instagram
-          </h2>
-          <p className="text-charcoal-500 max-w-2xl mx-auto">
-            Behind-the-scenes from our kitchen, fresh batch alerts, and customer love
-          </p>
-        </div>
-
-        <div className="text-center">
-          <a
-            href="https://www.instagram.com/meeravnamkeen"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-maroon-700 font-medium text-sm hover:underline"
-          >
-            <Instagram className="w-5 h-5" />
-            Follow @meeravnamkeen
-          </a>
-        </div>
+      <div className="container-max section-padding flex flex-col items-center text-center">
+        <span className="inline-block px-4 py-1.5 bg-maroon-100 text-maroon-700 text-sm font-medium rounded-full mb-4">
+          @meeravnamkeen
+        </span>
+        <h2 className="font-serif text-4xl lg:text-5xl font-bold text-charcoal-900 mb-4">
+          Follow Us on Instagram
+        </h2>
+        <p className="text-charcoal-500 max-w-2xl mx-auto mb-6">
+          Behind-the-scenes from our kitchen, fresh batch alerts, and customer love
+        </p>
+        <a
+          href="https://www.instagram.com/meeravnamkeen"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-maroon-700 text-cream-50 font-medium text-sm rounded-full hover:bg-maroon-800 transition-colors"
+        >
+          <Instagram className="w-5 h-5" />
+          Follow @meeravnamkeen
+        </a>
       </div>
     </section>
   );
