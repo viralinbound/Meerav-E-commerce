@@ -170,6 +170,18 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
     }
   }
 
+  // Fires an account-lifecycle email (new account welcome, password
+  // changed) via Resend. Best-effort -- the account action itself already
+  // succeeded by the time this is called, so a failure here is only logged.
+  async function sendAccountEmail(type, email, name) {
+    try {
+      const { error } = await supabaseClient.functions.invoke('send-account-email', { body: { type, email, name } });
+      if (error) console.warn('sendAccountEmail', error);
+    } catch (e) {
+      console.warn('sendAccountEmail', e);
+    }
+  }
+
   // Saves a real newsletter signup (previously the footer form just showed
   // a fake "check your inbox" message and stored nothing) and sends the
   // thank-you email server-side.
@@ -1045,7 +1057,7 @@ export function createMiraDB({ supabaseClient, adminSupabaseClient, mediaBucket 
 
   return {
     fetchCategories, fetchProducts, reorderProducts, getNextProductSerial, fetchOrders, fetchMyOrders, fetchCustomers, fetchNotifications, incrementUnitsSold, decrementVariantStock, restoreVariantStock, setOrderStockDeducted, checkVariantStock, checkIsAdmin, initiatePayuPayment, sendOrderConfirmationEmail,
-    subscribeToNewsletter, fetchSubscriberCount, sendBroadcastEmail,
+    subscribeToNewsletter, fetchSubscriberCount, sendBroadcastEmail, sendAccountEmail,
     dbUpsertProduct, dbDeleteProduct,
     dbUpsertCategory, dbDeleteCategory,
     dbInsertOrder, dbUpdateOrderStatus, fetchOrderSeq,

@@ -93,7 +93,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function signUp(fields: SignUpFields) {
     const res = await MiraDB.signUpCustomer(fields);
-    if (!res.error && res.profile) setCustomer(normalizeCustomer(res.profile));
+    if (!res.error && res.profile) {
+      setCustomer(normalizeCustomer(res.profile));
+      MiraDB.sendAccountEmail('welcome', fields.email, fields.name);
+    }
     return res;
   }
 
@@ -129,7 +132,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function updatePassword(newPassword: string) {
     const res = await MiraDB.updatePassword(newPassword);
-    if (!res.error) setPasswordRecovery(false);
+    if (!res.error) {
+      setPasswordRecovery(false);
+      if (customer?.email) MiraDB.sendAccountEmail('password-changed', customer.email, customer.name);
+    }
     return res;
   }
 
